@@ -1,0 +1,51 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>uk.gov.ons.ctp.product</groupId>
+  <artifactId>responsemanagement</artifactId>
+  <version>8.12.0-SNAPSHOT</version>
+  <packaging>pom</packaging>
+
+  <name>CTP : ResponseManagement</name>
+  <description>CTP : ResponseManagement</description>
+
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <maven.compiler.plugin.version>3.5.1</maven.compiler.plugin.version>
+    <java.version>1.7</java.version>
+    <lombok.version>1.16.6</lombok.version>
+    <springboot.version>1.3.2.RELEASE</springboot.version>
+    <postgres.version>9.3-1104-jdbc4</postgres.version>
+    <jersey.version>2.22.2</jersey.version>
+
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+
+    <checkstyle.config.location>ons_checks_sun_checks.xml</checkstyle.config.location>
+  </properties>
+
+  <modules>
+    <module>caseframesvc</module>
+  </modules>
+
+  <profiles>
+    <profile>
+      <distributionManagement>
+        <repository>
+          <id>central</id>
+          <name>libs-release</name>
+          <url>http://192.168.11.11:8081/artifactory/libs-release-local</url>
+        </repository>
+        <snapshotRepository>
+          <id>snapshots</id>
+          <name>libs-snapshots</name>
+          <url>http://192.168.11.11:8081/artifactory/libs-snapshot-local</url>
+        </snapshotRepository>
+      </distributionManagement>
+      <activation>
+        <activeByDefault>false</activeByDefault>
+      </activation>
+      <id>artifactory</id>
+    </profile>
+  </profiles>
+</project>
