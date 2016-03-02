@@ -1,4 +1,4 @@
-package uk.gov.ons.ctp.response.caseframe.domain.model;
+package uk.gov.ons.ctp.response.action.domain.model;
 
 import java.io.Serializable;
 import java.sql.Timestamp;

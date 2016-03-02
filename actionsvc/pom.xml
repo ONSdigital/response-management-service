@@ -174,7 +174,7 @@
         <artifactId>spring-boot-maven-plugin</artifactId>
         <version>${springboot.version}</version>
         <configuration>
-          <mainClass>uk.gov.ons.ctp.response.action.actionSvcApplication</mainClass>
+          <mainClass>uk.gov.ons.ctp.response.action.ActionSvcApplication</mainClass>
         </configuration>
         <executions>
           <execution>

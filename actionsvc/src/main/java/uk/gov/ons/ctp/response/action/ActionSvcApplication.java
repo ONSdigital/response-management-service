@@ -1,4 +1,4 @@
-package uk.gov.ons.ctp.response.caseframe;
+package uk.gov.ons.ctp.response.action;
 
 import javax.inject.Named;
 
@@ -8,26 +8,16 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
-import uk.gov.ons.ctp.response.caseframe.endpoint.ActionEndpoint;
-import uk.gov.ons.ctp.response.caseframe.endpoint.ActionPlanEndpoint;
-import uk.gov.ons.ctp.response.caseframe.endpoint.AddressEndpoint;
-import uk.gov.ons.ctp.response.caseframe.endpoint.CaseEndpoint;
-import uk.gov.ons.ctp.response.caseframe.endpoint.CaseTypeEndpoint;
-import uk.gov.ons.ctp.response.caseframe.endpoint.LocalAuthorityEndpoint;
-import uk.gov.ons.ctp.response.caseframe.endpoint.MsoaEndpoint;
-import uk.gov.ons.ctp.response.caseframe.endpoint.QuestionSetEndpoint;
-import uk.gov.ons.ctp.response.caseframe.endpoint.QuestionnaireEndpoint;
-import uk.gov.ons.ctp.response.caseframe.endpoint.RegionEndpoint;
-import uk.gov.ons.ctp.response.caseframe.endpoint.SampleEndpoint;
-import uk.gov.ons.ctp.response.caseframe.endpoint.SurveyEndpoint;
+import uk.gov.ons.ctp.response.action.endpoint.ActionEndpoint;
+import uk.gov.ons.ctp.response.action.endpoint.ActionPlanEndpoint;
 
 /**
- * The 'main' entry point for the CaseFrame SpringBoot Application
+ * The 'main' entry point for the Action SpringBoot Application
  */
 @SpringBootApplication
 @EnableTransactionManagement
 @EnableAsync
-public class CaseFrameSvcApplication {
+public class ActionSvcApplication {
   
   @Named
   public static class JerseyConfig extends ResourceConfig {
@@ -35,25 +25,12 @@ public class CaseFrameSvcApplication {
     public JerseyConfig() {
       packages("uk.gov.ons.ctp");
 
-      // AddressFrame
-      register(RegionEndpoint.class);
-      register(LocalAuthorityEndpoint.class);
-      register(MsoaEndpoint.class);
-      register(AddressEndpoint.class);
-
-      // Response
-      register(CaseEndpoint.class);
-      register(QuestionnaireEndpoint.class);
       register(ActionEndpoint.class);
-      register(QuestionSetEndpoint.class);
-      register(CaseTypeEndpoint.class);
-      register(SampleEndpoint.class);
-      register(SurveyEndpoint.class);
       register(ActionPlanEndpoint.class);
     }
   }
 
   public static void main(String[] args) {
-    SpringApplication.run(CaseFrameSvcApplication.class, args);
+    SpringApplication.run(ActionSvcApplication.class, args);
   }
 }

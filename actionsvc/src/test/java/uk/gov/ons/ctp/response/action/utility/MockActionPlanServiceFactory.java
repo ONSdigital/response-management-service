@@ -1,4 +1,4 @@
-package uk.gov.ons.ctp.response.caseframe.utility;
+package uk.gov.ons.ctp.response.action.utility;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -8,8 +8,8 @@ import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
-import uk.gov.ons.ctp.response.caseframe.domain.model.ActionPlan;
-import uk.gov.ons.ctp.response.caseframe.service.ActionPlanService;
+import uk.gov.ons.ctp.response.action.domain.model.ActionPlan;
+import uk.gov.ons.ctp.response.action.service.ActionPlanService;
 
 /**
  * Created by Martin.Humphrey on 26/2/2016.

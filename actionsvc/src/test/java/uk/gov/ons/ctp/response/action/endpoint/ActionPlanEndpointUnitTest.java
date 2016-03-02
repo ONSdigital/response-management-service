@@ -1,18 +1,18 @@
-package uk.gov.ons.ctp.response.caseframe.endpoint;
+package uk.gov.ons.ctp.response.action.endpoint;
 
-import static uk.gov.ons.ctp.response.caseframe.utility.MockActionPlanServiceFactory.ACTIONPLAN1_DESC;
-import static uk.gov.ons.ctp.response.caseframe.utility.MockActionPlanServiceFactory.ACTIONPLAN1_NAME;
-import static uk.gov.ons.ctp.response.caseframe.utility.MockActionPlanServiceFactory.ACTIONPLAN1_RULES;
-import static uk.gov.ons.ctp.response.caseframe.utility.MockActionPlanServiceFactory.ACTIONPLAN2_DESC;
-import static uk.gov.ons.ctp.response.caseframe.utility.MockActionPlanServiceFactory.ACTIONPLAN2_NAME;
-import static uk.gov.ons.ctp.response.caseframe.utility.MockActionPlanServiceFactory.ACTIONPLAN2_RULES;
-import static uk.gov.ons.ctp.response.caseframe.utility.MockActionPlanServiceFactory.ACTIONPLAN3_DESC;
-import static uk.gov.ons.ctp.response.caseframe.utility.MockActionPlanServiceFactory.ACTIONPLAN3_NAME;
-import static uk.gov.ons.ctp.response.caseframe.utility.MockActionPlanServiceFactory.ACTIONPLAN3_RULES;
-import static uk.gov.ons.ctp.response.caseframe.utility.MockActionPlanServiceFactory.ACTIONPLANID;
-import static uk.gov.ons.ctp.response.caseframe.utility.MockActionPlanServiceFactory.NON_EXISTING_ACTIONPLANID;
-import static uk.gov.ons.ctp.response.caseframe.utility.MockActionPlanServiceFactory.OUR_EXCEPTION_MESSAGE;
-import static uk.gov.ons.ctp.response.caseframe.utility.MockActionPlanServiceFactory.UNCHECKED_EXCEPTION;
+import static uk.gov.ons.ctp.response.action.utility.MockActionPlanServiceFactory.ACTIONPLAN1_DESC;
+import static uk.gov.ons.ctp.response.action.utility.MockActionPlanServiceFactory.ACTIONPLAN1_NAME;
+import static uk.gov.ons.ctp.response.action.utility.MockActionPlanServiceFactory.ACTIONPLAN1_RULES;
+import static uk.gov.ons.ctp.response.action.utility.MockActionPlanServiceFactory.ACTIONPLAN2_DESC;
+import static uk.gov.ons.ctp.response.action.utility.MockActionPlanServiceFactory.ACTIONPLAN2_NAME;
+import static uk.gov.ons.ctp.response.action.utility.MockActionPlanServiceFactory.ACTIONPLAN2_RULES;
+import static uk.gov.ons.ctp.response.action.utility.MockActionPlanServiceFactory.ACTIONPLAN3_DESC;
+import static uk.gov.ons.ctp.response.action.utility.MockActionPlanServiceFactory.ACTIONPLAN3_NAME;
+import static uk.gov.ons.ctp.response.action.utility.MockActionPlanServiceFactory.ACTIONPLAN3_RULES;
+import static uk.gov.ons.ctp.response.action.utility.MockActionPlanServiceFactory.ACTIONPLANID;
+import static uk.gov.ons.ctp.response.action.utility.MockActionPlanServiceFactory.NON_EXISTING_ACTIONPLANID;
+import static uk.gov.ons.ctp.response.action.utility.MockActionPlanServiceFactory.OUR_EXCEPTION_MESSAGE;
+import static uk.gov.ons.ctp.response.action.utility.MockActionPlanServiceFactory.UNCHECKED_EXCEPTION;
 
 import javax.ws.rs.core.Application;
 
@@ -21,9 +21,9 @@ import org.springframework.http.HttpStatus;
 
 import uk.gov.ons.ctp.common.error.CTPException;
 import uk.gov.ons.ctp.common.jersey.CTPJerseyTest;
-import uk.gov.ons.ctp.response.caseframe.CaseFrameBeanMapper;
-import uk.gov.ons.ctp.response.caseframe.service.ActionPlanService;
-import uk.gov.ons.ctp.response.caseframe.utility.MockActionPlanServiceFactory;
+import uk.gov.ons.ctp.response.action.ActionBeanMapper;
+import uk.gov.ons.ctp.response.action.service.ActionPlanService;
+import uk.gov.ons.ctp.response.action.utility.MockActionPlanServiceFactory;
 
 /**
  * Unit tests for ActionPlan endpoint
@@ -32,7 +32,7 @@ public class ActionPlanEndpointUnitTest extends CTPJerseyTest {
 
   @Override
   public Application configure() {
-    return super.init(ActionPlanEndpoint.class, ActionPlanService.class, MockActionPlanServiceFactory.class, new CaseFrameBeanMapper()); 
+    return super.init(ActionPlanEndpoint.class, ActionPlanService.class, MockActionPlanServiceFactory.class, new ActionBeanMapper()); 
   }
 
   @Test

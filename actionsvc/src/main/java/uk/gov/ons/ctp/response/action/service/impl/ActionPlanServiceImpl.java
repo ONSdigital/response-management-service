@@ -1,4 +1,4 @@
-package uk.gov.ons.ctp.response.caseframe.service.impl;
+package uk.gov.ons.ctp.response.action.service.impl;
 
 import java.util.List;
 
@@ -6,9 +6,9 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import lombok.extern.slf4j.Slf4j;
-import uk.gov.ons.ctp.response.caseframe.domain.model.ActionPlan;
-import uk.gov.ons.ctp.response.caseframe.domain.repository.ActionPlanRepository;
-import uk.gov.ons.ctp.response.caseframe.service.ActionPlanService;
+import uk.gov.ons.ctp.response.action.domain.model.ActionPlan;
+import uk.gov.ons.ctp.response.action.domain.repository.ActionPlanRepository;
+import uk.gov.ons.ctp.response.action.service.ActionPlanService;
 
 /**
  * An implementation of the AddressService using JPA Repository class(es)

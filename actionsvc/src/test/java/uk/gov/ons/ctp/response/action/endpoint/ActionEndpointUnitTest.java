@@ -1,21 +1,21 @@
-package uk.gov.ons.ctp.response.caseframe.endpoint;
+package uk.gov.ons.ctp.response.action.endpoint;
 
-import static uk.gov.ons.ctp.response.caseframe.utility.MockActionServiceFactory.ACTION1_ACTIONSTATUS;
-import static uk.gov.ons.ctp.response.caseframe.utility.MockActionServiceFactory.ACTION1_ACTIONTYPE;
-import static uk.gov.ons.ctp.response.caseframe.utility.MockActionServiceFactory.ACTION1_PLANID;
-import static uk.gov.ons.ctp.response.caseframe.utility.MockActionServiceFactory.ACTION1_PRIORITY;
-import static uk.gov.ons.ctp.response.caseframe.utility.MockActionServiceFactory.ACTION2_ACTIONSTATUS;
-import static uk.gov.ons.ctp.response.caseframe.utility.MockActionServiceFactory.ACTION2_ACTIONTYPE;
-import static uk.gov.ons.ctp.response.caseframe.utility.MockActionServiceFactory.ACTION2_PLANID;
-import static uk.gov.ons.ctp.response.caseframe.utility.MockActionServiceFactory.ACTION2_PRIORITY;
-import static uk.gov.ons.ctp.response.caseframe.utility.MockActionServiceFactory.ACTION2_SITUATION;
-import static uk.gov.ons.ctp.response.caseframe.utility.MockActionServiceFactory.ACTIONID;
-import static uk.gov.ons.ctp.response.caseframe.utility.MockActionServiceFactory.ACTION_CASEID;
-import static uk.gov.ons.ctp.response.caseframe.utility.MockActionServiceFactory.ACTION_CREATEDBY;
-import static uk.gov.ons.ctp.response.caseframe.utility.MockActionServiceFactory.ACTION_CREATEDDATE_VALUE;
-import static uk.gov.ons.ctp.response.caseframe.utility.MockActionServiceFactory.NON_EXISTING_ID;
-import static uk.gov.ons.ctp.response.caseframe.utility.MockActionServiceFactory.OUR_EXCEPTION_MESSAGE;
-import static uk.gov.ons.ctp.response.caseframe.utility.MockActionServiceFactory.UNCHECKED_EXCEPTION;
+import static uk.gov.ons.ctp.response.action.utility.MockActionServiceFactory.ACTION1_ACTIONSTATUS;
+import static uk.gov.ons.ctp.response.action.utility.MockActionServiceFactory.ACTION1_ACTIONTYPE;
+import static uk.gov.ons.ctp.response.action.utility.MockActionServiceFactory.ACTION1_PLANID;
+import static uk.gov.ons.ctp.response.action.utility.MockActionServiceFactory.ACTION1_PRIORITY;
+import static uk.gov.ons.ctp.response.action.utility.MockActionServiceFactory.ACTION2_ACTIONSTATUS;
+import static uk.gov.ons.ctp.response.action.utility.MockActionServiceFactory.ACTION2_ACTIONTYPE;
+import static uk.gov.ons.ctp.response.action.utility.MockActionServiceFactory.ACTION2_PLANID;
+import static uk.gov.ons.ctp.response.action.utility.MockActionServiceFactory.ACTION2_PRIORITY;
+import static uk.gov.ons.ctp.response.action.utility.MockActionServiceFactory.ACTION2_SITUATION;
+import static uk.gov.ons.ctp.response.action.utility.MockActionServiceFactory.ACTIONID;
+import static uk.gov.ons.ctp.response.action.utility.MockActionServiceFactory.ACTION_CASEID;
+import static uk.gov.ons.ctp.response.action.utility.MockActionServiceFactory.ACTION_CREATEDBY;
+import static uk.gov.ons.ctp.response.action.utility.MockActionServiceFactory.ACTION_CREATEDDATE_VALUE;
+import static uk.gov.ons.ctp.response.action.utility.MockActionServiceFactory.NON_EXISTING_ID;
+import static uk.gov.ons.ctp.response.action.utility.MockActionServiceFactory.OUR_EXCEPTION_MESSAGE;
+import static uk.gov.ons.ctp.response.action.utility.MockActionServiceFactory.UNCHECKED_EXCEPTION;
 
 import javax.ws.rs.core.Application;
 
@@ -24,9 +24,9 @@ import org.springframework.http.HttpStatus;
 
 import uk.gov.ons.ctp.common.error.CTPException;
 import uk.gov.ons.ctp.common.jersey.CTPJerseyTest;
-import uk.gov.ons.ctp.response.caseframe.CaseFrameBeanMapper;
-import uk.gov.ons.ctp.response.caseframe.service.ActionService;
-import uk.gov.ons.ctp.response.caseframe.utility.MockActionServiceFactory;
+import uk.gov.ons.ctp.response.action.ActionBeanMapper;
+import uk.gov.ons.ctp.response.action.service.ActionService;
+import uk.gov.ons.ctp.response.action.utility.MockActionServiceFactory;
 
 /**
  * Action Endpoint Unit tests
@@ -35,7 +35,7 @@ public class ActionEndpointUnitTest extends CTPJerseyTest {
 
   @Override
   public Application configure() {
-    return super.init(ActionEndpoint.class, ActionService.class, MockActionServiceFactory.class, new CaseFrameBeanMapper()); 
+    return super.init(ActionEndpoint.class, ActionService.class, MockActionServiceFactory.class, new ActionBeanMapper()); 
   }
 
   @Test

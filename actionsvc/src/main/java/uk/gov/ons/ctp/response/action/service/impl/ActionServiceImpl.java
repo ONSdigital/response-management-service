@@ -1,4 +1,4 @@
-package uk.gov.ons.ctp.response.caseframe.service.impl;
+package uk.gov.ons.ctp.response.action.service.impl;
 
 import java.util.List;
 
@@ -6,9 +6,9 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import lombok.extern.slf4j.Slf4j;
-import uk.gov.ons.ctp.response.caseframe.domain.model.Action;
-import uk.gov.ons.ctp.response.caseframe.domain.repository.ActionRepository;
-import uk.gov.ons.ctp.response.caseframe.service.ActionService;
+import uk.gov.ons.ctp.response.action.domain.model.Action;
+import uk.gov.ons.ctp.response.action.domain.repository.ActionRepository;
+import uk.gov.ons.ctp.response.action.service.ActionService;
 
 /**
  * An implementation of the ActionService using JPA Repository class(es)

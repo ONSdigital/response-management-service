@@ -1,62 +1,54 @@
---ALTER USER caseframesvc SET search_path to 'caseframe,refdata';
+--ALTER USER actionsvc SET search_path to 'action,refdata';
 
-DROP USER caseframesvc;
-DROP OWNED BY caseframesvc;
+DROP USER actionsvc;
+DROP OWNED BY actionsvc;
 
-CREATE USER caseframesvc LOGIN
-  PASSWORD 'caseframesvc'
+CREATE USER actionsvc LOGIN
+  PASSWORD 'actionsvc'
   NOSUPERUSER INHERIT NOCREATEDB NOCREATEROLE NOREPLICATION;
-GRANT role_connect TO caseframesvc;
+GRANT role_connect TO actionsvc;
 
 
-DROP SCHEMA caseframe cascade;
-create schema CASEFRAME;
+DROP SCHEMA action cascade;
+create schema action;
 
 REVOKE CONNECT ON DATABASE postgres FROM PUBLIC;
 GRANT CONNECT
 ON DATABASE postgres 
-TO caseframesvc;
+TO actionsvc;
 
 REVOKE ALL
-ON ALL TABLES IN SCHEMA caseframe 
+ON ALL TABLES IN SCHEMA action 
 FROM PUBLIC;
 
 REVOKE ALL
-ON ALL SEQUENCES IN SCHEMA caseframe 
+ON ALL SEQUENCES IN SCHEMA action 
 FROM PUBLIC;
 
 ALTER DEFAULT PRIVILEGES 
     FOR USER postgres
-    IN SCHEMA caseframe
-    GRANT SELECT, INSERT, UPDATE, DELETE ON TABLES TO caseframesvc;
+    IN SCHEMA action
+    GRANT SELECT, INSERT, UPDATE, DELETE ON TABLES TO actionsvc;
 
 ALTER DEFAULT PRIVILEGES 
     FOR USER postgres
-    IN SCHEMA caseframe
-    GRANT ALL ON SEQUENCES TO caseframesvc;
+    IN SCHEMA action
+    GRANT ALL ON SEQUENCES TO actionsvc;
 
-GRANT ALL PRIVILEGES ON DATABASE postgres to caseframesvc;
-GRANT ALL ON SCHEMA caseframe TO caseframesvc;
-GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA caseframe TO caseframesvc;
+GRANT ALL PRIVILEGES ON DATABASE postgres to actionsvc;
+GRANT ALL ON SCHEMA action TO actionsvc;
+GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA action TO actionsvc;
 
-GRANT ALL ON SCHEMA refdata TO caseframesvc;
-GRANT SELECT ON ALL TABLES IN SCHEMA refdata TO caseframesvc;
-
-
+GRANT ALL ON SCHEMA refdata TO actionsvc;
+GRANT SELECT ON ALL TABLES IN SCHEMA refdata TO actionsvc;
 
 
 
 
-drop table caseframe.address cascade;
-drop table caseframe.action cascade;
-drop table caseframe.actionplan cascade;
-drop table caseframe.case cascade;
-drop table caseframe.casetype cascade;
-drop table caseframe.caseevent cascade;
-drop table caseframe.questionnaire cascade;
-drop table caseframe.questionset cascade;
-drop table caseframe.survey cascade;
-drop table caseframe.sample cascade;
-drop table caseframe.databasechangelog cascade;
-drop table caseframe.databasechangeloglock cascade;
+
+
+drop table action.action cascade;
+drop table action.actionplan cascade;
+drop table action.databasechangelog cascade;
+drop table action.databasechangeloglock cascade;
 

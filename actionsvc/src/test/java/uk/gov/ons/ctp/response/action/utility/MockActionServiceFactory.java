@@ -1,4 +1,4 @@
-package uk.gov.ons.ctp.response.caseframe.utility;
+package uk.gov.ons.ctp.response.action.utility;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -9,8 +9,8 @@ import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
-import uk.gov.ons.ctp.response.caseframe.domain.model.Action;
-import uk.gov.ons.ctp.response.caseframe.service.ActionService;
+import uk.gov.ons.ctp.response.action.domain.model.Action;
+import uk.gov.ons.ctp.response.action.service.ActionService;
 
 /**
  * Created by Martin.Humphrey on 26/2/2016.

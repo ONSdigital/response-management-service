@@ -1,4 +1,4 @@
-package uk.gov.ons.ctp.response.caseframe.representation;
+package uk.gov.ons.ctp.response.action.representation;
 
 import lombok.Data;
 
