@@ -3,7 +3,7 @@ package uk.gov.ons.ctp.response.action.representation;
 import lombok.Data;
 
 /**
- * Domain model object
+ * Domain model object for representation.
  */
 @Data
 public class ActionPlanDTO {

@@ -23,13 +23,13 @@ public class ActionServiceImpl implements ActionService {
   private ActionRepository actionRepo;
 
   @Override
-  public Action findActionByActionId(Integer actionId) {
+  public final Action findActionByActionId(final Integer actionId) {
     log.debug("Entering findActionByActionId with {}", actionId);
     return actionRepo.findOne(actionId);
   }
 
   @Override
-  public List<Action> findActionsByCaseId(Integer caseId) {
+  public final List<Action> findActionsByCaseId(final Integer caseId) {
     log.debug("Entering findActionsByCaseId with {}", caseId);
     return actionRepo.findByCaseId(caseId);
   }

@@ -20,7 +20,7 @@ import uk.gov.ons.ctp.response.action.service.ActionPlanService;
 
 
 /**
- * The REST endpoint controller for ActionPlans
+ * The REST endpoint controller for ActionPlans.
  */
 @Path("/actionplans")
 @Produces({"application/json"})
@@ -32,19 +32,29 @@ public class ActionPlanEndpoint implements CTPEndpoint {
 
   @Inject
   private MapperFacade mapperFacade;
-  
+
+  /**
+   * This method returns all action plans.
+   * @return List<ActionPlanDTO> This returns all action plans.
+   */
   @GET
   @Path("/")
-  public List<ActionPlanDTO> findActionPlans() {
+  public final List<ActionPlanDTO> findActionPlans() {
     log.debug("Entering findActionPlans...");
     List<ActionPlan> actionPlans = actionPlanService.findActionPlans();
     List<ActionPlanDTO> actionPlanDTOs = mapperFacade.mapAsList(actionPlans, ActionPlanDTO.class);
     return CollectionUtils.isEmpty(actionPlanDTOs) ? null : actionPlanDTOs;
   }
 
+  /**
+   * This method returns the associated action plan for the specified action plan id.
+   * @param actionPlanId This is the action plan id
+   * @return ActionPlanDTO This returns the associated action plan for the specified action plan id.
+   * @throws CTPException if no action plan found for the specified action plan id.
+   */
   @GET
   @Path("/{actionplanid}")
-  public ActionPlanDTO findActionPlanByActionPlanId(@PathParam("actionplanid") Integer actionPlanId) throws CTPException {
+  public final ActionPlanDTO findActionPlanByActionPlanId(@PathParam("actionplanid") final Integer actionPlanId) throws CTPException {
     log.debug("Entering findActionPlanByActionPlanId with {}", actionPlanId);
     ActionPlan actionPlan = actionPlanService.findActionPlan(actionPlanId);
     if (actionPlan == null) {

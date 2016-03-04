@@ -5,6 +5,7 @@ import java.util.Date;
 import lombok.Data;
 
 /**
+ * Domain model object for representation.
  */
 @Data
 public class ActionDTO {
