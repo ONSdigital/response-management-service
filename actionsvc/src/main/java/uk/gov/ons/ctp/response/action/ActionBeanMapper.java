@@ -9,10 +9,17 @@ import uk.gov.ons.ctp.response.action.domain.model.ActionPlan;
 import uk.gov.ons.ctp.response.action.representation.ActionDTO;
 import uk.gov.ons.ctp.response.action.representation.ActionPlanDTO;
 
+/**
+ * The bean mapper to go from Entity objects to Presentation objects.
+ */
 @Named
 public class ActionBeanMapper extends ConfigurableMapper {
-  protected void configure(MapperFactory factory) {
 
+  /**
+   * This method configures the bean mapper.
+   * @param factory the mapper factory
+   */
+  protected final void configure(final MapperFactory factory) {
     factory
       .classMap(Action.class, ActionDTO.class)
       .byDefault()
@@ -22,7 +29,5 @@ public class ActionBeanMapper extends ConfigurableMapper {
       .classMap(ActionPlan.class, ActionPlanDTO.class)
       .byDefault()
       .register();
-
-
   }
 }

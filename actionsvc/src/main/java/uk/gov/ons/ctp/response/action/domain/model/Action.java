@@ -15,26 +15,26 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * Domain model object
+ * Domain model object.
  */
 @Entity
 @Data
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Table(name="action", schema="caseframe")
+@Table(name = "action", schema = "caseframe")
 public class Action implements Serializable {
 
   private static final long serialVersionUID = -717740149545273786L;
 
   @Id
   @GeneratedValue
-  @Column(name="actionid")
+  @Column(name = "actionid")
   private Integer actionId;
 
-  @Column(name="caseid")
+  @Column(name = "caseid")
   private Integer caseId;
 
-  @Column(name="actionplanid")
+  @Column(name = "actionplanid")
   private Integer actionPlanId;
 
   private String actionStatus;
