@@ -10,8 +10,17 @@ import uk.gov.ons.ctp.response.action.domain.model.ActionPlan;
  */
 public interface ActionPlanService extends CTPService {
 
+  /**
+   * This method returns all action plans.
+   * @return List<ActionPlan> This returns all action plans.
+   */
   List<ActionPlan> findActionPlans();
 
+  /**
+   * This method returns the action plan for the specified action plan id.
+   * @param actionPlanId This is the action plan id
+   * @return ActionPlan This returns the associated action plan.
+   */
   ActionPlan findActionPlan(Integer actionPlanId);
 
 
