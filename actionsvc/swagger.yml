@@ -354,8 +354,8 @@ paths:
           required: true
           type: integer
         - in: body
-          name: action
-          description: Action to create
+          name: actionplanjob
+          description: Action plan job to create
           required: true
           schema:
             $ref: '#/definitions/ActionPlanJobCreationRequest'
@@ -585,4 +585,4 @@ definitions:
         type: integer
       message:
         description: Error message
-        type: string        
+        type: string
