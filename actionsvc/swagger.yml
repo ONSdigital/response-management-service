@@ -166,3 +166,12 @@ definitions:
       rules:
         type: string
         description: Action plan steps.
+  Error:
+     type: object
+     properties:
+      code:
+       type: string
+      timestamp:
+       type: string
+      message:
+       type: string
