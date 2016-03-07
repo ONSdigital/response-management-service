@@ -60,7 +60,7 @@ paths:
             $ref: '#/definitions/Error'
     post:
       summary: Create Action
-      description: Creates an action from the mandatory caseId, actionTypeId and createdBy properties.
+      description: Creates an action from the mandatory caseId, actionTypeId and createdBy properties. The manuallyCreated property should be set to true for manually created actions.
       consumes:
         - application/json
       parameters:
@@ -409,6 +409,7 @@ definitions:
       - actionTypeId
       - createdBy
       - createdDateTime
+      - manuallyCreated
       - priority
       - state
     properties:
@@ -430,6 +431,10 @@ definitions:
       createdBy:
         description: User who created this action
         type: string
+      manuallyCreated:
+        description: Whether the action was manually-created
+        type: boolean
+        default: false
       priority:
         description: Action priority (TBD; possible used by the remote provider service)
         type: integer
@@ -475,6 +480,10 @@ definitions:
       actionTypeId:
         description: Unique action type ID this action is for
         type: integer
+      manuallyCreated:
+        description: Whether the action was manually-created
+        type: boolean
+        default: false
       priority:
         description: Action priority (TBD; possible used by the remote provider service)
         type: integer
