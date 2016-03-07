@@ -20,13 +20,6 @@ import uk.gov.ons.ctp.response.action.endpoint.ActionPlanEndpoint;
 public class ActionSvcApplication {
 
   /**
-   * Private constructor not in use. It is here to satisfy the CheckStyle rule:
-   * Utility classes should not have a public or default constructor.
-   */
-  private ActionSvcApplication() {
-  }
-
-  /**
   * To register classes in the JAX-RS world.
    */
   @Named
