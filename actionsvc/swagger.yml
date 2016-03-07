@@ -28,7 +28,7 @@ paths:
   /actions:
     get:
       summary: List Actions
-      description: Lists all actions, optionally filtered by ActionType and/or state.
+      description: Lists all actions, optionally filtered by ActionType and/or state. Actions are returned in descending createdDateTime order i.e. most recent first.
       parameters:
         - name: Accept
           in: header
@@ -156,7 +156,7 @@ paths:
   /actions/case/{caseId}:
     get:
      summary: List Actions for Case
-     description: Lists all actions for the specified case.
+     description: Lists all actions for the specified case. Actions are returned in descending createdDateTime order i.e. most recent first.
      parameters:
        - name: Accept
          in: header
@@ -188,7 +188,7 @@ paths:
   /actionplans:
     get:
       summary: List Action Plans
-      description: Lists all action plans.
+      description: Lists all action plans. Action plans are returned in descending createdDateTime order i.e. most recent first.
       parameters:
         - name: Accept
           in: header
@@ -330,7 +330,7 @@ paths:
   /actionplans/{actionPlanId}/jobs:
     get:
       summary: List Action Plan Jobs
-      description: Lists all action plan jobs for the specified action plan.
+      description: Lists all action plan jobs for the specified action plan. Action plan jobs are returned in descending createdDateTime order i.e. most recent first.
       parameters:
         - name: Accept
           in: header
