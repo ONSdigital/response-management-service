@@ -54,7 +54,8 @@ public class ActionPlanEndpoint implements CTPEndpoint {
    */
   @GET
   @Path("/{actionplanid}")
-  public final ActionPlanDTO findActionPlanByActionPlanId(@PathParam("actionplanid") final Integer actionPlanId) throws CTPException {
+  public final ActionPlanDTO findActionPlanByActionPlanId(@PathParam("actionplanid") final Integer actionPlanId)
+      throws CTPException {
     log.debug("Entering findActionPlanByActionPlanId with {}", actionPlanId);
     ActionPlan actionPlan = actionPlanService.findActionPlan(actionPlanId);
     if (actionPlan == null) {

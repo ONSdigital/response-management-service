@@ -208,6 +208,30 @@ paths:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'
+    post:
+      summary: Create Action Plan (Not Implemented in 2016)
+      description: Creates an action plan from the mandatory surveyId, name, description, surveyDateDaysOffet and createdBy properties. Note that this operation will not be implemented for the 2016 test; action plans will be created via seed data.
+      consumes:
+        - application/json
+      parameters:
+        - name: Accept
+          in: header
+          description: Response type, application/json
+          required: false
+          type: string
+        - in: body
+          name: actionplan
+          description: Action plan to create
+          required: true
+          schema:
+            $ref: '#/definitions/ActionPlanCreationRequest'
+      tags:
+        - ActionPlan
+      responses:
+        501:
+          description: Action plan creation not implemented
+          schema:
+            $ref: '#/definitions/Error'
   /actionplans/{actionPlanId}:
     get:
       summary: Get Action Plan
@@ -354,8 +378,8 @@ paths:
           required: true
           type: integer
         - in: body
-          name: action
-          description: Action to create
+          name: actionplanjob
+          description: Action plan job to create
           required: true
           schema:
             $ref: '#/definitions/ActionPlanJobCreationRequest'
@@ -514,6 +538,30 @@ definitions:
         description: Action plan last successful run date/time
         type: string
         format: date-time
+  ActionPlanCreationRequest:
+    type: object
+    required:
+      - surveyId
+      - name
+      - description
+      - surveyDateDaysOffset
+      - createdBy
+    properties:
+      surveyId:
+        description: Unique survey ID this action plan is for
+        type: integer
+      name:
+        description: Action plan name
+        type: string
+      description:
+        description: Action plan description
+        type: string
+      surveyDateDaysOffset:
+        description: Number of days offset from the survey date (may be negative)
+        type: integer
+      createdBy:
+        description: User who created this action plan
+        type: string
   ActionPlanUpdateRequest:
     type: object
     properties:
@@ -585,4 +633,4 @@ definitions:
         type: integer
       message:
         description: Error message
-        type: string        
+        type: string
