@@ -20,8 +20,6 @@
 
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-
-    <checkstyle.config.location>../ons_checks_sun_checks.xml</checkstyle.config.location>
   </properties>
 
   <modules>
