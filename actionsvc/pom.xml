@@ -90,7 +90,6 @@
       <id>test</id>
       <phase>test</phase>
       <configuration>
-       <excludes></excludes>
        <configLocation>../../ons_checks_sun_checks.xml</configLocation>
        <encoding>UTF-8</encoding>
        <consoleOutput>true</consoleOutput>
