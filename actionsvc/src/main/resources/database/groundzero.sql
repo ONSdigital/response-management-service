@@ -10,7 +10,7 @@ GRANT role_connect TO actionsvc;
 
 
 DROP SCHEMA action cascade;
-create schema action;
+create schema action AUTHORIZATION postgres;
 
 REVOKE CONNECT ON DATABASE postgres FROM PUBLIC;
 GRANT CONNECT

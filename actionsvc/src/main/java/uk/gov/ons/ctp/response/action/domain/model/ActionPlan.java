@@ -1,6 +1,7 @@
 package uk.gov.ons.ctp.response.action.domain.model;
 
 import java.io.Serializable;
+import java.sql.Timestamp;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -23,18 +24,27 @@ import lombok.NoArgsConstructor;
 @Table(name = "actionplan", schema = "caseframe")
 public class ActionPlan implements Serializable {
 
-  private static final long serialVersionUID = -3699270047327231721L;
 
   @Id
   @GeneratedValue
   @Column(name = "actionplanid")
   private Integer actionPlanId;
 
-  @Column(name = "actionplan_name")
-  private String actionPlanName;
+  @Column(name = "surveyid")
+  private Integer surveyId;
+
+  private String name;
 
   private String description;
 
-  private String rules;
+
+  @Column(name = "createdBy")
+  private String createdBy;
+
+  @Column(name = "createddatetime")
+  private Timestamp createdDatetime;
+
+  @Column(name = "lastgoodrundatetime")
+  private Timestamp lastGoodRunDatetime;
 
 }

@@ -24,7 +24,7 @@ import lombok.NoArgsConstructor;
 @Table(name = "action", schema = "caseframe")
 public class Action implements Serializable {
 
-  private static final long serialVersionUID = -717740149545273786L;
+  private static final long serialVersionUID = 8539984354009320104L;
 
   @Id
   @GeneratedValue
@@ -37,16 +37,27 @@ public class Action implements Serializable {
   @Column(name = "actionplanid")
   private Integer actionPlanId;
 
-  private String actionStatus;
+  @Column(name = "actionruleid")
+  private Integer actionRuleId;
 
-  private String actionType;
+  @Column(name = "actiontypeid")
+  private Integer actionTypeId;
+
+  @Column(name = "createdBy")
+  private String createdBy;
+
+  @Column(name = "manuallycreated")
+  private Boolean manuallyCreated;
 
   private String priority;
 
   private String situation;
 
+  private String state;
+
+  @Column(name = "createddatetime")
   private Timestamp createdDatetime;
 
-  private String createdBy;
+  private Timestamp updatedDatetime;
 
 }
