@@ -5,6 +5,7 @@ import javax.inject.Named;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.integration.annotation.IntegrationComponentScan;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
@@ -16,6 +17,7 @@ import uk.gov.ons.ctp.response.action.endpoint.ActionPlanEndpoint;
  */
 @SpringBootApplication
 @EnableTransactionManagement
+@IntegrationComponentScan
 @EnableAsync
 public class ActionSvcApplication {
 
