@@ -1,12 +1,21 @@
 databaseChangeLog:
 
+
   - changeSet:
       id: 8.12.0-1
+      author: whilep1
+      changes:
+          - sqlFile:
+              comment: create sequences
+              path: create-sequences.sql
+              relativeToChangelogFile: true
+
+
+  - changeSet:
+      id: 8.12.0-2
       author: whilep1
       changes:
           - sqlFile:
               comment: initial table creation
               path: initial-table-creation.sql
               relativeToChangelogFile: true
-
-

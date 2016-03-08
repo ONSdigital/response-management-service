@@ -3,7 +3,8 @@
 
 
 ## To be able to log to file
-sudo mkdir -p /var/log/ctp/responsemanagement/actionsvc sudo chmod -R 777 /var/log/ctp
+sudo mkdir -p /var/log/ctp/responsemanagement/actionsvc 
+sudo chmod -R 777 /var/log/ctp
 
 
 ## To run
