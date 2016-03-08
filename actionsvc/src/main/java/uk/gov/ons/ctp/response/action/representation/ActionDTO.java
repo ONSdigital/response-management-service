@@ -16,16 +16,23 @@ public class ActionDTO {
 
   private Integer actionPlanId;
 
-  private String actionStatus;
+  private Integer actionRuleId;
 
-  private String actionType;
+  private Integer actionTypeId;
+
+  private String createdBy;
+
+  private Boolean manuallyCreated;
 
   private String priority;
 
   private String situation;
 
+  private String state;
+
   private Date createdDatetime;
 
-  private String createdBy;
+  private Date updatedDatetime;
+
 
 }

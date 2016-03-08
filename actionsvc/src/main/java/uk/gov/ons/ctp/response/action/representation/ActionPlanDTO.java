@@ -1,5 +1,7 @@
 package uk.gov.ons.ctp.response.action.representation;
 
+import java.util.Date;
+
 import lombok.Data;
 
 /**
@@ -11,10 +13,17 @@ public class ActionPlanDTO {
 
   private Integer actionPlanId;
 
-  private String actionPlanName;
+  private Integer surveyId;
+
+  private String name;
 
   private String description;
 
-  private String rules;
+
+  private String createdBy;
+
+  private Date createdDatetime;
+
+  private Date lastGoodRunDatetime;
 
 }

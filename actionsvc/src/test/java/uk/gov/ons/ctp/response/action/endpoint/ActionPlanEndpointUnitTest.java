@@ -2,13 +2,10 @@ package uk.gov.ons.ctp.response.action.endpoint;
 
 import static uk.gov.ons.ctp.response.action.utility.MockActionPlanServiceFactory.ACTIONPLAN1_DESC;
 import static uk.gov.ons.ctp.response.action.utility.MockActionPlanServiceFactory.ACTIONPLAN1_NAME;
-import static uk.gov.ons.ctp.response.action.utility.MockActionPlanServiceFactory.ACTIONPLAN1_RULES;
 import static uk.gov.ons.ctp.response.action.utility.MockActionPlanServiceFactory.ACTIONPLAN2_DESC;
 import static uk.gov.ons.ctp.response.action.utility.MockActionPlanServiceFactory.ACTIONPLAN2_NAME;
-import static uk.gov.ons.ctp.response.action.utility.MockActionPlanServiceFactory.ACTIONPLAN2_RULES;
 import static uk.gov.ons.ctp.response.action.utility.MockActionPlanServiceFactory.ACTIONPLAN3_DESC;
 import static uk.gov.ons.ctp.response.action.utility.MockActionPlanServiceFactory.ACTIONPLAN3_NAME;
-import static uk.gov.ons.ctp.response.action.utility.MockActionPlanServiceFactory.ACTIONPLAN3_RULES;
 import static uk.gov.ons.ctp.response.action.utility.MockActionPlanServiceFactory.ACTIONPLANID;
 import static uk.gov.ons.ctp.response.action.utility.MockActionPlanServiceFactory.NON_EXISTING_ACTIONPLANID;
 import static uk.gov.ons.ctp.response.action.utility.MockActionPlanServiceFactory.OUR_EXCEPTION_MESSAGE;
@@ -40,9 +37,8 @@ public class ActionPlanEndpointUnitTest extends CTPJerseyTest {
     with("http://localhost:9998/actionplans")
       .assertResponseCodeIs(HttpStatus.OK)
       .assertArrayLengthInBodyIs(3)
-      .assertStringListInBody("$..actionPlanName", ACTIONPLAN1_NAME, ACTIONPLAN2_NAME, ACTIONPLAN3_NAME)
+      .assertStringListInBody("$..name", ACTIONPLAN1_NAME, ACTIONPLAN2_NAME, ACTIONPLAN3_NAME)
       .assertStringListInBody("$..description", ACTIONPLAN1_DESC, ACTIONPLAN2_DESC, ACTIONPLAN3_DESC)
-      .assertStringListInBody("$..rules", ACTIONPLAN1_RULES, ACTIONPLAN2_RULES, ACTIONPLAN3_RULES)
       .andClose();
   }
 
@@ -51,9 +47,8 @@ public class ActionPlanEndpointUnitTest extends CTPJerseyTest {
     with("http://localhost:9998/actionplans/%s", ACTIONPLANID)
       .assertResponseCodeIs(HttpStatus.OK)
       .assertIntegerInBody("$.actionPlanId", 3)
-      .assertStringInBody("$.actionPlanName", ACTIONPLAN3_NAME)
+      .assertStringInBody("$.name", ACTIONPLAN3_NAME)
       .assertStringInBody("$.description", ACTIONPLAN3_DESC)
-      .assertStringInBody("$.rules", ACTIONPLAN3_RULES)
       .andClose();
   }
 

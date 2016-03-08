@@ -1,11 +1,11 @@
 package uk.gov.ons.ctp.response.action.endpoint;
 
-import static uk.gov.ons.ctp.response.action.utility.MockActionServiceFactory.ACTION1_ACTIONSTATUS;
-import static uk.gov.ons.ctp.response.action.utility.MockActionServiceFactory.ACTION1_ACTIONTYPE;
+import static uk.gov.ons.ctp.response.action.utility.MockActionServiceFactory.ACTION1_ACTIONSTATE;
+import static uk.gov.ons.ctp.response.action.utility.MockActionServiceFactory.ACTION1_ACTIONTYPEID;
 import static uk.gov.ons.ctp.response.action.utility.MockActionServiceFactory.ACTION1_PLANID;
 import static uk.gov.ons.ctp.response.action.utility.MockActionServiceFactory.ACTION1_PRIORITY;
-import static uk.gov.ons.ctp.response.action.utility.MockActionServiceFactory.ACTION2_ACTIONSTATUS;
-import static uk.gov.ons.ctp.response.action.utility.MockActionServiceFactory.ACTION2_ACTIONTYPE;
+import static uk.gov.ons.ctp.response.action.utility.MockActionServiceFactory.ACTION2_ACTIONSTATE;
+import static uk.gov.ons.ctp.response.action.utility.MockActionServiceFactory.ACTION2_ACTIONTYPEID;
 import static uk.gov.ons.ctp.response.action.utility.MockActionServiceFactory.ACTION2_PLANID;
 import static uk.gov.ons.ctp.response.action.utility.MockActionServiceFactory.ACTION2_PRIORITY;
 import static uk.gov.ons.ctp.response.action.utility.MockActionServiceFactory.ACTION2_SITUATION;
@@ -45,8 +45,8 @@ public class ActionEndpointUnitTest extends CTPJerseyTest {
     .assertArrayLengthInBodyIs(2)
     .assertIntegerOccursThroughoutListInBody("$..caseId",  ACTION_CASEID)
     .assertIntegerListInBody("$..actionPlanId", ACTION1_PLANID, ACTION2_PLANID)
-    .assertStringListInBody("$..actionStatus", ACTION1_ACTIONSTATUS, ACTION2_ACTIONSTATUS)
-    .assertStringListInBody("$..actionType", ACTION1_ACTIONTYPE, ACTION2_ACTIONTYPE)
+    .assertStringListInBody("$..state", ACTION1_ACTIONSTATE, ACTION2_ACTIONSTATE)
+    .assertIntegerListInBody("$..actionTypeId", ACTION1_ACTIONTYPEID, ACTION2_ACTIONTYPEID)
     .assertStringListInBody("$..priority", ACTION1_PRIORITY, ACTION2_PRIORITY)
     .assertStringOccursThroughoutListInBody("$..createdDatetime", ACTION_CREATEDDATE_VALUE)
     .assertStringOccursThroughoutListInBody("$..createdBy",  ACTION_CREATEDBY)
@@ -60,8 +60,8 @@ public class ActionEndpointUnitTest extends CTPJerseyTest {
     .assertIntegerInBody("$.actionId",  ACTIONID)
     .assertIntegerInBody("$.caseId",  ACTION_CASEID)
     .assertIntegerInBody("$.actionPlanId",  ACTION2_PLANID)
-    .assertStringInBody("$.actionStatus",  ACTION2_ACTIONSTATUS)
-    .assertStringInBody("$.actionType",  ACTION2_ACTIONTYPE)
+    .assertStringInBody("$.state",  ACTION2_ACTIONSTATE)
+    .assertIntegerInBody("$.actionTypeId",  ACTION2_ACTIONTYPEID)
     .assertStringInBody("$.priority",  ACTION2_PRIORITY)
     .assertStringInBody("$.situation",  ACTION2_SITUATION)
     .assertStringInBody("$.createdDatetime",  ACTION_CREATEDDATE_VALUE)
