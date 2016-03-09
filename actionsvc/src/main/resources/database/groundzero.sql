@@ -1,7 +1,8 @@
 --ALTER USER actionsvc SET search_path to 'action,refdata';
 
-DROP USER actionsvc;
+
 DROP OWNED BY actionsvc;
+DROP ROLE actionsvc;
 
 CREATE USER actionsvc LOGIN
   PASSWORD 'actionsvc'
@@ -9,7 +10,7 @@ CREATE USER actionsvc LOGIN
 GRANT role_connect TO actionsvc;
 
 
-DROP SCHEMA action cascade;
+DROP SCHEMA if exists action cascade;
 create schema action AUTHORIZATION postgres;
 
 REVOKE CONNECT ON DATABASE postgres FROM PUBLIC;

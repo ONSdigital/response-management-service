@@ -23,7 +23,7 @@ public class ActionPlanServiceImpl implements ActionPlanService {
 
   @Override
   public final List<ActionPlan> findActionPlans() {
-    log.debug("Entering findByUprn");
+    log.debug("Entering findActionPlans");
     return actionPlanRepo.findAll();
   }
 

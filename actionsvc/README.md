@@ -1,5 +1,5 @@
 ## To build
-./mvnw clean install checkstyle:checkstyle
+./mvnw clean install
 
 
 ## To be able to log to file
@@ -11,8 +11,10 @@ sudo chmod -R 777 /var/log/ctp
 The app can be started from the command line using : ./mvnw spring-boot:run
 
 
-## To test actions
-curl http://localhost:8171/actions/123 -v -X GET
-404 {"error":{"code":"RESOURCE_NOT_FOUND","timestamp":"20160304102431729","message":"HTTP 404 Not Found"}}
+## To test action plans
+curl http://localhost:8161/actionplans -v -X GET
+200 [{"actionPlanId":1,"surveyId":1,"name":"HH","description":"Household Action Plan","createdBy":"SYSTEM",
+"createdDatetime":"2016-03-09T11:15:48.002+0000","lastGoodRunDatetime":null},...
+
 
 
