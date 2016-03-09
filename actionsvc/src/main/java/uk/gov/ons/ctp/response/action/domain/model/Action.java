@@ -21,7 +21,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Table(name = "action", schema = "caseframe")
+@Table(name = "action", schema = "action")
 public class Action implements Serializable {
 
   private static final long serialVersionUID = 8539984354009320104L;

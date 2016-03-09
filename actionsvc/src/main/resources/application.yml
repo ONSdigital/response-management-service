@@ -60,7 +60,7 @@ endpoints:
 
 spring:
   application:
-    name: CTP CaseFrameService
+    name: CTP ActionService
 
   datasource:
     url: jdbc:postgresql://localhost:5432/postgres

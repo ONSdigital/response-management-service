@@ -13,7 +13,8 @@ The app can be started from the command line using : ./mvnw spring-boot:run
 
 ## To test action plans
 curl http://localhost:8161/actionplans -v -X GET
-500 {"error":{"code":"SYSTEM_ERROR","timestamp":"20160309111712510","message":"could not extract ResultSet; SQL [n/a];
-nested exception is org.hibernate.exception.SQLGrammarException: could not extract ResultSet"}}
+200 [{"actionPlanId":1,"surveyId":1,"name":"HH","description":"Household Action Plan","createdBy":"SYSTEM",
+"createdDatetime":"2016-03-09T11:15:48.002+0000","lastGoodRunDatetime":null},...
+
 
 

@@ -21,7 +21,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Table(name = "actionplan", schema = "caseframe")
+@Table(name = "actionplan", schema = "action")
 public class ActionPlan implements Serializable {
   
   private static final long serialVersionUID = 3621028547635970347L;
@@ -39,7 +39,7 @@ public class ActionPlan implements Serializable {
   private String description;
 
 
-  @Column(name = "createdBy")
+  @Column(name = "createdby")
   private String createdBy;
 
   @Column(name = "createddatetime")
