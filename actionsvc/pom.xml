@@ -110,27 +110,6 @@
           </execution>
         </executions>
       </plugin>
-
-      <!-- Section below has been commented out as excludes and includes elements were interfering with the
-   maven-checkstyle-plugin and failing the build on the Jenkins server
-   -->
-   <plugin>
-    <groupId>org.apache.maven.plugins</groupId>
-    <artifactId>maven-surefire-plugin</artifactId>
-    <version>2.19.1</version>
-    <configuration>
-     <excludes><exclude>**/*IntegrationTest.java</exclude></excludes>
-    </configuration>
-   </plugin>
-
-   <plugin>
-    <groupId>org.apache.maven.plugins</groupId>
-    <artifactId>maven-failsafe-plugin</artifactId>
-    <version>2.19.1</version>
-    <configuration>
-     <includes>**/*IntegrationTest.java</includes>
-    </configuration>
-   </plugin>
   </plugins>
 </build>
 
