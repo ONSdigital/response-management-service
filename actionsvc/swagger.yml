@@ -290,7 +290,7 @@ paths:
         200:
           description: Action updated
           schema:
-            $ref: '#/definitions/Action'
+            $ref: '#/definitions/ActionPlan'
         400:
           description: Invalid input
         default:
