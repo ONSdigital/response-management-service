@@ -118,6 +118,7 @@
         </executions>
       </plugin>
 
+      <!--
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>jaxb2-maven-plugin</artifactId>
@@ -137,6 +138,7 @@
           <packageName>uk.gov.ons.ctp.response.action.messaging.outbound</packageName>
         </configuration>
       </plugin>
+      -->
     </plugins>
   </build>
 
