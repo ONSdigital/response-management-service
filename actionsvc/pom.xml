@@ -65,6 +65,7 @@
         <version>${springboot.version}</version>
         <configuration>
           <executable>true</executable>
+          <fork>true</fork>
           <requiresUnpack>
             <dependency>
               <groupId>uk.gov.ons.ctp.common</groupId>
@@ -86,6 +87,13 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-checkstyle-plugin</artifactId>
         <version>2.17</version>
+        <dependencies>
+          <dependency>
+            <groupId>com.puppycrawl.tools</groupId>
+            <artifactId>checkstyle</artifactId>
+            <version>6.16.1</version>
+          </dependency>
+        </dependencies>
         <executions>
           <execution>
             <id>test</id>
@@ -105,6 +113,7 @@
 
       <!-- Section below has been commented out as excludes and includes elements were interfering with the
    maven-checkstyle-plugin and failing the build on the Jenkins server
+   -->
    <plugin>
     <groupId>org.apache.maven.plugins</groupId>
     <artifactId>maven-surefire-plugin</artifactId>
@@ -122,7 +131,6 @@
      <includes>**/*IntegrationTest.java</includes>
     </configuration>
    </plugin>
-  -->
   </plugins>
 </build>
 
