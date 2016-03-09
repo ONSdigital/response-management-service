@@ -7,6 +7,8 @@ import static uk.gov.ons.ctp.response.action.utility.MockActionPlanServiceFactor
 import static uk.gov.ons.ctp.response.action.utility.MockActionPlanServiceFactory.ACTIONPLAN3_DESC;
 import static uk.gov.ons.ctp.response.action.utility.MockActionPlanServiceFactory.ACTIONPLAN3_NAME;
 import static uk.gov.ons.ctp.response.action.utility.MockActionPlanServiceFactory.ACTIONPLANID;
+import static uk.gov.ons.ctp.response.action.utility.MockActionPlanServiceFactory.ACTIONPLAN_SURVEYID;
+import static uk.gov.ons.ctp.response.action.utility.MockActionPlanServiceFactory.CREATED_BY;
 import static uk.gov.ons.ctp.response.action.utility.MockActionPlanServiceFactory.NON_EXISTING_ACTIONPLANID;
 import static uk.gov.ons.ctp.response.action.utility.MockActionPlanServiceFactory.OUR_EXCEPTION_MESSAGE;
 import static uk.gov.ons.ctp.response.action.utility.MockActionPlanServiceFactory.UNCHECKED_EXCEPTION;
@@ -27,6 +29,9 @@ import uk.gov.ons.ctp.response.action.utility.MockActionPlanServiceFactory;
  */
 public class ActionPlanEndpointUnitTest extends CTPJerseyTest {
 
+  private static final String CREATED_DATE_TIME = "2016-02-26T18:30:00.000+0000";
+  private static final String LAST_GOOD_RUN_DATE_TIME = "2016-03-26T18:30:00.000+0000";
+
   @Override
   public Application configure() {
     return super.init(ActionPlanEndpoint.class, ActionPlanService.class, MockActionPlanServiceFactory.class, new ActionBeanMapper()); 
@@ -35,21 +40,31 @@ public class ActionPlanEndpointUnitTest extends CTPJerseyTest {
   @Test
   public void findActionPlansFound() {
     with("http://localhost:9998/actionplans")
-      .assertResponseCodeIs(HttpStatus.OK)
-      .assertArrayLengthInBodyIs(3)
-      .assertStringListInBody("$..name", ACTIONPLAN1_NAME, ACTIONPLAN2_NAME, ACTIONPLAN3_NAME)
-      .assertStringListInBody("$..description", ACTIONPLAN1_DESC, ACTIONPLAN2_DESC, ACTIONPLAN3_DESC)
-      .andClose();
+        .assertResponseCodeIs(HttpStatus.OK)
+        .assertArrayLengthInBodyIs(3)
+        .assertIntegerListInBody("$..actionPlanId", 1, 2, 3)
+        .assertIntegerListInBody("$..surveyId", ACTIONPLAN_SURVEYID, ACTIONPLAN_SURVEYID, ACTIONPLAN_SURVEYID)
+        .assertStringListInBody("$..name", ACTIONPLAN1_NAME, ACTIONPLAN2_NAME, ACTIONPLAN3_NAME)
+        .assertStringListInBody("$..description", ACTIONPLAN1_DESC, ACTIONPLAN2_DESC, ACTIONPLAN3_DESC)
+        .assertStringListInBody("$..createdBy", CREATED_BY, CREATED_BY, CREATED_BY)
+        .assertStringListInBody("$..createdDatetime", CREATED_DATE_TIME, CREATED_DATE_TIME, CREATED_DATE_TIME)
+        .assertStringListInBody("$..lastGoodRunDatetime", LAST_GOOD_RUN_DATE_TIME, LAST_GOOD_RUN_DATE_TIME,
+            LAST_GOOD_RUN_DATE_TIME)
+        .andClose();
   }
 
   @Test
   public void findActionPlanFound() {
     with("http://localhost:9998/actionplans/%s", ACTIONPLANID)
-      .assertResponseCodeIs(HttpStatus.OK)
-      .assertIntegerInBody("$.actionPlanId", 3)
-      .assertStringInBody("$.name", ACTIONPLAN3_NAME)
-      .assertStringInBody("$.description", ACTIONPLAN3_DESC)
-      .andClose();
+        .assertResponseCodeIs(HttpStatus.OK)
+        .assertIntegerInBody("$.actionPlanId", 3)
+        .assertIntegerInBody("$.surveyId", ACTIONPLAN_SURVEYID)
+        .assertStringInBody("$.name", ACTIONPLAN3_NAME)
+        .assertStringInBody("$.description", ACTIONPLAN3_DESC)
+        .assertStringInBody("$.createdBy", CREATED_BY)
+        .assertStringInBody("$.createdDatetime", CREATED_DATE_TIME)
+        .assertStringInBody("$.lastGoodRunDatetime", LAST_GOOD_RUN_DATE_TIME)
+        .andClose();
   }
 
   @Test
