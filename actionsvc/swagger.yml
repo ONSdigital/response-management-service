@@ -451,8 +451,9 @@ definitions:
           - Pending
           - Active
           - Completed
+          - CancelSubmitted
           - Cancelled
-          - Failed?
+          - Failed
       createdDateTime:
         description: Action creation date/time
         type: string
@@ -508,8 +509,9 @@ definitions:
           - Pending
           - Active
           - Completed
+          - CancelSubmitted
           - Cancelled
-          - Failed?
+          - Failed
   ActionPlan:
     type: object
     required:
