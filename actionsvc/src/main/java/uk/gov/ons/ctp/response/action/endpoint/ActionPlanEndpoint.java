@@ -1,12 +1,11 @@
 package uk.gov.ons.ctp.response.action.endpoint;
 
+import java.util.Date;
 import java.util.List;
 
 import javax.inject.Inject;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
+import javax.ws.rs.core.MediaType;
 
 import org.springframework.util.CollectionUtils;
 
@@ -23,7 +22,7 @@ import uk.gov.ons.ctp.response.action.service.ActionPlanService;
  * The REST endpoint controller for ActionPlans.
  */
 @Path("/actionplans")
-@Produces({"application/json"})
+@Produces({MediaType.APPLICATION_JSON})
 @Slf4j
 public class ActionPlanEndpoint implements CTPEndpoint {
 
@@ -62,5 +61,20 @@ public class ActionPlanEndpoint implements CTPEndpoint {
       throw new CTPException(CTPException.Fault.RESOURCE_NOT_FOUND, "ActionPlan not found for id %s", actionPlanId);
     }
     return mapperFacade.map(actionPlan, ActionPlanDTO.class);
+  }
+
+  @PUT
+  @Consumes({ MediaType.APPLICATION_JSON})
+  @Path("/{actionplanid}")
+  public final ActionPlanDTO updateActionPlanByActionPlanId(@PathParam("actionplanid") final Integer actionPlanId,
+      ActionPlanDTO requestObject) throws CTPException {
+    // TODO Use ActionPlanDTOMessageBodyReader for cases where bad json is received
+    log.debug("UpdateActionPlanByActionPlanId with actionplanid {} - actionPlan {}", actionPlanId, requestObject);
+    ActionPlan actionPlan = actionPlanService.updateActionPlan(actionPlanId, requestObject);
+    if (actionPlan == null) {
+      throw new CTPException(CTPException.Fault.RESOURCE_NOT_FOUND, "ActionPlan not found for id %s", actionPlanId);
+    } else {
+      return mapperFacade.map(actionPlan, ActionPlanDTO.class);
+    }
   }
 }

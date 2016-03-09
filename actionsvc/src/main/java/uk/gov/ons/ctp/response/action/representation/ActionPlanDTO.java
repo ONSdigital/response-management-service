@@ -10,7 +10,6 @@ import lombok.Data;
 @Data
 public class ActionPlanDTO {
 
-
   private Integer actionPlanId;
 
   private Integer surveyId;
@@ -18,7 +17,6 @@ public class ActionPlanDTO {
   private String name;
 
   private String description;
-
 
   private String createdBy;
 

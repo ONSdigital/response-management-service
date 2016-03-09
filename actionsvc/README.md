@@ -16,5 +16,10 @@ curl http://localhost:8161/actionplans -v -X GET
 200 [{"actionPlanId":1,"surveyId":1,"name":"HH","description":"Household Action Plan","createdBy":"SYSTEM",
 "createdDatetime":"2016-03-09T11:15:48.002+0000","lastGoodRunDatetime":null},...
 
+curl http://localhost:8161/actionplans/1 -v -X GET
+
+curl  -H "Accept: application/json" -H "Content-Type: application/json" http://localhost:8161/actionplans/1 -v -X PUT -d "{\"description\":\"philippetesting\"}"
+
+
 
 
