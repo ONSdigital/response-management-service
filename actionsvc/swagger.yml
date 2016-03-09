@@ -264,7 +264,7 @@ paths:
             $ref: '#/definitions/Error'
     put:
       summary: Update Action Plan
-      description: Updates the specified action plan with at least one or more of the optional description, surveyDateDaysOffset or lastGoodRunDateTime properties.
+      description: Updates the specified action plan with at least one or more of the optional description or lastGoodRunDateTime properties.
       consumes:
         - application/json
       parameters:
@@ -577,9 +577,6 @@ definitions:
       description:
         description: Action plan description
         type: string
-      surveyDateDaysOffset:
-        description: Number of days offset from the survey date (may be negative)
-        type: integer
       lastGoodRunDateTime:
         description: Action plan last successful run date/time
         type: string
