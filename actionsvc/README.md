@@ -1,5 +1,5 @@
 ## To build
-./mvnw clean install checkstyle:checkstyle
+./mvnw clean install
 
 
 ## To be able to log to file
@@ -12,7 +12,8 @@ The app can be started from the command line using : ./mvnw spring-boot:run
 
 
 ## To test actions
-curl http://localhost:8171/actions/123 -v -X GET
-404 {"error":{"code":"RESOURCE_NOT_FOUND","timestamp":"20160304102431729","message":"HTTP 404 Not Found"}}
+curl http://localhost:8161/actionplans -v -X GET
+500 {"error":{"code":"SYSTEM_ERROR","timestamp":"20160309111712510","message":"could not extract ResultSet; SQL [n/a];
+nested exception is org.hibernate.exception.SQLGrammarException: could not extract ResultSet"}}
 
 
