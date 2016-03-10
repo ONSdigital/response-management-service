@@ -72,7 +72,6 @@
         <version>${springboot.version}</version>
         <configuration>
           <executable>true</executable>
-          <fork>true</fork>
           <requiresUnpack>
             <dependency>
               <groupId>uk.gov.ons.ctp.common</groupId>
