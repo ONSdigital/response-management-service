@@ -38,7 +38,6 @@ public class ActionPlan implements Serializable {
 
   private String description;
 
-
   @Column(name = "createdby")
   private String createdBy;
 

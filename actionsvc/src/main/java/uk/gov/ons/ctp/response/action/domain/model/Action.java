@@ -20,7 +20,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Data
 @AllArgsConstructor
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor(access = AccessLevel.PUBLIC)
 @Table(name = "action", schema = "action")
 public class Action implements Serializable {
 
@@ -40,10 +40,10 @@ public class Action implements Serializable {
   @Column(name = "actionruleid")
   private Integer actionRuleId;
 
-  @Column(name = "actiontypeid")
-  private Integer actionTypeId;
+  @Column(name = "actiontypename")
+  private String actionTypeName;
 
-  @Column(name = "createdBy")
+  @Column(name = "createdby")
   private String createdBy;
 
   @Column(name = "manuallycreated")
@@ -58,6 +58,7 @@ public class Action implements Serializable {
   @Column(name = "createddatetime")
   private Timestamp createdDatetime;
 
+  @Column(name = "updateddatetime")
   private Timestamp updatedDatetime;
 
 }

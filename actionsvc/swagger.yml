@@ -297,6 +297,40 @@ paths:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'
+  /actionplans/{actionPlanId}/rules:
+    get:
+      summary: List Action Rules for Action Plan
+      description: Lists all action rules for the specified action plan. Action rules are returned in ascending surveyDateDaysOffet order i.e. earliest first.
+      parameters:
+        - name: Accept
+          in: header
+          description: Response type, application/json
+          required: false
+          type: string
+        - in: path
+          name: actionPlanId
+          description: Unique action plan ID
+          required: true
+          type: integer
+      tags:
+        - ActionPlan
+      responses:
+        200:
+          description: Action rules found
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/ActionRule'
+        204:
+          description: No action rules
+        404:
+          description: Action plan not found
+          schema:
+            $ref: '#/definitions/Error'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
   /actionplans/jobs/{actionPlanJobId}:
     get:
       summary: Get Action Plan Job
