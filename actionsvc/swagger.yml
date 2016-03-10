@@ -621,12 +621,8 @@ definitions:
   ActionPlanJobCreationRequest:
     type: object
     required:
-      - actionPlanId
       - createdBy
     properties:
-      actionPlanId:
-        description: Unique action plan ID this action plan job is for
-        type: integer
       createdBy:
         description: User who created this action plan job
         type: string
