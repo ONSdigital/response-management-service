@@ -43,7 +43,7 @@ public class Action implements Serializable {
   @Column(name = "actiontypeid")
   private Integer actionTypeId;
 
-  @Column(name = "createdBy")
+  @Column(name = "createdby")
   private String createdBy;
 
   @Column(name = "manuallycreated")
@@ -58,6 +58,7 @@ public class Action implements Serializable {
   @Column(name = "createddatetime")
   private Timestamp createdDatetime;
 
+  @Column(name = "updateddatetime")
   private Timestamp updatedDatetime;
 
 }

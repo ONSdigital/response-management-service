@@ -29,8 +29,8 @@ import uk.gov.ons.ctp.response.action.utility.MockActionPlanServiceFactory;
  */
 public class ActionPlanEndpointUnitTest extends CTPJerseyTest {
 
-  private static final String CREATED_DATE_TIME = "2016-02-26T18:30:00.000+0000";
-  private static final String LAST_GOOD_RUN_DATE_TIME = "2016-03-26T18:30:00.000+0000";
+  private static final String CREATED_DATE_TIME = "2016-03-09T11:15:48.023+0000";
+  private static final String LAST_GOOD_RUN_DATE_TIME = "2016-03-09T11:15:48.023+0000";
 
   @Override
   public Application configure() {
