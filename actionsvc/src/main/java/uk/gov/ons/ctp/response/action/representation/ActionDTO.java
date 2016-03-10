@@ -22,7 +22,7 @@ public class ActionDTO {
   @NotNull
   private Integer actionRuleId;
 
-  private Integer actionTypeId;
+  private String actionTypeName;
 
   @NotNull
   private String createdBy;

@@ -43,13 +43,3 @@ GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA action TO actionsvc
 GRANT ALL ON SCHEMA refdata TO actionsvc;
 GRANT SELECT ON ALL TABLES IN SCHEMA refdata TO actionsvc;
 
-
-
-
-
-
-drop table action.action cascade;
-drop table action.actionplan cascade;
-drop table action.databasechangelog cascade;
-drop table action.databasechangeloglock cascade;
-

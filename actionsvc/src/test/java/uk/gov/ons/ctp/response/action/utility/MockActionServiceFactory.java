@@ -26,8 +26,8 @@ public class MockActionServiceFactory implements Factory<ActionService> {
   public static final String ACTION2_ACTIONSTATE = "FINISHED";
   public static final Boolean ACTION1_MANUALLY_CREATED = true;
   public static final Boolean ACTION2_MANUALLY_CREATED = false;
-  public static final Integer ACTION1_ACTIONTYPEID = 1;
-  public static final Integer ACTION2_ACTIONTYPEID = 2;
+  public static final String ACTION1_ACTIONTYPENAME = "actiontypename1";
+  public static final String ACTION2_ACTIONTYPENAME = "actiontypename2";
   public static final String ACTION1_PRIORITY = "Low";
   public static final String ACTION2_PRIORITY = "High";
   public static final String ACTION1_SITUATION = "Assigned";
@@ -49,9 +49,9 @@ public class MockActionServiceFactory implements Factory<ActionService> {
       public List<Action> answer(InvocationOnMock invocation)
           throws Throwable {
         List<Action> result = new ArrayList<Action>();
-        result.add(new Action(1, ACTION_CASEID, ACTION1_PLANID, ACTION1_RULEID, ACTION1_ACTIONTYPEID, ACTION_CREATEDBY, ACTION1_MANUALLY_CREATED, ACTION1_PRIORITY, ACTION1_SITUATION,ACTION1_ACTIONSTATE, 
+        result.add(new Action(1, ACTION_CASEID, ACTION1_PLANID, ACTION1_RULEID, ACTION1_ACTIONTYPENAME, ACTION_CREATEDBY, ACTION1_MANUALLY_CREATED, ACTION1_PRIORITY, ACTION1_SITUATION,ACTION1_ACTIONSTATE, 
              ACTION_CREATEDDATE_TIMESTAMP, ACTION_UPDATEDDATE_TIMESTAMP));
-        result.add(new Action(2, ACTION_CASEID, ACTION2_PLANID, ACTION2_RULEID, ACTION2_ACTIONTYPEID, ACTION_CREATEDBY, ACTION2_MANUALLY_CREATED, ACTION2_PRIORITY, ACTION2_SITUATION,ACTION2_ACTIONSTATE, 
+        result.add(new Action(2, ACTION_CASEID, ACTION2_PLANID, ACTION2_RULEID, ACTION2_ACTIONTYPENAME, ACTION_CREATEDBY, ACTION2_MANUALLY_CREATED, ACTION2_PRIORITY, ACTION2_SITUATION,ACTION2_ACTIONSTATE, 
              ACTION_CREATEDDATE_TIMESTAMP, ACTION_UPDATEDDATE_TIMESTAMP));
         return result;
       }
@@ -60,7 +60,7 @@ public class MockActionServiceFactory implements Factory<ActionService> {
     Mockito.when(mockedService.findActionByActionId(ACTIONID)).thenAnswer(new Answer<Action>() {
       public Action answer(InvocationOnMock invocation)
           throws Throwable {
-        return new Action(2, ACTION_CASEID, ACTION2_PLANID, ACTION2_RULEID, ACTION2_ACTIONTYPEID, ACTION_CREATEDBY, ACTION2_MANUALLY_CREATED, ACTION2_PRIORITY, ACTION2_SITUATION,ACTION2_ACTIONSTATE, 
+        return new Action(2, ACTION_CASEID, ACTION2_PLANID, ACTION2_RULEID, ACTION2_ACTIONTYPENAME, ACTION_CREATEDBY, ACTION2_MANUALLY_CREATED, ACTION2_PRIORITY, ACTION2_SITUATION,ACTION2_ACTIONSTATE, 
              ACTION_CREATEDDATE_TIMESTAMP, ACTION_UPDATEDDATE_TIMESTAMP);
       }
     });

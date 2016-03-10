@@ -40,8 +40,8 @@ public class Action implements Serializable {
   @Column(name = "actionruleid")
   private Integer actionRuleId;
 
-  @Column(name = "actiontypeid")
-  private Integer actionTypeId;
+  @Column(name = "actiontypename")
+  private String actionTypeName;
 
   @Column(name = "createdby")
   private String createdBy;
