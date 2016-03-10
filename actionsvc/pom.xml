@@ -66,13 +66,34 @@
         </configuration>
       </plugin>
 
+      <!--
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>build-helper-maven-plugin</artifactId>
+        <version>1.10</version>
+        <executions>
+          <execution>
+            <id>add-source</id>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>add-source</goal>
+            </goals>
+            <configuration>
+              <sources>
+                <source>${basedir}/src/main/generated</source>
+              </sources>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      -->
+
       <plugin>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-maven-plugin</artifactId>
         <version>${springboot.version}</version>
         <configuration>
           <executable>true</executable>
-          <fork>true</fork>
           <requiresUnpack>
             <dependency>
               <groupId>uk.gov.ons.ctp.common</groupId>
@@ -106,6 +127,7 @@
             <id>test</id>
             <phase>test</phase>
             <configuration>
+              <excludes>**/generated*</excludes>
               <configLocation>../../ons_checks_sun_checks.xml</configLocation>
               <encoding>UTF-8</encoding>
               <consoleOutput>true</consoleOutput>
@@ -136,6 +158,7 @@
             <source>src/main/resources/messaging/outbound</source>
           </sources>
           <packageName>uk.gov.ons.ctp.response.action.messaging.outbound</packageName>
+          <outputDirectory>${basedir}/src/main/generated</outputDirectory>
         </configuration>
       </plugin>
       -->
