@@ -2,6 +2,8 @@ package uk.gov.ons.ctp.response.action.representation;
 
 import java.util.Date;
 
+import javax.validation.constraints.NotNull;
+
 import lombok.Data;
 
 /**
@@ -12,14 +14,17 @@ public class ActionDTO {
 
   private Integer actionId;
 
+  @NotNull
   private Integer caseId;
 
   private Integer actionPlanId;
 
+  @NotNull
   private Integer actionRuleId;
 
   private Integer actionTypeId;
 
+  @NotNull
   private String createdBy;
 
   private Boolean manuallyCreated;
@@ -33,6 +38,5 @@ public class ActionDTO {
   private Date createdDatetime;
 
   private Date updatedDatetime;
-
 
 }
