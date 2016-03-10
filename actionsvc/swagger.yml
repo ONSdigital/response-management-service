@@ -60,7 +60,7 @@ paths:
             $ref: '#/definitions/Error'
     post:
       summary: Create Action
-      description: Creates an action from the mandatory caseId, actionTypeId and createdBy properties. The manuallyCreated property should be set to true for manually created actions.
+      description: Creates an action from the mandatory caseId, actionTypeName and createdBy properties. The manuallyCreated property should be set to true for manually created actions.
       consumes:
         - application/json
       parameters:
@@ -406,7 +406,7 @@ definitions:
     required:
       - actionId
       - caseId
-      - actionTypeId
+      - actionTypeName
       - createdBy
       - createdDateTime
       - manuallyCreated
@@ -425,9 +425,9 @@ definitions:
       actionRuleId:
         description: Unique action rule ID this action belongs to. Optional for manually-created actions
         type: integer
-      actionTypeId:
-        description: Unique action type ID this action is for
-        type: integer
+      actionTypeName:
+        description: Unique action type this action is for
+        type: string
       createdBy:
         description: User who created this action
         type: string
@@ -465,7 +465,7 @@ definitions:
   ActionCreationRequest:
     type: object
     required:
-      - actionTypeId
+      - actionTypeName
       - caseId
       - createdBy
     properties:
@@ -478,9 +478,9 @@ definitions:
       actionRuleId:
         description: Unique action rule ID this action belongs to. Optional for manually-created actions
         type: integer
-      actionTypeId:
-        description: Unique action type ID this action is for
-        type: integer
+      actionTypeName:
+        description: Unique action type this action is for
+        type: string
       manuallyCreated:
         description: Whether the action was manually-created
         type: boolean
