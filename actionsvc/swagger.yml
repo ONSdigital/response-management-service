@@ -472,12 +472,6 @@ definitions:
       caseId:
         description: Unique open case ID this action is for
         type: integer
-      actionPlanId:
-        description: Unique action plan ID this action belongs to. Optional for manually-created actions
-        type: integer
-      actionRuleId:
-        description: Unique action rule ID this action belongs to. Optional for manually-created actions
-        type: integer
       actionTypeName:
         description: Unique action type this action is for
         type: string
