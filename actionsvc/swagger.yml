@@ -631,7 +631,7 @@ definitions:
         description: Action rule description
         type: string
       surveyDateDaysOffet:
-        description:
+        description: Number of days offset from the survey date (may be negative)
         type: integer
       priority:
         description: Action rule priority (TBD)
