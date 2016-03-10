@@ -608,6 +608,35 @@ definitions:
       createdBy:
         description: User who created this action plan job
         type: string
+  ActionRule:
+    type: object
+    required:
+      - actionPlanId
+      - actionTypeName
+      - name
+      - description
+      - surveyDateDaysOffet
+      - priority
+    properties:
+      actionPlanId:
+        description: Unique action plan ID
+        type: integer
+      actionTypeName:
+        description: Unique action type this action rule is for
+        type: string
+      name:
+        description: Action rule name
+        type: string
+      description:
+        description: Action rule description
+        type: string
+      surveyDateDaysOffet:
+        description:
+        type: integer
+      priority:
+        description: Action rule priority (TBD)
+        type: integer
+        default: 0
   Error:
     type: object
     properties:
