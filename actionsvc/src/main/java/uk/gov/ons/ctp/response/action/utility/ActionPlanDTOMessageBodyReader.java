@@ -1,11 +1,9 @@
-package uk.gov.ons.ctp.response.action;
+package uk.gov.ons.ctp.response.action.utility;
 
 import lombok.extern.slf4j.Slf4j;
-import uk.gov.ons.ctp.common.error.CTPException;
 import uk.gov.ons.ctp.response.action.representation.ActionPlanDTO;
 
 import javax.ws.rs.Consumes;
-import javax.ws.rs.ProcessingException;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
@@ -41,7 +39,8 @@ public class ActionPlanDTOMessageBodyReader implements MessageBodyReader<ActionP
       ActionPlanDTO actionPlanDTO = (ActionPlanDTO) jaxbContext.createUnmarshaller().unmarshal(entityStream);
       return actionPlanDTO;
     } catch (JAXBException jaxbException) {
-      //throw new ProcessingException("Error deserializing an ActionPlanDTO.", jaxbException);
+      log.error("Error deserializing an ActionPlanDTO. {}", jaxbException);
+      // We return null here so we can then throw the right CTPException in the controller
       return null;
     }
   }
