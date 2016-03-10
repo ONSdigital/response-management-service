@@ -515,7 +515,6 @@ definitions:
       - surveyId
       - name
       - description
-      - surveyDateDaysOffset
       - createdBy
       - createdDateTime
     properties:
@@ -531,9 +530,6 @@ definitions:
       description:
         description: Action plan description
         type: string
-      surveyDateDaysOffset:
-        description: Number of days offset from the survey date (may be negative)
-        type: integer
       createdBy:
         description: User who created this action plan
         type: string
@@ -551,7 +547,6 @@ definitions:
       - surveyId
       - name
       - description
-      - surveyDateDaysOffset
       - createdBy
     properties:
       surveyId:
@@ -563,9 +558,6 @@ definitions:
       description:
         description: Action plan description
         type: string
-      surveyDateDaysOffset:
-        description: Number of days offset from the survey date (may be negative)
-        type: integer
       createdBy:
         description: User who created this action plan
         type: string
