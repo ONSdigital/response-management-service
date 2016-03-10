@@ -60,7 +60,7 @@ paths:
             $ref: '#/definitions/Error'
     post:
       summary: Create Action
-      description: Creates an action from the mandatory caseId, actionTypeId and createdBy properties. The manuallyCreated property should be set to true for manually created actions.
+      description: Creates an action from the mandatory caseId, actionTypeName and createdBy properties. The manuallyCreated property will automatically be set to true for actions created via this endpoint.
       consumes:
         - application/json
       parameters:
@@ -297,6 +297,40 @@ paths:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'
+  /actionplans/{actionPlanId}/rules:
+    get:
+      summary: List Action Rules for Action Plan
+      description: Lists all action rules for the specified action plan. Action rules are returned in ascending surveyDateDaysOffet order i.e. earliest first.
+      parameters:
+        - name: Accept
+          in: header
+          description: Response type, application/json
+          required: false
+          type: string
+        - in: path
+          name: actionPlanId
+          description: Unique action plan ID
+          required: true
+          type: integer
+      tags:
+        - ActionPlan
+      responses:
+        200:
+          description: Action rules found
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/ActionRule'
+        204:
+          description: No action rules
+        404:
+          description: Action plan not found
+          schema:
+            $ref: '#/definitions/Error'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
   /actionplans/jobs/{actionPlanJobId}:
     get:
       summary: Get Action Plan Job
@@ -406,7 +440,7 @@ definitions:
     required:
       - actionId
       - caseId
-      - actionTypeId
+      - actionTypeName
       - createdBy
       - createdDateTime
       - manuallyCreated
@@ -425,9 +459,9 @@ definitions:
       actionRuleId:
         description: Unique action rule ID this action belongs to. Optional for manually-created actions
         type: integer
-      actionTypeId:
-        description: Unique action type ID this action is for
-        type: integer
+      actionTypeName:
+        description: Unique action type this action is for
+        type: string
       createdBy:
         description: User who created this action
         type: string
@@ -451,8 +485,9 @@ definitions:
           - Pending
           - Active
           - Completed
+          - CancelSubmitted
           - Cancelled
-          - Failed?
+          - Failed
       createdDateTime:
         description: Action creation date/time
         type: string
@@ -464,26 +499,16 @@ definitions:
   ActionCreationRequest:
     type: object
     required:
-      - actionTypeId
+      - actionTypeName
       - caseId
       - createdBy
     properties:
       caseId:
         description: Unique open case ID this action is for
         type: integer
-      actionPlanId:
-        description: Unique action plan ID this action belongs to. Optional for manually-created actions
-        type: integer
-      actionRuleId:
-        description: Unique action rule ID this action belongs to. Optional for manually-created actions
-        type: integer
-      actionTypeId:
-        description: Unique action type ID this action is for
-        type: integer
-      manuallyCreated:
-        description: Whether the action was manually-created
-        type: boolean
-        default: false
+      actionTypeName:
+        description: Unique action type this action is for
+        type: string
       priority:
         description: Action priority (TBD; possible used by the remote provider service)
         type: integer
@@ -508,8 +533,9 @@ definitions:
           - Pending
           - Active
           - Completed
+          - CancelSubmitted
           - Cancelled
-          - Failed?
+          - Failed
   ActionPlan:
     type: object
     required:
@@ -517,7 +543,6 @@ definitions:
       - surveyId
       - name
       - description
-      - surveyDateDaysOffset
       - createdBy
       - createdDateTime
     properties:
@@ -533,9 +558,6 @@ definitions:
       description:
         description: Action plan description
         type: string
-      surveyDateDaysOffset:
-        description: Number of days offset from the survey date (may be negative)
-        type: integer
       createdBy:
         description: User who created this action plan
         type: string
@@ -553,7 +575,6 @@ definitions:
       - surveyId
       - name
       - description
-      - surveyDateDaysOffset
       - createdBy
     properties:
       surveyId:
@@ -565,9 +586,6 @@ definitions:
       description:
         description: Action plan description
         type: string
-      surveyDateDaysOffset:
-        description: Number of days offset from the survey date (may be negative)
-        type: integer
       createdBy:
         description: User who created this action plan
         type: string
@@ -619,15 +637,40 @@ definitions:
   ActionPlanJobCreationRequest:
     type: object
     required:
-      - actionPlanId
       - createdBy
     properties:
-      actionPlanId:
-        description: Unique action plan ID this action plan job is for
-        type: integer
       createdBy:
         description: User who created this action plan job
         type: string
+  ActionRule:
+    type: object
+    required:
+      - actionPlanId
+      - actionTypeName
+      - name
+      - description
+      - surveyDateDaysOffet
+      - priority
+    properties:
+      actionPlanId:
+        description: Unique action plan ID
+        type: integer
+      actionTypeName:
+        description: Unique action type this action rule is for
+        type: string
+      name:
+        description: Action rule name
+        type: string
+      description:
+        description: Action rule description
+        type: string
+      surveyDateDaysOffet:
+        description: Number of days offset from the survey date (may be negative)
+        type: integer
+      priority:
+        description: Action rule priority (TBD)
+        type: integer
+        default: 0
   Error:
     type: object
     properties:
