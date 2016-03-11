@@ -1,11 +1,11 @@
 package uk.gov.ons.ctp.response.action.endpoint;
 
-import java.util.Date;
 import java.util.List;
 
 import javax.inject.Inject;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 import org.springframework.util.CollectionUtils;
 
@@ -14,9 +14,11 @@ import ma.glasnost.orika.MapperFacade;
 import uk.gov.ons.ctp.common.endpoint.CTPEndpoint;
 import uk.gov.ons.ctp.common.error.CTPException;
 import uk.gov.ons.ctp.response.action.domain.model.ActionPlan;
+import uk.gov.ons.ctp.response.action.domain.model.ActionRule;
 import uk.gov.ons.ctp.response.action.representation.ActionPlanDTO;
+import uk.gov.ons.ctp.response.action.representation.ActionRuleDTO;
 import uk.gov.ons.ctp.response.action.service.ActionPlanService;
-
+import uk.gov.ons.ctp.response.action.service.ActionRuleService;
 
 /**
  * The REST endpoint controller for ActionPlans.
@@ -34,6 +36,7 @@ public class ActionPlanEndpoint implements CTPEndpoint {
 
   /**
    * This method returns all action plans.
+   *
    * @return List<ActionPlanDTO> This returns all action plans.
    */
   @GET
@@ -47,6 +50,7 @@ public class ActionPlanEndpoint implements CTPEndpoint {
 
   /**
    * This method returns the associated action plan for the specified action plan id.
+   *
    * @param actionPlanId This is the action plan id
    * @return ActionPlanDTO This returns the associated action plan for the specified action plan id.
    * @throws CTPException if no action plan found for the specified action plan id.
@@ -63,11 +67,20 @@ public class ActionPlanEndpoint implements CTPEndpoint {
     return mapperFacade.map(actionPlan, ActionPlanDTO.class);
   }
 
+  /**
+   * This method returns the associated action plan after it has been updated. Note that only the description and
+   * the lastGoodRunDatetime can be updated.
+   *
+   * @param actionPlanId This is the action plan id
+   * @param requestObject The object created by ActionPlanDTOMessageBodyReader from the json found in the request body
+   * @return ActionPlanDTO This returns the updated action plan.
+   * @throws CTPException if the json provided is incorrect or if the action plan id does not exist.
+   */
   @PUT
   @Consumes({ MediaType.APPLICATION_JSON})
   @Path("/{actionplanid}")
   public final ActionPlanDTO updateActionPlanByActionPlanId(@PathParam("actionplanid") final Integer actionPlanId,
-      ActionPlanDTO requestObject) throws CTPException {
+      final ActionPlanDTO requestObject) throws CTPException {
     log.debug("UpdateActionPlanByActionPlanId with actionplanid {} - actionPlan {}", actionPlanId, requestObject);
     if (requestObject == null) {
       throw new CTPException(CTPException.Fault.VALIDATION_FAILED, "Provided json is incorrect.");
@@ -80,4 +93,32 @@ public class ActionPlanEndpoint implements CTPEndpoint {
       return mapperFacade.map(actionPlan, ActionPlanDTO.class);
     }
   }
+
+  /**
+   * This method creates a new action plan.
+   * @param requestObject the action plan to be created
+   * @return a not implemented response for 2016.
+   */
+  @POST
+  @Consumes({ MediaType.APPLICATION_JSON})
+  @Path("/")
+  public final Response createActionPlan(final ActionPlanDTO requestObject) {
+    return Response.status(Response.Status.NOT_IMPLEMENTED).build();
+  }
+
+  @GET
+  @Path("/{actionplanid}/rules")
+  public final List<ActionRuleDTO> returnActionRulesForActionPlanId(@PathParam("actionplanid") final Integer actionPlanId)
+      throws CTPException {
+    log.debug("Entering returnActionRulesForActionPlanId with {}", actionPlanId);
+    ActionPlan actionPlan = actionPlanService.findActionPlan(actionPlanId);
+    if (actionPlan == null) {
+      throw new CTPException(CTPException.Fault.RESOURCE_NOT_FOUND, "ActionPlan not found for id %s", actionPlanId);
+    }
+
+    List<ActionRule> actionRules = actionPlanService.findActionRulesForActionPlan(actionPlanId);
+    List<ActionRuleDTO> actionRuleDTOs = mapperFacade.mapAsList(actionRules, ActionRuleDTO.class);
+    return CollectionUtils.isEmpty(actionRuleDTOs) ? null : actionRuleDTOs;
+  }
+
 }
