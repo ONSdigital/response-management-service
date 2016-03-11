@@ -5,6 +5,7 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 import org.springframework.util.CollectionUtils;
 
@@ -90,4 +91,17 @@ public class ActionPlanEndpoint implements CTPEndpoint {
       return mapperFacade.map(actionPlan, ActionPlanDTO.class);
     }
   }
+
+  /**
+   * This method creates a new action plan.
+   * @param requestObject the action plan to be created
+   * @return a not implemented response for 2016.
+   */
+  @POST
+  @Consumes({ MediaType.APPLICATION_JSON})
+  @Path("/")
+  public final Response createActionPlan(final ActionPlanDTO requestObject) {
+    return Response.status(Response.Status.NOT_IMPLEMENTED).build();
+  }
+
 }
