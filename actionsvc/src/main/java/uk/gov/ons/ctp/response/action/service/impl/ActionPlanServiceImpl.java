@@ -11,7 +11,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import uk.gov.ons.ctp.response.action.domain.model.ActionPlan;
+import uk.gov.ons.ctp.response.action.domain.model.ActionRule;
 import uk.gov.ons.ctp.response.action.domain.repository.ActionPlanRepository;
+import uk.gov.ons.ctp.response.action.domain.repository.ActionRuleRepository;
 import uk.gov.ons.ctp.response.action.representation.ActionPlanDTO;
 import uk.gov.ons.ctp.response.action.service.ActionPlanService;
 
@@ -26,6 +28,9 @@ public class ActionPlanServiceImpl implements ActionPlanService {
 
   @Inject
   private ActionPlanRepository actionPlanRepo;
+
+  @Inject
+  private ActionRuleRepository actionRuleRepository;
 
   /**
    * Implementation
@@ -82,6 +87,11 @@ public class ActionPlanServiceImpl implements ActionPlanService {
       }
     }
     return actionPlan;
+  }
+
+  @Override
+  public final List<ActionRule> findActionRulesForActionPlan(final Integer actionPlanId) {
+    return actionRuleRepository.findByActionPlanId(actionPlanId);
   }
 
 }

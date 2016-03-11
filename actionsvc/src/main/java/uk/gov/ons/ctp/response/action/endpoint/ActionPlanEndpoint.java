@@ -14,9 +14,11 @@ import ma.glasnost.orika.MapperFacade;
 import uk.gov.ons.ctp.common.endpoint.CTPEndpoint;
 import uk.gov.ons.ctp.common.error.CTPException;
 import uk.gov.ons.ctp.response.action.domain.model.ActionPlan;
+import uk.gov.ons.ctp.response.action.domain.model.ActionRule;
 import uk.gov.ons.ctp.response.action.representation.ActionPlanDTO;
+import uk.gov.ons.ctp.response.action.representation.ActionRuleDTO;
 import uk.gov.ons.ctp.response.action.service.ActionPlanService;
-
+import uk.gov.ons.ctp.response.action.service.ActionRuleService;
 
 /**
  * The REST endpoint controller for ActionPlans.
@@ -102,6 +104,21 @@ public class ActionPlanEndpoint implements CTPEndpoint {
   @Path("/")
   public final Response createActionPlan(final ActionPlanDTO requestObject) {
     return Response.status(Response.Status.NOT_IMPLEMENTED).build();
+  }
+
+  @GET
+  @Path("/{actionplanid}/rules")
+  public final List<ActionRuleDTO> returnActionRulesForActionPlanId(@PathParam("actionplanid") final Integer actionPlanId)
+      throws CTPException {
+    log.debug("Entering returnActionRulesForActionPlanId with {}", actionPlanId);
+    ActionPlan actionPlan = actionPlanService.findActionPlan(actionPlanId);
+    if (actionPlan == null) {
+      throw new CTPException(CTPException.Fault.RESOURCE_NOT_FOUND, "ActionPlan not found for id %s", actionPlanId);
+    }
+
+    List<ActionRule> actionRules = actionPlanService.findActionRulesForActionPlan(actionPlanId);
+    List<ActionRuleDTO> actionRuleDTOs = mapperFacade.mapAsList(actionRules, ActionRuleDTO.class);
+    return CollectionUtils.isEmpty(actionRuleDTOs) ? null : actionRuleDTOs;
   }
 
 }

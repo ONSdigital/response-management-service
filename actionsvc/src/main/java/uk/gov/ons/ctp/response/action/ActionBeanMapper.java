@@ -6,8 +6,10 @@ import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.impl.ConfigurableMapper;
 import uk.gov.ons.ctp.response.action.domain.model.Action;
 import uk.gov.ons.ctp.response.action.domain.model.ActionPlan;
+import uk.gov.ons.ctp.response.action.domain.model.ActionRule;
 import uk.gov.ons.ctp.response.action.representation.ActionDTO;
 import uk.gov.ons.ctp.response.action.representation.ActionPlanDTO;
+import uk.gov.ons.ctp.response.action.representation.ActionRuleDTO;
 
 /**
  * The bean mapper to go from Entity objects to Presentation objects.
@@ -29,5 +31,10 @@ public class ActionBeanMapper extends ConfigurableMapper {
       .classMap(ActionPlan.class, ActionPlanDTO.class)
       .byDefault()
       .register();
+
+    factory
+        .classMap(ActionRule.class, ActionRuleDTO.class)
+        .byDefault()
+        .register();
   }
 }
