@@ -1,6 +1,6 @@
 <schema xmlns="http://www.w3.org/2001/XMLSchema"
-        xmlns:pub="http://ons.gov.uk/ctp/responsemanagement/actionsvc/publish-action"
-        targetNamespace="http://ons.gov.uk/ctp/responsemanagement/actionsvc/publish-action">
+  xmlns:pub="http://ons.gov.uk/ctp/responsemanagement/actionsvc/outbound-action"
+  targetNamespace="http://ons.gov.uk/ctp/responsemanagement/actionsvc/outbound-action">
 
   <element name="action" type="pub:action"/>
   <element name="address" type="pub:address"/>
