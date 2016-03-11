@@ -470,9 +470,11 @@ definitions:
         type: boolean
         default: false
       priority:
-        description: Action priority (TBD; possible used by the remote provider service)
+        description: Action priority as passed to the remote provider service. 1 = highest priority, 5 = lowest priority
         type: integer
-        default: 0
+        minimum: 1
+        maximum: 5
+        default: 3
       situation:
         description: Action status as recorded by the remote provider service
         type: string
@@ -510,9 +512,11 @@ definitions:
         description: Unique action type this action is for
         type: string
       priority:
-        description: Action priority (TBD; possible used by the remote provider service)
+        description: Action priority as passed to the remote provider service. 1 = highest priority, 5 = lowest priority
         type: integer
-        default: 0
+        minimum: 1
+        maximum: 5
+        default: 3
       createdBy:
         description: User who created this action
         type: string
@@ -520,8 +524,11 @@ definitions:
     type: object
     properties:
       priority:
-        description: Action priority (TBD; possible used by the remote provider service)
+        description: Action priority as passed to the remote provider service. 1 = highest priority, 5 = lowest priority
         type: integer
+        minimum: 1
+        maximum: 5
+        default: 3
       situation:
         description: Action status as recorded by the remote provider service
         type: string
@@ -668,9 +675,11 @@ definitions:
         description: Number of days offset from the survey date (may be negative)
         type: integer
       priority:
-        description: Action rule priority (TBD)
+        description: Action priority as passed to the remote provider service. 1 = highest priority, 5 = lowest priority
         type: integer
-        default: 0
+        minimum: 1
+        maximum: 5
+        default: 3
   Error:
     type: object
     properties:
