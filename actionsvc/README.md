@@ -23,3 +23,7 @@ curl  -H "Accept: application/json" -H "Content-Type: application/json" http://l
 
 
 
+curl -H "Accept: application/json" -H "Content-Type: application/json" http://localhost:8161/actionplans/1 -v -X PUT -d "{\"actionPlanId\":1,\"surveyId\":1,\"name\":\"HH\",\"description\":\"pbrossiertesting\",\"createdBy\":\"SYSTEM\",\"createdDatetime\":\"2016-03-10T15:10:39.494+0000\",\"lastGoodRunDatetime\":\"2016-03-10T15:10:39.494+0000\"}"
+
+
+
