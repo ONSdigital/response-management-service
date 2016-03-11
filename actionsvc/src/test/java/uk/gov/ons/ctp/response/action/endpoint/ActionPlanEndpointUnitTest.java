@@ -20,6 +20,9 @@ public class ActionPlanEndpointUnitTest extends CTPJerseyTest {
 
   private static final String CREATED_DATE_TIME = "2016-03-09T11:15:48.023+0000";
   private static final String LAST_GOOD_RUN_DATE_TIME = "2016-03-09T11:15:48.023+0000";
+  private static final String ACTIONPLAN_JSON = "{\"actionPlanId\":21,\"surveyId\":1,\"name\":\"HH\",\"description\":\"philippetesting\",\"createdBy\":\"SYSTEM\",\"createdDatetime\":\"2016-03-10T15:10:39.494+0000\",\"lastGoodRunDatetime\":null}";
+  private static final String ACTIONPLAN_INVALIDJSON = "{\"some\":\"joke\"}";
+
 
   @Override
   public Application configure() {
@@ -109,6 +112,21 @@ public class ActionPlanEndpointUnitTest extends CTPJerseyTest {
         .assertFaultIs(CTPException.Fault.RESOURCE_NOT_FOUND)
         .assertTimestampExists()
         .assertMessageEquals("ActionPlan not found for id %s", NON_EXISTING_ACTIONPLANID)
+        .andClose();
+  }
+
+  @Test
+  public void createActionPlanPositiveScenario() {
+    with("http://localhost:9998/actionplans").post(ACTIONPLAN_JSON)
+        .assertResponseCodeIs(HttpStatus.NOT_IMPLEMENTED)
+        .andClose();
+  }
+
+  @Test
+  public void createActionPlanNegativeScenario() {
+    // TODO Register ActionPlanDTOMessageBodyReader in CTPJerseyTest as normally we expect to get NOT_IMPLEMENTED
+    with("http://localhost:9998/actionplans").post(ACTIONPLAN_INVALIDJSON)
+        .assertResponseCodeIs(HttpStatus.BAD_REQUEST)
         .andClose();
   }
 }
