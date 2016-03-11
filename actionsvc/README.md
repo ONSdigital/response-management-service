@@ -23,11 +23,3 @@ curl -H "Accept: application/json" -H "Content-Type: application/json" http://lo
 
 curl  -H "Accept: application/json" -H "Content-Type: application/json" http://localhost:8161/actionplans/ -v -X POST -d "{\"descripon\":\"philippe42testing\"}"
 501 {"timestamp":1457708435753,"status":501,"error":"Not Implemented","message":"Not Implemented","path":"/actionplans/"}
-
-curl http://localhost:8161/actionplans/1/rules -v -X GET
-200 [{"actionRuleId":1,"actionPlanId":1,"priority":0,"surveyDateDaysOffset":-7,"actionTypeName":...
-
-curl http://localhost:8161/actionplans/100/rules -v -X GET
-400 {"error":{"code":"RESOURCE_NOT_FOUND","timestamp":"20160311150607748","message":"ActionPlan not found for id 100"}}
-
-

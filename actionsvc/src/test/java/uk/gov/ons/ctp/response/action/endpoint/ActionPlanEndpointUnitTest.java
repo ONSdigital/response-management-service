@@ -1,18 +1,5 @@
 package uk.gov.ons.ctp.response.action.endpoint;
 
-import static uk.gov.ons.ctp.response.action.utility.MockActionPlanServiceFactory.ACTIONPLAN1_DESC;
-import static uk.gov.ons.ctp.response.action.utility.MockActionPlanServiceFactory.ACTIONPLAN1_NAME;
-import static uk.gov.ons.ctp.response.action.utility.MockActionPlanServiceFactory.ACTIONPLAN2_DESC;
-import static uk.gov.ons.ctp.response.action.utility.MockActionPlanServiceFactory.ACTIONPLAN2_NAME;
-import static uk.gov.ons.ctp.response.action.utility.MockActionPlanServiceFactory.ACTIONPLAN3_DESC;
-import static uk.gov.ons.ctp.response.action.utility.MockActionPlanServiceFactory.ACTIONPLAN3_NAME;
-import static uk.gov.ons.ctp.response.action.utility.MockActionPlanServiceFactory.ACTIONPLANID;
-import static uk.gov.ons.ctp.response.action.utility.MockActionPlanServiceFactory.ACTIONPLAN_SURVEYID;
-import static uk.gov.ons.ctp.response.action.utility.MockActionPlanServiceFactory.CREATED_BY;
-import static uk.gov.ons.ctp.response.action.utility.MockActionPlanServiceFactory.NON_EXISTING_ACTIONPLANID;
-import static uk.gov.ons.ctp.response.action.utility.MockActionPlanServiceFactory.OUR_EXCEPTION_MESSAGE;
-import static uk.gov.ons.ctp.response.action.utility.MockActionPlanServiceFactory.UNCHECKED_EXCEPTION;
-
 import javax.ws.rs.core.Application;
 
 import org.junit.Test;
@@ -23,6 +10,8 @@ import uk.gov.ons.ctp.common.jersey.CTPJerseyTest;
 import uk.gov.ons.ctp.response.action.ActionBeanMapper;
 import uk.gov.ons.ctp.response.action.service.ActionPlanService;
 import uk.gov.ons.ctp.response.action.utility.MockActionPlanServiceFactory;
+
+import static uk.gov.ons.ctp.response.action.utility.MockActionPlanServiceFactory.*;
 
 /**
  * Unit tests for ActionPlan endpoint
@@ -85,5 +74,41 @@ public class ActionPlanEndpointUnitTest extends CTPJerseyTest {
       .assertTimestampExists()
       .assertMessageEquals(OUR_EXCEPTION_MESSAGE)
       .andClose();
+  }
+
+  @Test
+  public void findActionRulesForActionPlanFound() {
+    with("http://localhost:9998/actionplans/%s/rules", ACTIONPLANID)
+        .assertResponseCodeIs(HttpStatus.OK)
+        .assertArrayLengthInBodyIs(3)
+        .assertIntegerListInBody("$..actionRuleId", 1, 2, 3)
+        .assertIntegerListInBody("$..actionPlanId", ACTIONPLANID, ACTIONPLANID, ACTIONPLANID)
+        .assertIntegerListInBody("$..priority", ACTIONRULE_PRIORITY, ACTIONRULE_PRIORITY, ACTIONRULE_PRIORITY)
+        .assertIntegerListInBody("$..surveyDateDaysOffset", ACTIONRULE_SURVEYDATEDAYSOFFSET,
+            ACTIONRULE_SURVEYDATEDAYSOFFSET, ACTIONRULE_SURVEYDATEDAYSOFFSET)
+        .assertStringListInBody("$..actionTypeName", ACTIONRULE_ACTIONTYPENAME, ACTIONRULE_ACTIONTYPENAME,
+            ACTIONRULE_ACTIONTYPENAME)
+        .assertStringListInBody("$..name", ACTIONRULE_NAME, ACTIONRULE_NAME, ACTIONRULE_NAME)
+        .assertStringListInBody("$..description", ACTIONRULE_DESCRIPTION, ACTIONRULE_DESCRIPTION,
+            ACTIONRULE_DESCRIPTION)
+        .andClose();
+  }
+
+
+  @Test
+  public void findNoActionRulesForActionPlan() {
+    with("http://localhost:9998/actionplans/%s/rules", ACTIONPLANID_WITHNOACTIONRULE)
+        .assertResponseCodeIs(HttpStatus.NO_CONTENT)
+        .andClose();
+  }
+
+  @Test
+  public void findActionRulesForNonExistingActionPlan() {
+    with("http://localhost:9998/actionplans/%s/rules", NON_EXISTING_ACTIONPLANID)
+        .assertResponseCodeIs(HttpStatus.NOT_FOUND)
+        .assertFaultIs(CTPException.Fault.RESOURCE_NOT_FOUND)
+        .assertTimestampExists()
+        .assertMessageEquals("ActionPlan not found for id %s", NON_EXISTING_ACTIONPLANID)
+        .andClose();
   }
 }
