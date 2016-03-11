@@ -1,6 +1,5 @@
 package uk.gov.ons.ctp.response.action.endpoint;
 
-import java.util.Date;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -34,6 +33,7 @@ public class ActionPlanEndpoint implements CTPEndpoint {
 
   /**
    * This method returns all action plans.
+   *
    * @return List<ActionPlanDTO> This returns all action plans.
    */
   @GET
@@ -47,6 +47,7 @@ public class ActionPlanEndpoint implements CTPEndpoint {
 
   /**
    * This method returns the associated action plan for the specified action plan id.
+   *
    * @param actionPlanId This is the action plan id
    * @return ActionPlanDTO This returns the associated action plan for the specified action plan id.
    * @throws CTPException if no action plan found for the specified action plan id.
@@ -63,11 +64,20 @@ public class ActionPlanEndpoint implements CTPEndpoint {
     return mapperFacade.map(actionPlan, ActionPlanDTO.class);
   }
 
+  /**
+   * This method returns the associated action plan after it has been updated. Note that only the description and
+   * the lastGoodRunDatetime can be updated.
+   *
+   * @param actionPlanId This is the action plan id
+   * @param requestObject The object created by ActionPlanDTOMessageBodyReader from the json found in the request body
+   * @return ActionPlanDTO This returns the updated action plan.
+   * @throws CTPException if the json provided is incorrect or if the action plan id does not exist.
+   */
   @PUT
   @Consumes({ MediaType.APPLICATION_JSON})
   @Path("/{actionplanid}")
   public final ActionPlanDTO updateActionPlanByActionPlanId(@PathParam("actionplanid") final Integer actionPlanId,
-      ActionPlanDTO requestObject) throws CTPException {
+      final ActionPlanDTO requestObject) throws CTPException {
     log.debug("UpdateActionPlanByActionPlanId with actionplanid {} - actionPlan {}", actionPlanId, requestObject);
     if (requestObject == null) {
       throw new CTPException(CTPException.Fault.VALIDATION_FAILED, "Provided json is incorrect.");

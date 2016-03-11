@@ -16,8 +16,7 @@ import uk.gov.ons.ctp.response.action.representation.ActionPlanDTO;
 import uk.gov.ons.ctp.response.action.service.ActionPlanService;
 
 /**
- * An implementation of the AddressService using JPA Repository class(es)
- * The business logic for the application should reside here.
+ * Implementation
  */
 @Named
 @Slf4j
@@ -28,18 +27,34 @@ public class ActionPlanServiceImpl implements ActionPlanService {
   @Inject
   private ActionPlanRepository actionPlanRepo;
 
+  /**
+   * Implementation
+   * @return
+   */
   @Override
   public final List<ActionPlan> findActionPlans() {
     log.debug("Entering findActionPlans");
     return actionPlanRepo.findAll();
   }
 
+  /**
+   * Implementation
+   * @param actionPlanId This is the action plan id
+   * @return
+   */
   @Override
   public final ActionPlan findActionPlan(final Integer actionPlanId) {
     log.debug("Entering findActionPlan with {}", actionPlanId);
     return actionPlanRepo.findOne(actionPlanId);
   }
 
+  /**
+   * Implementation
+   * @param actionPlanId This is the action plan id of the action plan to be updated
+   * @param actionPlanDTO This is the action plan dto containing the potentially new description and lastGoodRunDatetime
+   * @return
+   */
+  @Override
   @Transactional(propagation = Propagation.REQUIRED, readOnly = false, timeout = TRANSACTION_TIMEOUT)
   public final ActionPlan updateActionPlan(final Integer actionPlanId, final ActionPlanDTO actionPlanDTO) {
     log.debug("Entering updateActionPlan with {}", actionPlanId);
