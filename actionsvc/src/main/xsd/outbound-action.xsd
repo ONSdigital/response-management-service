@@ -1,0 +1,58 @@
+<schema xmlns="http://www.w3.org/2001/XMLSchema"
+  xmlns:pub="http://ons.gov.uk/ctp/responsemanagement/actionsvc/outbound-action"
+  targetNamespace="http://ons.gov.uk/ctp/responsemanagement/actionsvc/outbound-action">
+
+  <element name="action" type="pub:action"/>
+  <element name="address" type="pub:address"/>
+  <element name="type" type="string"/>
+  <element name="addressType" type="string"/>
+  <element name="estabType" type="string"/>
+  <element name="locality" type="string"/>
+  <element name="organisationName" type="string"/>
+  <element name="addressLine1" type="string"/>
+  <element name="addressLine2" type="string"/>
+  <element name="townName" type="string"/>
+  <element name="postcode" type="string"/>
+  <element name="oa11cd" type="string"/>
+  <element name="lsoa11cd" type="string"/>
+  <element name="msoa11cd" type="string"/>
+  <element name="lad12cd" type="string"/>
+  <element name="region11cd" type="string"/>
+  <element name="eastings" type="int"/>
+  <element name="northings" type="int"/>
+  <element name="htc" type="int"/>
+  <element name="latitude" type="double"/>
+  <element name="longitude" type="double"/>
+
+  <complexType name="action">
+    <sequence>
+      <element ref="pub:type"/>
+      <element ref="pub:address"/>
+    </sequence>
+  </complexType>
+
+  <complexType name="address">
+    <sequence>
+      <element ref="pub:addressType"/>
+      <element ref="pub:estabType"/>
+      <element ref="pub:locality"/>
+      <element ref="pub:organisationName"/>
+      <element ref="pub:addressLine1"/>
+      <element ref="pub:addressLine2"/>
+      <element ref="pub:townName"/>
+      <element ref="pub:postcode"/>
+      <element ref="pub:oa11cd"/>
+      <element ref="pub:lsoa11cd"/>
+      <element ref="pub:msoa11cd"/>
+      <element ref="pub:lad12cd"/>
+      <element ref="pub:region11cd"/>
+      <element ref="pub:eastings"/>
+      <element ref="pub:northings"/>
+      <element ref="pub:htc"/>
+      <element ref="pub:latitude"/>
+      <element ref="pub:longitude"/>
+    </sequence>
+    <attribute name="uprn" type="int"/>
+  </complexType>
+
+</schema>

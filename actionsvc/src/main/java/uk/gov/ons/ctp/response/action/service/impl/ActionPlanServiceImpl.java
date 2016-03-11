@@ -48,19 +48,23 @@ public class ActionPlanServiceImpl implements ActionPlanService {
       boolean needsUpdate = false;
 
       String newDescription = actionPlanDTO.getDescription();
+      log.debug("newDescription = {}", newDescription);
       if (newDescription != null) {
         needsUpdate = true;
         actionPlan.setDescription(newDescription);
       }
 
       Date newLastGoodRunDatetime = actionPlanDTO.getLastGoodRunDatetime();
+      log.debug("newLastGoodRunDatetime = {}", newLastGoodRunDatetime);
       if (newLastGoodRunDatetime != null) {
         needsUpdate = true;
         actionPlan.setLastGoodRunDatetime(new Timestamp(newLastGoodRunDatetime.getTime()));
       }
 
-      if (needsUpdate)
+      if (needsUpdate) {
+        log.debug("about to update the action plan with id {}", actionPlanId);
         actionPlan = actionPlanRepo.save(actionPlan);
+      }
     }
     return actionPlan;
   }
