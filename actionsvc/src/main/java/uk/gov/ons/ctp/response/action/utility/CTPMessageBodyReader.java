@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
 
+import javax.ws.rs.Consumes;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
@@ -17,11 +18,14 @@ import java.lang.reflect.Type;
 /**
  * Created by philippe.brossier on 3/14/16.
  *
- * This class is the generic MessageBodyReader. It will be extended for the required types used in our endpoints.
+ * This class is the generic CTP MessageBodyReader. It will be instantiated with the relevant type in JerseyConfig for
+ * each of our endpoints.
  */
+@Consumes(MediaType.APPLICATION_JSON)
 @Slf4j
-public abstract class CTPMessageBodyReader<T> implements MessageBodyReader<T> {
+public class CTPMessageBodyReader<T> implements MessageBodyReader<T> {
 
+  // required due to type erasure
   private final Class<T> theType;
 
   public CTPMessageBodyReader(Class<T> aType) {
