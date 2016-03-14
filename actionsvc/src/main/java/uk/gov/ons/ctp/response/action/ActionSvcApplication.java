@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import uk.gov.ons.ctp.response.action.endpoint.ActionEndpoint;
 import uk.gov.ons.ctp.response.action.endpoint.ActionPlanEndpoint;
+import uk.gov.ons.ctp.response.action.utility.ActionPlanDTOMessageBodyReader;
 
 /**
  * The 'main' entry point into the Action Service SpringBoot Application.
@@ -33,7 +34,9 @@ public class ActionSvcApplication {
       packages("uk.gov.ons.ctp");
 
       register(ActionEndpoint.class);
+
       register(ActionPlanEndpoint.class);
+      register(new ActionPlanDTOMessageBodyReader());
     }
   }
 
