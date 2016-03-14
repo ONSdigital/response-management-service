@@ -8,7 +8,9 @@ import org.springframework.http.HttpStatus;
 import uk.gov.ons.ctp.common.error.CTPException;
 import uk.gov.ons.ctp.common.jersey.CTPJerseyTest;
 import uk.gov.ons.ctp.response.action.ActionBeanMapper;
+import uk.gov.ons.ctp.response.action.representation.ActionPlanDTO;
 import uk.gov.ons.ctp.response.action.service.ActionPlanService;
+import uk.gov.ons.ctp.response.action.utility.CTPMessageBodyReader;
 import uk.gov.ons.ctp.response.action.utility.MockActionPlanServiceFactory;
 
 import static uk.gov.ons.ctp.response.action.utility.MockActionPlanServiceFactory.*;
@@ -26,7 +28,7 @@ public class ActionPlanEndpointUnitTest extends CTPJerseyTest {
 
   @Override
   public Application configure() {
-    return super.init(ActionPlanEndpoint.class, ActionPlanService.class, MockActionPlanServiceFactory.class, new ActionBeanMapper()); 
+    return super.init(ActionPlanEndpoint.class, ActionPlanService.class, MockActionPlanServiceFactory.class, new ActionBeanMapper(), new CTPMessageBodyReader<>(ActionPlanDTO.class));
   }
 
   @Test
@@ -126,7 +128,7 @@ public class ActionPlanEndpointUnitTest extends CTPJerseyTest {
   public void createActionPlanNegativeScenario() {
     // TODO Register ActionPlanDTOMessageBodyReader in CTPJerseyTest as normally we expect to get NOT_IMPLEMENTED
     with("http://localhost:9998/actionplans").post(ACTIONPLAN_INVALIDJSON)
-        .assertResponseCodeIs(HttpStatus.BAD_REQUEST)
+        .assertResponseCodeIs(HttpStatus.NOT_IMPLEMENTED)
         .andClose();
   }
 }
