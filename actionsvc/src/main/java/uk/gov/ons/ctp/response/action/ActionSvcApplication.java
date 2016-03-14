@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import uk.gov.ons.ctp.response.action.endpoint.ActionEndpoint;
 import uk.gov.ons.ctp.response.action.endpoint.ActionPlanEndpoint;
+import uk.gov.ons.ctp.response.action.representation.ActionPlanDTO;
 import uk.gov.ons.ctp.response.action.utility.ActionPlanDTOMessageBodyReader;
 
 /**
@@ -36,7 +37,7 @@ public class ActionSvcApplication {
       register(ActionEndpoint.class);
 
       register(ActionPlanEndpoint.class);
-      register(new ActionPlanDTOMessageBodyReader());
+      register(new ActionPlanDTOMessageBodyReader(ActionPlanDTO.class));
     }
   }
 
