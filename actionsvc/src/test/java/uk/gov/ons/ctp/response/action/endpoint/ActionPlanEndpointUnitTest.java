@@ -126,9 +126,27 @@ public class ActionPlanEndpointUnitTest extends CTPJerseyTest {
 
   @Test
   public void createActionPlanNegativeScenario() {
-    // TODO Register ActionPlanDTOMessageBodyReader in CTPJerseyTest as normally we expect to get NOT_IMPLEMENTED
     with("http://localhost:9998/actionplans").post(ACTIONPLAN_INVALIDJSON)
         .assertResponseCodeIs(HttpStatus.NOT_IMPLEMENTED)
         .andClose();
   }
+
+  @Test
+  public void updateActionPlanNegativeScenario() {
+    with("http://localhost:9998/actionplans/%s", ACTIONPLANID).put(ACTIONPLAN_INVALIDJSON)
+        .assertResponseCodeIs(HttpStatus.BAD_REQUEST)
+        .assertFaultIs(CTPException.Fault.VALIDATION_FAILED)
+        .assertTimestampExists()
+        .assertMessageEquals(PROVIDED_JSON_INCORRECT)
+        .andClose();
+  }
+
+  @Test
+  public void updateActionPlanHappyScenario() {
+    // TODO
+//    with("http://localhost:9998/actionplans/%s", ACTIONPLANID).put(ACTIONPLAN_JSON)
+//        .assertResponseCodeIs(HttpStatus.OK)
+//        .andClose();
+  }
+
 }

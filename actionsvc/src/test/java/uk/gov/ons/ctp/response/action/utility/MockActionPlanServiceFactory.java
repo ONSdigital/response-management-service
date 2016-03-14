@@ -11,6 +11,7 @@ import org.mockito.stubbing.Answer;
 
 import uk.gov.ons.ctp.response.action.domain.model.ActionPlan;
 import uk.gov.ons.ctp.response.action.domain.model.ActionRule;
+import uk.gov.ons.ctp.response.action.representation.ActionPlanDTO;
 import uk.gov.ons.ctp.response.action.service.ActionPlanService;
 
 /**
@@ -35,6 +36,7 @@ public class MockActionPlanServiceFactory implements Factory<ActionPlanService> 
   public static final String ACTIONRULE_DESCRIPTION = "This is a Test Action Rule";
   public static final String ACTIONRULE_NAME = "Test Action Rule";
   public static final String OUR_EXCEPTION_MESSAGE = "this is what we throw";
+  public static final String PROVIDED_JSON_INCORRECT = "Provided json is incorrect.";
   public static final String CREATED_BY = "whilep1";
   private static final Timestamp ACTION_CREATEDDATE_TIMESTAMP = Timestamp.valueOf("2016-03-09 11:15:48.023286");
   private static final Timestamp ACTION_LAST_GOOD_RUN_DATE_TIMESTAMP = Timestamp.valueOf("2016-03-09 11:15:48.023286");
@@ -104,6 +106,9 @@ public class MockActionPlanServiceFactory implements Factory<ActionPlanService> 
         return result;
       }
     });
+
+    // TODO
+    //Mockito.when(mockedService.updateActionPlan(ACTIONPLANID, any(ActionPlanDTO.class)).thenR
 
     return mockedService;
   }
