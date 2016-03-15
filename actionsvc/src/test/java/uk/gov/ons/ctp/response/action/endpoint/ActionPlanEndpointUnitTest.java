@@ -143,10 +143,16 @@ public class ActionPlanEndpointUnitTest extends CTPJerseyTest {
 
   @Test
   public void updateActionPlanHappyScenario() {
-    // TODO
-//    with("http://localhost:9998/actionplans/%s", ACTIONPLANID).put(ACTIONPLAN_JSON)
-//        .assertResponseCodeIs(HttpStatus.OK)
-//        .andClose();
+    with("http://localhost:9998/actionplans/%s", ACTIONPLANID).put(ACTIONPLAN_JSON)
+        .assertResponseCodeIs(HttpStatus.OK)
+        .assertIntegerInBody("$.actionPlanId", ACTIONPLANID)
+        .assertIntegerInBody("$.surveyId", ACTIONPLAN_SURVEYID)
+        .assertStringInBody("$.name", ACTIONPLAN3_NAME)
+        .assertStringInBody("$.description", ACTIONPLAN3_DESC)
+        .assertStringInBody("$.createdBy", CREATED_BY)
+        .assertStringInBody("$.createdDatetime", CREATED_DATE_TIME)
+        .assertStringInBody("$.lastGoodRunDatetime", LAST_GOOD_RUN_DATE_TIME)
+        .andClose();
   }
 
 }

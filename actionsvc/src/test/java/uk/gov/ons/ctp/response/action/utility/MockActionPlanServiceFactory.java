@@ -14,9 +14,8 @@ import uk.gov.ons.ctp.response.action.domain.model.ActionRule;
 import uk.gov.ons.ctp.response.action.representation.ActionPlanDTO;
 import uk.gov.ons.ctp.response.action.service.ActionPlanService;
 
-/**
- * Created by Martin.Humphrey on 26/2/2016.
- */
+import static org.mockito.Matchers.any;
+
 public class MockActionPlanServiceFactory implements Factory<ActionPlanService> {
 
   public static final Integer ACTIONPLAN_SURVEYID = 1;
@@ -38,8 +37,9 @@ public class MockActionPlanServiceFactory implements Factory<ActionPlanService> 
   public static final String OUR_EXCEPTION_MESSAGE = "this is what we throw";
   public static final String PROVIDED_JSON_INCORRECT = "Provided json is incorrect.";
   public static final String CREATED_BY = "whilep1";
-  private static final Timestamp ACTION_CREATEDDATE_TIMESTAMP = Timestamp.valueOf("2016-03-09 11:15:48.023286");
-  private static final Timestamp ACTION_LAST_GOOD_RUN_DATE_TIMESTAMP = Timestamp.valueOf("2016-03-09 11:15:48.023286");
+  private static final Timestamp ACTIONPLAN_CREATEDDATE_TIMESTAMP = Timestamp.valueOf("2016-03-09 11:15:48.023286");
+  private static final Timestamp ACTIONPLAN_LAST_GOOD_RUN_DATE_TIMESTAMP =
+      Timestamp.valueOf("2016-03-09 11:15:48.023286");
 
   public ActionPlanService provide() {
 
@@ -50,11 +50,11 @@ public class MockActionPlanServiceFactory implements Factory<ActionPlanService> 
           throws Throwable {
         List<ActionPlan> result = new ArrayList<>();
         result.add(new ActionPlan(1, ACTIONPLAN_SURVEYID, ACTIONPLAN1_NAME, ACTIONPLAN1_DESC, CREATED_BY,
-            ACTION_CREATEDDATE_TIMESTAMP, ACTION_LAST_GOOD_RUN_DATE_TIMESTAMP));
+            ACTIONPLAN_CREATEDDATE_TIMESTAMP, ACTIONPLAN_LAST_GOOD_RUN_DATE_TIMESTAMP));
         result.add(new ActionPlan(2, ACTIONPLAN_SURVEYID, ACTIONPLAN2_NAME, ACTIONPLAN2_DESC, CREATED_BY,
-            ACTION_CREATEDDATE_TIMESTAMP, ACTION_LAST_GOOD_RUN_DATE_TIMESTAMP));
+            ACTIONPLAN_CREATEDDATE_TIMESTAMP, ACTIONPLAN_LAST_GOOD_RUN_DATE_TIMESTAMP));
         result.add(new ActionPlan(3, ACTIONPLAN_SURVEYID, ACTIONPLAN3_NAME, ACTIONPLAN3_DESC, CREATED_BY,
-            ACTION_CREATEDDATE_TIMESTAMP, ACTION_LAST_GOOD_RUN_DATE_TIMESTAMP));
+            ACTIONPLAN_CREATEDDATE_TIMESTAMP, ACTIONPLAN_LAST_GOOD_RUN_DATE_TIMESTAMP));
         return result;
       }
     });
@@ -63,7 +63,7 @@ public class MockActionPlanServiceFactory implements Factory<ActionPlanService> 
       public ActionPlan answer(InvocationOnMock invocation)
           throws Throwable {
         return new ActionPlan(ACTIONPLANID, ACTIONPLAN_SURVEYID, ACTIONPLAN3_NAME, ACTIONPLAN3_DESC, CREATED_BY,
-            ACTION_CREATEDDATE_TIMESTAMP, ACTION_LAST_GOOD_RUN_DATE_TIMESTAMP);
+            ACTIONPLAN_CREATEDDATE_TIMESTAMP, ACTIONPLAN_LAST_GOOD_RUN_DATE_TIMESTAMP);
       }
     });
 
@@ -71,7 +71,7 @@ public class MockActionPlanServiceFactory implements Factory<ActionPlanService> 
       public ActionPlan answer(InvocationOnMock invocation)
           throws Throwable {
         return new ActionPlan(ACTIONPLANID_WITHNOACTIONRULE, ACTIONPLAN_SURVEYID, ACTIONPLAN3_NAME, ACTIONPLAN3_DESC, CREATED_BY,
-            ACTION_CREATEDDATE_TIMESTAMP, ACTION_LAST_GOOD_RUN_DATE_TIMESTAMP);
+            ACTIONPLAN_CREATEDDATE_TIMESTAMP, ACTIONPLAN_LAST_GOOD_RUN_DATE_TIMESTAMP);
       }
     });
 
@@ -99,7 +99,8 @@ public class MockActionPlanServiceFactory implements Factory<ActionPlanService> 
       }
     });
 
-    Mockito.when(mockedService.findActionRulesForActionPlan(ACTIONPLANID_WITHNOACTIONRULE)).thenAnswer(new Answer<List<ActionRule>>() {
+    Mockito.when(mockedService.findActionRulesForActionPlan(ACTIONPLANID_WITHNOACTIONRULE)).thenAnswer(
+        new Answer<List<ActionRule>>() {
       public List<ActionRule> answer(InvocationOnMock invocation)
           throws Throwable {
         List<ActionRule> result = new ArrayList<>();
@@ -107,8 +108,14 @@ public class MockActionPlanServiceFactory implements Factory<ActionPlanService> 
       }
     });
 
-    // TODO
-    //Mockito.when(mockedService.updateActionPlan(ACTIONPLANID, any(ActionPlanDTO.class)).thenR
+    Mockito.when(mockedService.updateActionPlan(any(Integer.class), any(ActionPlanDTO.class))).thenAnswer(
+        new Answer<ActionPlan>() {
+      public ActionPlan answer(InvocationOnMock invocation)
+          throws Throwable {
+        return new ActionPlan(ACTIONPLANID, ACTIONPLAN_SURVEYID, ACTIONPLAN3_NAME, ACTIONPLAN3_DESC,
+            CREATED_BY, ACTIONPLAN_CREATEDDATE_TIMESTAMP, ACTIONPLAN_LAST_GOOD_RUN_DATE_TIMESTAMP);
+      }
+    });
 
     return mockedService;
   }
