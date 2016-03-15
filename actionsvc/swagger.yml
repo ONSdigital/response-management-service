@@ -9,7 +9,7 @@ info:
     An action represents an operation that is required for a case; it could be to post out a
     paper form or arrange a visit. The action plan is a set of rules that define, in terms of
     a day, when a certain action should be taken. action plans are applied to open cases to create
-    actions. Once an action is created it is forwarded to an appropriate remote provider service to be
+    actions. Once an action is created it is forwarded to an appropriate remote handler service to be
     completed.
   version: 8.12.0
 schemes:
@@ -470,13 +470,13 @@ definitions:
         type: boolean
         default: false
       priority:
-        description: Action priority as passed to the remote provider service. 1 = highest priority, 5 = lowest priority
+        description: Action priority as passed to the remote handler service. 1 = highest priority, 5 = lowest priority
         type: integer
         minimum: 1
         maximum: 5
         default: 3
       situation:
-        description: Action status as recorded by the remote provider service
+        description: Action status as recorded by the remote handler service
         type: string
       state:
         description: Action state
@@ -512,7 +512,7 @@ definitions:
         description: Unique action type this action is for
         type: string
       priority:
-        description: Action priority as passed to the remote provider service. 1 = highest priority, 5 = lowest priority
+        description: Action priority as passed to the remote handler service. 1 = highest priority, 5 = lowest priority
         type: integer
         minimum: 1
         maximum: 5
@@ -524,13 +524,13 @@ definitions:
     type: object
     properties:
       priority:
-        description: Action priority as passed to the remote provider service. 1 = highest priority, 5 = lowest priority
+        description: Action priority as passed to the remote handler service. 1 = highest priority, 5 = lowest priority
         type: integer
         minimum: 1
         maximum: 5
         default: 3
       situation:
-        description: Action status as recorded by the remote provider service
+        description: Action status as recorded by the remote handler service
         type: string
       state:
         description: Action state
@@ -675,7 +675,7 @@ definitions:
         description: Number of days offset from the survey date (may be negative)
         type: integer
       priority:
-        description: Action priority as passed to the remote provider service. 1 = highest priority, 5 = lowest priority
+        description: Action priority as passed to the remote handler service. 1 = highest priority, 5 = lowest priority
         type: integer
         minimum: 1
         maximum: 5
