@@ -132,7 +132,7 @@ public class ActionPlanEndpointUnitTest extends CTPJerseyTest {
   }
 
   @Test
-  public void updateActionPlanNegativeScenario() {
+  public void updateActionPlanNegativeScenarioInvalidJsonProvided() {
     with("http://localhost:9998/actionplans/%s", ACTIONPLANID).put(ACTIONPLAN_INVALIDJSON)
         .assertResponseCodeIs(HttpStatus.BAD_REQUEST)
         .assertFaultIs(CTPException.Fault.VALIDATION_FAILED)
