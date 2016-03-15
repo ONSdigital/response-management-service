@@ -22,6 +22,11 @@ public class MockActionPlanJobServiceFactory implements Factory<ActionPlanJobSer
   private static final Timestamp ACTIONPLANJOBID_UPDATED_DATE_TIMESTAMP =
       Timestamp.valueOf("2016-04-09 11:15:48.023286");
 
+  public static final Integer NON_EXISTING_ACTIONPLANJOBID = 998;
+  public static final Integer UNCHECKED_EXCEPTION_ACTIONPLANJOBID = 999;
+
+  public static final String OUR_EXCEPTION_MESSAGE = "this is what we throw";
+
   public ActionPlanJobService provide() {
     final ActionPlanJobService mockedService = Mockito.mock(ActionPlanJobService.class);
 
@@ -32,6 +37,17 @@ public class MockActionPlanJobServiceFactory implements Factory<ActionPlanJobSer
             ACTIONPLANJOBID_STATE, ACTIONPLANJOBID_CREATEDDATE_TIMESTAMP, ACTIONPLANJOBID_UPDATED_DATE_TIMESTAMP);
       }
     });
+
+    Mockito.when(mockedService.findActionPlanJob(UNCHECKED_EXCEPTION_ACTIONPLANJOBID))
+        .thenThrow(new IllegalArgumentException(OUR_EXCEPTION_MESSAGE));
+
+    Mockito.when(mockedService.findActionPlanJob(NON_EXISTING_ACTIONPLANJOBID)).thenAnswer(new Answer<ActionPlanJob>() {
+      public ActionPlanJob answer(InvocationOnMock invocation)
+          throws Throwable {
+        return null;
+      }
+    });
+
     return mockedService;
   }
 
