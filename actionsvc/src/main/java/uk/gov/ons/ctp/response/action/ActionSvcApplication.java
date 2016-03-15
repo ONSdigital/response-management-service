@@ -37,9 +37,10 @@ public class ActionSvcApplication {
       register(ActionEndpoint.class);
 
       register(ActionPlanEndpoint.class);
+      register(new CTPMessageBodyReader<>(ActionPlanDTO.class));
+
       System.setProperty("ma.glasnost.orika.writeSourceFiles", "false");
       System.setProperty("ma.glasnost.orika.writeClassFiles", "false");
-      register(new CTPMessageBodyReader<>(ActionPlanDTO.class));
     }
   }
 
