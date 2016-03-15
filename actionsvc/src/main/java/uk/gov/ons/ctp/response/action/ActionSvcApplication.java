@@ -9,8 +9,10 @@ import org.springframework.integration.annotation.IntegrationComponentScan;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
+import uk.gov.ons.ctp.common.utility.CTPMessageBodyReader;
 import uk.gov.ons.ctp.response.action.endpoint.ActionEndpoint;
 import uk.gov.ons.ctp.response.action.endpoint.ActionPlanEndpoint;
+import uk.gov.ons.ctp.response.action.representation.ActionPlanDTO;
 
 /**
  * The 'main' entry point into the Action Service SpringBoot Application.
@@ -33,9 +35,11 @@ public class ActionSvcApplication {
       packages("uk.gov.ons.ctp");
 
       register(ActionEndpoint.class);
+
       register(ActionPlanEndpoint.class);
       System.setProperty("ma.glasnost.orika.writeSourceFiles", "false");
       System.setProperty("ma.glasnost.orika.writeClassFiles", "false");
+      register(new CTPMessageBodyReader<>(ActionPlanDTO.class));
     }
   }
 

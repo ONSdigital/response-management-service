@@ -67,7 +67,7 @@ endpoints:
 
 spring:
   application:
-    name: CTP ActionService
+    name: ONS ActionService
 
   datasource:
     url: jdbc:postgresql://localhost:5432/postgres
