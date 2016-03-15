@@ -18,7 +18,6 @@ import uk.gov.ons.ctp.response.action.domain.model.ActionRule;
 import uk.gov.ons.ctp.response.action.representation.ActionPlanDTO;
 import uk.gov.ons.ctp.response.action.representation.ActionRuleDTO;
 import uk.gov.ons.ctp.response.action.service.ActionPlanService;
-import uk.gov.ons.ctp.response.action.service.ActionRuleService;
 
 /**
  * The REST endpoint controller for ActionPlans.
