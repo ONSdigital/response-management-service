@@ -1,5 +1,8 @@
 package uk.gov.ons.ctp.response.action.utility;
 
+import static uk.gov.ons.ctp.response.action.utility.MockActionServiceFactory.ACTION2_ACTIONSTATE;
+import static uk.gov.ons.ctp.response.action.utility.MockActionServiceFactory.ACTION2_ACTIONTYPENAME;
+
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
@@ -44,6 +47,18 @@ public class MockActionServiceFactory implements Factory<ActionService> {
   public ActionService provide() {
 
     final ActionService mockedService = Mockito.mock(ActionService.class);
+
+    Mockito.when(mockedService.findActionsByTypeAndState(ACTION2_ACTIONTYPENAME, ACTION2_ACTIONSTATE)).thenAnswer(new Answer<List<Action>>() {
+      public List<Action> answer(InvocationOnMock invocation)
+          throws Throwable {
+        String actionTypename = invocation.getArgumentAt(0, String.class);
+        String state = invocation.getArgumentAt(1,String.class);
+        List<Action> result = new ArrayList<Action>();
+        result.add(new Action(2, ACTION_CASEID, ACTION2_PLANID, ACTION2_RULEID, actionTypename, ACTION_CREATEDBY, ACTION2_MANUALLY_CREATED, ACTION2_PRIORITY, ACTION2_SITUATION,state, 
+             ACTION_CREATEDDATE_TIMESTAMP, ACTION_UPDATEDDATE_TIMESTAMP));
+        return result;
+      }
+    });
 
     Mockito.when(mockedService.findActionsByCaseId(ACTION_CASEID)).thenAnswer(new Answer<List<Action>>() {
       public List<Action> answer(InvocationOnMock invocation)

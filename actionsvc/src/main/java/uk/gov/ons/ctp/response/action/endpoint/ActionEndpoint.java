@@ -1,6 +1,5 @@
 package uk.gov.ons.ctp.response.action.endpoint;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -24,7 +23,6 @@ import uk.gov.ons.ctp.common.error.CTPException;
 import uk.gov.ons.ctp.response.action.domain.model.Action;
 import uk.gov.ons.ctp.response.action.representation.ActionDTO;
 import uk.gov.ons.ctp.response.action.service.ActionService;
-
 /**
  * The REST endpoint controller for Actions.
  */
@@ -51,8 +49,7 @@ public final class ActionEndpoint implements CTPEndpoint {
   public List<ActionDTO> findActions(@QueryParam("actiontype") final String actionType,
       @QueryParam("state") final String state) {
     log.debug("Entering findActions with {} {}", actionType, state);
-    // TODO add call to service
-    List<Action> actions = new ArrayList<Action>();
+    List<Action> actions = actionService.findActionsByTypeAndState(actionType, state);
     List<ActionDTO> actionDTOs = mapperFacade.mapAsList(actions, ActionDTO.class);
     return CollectionUtils.isEmpty(actionDTOs) ? null : actionDTOs;
   }
@@ -61,14 +58,15 @@ public final class ActionEndpoint implements CTPEndpoint {
    * POST Create an Action. CaseId, actionTypeName and createdBy body parameters
    * are mandatory.
    *
-   * @param actionDTO Incoming ActionDTO with details to validate and from which to create Action
+   * @param actionDTO Incoming ActionDTO with details to validate and from which
+   *          to create Action
    * @return ActionDTO Created Action
    * @throws CTPException on failure to create Action
    */
   @POST
   @Consumes({ MediaType.APPLICATION_JSON })
   @Path("/")
-  public  ActionDTO createAction(@Valid final ActionDTO actionDTO) throws CTPException {
+  public ActionDTO createAction(@Valid final ActionDTO actionDTO) throws CTPException {
     log.debug("Entering createAction ...");
     // TODO add call to service
     Action action = new Action();

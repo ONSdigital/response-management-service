@@ -21,10 +21,10 @@ import uk.gov.ons.ctp.response.action.representation.ActionRuleDTO;
 @Named
 public class ActionBeanMapper extends ConfigurableMapper {
 
-	@Override
-	public void configureFactoryBuilder(DefaultMapperFactory.Builder builder) {
-		builder.compilerStrategy(new EclipseJdtCompilerStrategy());
-	}
+  @Override
+  public void configureFactoryBuilder(DefaultMapperFactory.Builder builder) {
+    builder.compilerStrategy(new EclipseJdtCompilerStrategy());
+  }
 
 	/**
 	 * This method configures the bean mapper.
