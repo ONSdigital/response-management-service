@@ -34,6 +34,8 @@ public class ActionSvcApplication {
 
       register(ActionEndpoint.class);
       register(ActionPlanEndpoint.class);
+      System.setProperty("ma.glasnost.orika.writeSourceFiles", "false");
+      System.setProperty("ma.glasnost.orika.writeClassFiles", "false");
     }
   }
 
