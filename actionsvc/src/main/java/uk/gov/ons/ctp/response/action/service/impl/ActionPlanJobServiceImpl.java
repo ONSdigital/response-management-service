@@ -7,6 +7,7 @@ import uk.gov.ons.ctp.response.action.service.ActionPlanJobService;
 
 import javax.inject.Inject;
 import javax.inject.Named;
+import java.util.List;
 
 /**
  * Implementation
@@ -23,5 +24,9 @@ public class ActionPlanJobServiceImpl implements ActionPlanJobService {
   @Override public ActionPlanJob findActionPlanJob(Integer actionPlanJobId) {
     log.debug("Entering findActionPlanJob with {}", actionPlanJobId);
     return actionPlanJobRepo.findOne(actionPlanJobId);
+  }
+
+  @Override public List<ActionPlanJob> findActionPlanJobsForActionPlan(Integer actionPlanId) {
+    return actionPlanJobRepo.findByActionPlanId(actionPlanId);
   }
 }

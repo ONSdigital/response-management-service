@@ -3,6 +3,8 @@ package uk.gov.ons.ctp.response.action.service;
 import uk.gov.ons.ctp.common.service.CTPService;
 import uk.gov.ons.ctp.response.action.domain.model.ActionPlanJob;
 
+import java.util.List;
+
 /**
  * The service for ActionPlanJobs
  */
@@ -13,4 +15,11 @@ public interface ActionPlanJobService extends CTPService {
    * @return ActionPlanJob This returns the associated action plan job.
    */
   ActionPlanJob findActionPlanJob(Integer actionPlanJobId);
+
+  /**
+   * Returns all action plan jobs for the given action plan id.
+   * @param actionPlanId This is the action plan id
+   * @return Returns all action plan jobs for the given action plan id.
+   */
+  List<ActionPlanJob> findActionPlanJobsForActionPlan(Integer actionPlanId);
 }

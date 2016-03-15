@@ -2,6 +2,7 @@ package uk.gov.ons.ctp.response.action.endpoint;
 
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
+import org.springframework.util.CollectionUtils;
 import uk.gov.ons.ctp.common.endpoint.CTPEndpoint;
 import uk.gov.ons.ctp.common.error.CTPException;
 import uk.gov.ons.ctp.response.action.domain.model.ActionPlanJob;
@@ -14,6 +15,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import java.util.List;
 
 /**
  * The REST endpoint controller for ActionPlanJobs.
@@ -46,5 +48,21 @@ public class ActionPlanJobEndpoint implements CTPEndpoint {
       throw new CTPException(CTPException.Fault.RESOURCE_NOT_FOUND, "ActionPlanJob not found for id %s", actionPlanJobId);
     }
     return mapperFacade.map(actionPlanJob, ActionPlanJobDTO.class);
+  }
+
+  /**
+   * Returns all action plan jobs for the given action plan id.
+   * @param actionPlanId the given action plan id.
+   * @return Returns all action plan jobs for the given action plan id.
+   * @throws CTPException
+   */
+  @GET
+  @Path("/{actionplanid}/jobs")
+  public final List<ActionPlanJobDTO> findAllActionPlanJobsByActionPlanId(@PathParam("actionplanid") final Integer
+      actionPlanId) throws CTPException {
+    log.debug("Entering findAllActionPlanJobsByActionPlanId with {}", actionPlanId);
+    List<ActionPlanJob> actionPlanJobs = actionPlanJobService.findActionPlanJobsForActionPlan(actionPlanId);
+    List<ActionPlanJobDTO> actionPlanJobDTOs = mapperFacade.mapAsList(actionPlanJobs, ActionPlanJobDTO.class);
+    return CollectionUtils.isEmpty(actionPlanJobDTOs) ? null : actionPlanJobDTOs;
   }
 }

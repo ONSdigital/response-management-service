@@ -8,6 +8,8 @@ import uk.gov.ons.ctp.response.action.domain.model.ActionPlanJob;
 import uk.gov.ons.ctp.response.action.service.ActionPlanJobService;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by philippe.brossier on 3/15/16.
@@ -24,6 +26,9 @@ public class MockActionPlanJobServiceFactory implements Factory<ActionPlanJobSer
 
   public static final Integer NON_EXISTING_ACTIONPLANJOBID = 998;
   public static final Integer UNCHECKED_EXCEPTION_ACTIONPLANJOBID = 999;
+
+  public static final Integer ACTIONPLANID = 1;
+  public static final Integer ACTIONPLANID_WITHNOACTIONPLANJOB = 13;
 
   public static final String OUR_EXCEPTION_MESSAGE = "this is what we throw";
 
@@ -45,6 +50,29 @@ public class MockActionPlanJobServiceFactory implements Factory<ActionPlanJobSer
       public ActionPlanJob answer(InvocationOnMock invocation)
           throws Throwable {
         return null;
+      }
+    });
+
+    Mockito.when(mockedService.findActionPlanJobsForActionPlan(ACTIONPLANID_WITHNOACTIONPLANJOB)).thenAnswer(
+        new Answer<List<ActionPlanJob>>() {
+          public List<ActionPlanJob> answer(InvocationOnMock invocation)
+              throws Throwable {
+            List<ActionPlanJob> result = new ArrayList<>();
+            return result;
+        }
+    });
+
+    Mockito.when(mockedService.findActionPlanJobsForActionPlan(ACTIONPLANID)).thenAnswer(new Answer<List<ActionPlanJob>>() {
+      public List<ActionPlanJob> answer(InvocationOnMock invocation)
+          throws Throwable {
+        List<ActionPlanJob> result = new ArrayList<>();
+        result.add(new ActionPlanJob(1, ACTIONPLANJOBID_ACTIONPLANID, ACTIONPLANJOBID_CREATED_BY,
+            ACTIONPLANJOBID_STATE, ACTIONPLANJOBID_CREATEDDATE_TIMESTAMP, ACTIONPLANJOBID_UPDATED_DATE_TIMESTAMP));
+        result.add(new ActionPlanJob(2, ACTIONPLANJOBID_ACTIONPLANID, ACTIONPLANJOBID_CREATED_BY,
+            ACTIONPLANJOBID_STATE, ACTIONPLANJOBID_CREATEDDATE_TIMESTAMP, ACTIONPLANJOBID_UPDATED_DATE_TIMESTAMP));
+        result.add(new ActionPlanJob(3, ACTIONPLANJOBID_ACTIONPLANID, ACTIONPLANJOBID_CREATED_BY,
+            ACTIONPLANJOBID_STATE, ACTIONPLANJOBID_CREATEDDATE_TIMESTAMP, ACTIONPLANJOBID_UPDATED_DATE_TIMESTAMP));
+        return result;
       }
     });
 

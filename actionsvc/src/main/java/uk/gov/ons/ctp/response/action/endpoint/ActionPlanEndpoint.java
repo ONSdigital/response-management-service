@@ -105,6 +105,12 @@ public class ActionPlanEndpoint implements CTPEndpoint {
     return Response.status(Response.Status.NOT_IMPLEMENTED).build();
   }
 
+  /**
+   * Returns all action rules for the given action plan id.
+   * @param actionPlanId the action plan id
+   * @return Returns all action rules for the given action plan id.
+   * @throws CTPException
+   */
   @GET
   @Path("/{actionplanid}/rules")
   public final List<ActionRuleDTO> returnActionRulesForActionPlanId(@PathParam("actionplanid") final Integer actionPlanId)

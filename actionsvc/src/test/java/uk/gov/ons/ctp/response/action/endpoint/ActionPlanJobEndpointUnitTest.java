@@ -59,4 +59,25 @@ public class ActionPlanJobEndpointUnitTest extends CTPJerseyTest {
         .andClose();
   }
 
+  @Test
+  public void findNoActionPlanJobForActionPlan() {
+    with("http://localhost:9998/actionplans/%s/jobs", ACTIONPLANID_WITHNOACTIONPLANJOB)
+        .assertResponseCodeIs(HttpStatus.NO_CONTENT)
+        .andClose();
+  }
+
+  @Test
+  public void findActionPlanJobsForActionPlan() {
+    with("http://localhost:9998/actionplans/%s/jobs", ACTIONPLANID)
+        .assertResponseCodeIs(HttpStatus.OK)
+        .assertArrayLengthInBodyIs(3)
+        .assertIntegerListInBody("$..actionPlanJobId", 1, 2, 3)
+        .assertIntegerListInBody("$..actionPlanId", ACTIONPLANID, ACTIONPLANID, ACTIONPLANID)
+        .assertStringListInBody("$..createdBy", ACTIONPLANJOBID_CREATED_BY, ACTIONPLANJOBID_CREATED_BY,
+            ACTIONPLANJOBID_CREATED_BY)
+        .assertStringListInBody("$..createdDatetime", CREATED_DATE_TIME, CREATED_DATE_TIME, CREATED_DATE_TIME)
+        .assertStringListInBody("$..updatedDateTime", UPDATED_DATE_TIME, UPDATED_DATE_TIME, UPDATED_DATE_TIME)
+        .andClose();
+  }
+
 }
