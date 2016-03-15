@@ -17,3 +17,11 @@ curl http://localhost:8161/actionplans -v -X GET
 
 curl  -H "Accept: application/json" -H "Content-Type: application/json" http://localhost:8161/actionplans/1 -v -X PUT -d "{\"description\":\"philippe2testing\"}"
 200 {"actionPlanId":1,"surveyId":1,"name":"HH","description":"philippetesting","createdBy":"SYSTEM","createdDatetime":"2016-03-10T15:10:39.494+0000","lastGoodRunDatetime":null}
+
+
+## To test action plan jobs
+curl http://localhost:8161/actionplans/1/jobs -v -X GET
+204
+
+curl http://localhost:8161/actionplans/jobs/1 -v -X GET
+404 {"error":{"code":"RESOURCE_NOT_FOUND","timestamp":"20160315173011978","message":"ActionPlanJob not found for id 1"}}
