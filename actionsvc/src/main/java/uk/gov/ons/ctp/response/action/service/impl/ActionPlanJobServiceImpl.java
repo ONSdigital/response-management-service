@@ -13,6 +13,7 @@ import uk.gov.ons.ctp.response.action.service.ActionPlanJobService;
 
 import javax.inject.Inject;
 import javax.inject.Named;
+import java.sql.Timestamp;
 import java.util.List;
 
 /**
@@ -23,6 +24,7 @@ import java.util.List;
 public class ActionPlanJobServiceImpl implements ActionPlanJobService {
 
   private static final int TRANSACTION_TIMEOUT = 30;
+  private static final String SUBMITTED = "Submitted";
 
   @Inject
   private ActionPlanRepository actionPlanRepo;
@@ -50,6 +52,12 @@ public class ActionPlanJobServiceImpl implements ActionPlanJobService {
     ActionPlan actionPlan = actionPlanRepo.findOne(actionPlanId);
     if (actionPlan != null) {
       ActionPlanJob actionPlanJob = mapperFacade.map(actionPlanJobDTO, ActionPlanJob.class);
+      actionPlanJob.setActionPlanId(actionPlanId);
+      actionPlanJob.setState(SUBMITTED);
+      java.util.Date nowDate = new java.util.Date();
+      Timestamp now = new Timestamp(nowDate.getTime());
+      actionPlanJob.setCreatedDatetime(now);
+      actionPlanJob.setUpdatedDateTime(now);
       return actionPlanJobRepo.save(actionPlanJob);
     }
     return null;

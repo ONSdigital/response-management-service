@@ -20,7 +20,7 @@ import static uk.gov.ons.ctp.response.action.utility.MockActionPlanJobServiceFac
  */
 public class ActionPlanJobEndpointUnitTest extends CTPJerseyTest {
 
-  private static final String ACTIONPLANJOB_INVALIDJSON = "{\"some\":\"joke\"}";
+  private static final String ACTIONPLANJOB_INVALIDJSON = "{\"some\":\"bad\"}";
   private static final String ACTIONPLANJOB_VALIDJSON = "{\"createdBy\":\"unittest\"}";
   private static final String CREATED_DATE_TIME = "2016-03-09T11:15:48.023+0000";
   private static final String UPDATED_DATE_TIME = "2016-04-09T10:15:48.023+0000";
