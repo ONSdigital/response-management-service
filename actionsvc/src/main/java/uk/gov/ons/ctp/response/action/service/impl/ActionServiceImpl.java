@@ -26,6 +26,22 @@ public final class ActionServiceImpl implements ActionService {
   @Override
   public List<Action> findActionsByTypeAndState(final String actionTypeName, final String state) {
     log.debug("Entering findActionsByTypeAndState with {} {}", actionTypeName, state);
+    List<Action> actions = null;
+    if (actionTypeName != null) {
+    	if (state != null) {
+		  actions = actionRepo.findByActionTypeNameAndState(actionTypeName, state);
+    	} else {
+		  actions = actionRepo.findByActionTypeName(actionTypeName);
+    	}
+    } else {
+    	if (state != null) {
+		  actions = actionRepo.findByState(state);
+    	} else {
+		  actions = new ArrayList<Action>();
+    	}
+    }
+    return actions;
+    /**
     if (!(actionTypeName == null) && !(state == null)) {
       return actionRepo.findByActionTypeNameAndState(actionTypeName, state);
     } else if (!(actionTypeName == null) && (state == null)) {
@@ -35,6 +51,7 @@ public final class ActionServiceImpl implements ActionService {
     } else {
       return new ArrayList<Action>();
     }
+    **/
   }
 
   @Override
