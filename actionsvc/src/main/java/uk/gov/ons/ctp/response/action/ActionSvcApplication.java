@@ -15,9 +15,6 @@ import uk.gov.ons.ctp.response.action.endpoint.ActionPlanEndpoint;
 import uk.gov.ons.ctp.response.action.endpoint.ActionPlanJobEndpoint;
 import uk.gov.ons.ctp.response.action.representation.ActionPlanDTO;
 import uk.gov.ons.ctp.response.action.representation.ActionPlanJobDTO;
-import uk.gov.ons.ctp.response.action.utility.ActionPlanDTOBodyReader;
-import uk.gov.ons.ctp.response.action.utility.ActionPlanJobDTOBodyReader;
-import uk.gov.ons.ctp.response.action.utility.GenericMessageBodyReader;
 
 /**
  * The 'main' entry point into the Action Service SpringBoot Application.
