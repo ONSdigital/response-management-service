@@ -28,30 +28,27 @@ public final class ActionServiceImpl implements ActionService {
     log.debug("Entering findActionsByTypeAndState with {} {}", actionTypeName, state);
     List<Action> actions = null;
     if (actionTypeName != null) {
-    	if (state != null) {
-		  actions = actionRepo.findByActionTypeNameAndState(actionTypeName, state);
-    	} else {
-		  actions = actionRepo.findByActionTypeName(actionTypeName);
-    	}
+      if (state != null) {
+        actions = actionRepo.findByActionTypeNameAndState(actionTypeName, state);
+      } else {
+        actions = actionRepo.findByActionTypeName(actionTypeName);
+      }
     } else {
-    	if (state != null) {
-		  actions = actionRepo.findByState(state);
-    	} else {
-		  actions = new ArrayList<Action>();
-    	}
+      if (state != null) {
+        actions = actionRepo.findByState(state);
+      } else {
+        actions = new ArrayList<Action>();
+      }
     }
     return actions;
     /**
-    if (!(actionTypeName == null) && !(state == null)) {
-      return actionRepo.findByActionTypeNameAndState(actionTypeName, state);
-    } else if (!(actionTypeName == null) && (state == null)) {
-      return actionRepo.findByActionTypeName(actionTypeName);
-    } else if ((actionTypeName == null) && !(state == null)) {
-      return actionRepo.findByState(state);
-    } else {
-      return new ArrayList<Action>();
-    }
-    **/
+     * if (!(actionTypeName == null) && !(state == null)) { return
+     * actionRepo.findByActionTypeNameAndState(actionTypeName, state); } else if
+     * (!(actionTypeName == null) && (state == null)) { return
+     * actionRepo.findByActionTypeName(actionTypeName); } else if
+     * ((actionTypeName == null) && !(state == null)) { return
+     * actionRepo.findByState(state); } else { return new ArrayList<Action>(); }
+     **/
   }
 
   @Override
