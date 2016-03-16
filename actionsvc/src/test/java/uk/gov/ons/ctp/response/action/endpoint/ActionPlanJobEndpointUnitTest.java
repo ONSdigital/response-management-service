@@ -21,6 +21,7 @@ import static uk.gov.ons.ctp.response.action.utility.MockActionPlanJobServiceFac
 public class ActionPlanJobEndpointUnitTest extends CTPJerseyTest {
 
   private static final String ACTIONPLANJOB_INVALIDJSON = "{\"some\":\"joke\"}";
+  private static final String ACTIONPLANJOB_VALIDJSON = "{\"createdBy\":\"unittest\"}";
   private static final String CREATED_DATE_TIME = "2016-03-09T11:15:48.023+0000";
   private static final String UPDATED_DATE_TIME = "2016-04-09T10:15:48.023+0000";
 
@@ -90,6 +91,19 @@ public class ActionPlanJobEndpointUnitTest extends CTPJerseyTest {
         .assertFaultIs(CTPException.Fault.VALIDATION_FAILED)
         .assertTimestampExists()
         .assertMessageEquals(PROVIDED_JSON_INCORRECT)
+        .andClose();
+  }
+
+  @Test
+  public void executeActionPlanGoodJsonProvided() {
+    with("http://localhost:9998/actionplans/%s/jobs", ACTIONPLANID).post(ACTIONPLANJOB_VALIDJSON)
+        .assertResponseCodeIs(HttpStatus.OK)
+        .assertIntegerInBody("$.actionPlanJobId", ACTIONPLANJOBID)
+        .assertIntegerInBody("$.actionPlanId", ACTIONPLANJOBID_ACTIONPLANID)
+        .assertStringInBody("$.createdBy", ACTIONPLANJOBID_CREATED_BY)
+        .assertStringInBody("$.state", ACTIONPLANJOBID_STATE)
+        .assertStringInBody("$.createdDatetime", CREATED_DATE_TIME)
+        .assertStringInBody("$.updatedDateTime", UPDATED_DATE_TIME)
         .andClose();
   }
 
