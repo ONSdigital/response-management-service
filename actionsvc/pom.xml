@@ -45,7 +45,7 @@
       <version>${postgres.version}</version>
       <scope>runtime</scope>
     </dependency>
-  
+
     <dependency>
       <groupId>ma.glasnost.orika</groupId>
       <artifactId>orika-eclipse-tools</artifactId>
@@ -153,6 +153,7 @@
           </execution>
         </executions>
         <configuration>
+          <schemaDirectory>src/main/xsd</schemaDirectory>
           <!--
           <sources>
             <source>src/main/xjb/inbound</source>
