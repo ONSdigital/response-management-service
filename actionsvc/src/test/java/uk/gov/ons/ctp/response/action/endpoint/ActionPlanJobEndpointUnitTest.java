@@ -8,6 +8,7 @@ import uk.gov.ons.ctp.common.utility.CTPMessageBodyReader;
 import uk.gov.ons.ctp.response.action.ActionBeanMapper;
 import uk.gov.ons.ctp.response.action.representation.ActionPlanJobDTO;
 import uk.gov.ons.ctp.response.action.service.ActionPlanJobService;
+import uk.gov.ons.ctp.response.action.utility.GenericMessageBodyReader;
 import uk.gov.ons.ctp.response.action.utility.MockActionPlanJobServiceFactory;
 
 import javax.ws.rs.core.Application;
@@ -21,14 +22,14 @@ import static uk.gov.ons.ctp.response.action.utility.MockActionPlanJobServiceFac
 public class ActionPlanJobEndpointUnitTest extends CTPJerseyTest {
 
   // TODO It should be createdBy with an empty string as we expect @Size in ActionPlanJobDTO to be taken into account
-  private static final String ACTIONPLANJOB_INVALIDJSON = "{\"created\":\"\"}";
+  private static final String ACTIONPLANJOB_INVALIDJSON = "{\"createdBy\":\"\"}";
   private static final String ACTIONPLANJOB_VALIDJSON = "{\"createdBy\":\"unittest\"}";
   private static final String CREATED_DATE_TIME = "2016-03-09T11:15:48.023+0000";
   private static final String UPDATED_DATE_TIME = "2016-04-09T10:15:48.023+0000";
 
   @Override
   public Application configure() {
-    return super.init(ActionPlanJobEndpoint.class, ActionPlanJobService.class, MockActionPlanJobServiceFactory.class, new ActionBeanMapper(), new CTPMessageBodyReader<ActionPlanJobDTO>(ActionPlanJobDTO.class) {});
+    return super.init(ActionPlanJobEndpoint.class, ActionPlanJobService.class, MockActionPlanJobServiceFactory.class, new ActionBeanMapper(), new GenericMessageBodyReader<ActionPlanJobDTO>(ActionPlanJobDTO.class) {});
   }
 
   @Test
