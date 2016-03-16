@@ -25,3 +25,19 @@ curl http://localhost:8161/actionplans/1/jobs -v -X GET
 
 curl http://localhost:8161/actionplans/jobs/1 -v -X GET
 404 {"error":{"code":"RESOURCE_NOT_FOUND","timestamp":"20160315173011978","message":"ActionPlanJob not found for id 1"}}
+
+curl  -H "Accept: application/json" -H "Content-Type: application/json" http://localhost:8161/actionplans/1/jobs -v -X POST -d "{\"somebad\":\"json\"}"
+400 {"error":{"code":"VALIDATION_FAILED","timestamp":"20160316101726304","message":"Provided json is incorrect."}}
+
+curl  -H "Accept: application/json" -H "Content-Type: application/json" http://localhost:8161/actionplans/1/jobs -v -X POST -d "{\"createdBy\":\"\"}"
+TODO as 500 {"timestamp":1458123521994,"status":500,"error":"Internal Server Error","exception":"javax.ws.rs.ProcessingException","message":"javax.ws.rs.ProcessingException: Resource Java method invocation error.","path":"/actionplans/1/jobs"}
+TODO The ActionPlanDTO message body reader is used. Should be the ActionPlanJobDTO
+
+curl  -H "Accept: application/json" -H "Content-Type: application/json" http://localhost:8161/actionplans/1/jobs -v -X POST -d "{\"createdBy\":\"philippeb\"}"
+TODO as 500 {"timestamp":1458123521994,"status":500,"error":"Internal Server Error","exception":"javax.ws.rs.ProcessingException","message":"javax.ws.rs.ProcessingException: Resource Java method invocation error.","path":"/actionplans/1/jobs"}
+TODO The ActionPlanDTO message body reader is used. Should be the ActionPlanJobDTO
+
+curl  -H "Accept: application/json" -H "Content-Type: application/json" http://localhost:8161/actionplans/1/jobs -v -X POST -d "{\"createdBy\":\"philippeb\", \"state\":\"Submitted\"}"
+TODO 400 {"error":{"code":"VALIDATION_FAILED","timestamp":"20160316102612894","message":"Provided json is incorrect."}}
+TODO The ActionPlanDTO message body reader is used. Should be the ActionPlanJobDTO
+

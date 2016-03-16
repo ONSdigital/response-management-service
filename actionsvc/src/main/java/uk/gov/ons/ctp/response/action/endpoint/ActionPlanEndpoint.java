@@ -23,6 +23,7 @@ import uk.gov.ons.ctp.response.action.service.ActionPlanService;
  * The REST endpoint controller for ActionPlans.
  */
 @Path("/actionplans")
+@Consumes({ MediaType.APPLICATION_JSON})
 @Produces({MediaType.APPLICATION_JSON})
 @Slf4j
 public class ActionPlanEndpoint implements CTPEndpoint {

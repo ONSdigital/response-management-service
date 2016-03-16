@@ -18,6 +18,7 @@ import java.util.List;
  * The REST endpoint controller for ActionPlanJobs.
  */
 @Path("/actionplans")
+@Consumes({ MediaType.APPLICATION_JSON})
 @Produces({ MediaType.APPLICATION_JSON})
 @Slf4j
 public class ActionPlanJobEndpoint implements CTPEndpoint {
