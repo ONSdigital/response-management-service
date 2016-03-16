@@ -1,5 +1,6 @@
 package uk.gov.ons.ctp.response.action.endpoint;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -23,6 +24,7 @@ import uk.gov.ons.ctp.common.error.CTPException;
 import uk.gov.ons.ctp.response.action.domain.model.Action;
 import uk.gov.ons.ctp.response.action.representation.ActionDTO;
 import uk.gov.ons.ctp.response.action.service.ActionService;
+
 /**
  * The REST endpoint controller for Actions.
  */
@@ -48,8 +50,26 @@ public final class ActionEndpoint implements CTPEndpoint {
   @Path("/")
   public List<ActionDTO> findActions(@QueryParam("actiontype") final String actionType,
       @QueryParam("state") final String state) {
-    log.debug("Entering findActions with {} {}", actionType, state);
-    List<Action> actions = actionService.findActionsByTypeAndState(actionType, state);
+
+    List<Action> actions = null;
+    
+    if (actionType != null) {
+      if (state != null) {
+        log.debug("Entering findActionsByTypeAndState with {} {}", actionType, state);
+        actions = actionService.findActionsByTypeAndState(actionType, state);
+      } else {
+        log.debug("Entering findActionsByType with {}", actionType);
+        actions = actionService.findActionsByType(actionType);
+      }
+    } else {
+        if (state != null) {
+          log.debug("Entering findActionsByState with {}", state);
+          actions = actionService.findActionsByState(state);         
+        } else {
+          actions = new ArrayList<Action>();
+        }
+      }
+
     List<ActionDTO> actionDTOs = mapperFacade.mapAsList(actions, ActionDTO.class);
     return CollectionUtils.isEmpty(actionDTOs) ? null : actionDTOs;
   }

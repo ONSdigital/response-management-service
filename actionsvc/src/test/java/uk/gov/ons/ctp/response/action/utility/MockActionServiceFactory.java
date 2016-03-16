@@ -1,8 +1,5 @@
 package uk.gov.ons.ctp.response.action.utility;
 
-import static uk.gov.ons.ctp.response.action.utility.MockActionServiceFactory.ACTION2_ACTIONSTATE;
-import static uk.gov.ons.ctp.response.action.utility.MockActionServiceFactory.ACTION2_ACTIONTYPENAME;
-
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
@@ -18,7 +15,7 @@ import uk.gov.ons.ctp.response.action.service.ActionService;
 /**
  * Created by Martin.Humphrey on 26/2/2016.
  */
-public class MockActionServiceFactory implements Factory<ActionService> {
+public final class MockActionServiceFactory implements Factory<ActionService> {
 
   public static final Integer ACTION_CASEID = 124;
   public static final Integer ACTION1_PLANID = 1;
@@ -42,41 +39,97 @@ public class MockActionServiceFactory implements Factory<ActionService> {
   public static final Integer ACTIONID = 2;
   public static final Integer NON_EXISTING_ID = 998;
   public static final Integer UNCHECKED_EXCEPTION = 999;
+  public static final String ACTION_NOTFOUND = "NotFound";
   public static final String OUR_EXCEPTION_MESSAGE = "this is what we throw";
 
+  @Override
   public ActionService provide() {
 
     final ActionService mockedService = Mockito.mock(ActionService.class);
 
-    Mockito.when(mockedService.findActionsByTypeAndState(ACTION2_ACTIONTYPENAME, ACTION2_ACTIONSTATE)).thenAnswer(new Answer<List<Action>>() {
-      public List<Action> answer(InvocationOnMock invocation)
+    Mockito.when(mockedService.findActionsByTypeAndState(ACTION2_ACTIONTYPENAME, ACTION2_ACTIONSTATE))
+        .thenAnswer(new Answer<List<Action>>() {
+          public List<Action> answer(final InvocationOnMock invocation)
+              throws Throwable {
+            List<Action> result = new ArrayList<Action>();
+            result.add(new Action(2, ACTION_CASEID, ACTION2_PLANID, ACTION2_RULEID, ACTION2_ACTIONTYPENAME,
+                ACTION_CREATEDBY, ACTION2_MANUALLY_CREATED, ACTION2_PRIORITY, ACTION2_SITUATION, ACTION2_ACTIONSTATE,
+                ACTION_CREATEDDATE_TIMESTAMP, ACTION_UPDATEDDATE_TIMESTAMP));
+            return result;
+          }
+        });
+
+    Mockito.when(mockedService.findActionsByTypeAndState(ACTION_NOTFOUND, ACTION_NOTFOUND))
+        .thenAnswer(new Answer<List<Action>>() {
+          public List<Action> answer(final InvocationOnMock invocation)
+              throws Throwable {
+            return new ArrayList<Action>();
+          }
+        });
+
+    Mockito.when(mockedService.findActionsByType(ACTION2_ACTIONTYPENAME)).thenAnswer(new Answer<List<Action>>() {
+      public List<Action> answer(final InvocationOnMock invocation)
           throws Throwable {
-        String actionTypename = invocation.getArgumentAt(0, String.class);
-        String state = invocation.getArgumentAt(1,String.class);
         List<Action> result = new ArrayList<Action>();
-        result.add(new Action(2, ACTION_CASEID, ACTION2_PLANID, ACTION2_RULEID, actionTypename, ACTION_CREATEDBY, ACTION2_MANUALLY_CREATED, ACTION2_PRIORITY, ACTION2_SITUATION,state, 
-             ACTION_CREATEDDATE_TIMESTAMP, ACTION_UPDATEDDATE_TIMESTAMP));
+        result.add(new Action(2, ACTION_CASEID, ACTION2_PLANID, ACTION2_RULEID, ACTION2_ACTIONTYPENAME,
+            ACTION_CREATEDBY, ACTION2_MANUALLY_CREATED, ACTION2_PRIORITY, ACTION2_SITUATION, ACTION2_ACTIONSTATE,
+            ACTION_CREATEDDATE_TIMESTAMP, ACTION_UPDATEDDATE_TIMESTAMP));
         return result;
       }
     });
 
-    Mockito.when(mockedService.findActionsByCaseId(ACTION_CASEID)).thenAnswer(new Answer<List<Action>>() {
-      public List<Action> answer(InvocationOnMock invocation)
+    Mockito.when(mockedService.findActionsByType(ACTION_NOTFOUND)).thenAnswer(new Answer<List<Action>>() {
+      public List<Action> answer(final InvocationOnMock invocation)
+          throws Throwable {
+        return new ArrayList<Action>();
+      }
+    });
+
+    Mockito.when(mockedService.findActionsByState(ACTION2_ACTIONSTATE)).thenAnswer(new Answer<List<Action>>() {
+      public List<Action> answer(final InvocationOnMock invocation)
           throws Throwable {
         List<Action> result = new ArrayList<Action>();
-        result.add(new Action(1, ACTION_CASEID, ACTION1_PLANID, ACTION1_RULEID, ACTION1_ACTIONTYPENAME, ACTION_CREATEDBY, ACTION1_MANUALLY_CREATED, ACTION1_PRIORITY, ACTION1_SITUATION,ACTION1_ACTIONSTATE, 
-             ACTION_CREATEDDATE_TIMESTAMP, ACTION_UPDATEDDATE_TIMESTAMP));
-        result.add(new Action(2, ACTION_CASEID, ACTION2_PLANID, ACTION2_RULEID, ACTION2_ACTIONTYPENAME, ACTION_CREATEDBY, ACTION2_MANUALLY_CREATED, ACTION2_PRIORITY, ACTION2_SITUATION,ACTION2_ACTIONSTATE, 
-             ACTION_CREATEDDATE_TIMESTAMP, ACTION_UPDATEDDATE_TIMESTAMP));
+        result.add(new Action(2, ACTION_CASEID, ACTION2_PLANID, ACTION2_RULEID, ACTION2_ACTIONTYPENAME,
+            ACTION_CREATEDBY, ACTION2_MANUALLY_CREATED, ACTION2_PRIORITY, ACTION2_SITUATION, ACTION2_ACTIONSTATE,
+            ACTION_CREATEDDATE_TIMESTAMP, ACTION_UPDATEDDATE_TIMESTAMP));
         return result;
+      }
+    });
+
+    Mockito.when(mockedService.findActionsByState(ACTION_NOTFOUND)).thenAnswer(new Answer<List<Action>>() {
+      public List<Action> answer(final InvocationOnMock invocation)
+          throws Throwable {
+        return new ArrayList<Action>();
       }
     });
 
     Mockito.when(mockedService.findActionByActionId(ACTIONID)).thenAnswer(new Answer<Action>() {
-      public Action answer(InvocationOnMock invocation)
+      public Action answer(final InvocationOnMock invocation)
           throws Throwable {
-        return new Action(2, ACTION_CASEID, ACTION2_PLANID, ACTION2_RULEID, ACTION2_ACTIONTYPENAME, ACTION_CREATEDBY, ACTION2_MANUALLY_CREATED, ACTION2_PRIORITY, ACTION2_SITUATION,ACTION2_ACTIONSTATE, 
-             ACTION_CREATEDDATE_TIMESTAMP, ACTION_UPDATEDDATE_TIMESTAMP);
+        return new Action(2, ACTION_CASEID, ACTION2_PLANID, ACTION2_RULEID, ACTION2_ACTIONTYPENAME,
+            ACTION_CREATEDBY, ACTION2_MANUALLY_CREATED, ACTION2_PRIORITY, ACTION2_SITUATION, ACTION2_ACTIONSTATE,
+            ACTION_CREATEDDATE_TIMESTAMP, ACTION_UPDATEDDATE_TIMESTAMP);
+      }
+    });
+
+    Mockito.when(mockedService.findActionByActionId(NON_EXISTING_ID)).thenAnswer(new Answer<Action>() {
+      public Action answer(final InvocationOnMock invocation)
+          throws Throwable {
+        return null;
+      }
+    });
+
+    Mockito.when(mockedService.findActionsByCaseId(ACTION_CASEID)).thenAnswer(new Answer<List<Action>>() {
+      public List<Action> answer(final InvocationOnMock invocation)
+          throws Throwable {
+        List<Action> result = new ArrayList<Action>();
+        result.add(new Action(1, ACTION_CASEID, ACTION1_PLANID, ACTION1_RULEID, ACTION1_ACTIONTYPENAME,
+            ACTION_CREATEDBY, ACTION1_MANUALLY_CREATED, ACTION1_PRIORITY, ACTION1_SITUATION, ACTION1_ACTIONSTATE,
+            ACTION_CREATEDDATE_TIMESTAMP, ACTION_UPDATEDDATE_TIMESTAMP));
+        result.add(new Action(2, ACTION_CASEID, ACTION2_PLANID, ACTION2_RULEID, ACTION2_ACTIONTYPENAME,
+            ACTION_CREATEDBY, ACTION2_MANUALLY_CREATED, ACTION2_PRIORITY, ACTION2_SITUATION, ACTION2_ACTIONSTATE,
+            ACTION_CREATEDDATE_TIMESTAMP, ACTION_UPDATEDDATE_TIMESTAMP));
+        return result;
       }
     });
 
@@ -84,22 +137,16 @@ public class MockActionServiceFactory implements Factory<ActionService> {
         .thenThrow(new IllegalArgumentException(OUR_EXCEPTION_MESSAGE));
 
     Mockito.when(mockedService.findActionsByCaseId(NON_EXISTING_ID)).thenAnswer(new Answer<List<Action>>() {
-      public List<Action> answer(InvocationOnMock invocation)
+      public List<Action> answer(final InvocationOnMock invocation)
           throws Throwable {
         return new ArrayList<Action>();
-      }
-    });
-
-    Mockito.when(mockedService.findActionByActionId(NON_EXISTING_ID)).thenAnswer(new Answer<Action>() {
-      public Action answer(InvocationOnMock invocation)
-          throws Throwable {
-        return null;
       }
     });
 
     return mockedService;
   }
 
-  public void dispose(ActionService t) {
+  @Override
+  public void dispose(final ActionService t) {
   }
 }
