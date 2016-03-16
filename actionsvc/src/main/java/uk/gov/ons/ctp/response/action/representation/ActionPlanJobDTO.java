@@ -1,7 +1,9 @@
 package uk.gov.ons.ctp.response.action.representation;
 
 import lombok.Data;
-import org.hibernate.validator.constraints.NotBlank;
+
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.sql.Timestamp;
 
 /**
@@ -11,7 +13,7 @@ import java.sql.Timestamp;
 public class ActionPlanJobDTO {
   private Integer actionPlanJobId;
   private Integer actionPlanId;
-  @NotBlank
+  @NotNull @Size(min=2, max=20)
   private String createdBy;
   private String state;
   private Timestamp createdDatetime;

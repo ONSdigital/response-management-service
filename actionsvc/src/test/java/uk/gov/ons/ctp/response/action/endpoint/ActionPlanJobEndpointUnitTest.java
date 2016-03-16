@@ -20,14 +20,15 @@ import static uk.gov.ons.ctp.response.action.utility.MockActionPlanJobServiceFac
  */
 public class ActionPlanJobEndpointUnitTest extends CTPJerseyTest {
 
-  private static final String ACTIONPLANJOB_INVALIDJSON = "{\"some\":\"bad\"}";
+  // TODO It should be createdBy with an empty string as we expect @Size in ActionPlanJobDTO to be taken into account
+  private static final String ACTIONPLANJOB_INVALIDJSON = "{\"created\":\"\"}";
   private static final String ACTIONPLANJOB_VALIDJSON = "{\"createdBy\":\"unittest\"}";
   private static final String CREATED_DATE_TIME = "2016-03-09T11:15:48.023+0000";
   private static final String UPDATED_DATE_TIME = "2016-04-09T10:15:48.023+0000";
 
   @Override
   public Application configure() {
-    return super.init(ActionPlanJobEndpoint.class, ActionPlanJobService.class, MockActionPlanJobServiceFactory.class, new ActionBeanMapper(), new CTPMessageBodyReader<>(ActionPlanJobDTO.class));
+    return super.init(ActionPlanJobEndpoint.class, ActionPlanJobService.class, MockActionPlanJobServiceFactory.class, new ActionBeanMapper(), new CTPMessageBodyReader<ActionPlanJobDTO>(ActionPlanJobDTO.class) {});
   }
 
   @Test
