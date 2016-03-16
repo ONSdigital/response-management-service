@@ -12,7 +12,11 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 import uk.gov.ons.ctp.common.utility.CTPMessageBodyReader;
 import uk.gov.ons.ctp.response.action.endpoint.ActionEndpoint;
 import uk.gov.ons.ctp.response.action.endpoint.ActionPlanEndpoint;
+import uk.gov.ons.ctp.response.action.endpoint.ActionPlanJobEndpoint;
 import uk.gov.ons.ctp.response.action.representation.ActionPlanDTO;
+import uk.gov.ons.ctp.response.action.representation.ActionPlanJobDTO;
+import uk.gov.ons.ctp.response.action.utility.ActionPlanDTOBodyReader;
+import uk.gov.ons.ctp.response.action.utility.ActionPlanJobDTOBodyReader;
 
 /**
  * The 'main' entry point into the Action Service SpringBoot Application.
@@ -37,7 +41,12 @@ public class ActionSvcApplication {
       register(ActionEndpoint.class);
 
       register(ActionPlanEndpoint.class);
-      register(new CTPMessageBodyReader<>(ActionPlanDTO.class));
+      register(ActionPlanDTOBodyReader.class);
+      //register(new CTPMessageBodyReader<>(ActionPlanDTO.class));
+
+      register(ActionPlanJobEndpoint.class);
+      register(ActionPlanJobDTOBodyReader.class);
+      //register(new CTPMessageBodyReader<>(ActionPlanJobDTO.class));
 
       System.setProperty("ma.glasnost.orika.writeSourceFiles", "false");
       System.setProperty("ma.glasnost.orika.writeClassFiles", "false");
