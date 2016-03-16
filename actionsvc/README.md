@@ -37,7 +37,10 @@ curl  -H "Accept: application/json" -H "Content-Type: application/json" http://l
 TODO as 500 {"timestamp":1458123521994,"status":500,"error":"Internal Server Error","exception":"javax.ws.rs.ProcessingException","message":"javax.ws.rs.ProcessingException: Resource Java method invocation error.","path":"/actionplans/1/jobs"}
 TODO The ActionPlanDTO message body reader is used. Should be the ActionPlanJobDTO
 
+curl  -H "Accept: application/json" -H "Content-Type: application/json" http://localhost:8161/actionplans/1/jobs -v -X POST -d "{\"createdBy\":\"philippeb\", \"stater\":\"Submitted\"}"
+400 {"error":{"code":"VALIDATION_FAILED","timestamp":"20160316133843001","message":"Provided json is incorrect."}}
+
 curl  -H "Accept: application/json" -H "Content-Type: application/json" http://localhost:8161/actionplans/1/jobs -v -X POST -d "{\"createdBy\":\"philippeb\", \"state\":\"Submitted\"}"
-TODO 400 {"error":{"code":"VALIDATION_FAILED","timestamp":"20160316102612894","message":"Provided json is incorrect."}}
-TODO The ActionPlanDTO message body reader is used. Should be the ActionPlanJobDTO
+500 Hibernate exception which is good.
+
 
