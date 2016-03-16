@@ -15,7 +15,7 @@ public interface ActionRepository extends JpaRepository<Action, Integer> {
 
   /**
    * Return all actions for the specified case id.
-   * 
+   *
    * @param caseId This is the case id
    * @return List<Action> This returns all actions for the specified case id.
    */
@@ -32,7 +32,7 @@ public interface ActionRepository extends JpaRepository<Action, Integer> {
 
   /**
    * Return all actions for the specified actionTypeName.
-   * 
+   *
    * @param actionTypeName ActionTypeName filter criteria
    * @return List<Action> returns all actions for actionTypeName
    */
@@ -40,7 +40,7 @@ public interface ActionRepository extends JpaRepository<Action, Integer> {
 
   /**
    * Return all actions for the specified state.
-   * 
+   *
    * @param state State filter criteria
    * @return List<Action> returns all actions for state
    */
