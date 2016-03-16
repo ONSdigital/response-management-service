@@ -10,10 +10,7 @@ import uk.gov.ons.ctp.response.action.representation.ActionPlanJobDTO;
 import uk.gov.ons.ctp.response.action.service.ActionPlanJobService;
 
 import javax.inject.Inject;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.util.List;
 
@@ -64,5 +61,28 @@ public class ActionPlanJobEndpoint implements CTPEndpoint {
     List<ActionPlanJob> actionPlanJobs = actionPlanJobService.findActionPlanJobsForActionPlan(actionPlanId);
     List<ActionPlanJobDTO> actionPlanJobDTOs = mapperFacade.mapAsList(actionPlanJobs, ActionPlanJobDTO.class);
     return CollectionUtils.isEmpty(actionPlanJobDTOs) ? null : actionPlanJobDTOs;
+  }
+
+  /**
+   * Executes an action plan by creating an action plan job from the mandatory actionPlanId and createdBy properties.
+   * @param actionPlanId the given action plan id.
+   * @return the created action plan job
+   * @throws CTPException
+   */
+  @POST
+  @Path("/{actionplanid}/jobs")
+  public final ActionPlanJobDTO executeActionPlan(@PathParam("actionplanid") final Integer actionPlanId,
+      final ActionPlanJobDTO requestObject) throws CTPException {
+    log.debug("Entering executeActionPlan with {}", actionPlanId);
+
+    if (requestObject == null) {
+      throw new CTPException(CTPException.Fault.VALIDATION_FAILED, "Provided json is incorrect.");
+    }
+
+    ActionPlanJob actionPlanJob = actionPlanJobService.executeActionPlan(actionPlanId, requestObject);
+    if (actionPlanJob == null) {
+      throw new CTPException(CTPException.Fault.RESOURCE_NOT_FOUND, "ActionPlan not found for id %s", actionPlanId);
+    }
+    return mapperFacade.map(actionPlanJob, ActionPlanJobDTO.class);
   }
 }
