@@ -177,10 +177,8 @@ paths:
             type: array
             items:
               $ref: '#/definitions/Action'
-        404:
-           description: Case not found
-           schema:
-             $ref: '#/definitions/Error'
+        204:
+           description: No actions
         default:
           description: Unexpected error
           schema:
