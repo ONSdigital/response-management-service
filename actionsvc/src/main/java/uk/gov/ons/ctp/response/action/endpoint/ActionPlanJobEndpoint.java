@@ -64,12 +64,6 @@ public class ActionPlanJobEndpoint implements CTPEndpoint {
     return CollectionUtils.isEmpty(actionPlanJobDTOs) ? null : actionPlanJobDTOs;
   }
 
-  /**
-   * Executes an action plan by creating an action plan job from the mandatory actionPlanId and createdBy properties.
-   * @param actionPlanId the given action plan id.
-   * @return the created action plan job
-   * @throws CTPException
-   */
   @POST
   @Path("/{actionplanid}/jobs")
   public final ActionPlanJobDTO executeActionPlan(@PathParam("actionplanid") final Integer actionPlanId,
