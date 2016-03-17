@@ -8,7 +8,6 @@ import uk.gov.ons.ctp.response.action.domain.model.ActionPlan;
 import uk.gov.ons.ctp.response.action.domain.model.ActionPlanJob;
 import uk.gov.ons.ctp.response.action.domain.repository.ActionPlanJobRepository;
 import uk.gov.ons.ctp.response.action.domain.repository.ActionPlanRepository;
-import uk.gov.ons.ctp.response.action.representation.ActionPlanJobDTO;
 import uk.gov.ons.ctp.response.action.service.ActionPlanJobService;
 
 import javax.inject.Inject;
@@ -48,10 +47,9 @@ public class ActionPlanJobServiceImpl implements ActionPlanJobService {
 
   @Transactional(propagation = Propagation.REQUIRED, readOnly = false, timeout = TRANSACTION_TIMEOUT)
   @Override
-  public final ActionPlanJob executeActionPlan(final Integer actionPlanId, final ActionPlanJobDTO actionPlanJobDTO) {
+  public final ActionPlanJob executeActionPlan(final Integer actionPlanId, final ActionPlanJob actionPlanJob) {
     ActionPlan actionPlan = actionPlanRepo.findOne(actionPlanId);
     if (actionPlan != null) {
-      ActionPlanJob actionPlanJob = mapperFacade.map(actionPlanJobDTO, ActionPlanJob.class);
       actionPlanJob.setActionPlanId(actionPlanId);
       actionPlanJob.setState(SUBMITTED);
       java.util.Date nowDate = new java.util.Date();

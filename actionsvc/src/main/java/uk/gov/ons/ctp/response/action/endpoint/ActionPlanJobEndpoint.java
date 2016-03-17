@@ -81,7 +81,7 @@ public class ActionPlanJobEndpoint implements CTPEndpoint {
       throw new CTPException(CTPException.Fault.VALIDATION_FAILED, "Provided json is incorrect.");
     }
 
-    ActionPlanJob actionPlanJob = actionPlanJobService.executeActionPlan(actionPlanId, requestObject);
+    ActionPlanJob actionPlanJob = actionPlanJobService.executeActionPlan(actionPlanId, mapperFacade.map(requestObject, ActionPlanJob.class));
     if (actionPlanJob == null) {
       throw new CTPException(CTPException.Fault.RESOURCE_NOT_FOUND, "ActionPlan not found for id %s", actionPlanId);
     }

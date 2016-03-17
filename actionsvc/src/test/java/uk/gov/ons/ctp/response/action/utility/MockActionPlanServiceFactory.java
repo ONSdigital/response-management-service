@@ -11,7 +11,6 @@ import org.mockito.stubbing.Answer;
 
 import uk.gov.ons.ctp.response.action.domain.model.ActionPlan;
 import uk.gov.ons.ctp.response.action.domain.model.ActionRule;
-import uk.gov.ons.ctp.response.action.representation.ActionPlanDTO;
 import uk.gov.ons.ctp.response.action.service.ActionPlanService;
 
 import static org.mockito.Matchers.any;
@@ -108,7 +107,7 @@ public class MockActionPlanServiceFactory implements Factory<ActionPlanService> 
       }
     });
 
-    Mockito.when(mockedService.updateActionPlan(any(Integer.class), any(ActionPlanDTO.class))).thenAnswer(
+    Mockito.when(mockedService.updateActionPlan(any(Integer.class), any(ActionPlan.class))).thenAnswer(
         new Answer<ActionPlan>() {
       public ActionPlan answer(InvocationOnMock invocation)
           throws Throwable {

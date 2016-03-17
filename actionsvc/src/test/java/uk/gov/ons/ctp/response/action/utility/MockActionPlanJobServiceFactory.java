@@ -5,7 +5,6 @@ import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import uk.gov.ons.ctp.response.action.domain.model.ActionPlanJob;
-import uk.gov.ons.ctp.response.action.representation.ActionPlanJobDTO;
 import uk.gov.ons.ctp.response.action.service.ActionPlanJobService;
 
 import java.sql.Timestamp;
@@ -80,7 +79,7 @@ public class MockActionPlanJobServiceFactory implements Factory<ActionPlanJobSer
       }
     });
 
-    Mockito.when(mockedService.executeActionPlan(any(Integer.class), any(ActionPlanJobDTO.class))).thenAnswer(
+    Mockito.when(mockedService.executeActionPlan(any(Integer.class), any(ActionPlanJob.class))).thenAnswer(
         new Answer<ActionPlanJob>() {
           public ActionPlanJob answer(InvocationOnMock invocation) throws Throwable {
             return new ActionPlanJob(ACTIONPLANJOBID, ACTIONPLANJOBID_ACTIONPLANID, ACTIONPLANJOBID_CREATED_BY,
