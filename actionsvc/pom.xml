@@ -66,28 +66,6 @@
         </configuration>
       </plugin>
 
-      <!--
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>build-helper-maven-plugin</artifactId>
-        <version>1.10</version>
-        <executions>
-          <execution>
-            <id>add-source</id>
-            <phase>generate-sources</phase>
-            <goals>
-              <goal>add-source</goal>
-            </goals>
-            <configuration>
-              <sources>
-                <source>${basedir}/src/main/generated</source>
-              </sources>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-      -->
-
       <plugin>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-maven-plugin</artifactId>
@@ -127,7 +105,7 @@
             <id>test</id>
             <phase>test</phase>
             <configuration>
-              <excludes>**/messaging/**/*</excludes>
+              <excludes>**/message/**/*</excludes>
               <configLocation>http://192.168.11.11:8001/misc/checkstyle/ons_checks_sun_checks.xml</configLocation>
               <encoding>UTF-8</encoding>
               <consoleOutput>true</consoleOutput>
@@ -144,25 +122,38 @@
         <groupId>org.jvnet.jaxb2.maven2</groupId>
         <artifactId>maven-jaxb2-plugin</artifactId>
         <version>0.13.1</version>
+
         <executions>
           <execution>
-            <id>generate</id>
+            <phase>generate-sources</phase>
+            <id>inbound</id>
             <goals>
               <goal>generate</goal>
             </goals>
+            <configuration>
+              <schemaDirectory>src/main/resources/xsd</schemaDirectory>
+              <schemaIncludes>
+                <include>inBoundMessage.xsd</include>
+              </schemaIncludes>
+              <generateDirectory>${project.build.directory}/generated-sources/xjc/inbound</generateDirectory>
+            </configuration>
           </execution>
-        </executions>
-        <configuration>
-          <schemaDirectory>src/main/xsd</schemaDirectory>
-          <!--
-          <sources>
-            <source>src/main/xjb/inbound</source>
-            <source>src/main/xjb/outbound</source>
-          </sources>
-          <outputDirectory>${basedir}/src/main/generated</outputDirectory>
-          -->
-          <packageName>uk.gov.ons.ctp.response.action.messaging</packageName>
-        </configuration>
+
+          <execution>
+            <phase>generate-sources</phase>
+            <id>outbound</id>
+            <goals>
+              <goal>generate</goal>
+            </goals>
+            <configuration>
+              <schemaDirectory>src/main/resources/xsd</schemaDirectory>
+              <schemaIncludes>
+                <include>outBoundMessage.xsd</include>
+              </schemaIncludes>
+              <generateDirectory>${project.build.directory}/generated-sources/xjc/outbound</generateDirectory>
+            </configuration>
+          </execution>
+	    </executions>
       </plugin>
     </plugins>
   </build>
