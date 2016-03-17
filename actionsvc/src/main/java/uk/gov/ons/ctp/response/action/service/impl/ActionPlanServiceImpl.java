@@ -14,7 +14,6 @@ import uk.gov.ons.ctp.response.action.domain.model.ActionPlan;
 import uk.gov.ons.ctp.response.action.domain.model.ActionRule;
 import uk.gov.ons.ctp.response.action.domain.repository.ActionPlanRepository;
 import uk.gov.ons.ctp.response.action.domain.repository.ActionRuleRepository;
-import uk.gov.ons.ctp.response.action.representation.ActionPlanDTO;
 import uk.gov.ons.ctp.response.action.service.ActionPlanService;
 
 /**
@@ -56,37 +55,37 @@ public class ActionPlanServiceImpl implements ActionPlanService {
   /**
    * Implementation
    * @param actionPlanId This is the action plan id of the action plan to be updated
-   * @param actionPlanDTO This is the action plan dto containing the potentially new description and lastGoodRunDatetime
+   * @param actionPlan This is the action plan containing the potentially new description and lastGoodRunDatetime
    * @return
    */
   @Override
   @Transactional(propagation = Propagation.REQUIRED, readOnly = false, timeout = TRANSACTION_TIMEOUT)
-  public final ActionPlan updateActionPlan(final Integer actionPlanId, final ActionPlanDTO actionPlanDTO) {
+  public final ActionPlan updateActionPlan(final Integer actionPlanId, final ActionPlan actionPlan) {
     log.debug("Entering updateActionPlan with {}", actionPlanId);
-    ActionPlan actionPlan = actionPlanRepo.findOne(actionPlanId);
-    if (actionPlan != null) {
+    ActionPlan existingActionPlan = actionPlanRepo.findOne(actionPlanId);
+    if (existingActionPlan != null) {
       boolean needsUpdate = false;
 
-      String newDescription = actionPlanDTO.getDescription();
+      String newDescription = actionPlan.getDescription();
       log.debug("newDescription = {}", newDescription);
       if (newDescription != null) {
         needsUpdate = true;
-        actionPlan.setDescription(newDescription);
+        existingActionPlan.setDescription(newDescription);
       }
 
-      Date newLastGoodRunDatetime = actionPlanDTO.getLastGoodRunDatetime();
+      Date newLastGoodRunDatetime = actionPlan.getLastGoodRunDatetime();
       log.debug("newLastGoodRunDatetime = {}", newLastGoodRunDatetime);
       if (newLastGoodRunDatetime != null) {
         needsUpdate = true;
-        actionPlan.setLastGoodRunDatetime(new Timestamp(newLastGoodRunDatetime.getTime()));
+        existingActionPlan.setLastGoodRunDatetime(new Timestamp(newLastGoodRunDatetime.getTime()));
       }
 
       if (needsUpdate) {
         log.debug("about to update the action plan with id {}", actionPlanId);
-        actionPlan = actionPlanRepo.save(actionPlan);
+        existingActionPlan = actionPlanRepo.save(existingActionPlan);
       }
     }
-    return actionPlan;
+    return existingActionPlan;
   }
 
   @Override
