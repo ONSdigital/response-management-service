@@ -23,7 +23,7 @@ import uk.gov.ons.ctp.response.action.service.ActionPlanService;
  * The REST endpoint controller for ActionPlans.
  */
 @Path("/actionplans")
-@Consumes({ MediaType.APPLICATION_JSON})
+@Consumes({MediaType.APPLICATION_JSON})
 @Produces({MediaType.APPLICATION_JSON})
 @Slf4j
 public class ActionPlanEndpoint implements CTPEndpoint {
@@ -77,7 +77,6 @@ public class ActionPlanEndpoint implements CTPEndpoint {
    * @throws CTPException if the json provided is incorrect or if the action plan id does not exist.
    */
   @PUT
-  @Consumes({ MediaType.APPLICATION_JSON})
   @Path("/{actionplanid}")
   public final ActionPlanDTO updateActionPlanByActionPlanId(@PathParam("actionplanid") final Integer actionPlanId,
       final ActionPlanDTO requestObject) throws CTPException {
@@ -100,7 +99,6 @@ public class ActionPlanEndpoint implements CTPEndpoint {
    * @return a not implemented response for 2016.
    */
   @POST
-  @Consumes({ MediaType.APPLICATION_JSON})
   @Path("/")
   public final Response createActionPlan(final ActionPlanDTO requestObject) {
     return Response.status(Response.Status.NOT_IMPLEMENTED).build();
