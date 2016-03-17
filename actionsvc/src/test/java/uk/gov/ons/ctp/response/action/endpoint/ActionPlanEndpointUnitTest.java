@@ -6,8 +6,8 @@ import org.junit.Test;
 import org.springframework.http.HttpStatus;
 
 import uk.gov.ons.ctp.common.error.CTPException;
+import uk.gov.ons.ctp.common.jaxrs.CTPMessageBodyReader;
 import uk.gov.ons.ctp.common.jersey.CTPJerseyTest;
-import uk.gov.ons.ctp.common.utility.CTPMessageBodyReader;
 import uk.gov.ons.ctp.response.action.ActionBeanMapper;
 import uk.gov.ons.ctp.response.action.representation.ActionPlanDTO;
 import uk.gov.ons.ctp.response.action.service.ActionPlanService;
