@@ -9,3 +9,34 @@ databaseChangeLog:
               comment: rename provider column to handler
               path: rename-provider.sql
               relativeToChangelogFile: true
+
+
+  - changeSet:
+      id: 8.13.0-2
+      author: sarahr
+      changes:
+          - sqlFile:
+              comment: function for creation_ of actions
+              path: function-createactions.sql
+              relativeToChangelogFile: true
+              splitStatements: false
+
+
+  - changeSet:
+      id: 8.13.0-3
+      author: martinh
+      changes:
+          - sqlFile:
+              comment: create actionplanjobid sequence
+              path: actionplanjobid-sequence.sql
+              relativeToChangelogFile: true
+
+
+  - changeSet:
+      id: 8.13.0-4
+      author: martinh
+      changes:
+          - sqlFile:
+              comment: apply actionplanjobid sequence
+              path: actionplanjobid-sequence-apply.sql
+              relativeToChangelogFile: true

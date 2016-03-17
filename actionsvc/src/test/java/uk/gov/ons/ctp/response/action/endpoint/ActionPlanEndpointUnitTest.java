@@ -28,7 +28,7 @@ public class ActionPlanEndpointUnitTest extends CTPJerseyTest {
 
   @Override
   public Application configure() {
-    return super.init(ActionPlanEndpoint.class, ActionPlanService.class, MockActionPlanServiceFactory.class, new ActionBeanMapper(), new CTPMessageBodyReader<>(ActionPlanDTO.class));
+    return super.init(ActionPlanEndpoint.class, ActionPlanService.class, MockActionPlanServiceFactory.class, new ActionBeanMapper(), new CTPMessageBodyReader<ActionPlanDTO>(ActionPlanDTO.class) {});
   }
 
   @Test

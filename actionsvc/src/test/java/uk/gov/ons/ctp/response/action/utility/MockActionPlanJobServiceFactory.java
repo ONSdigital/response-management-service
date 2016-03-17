@@ -5,11 +5,14 @@ import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import uk.gov.ons.ctp.response.action.domain.model.ActionPlanJob;
+import uk.gov.ons.ctp.response.action.representation.ActionPlanJobDTO;
 import uk.gov.ons.ctp.response.action.service.ActionPlanJobService;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
+
+import static org.mockito.Matchers.any;
 
 /**
  * Created by philippe.brossier on 3/15/16.
@@ -31,6 +34,7 @@ public class MockActionPlanJobServiceFactory implements Factory<ActionPlanJobSer
   public static final Integer ACTIONPLANID_WITHNOACTIONPLANJOB = 13;
 
   public static final String OUR_EXCEPTION_MESSAGE = "this is what we throw";
+  public static final String PROVIDED_JSON_INCORRECT = "Provided json is incorrect.";
 
   public ActionPlanJobService provide() {
     final ActionPlanJobService mockedService = Mockito.mock(ActionPlanJobService.class);
@@ -73,6 +77,14 @@ public class MockActionPlanJobServiceFactory implements Factory<ActionPlanJobSer
         result.add(new ActionPlanJob(3, ACTIONPLANJOBID_ACTIONPLANID, ACTIONPLANJOBID_CREATED_BY,
             ACTIONPLANJOBID_STATE, ACTIONPLANJOBID_CREATEDDATE_TIMESTAMP, ACTIONPLANJOBID_UPDATED_DATE_TIMESTAMP));
         return result;
+      }
+    });
+
+    Mockito.when(mockedService.executeActionPlan(any(Integer.class), any(ActionPlanJobDTO.class))).thenAnswer(
+        new Answer<ActionPlanJob>() {
+          public ActionPlanJob answer(InvocationOnMock invocation) throws Throwable {
+            return new ActionPlanJob(ACTIONPLANJOBID, ACTIONPLANJOBID_ACTIONPLANID, ACTIONPLANJOBID_CREATED_BY,
+            ACTIONPLANJOBID_STATE, ACTIONPLANJOBID_CREATEDDATE_TIMESTAMP, ACTIONPLANJOBID_UPDATED_DATE_TIMESTAMP);
       }
     });
 

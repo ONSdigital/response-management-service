@@ -4,17 +4,19 @@ import static uk.gov.ons.ctp.response.action.utility.MockActionServiceFactory.AC
 import static uk.gov.ons.ctp.response.action.utility.MockActionServiceFactory.ACTION1_ACTIONTYPENAME;
 import static uk.gov.ons.ctp.response.action.utility.MockActionServiceFactory.ACTION1_PLANID;
 import static uk.gov.ons.ctp.response.action.utility.MockActionServiceFactory.ACTION1_PRIORITY;
+import static uk.gov.ons.ctp.response.action.utility.MockActionServiceFactory.ACTION1_RULEID;
 import static uk.gov.ons.ctp.response.action.utility.MockActionServiceFactory.ACTION1_SITUATION;
 import static uk.gov.ons.ctp.response.action.utility.MockActionServiceFactory.ACTION2_ACTIONSTATE;
 import static uk.gov.ons.ctp.response.action.utility.MockActionServiceFactory.ACTION2_ACTIONTYPENAME;
 import static uk.gov.ons.ctp.response.action.utility.MockActionServiceFactory.ACTION2_PLANID;
-import static uk.gov.ons.ctp.response.action.utility.MockActionServiceFactory.ACTION2_RULEID;
 import static uk.gov.ons.ctp.response.action.utility.MockActionServiceFactory.ACTION2_PRIORITY;
+import static uk.gov.ons.ctp.response.action.utility.MockActionServiceFactory.ACTION2_RULEID;
 import static uk.gov.ons.ctp.response.action.utility.MockActionServiceFactory.ACTION2_SITUATION;
 import static uk.gov.ons.ctp.response.action.utility.MockActionServiceFactory.ACTIONID;
 import static uk.gov.ons.ctp.response.action.utility.MockActionServiceFactory.ACTION_CASEID;
 import static uk.gov.ons.ctp.response.action.utility.MockActionServiceFactory.ACTION_CREATEDBY;
 import static uk.gov.ons.ctp.response.action.utility.MockActionServiceFactory.ACTION_CREATEDDATE_VALUE;
+import static uk.gov.ons.ctp.response.action.utility.MockActionServiceFactory.ACTION_NOTFOUND;
 import static uk.gov.ons.ctp.response.action.utility.MockActionServiceFactory.NON_EXISTING_ID;
 import static uk.gov.ons.ctp.response.action.utility.MockActionServiceFactory.OUR_EXCEPTION_MESSAGE;
 import static uk.gov.ons.ctp.response.action.utility.MockActionServiceFactory.UNCHECKED_EXCEPTION;
@@ -42,7 +44,7 @@ public final class ActionEndpointUnitTest extends CTPJerseyTest {
   }
 
   /**
-   * Test requesting Actions filtered by action type name and state found
+   * Test requesting Actions filtered by action type name and state found.
    */
   @Test
   public void findActionsByActionTypeAndStateFound() {
@@ -62,115 +64,101 @@ public final class ActionEndpointUnitTest extends CTPJerseyTest {
   }
 
   /**
-   * Test requesting Actions filtered by action type name not found
+   * Test requesting Actions filtered by action type name and state not found.
    */
-/*  @Test
+  @Test
   public void findActionsByActionTypeAndStateNotFound() {
-    with("http://localhost:9998/actions?actiontype=%s&state=%s", ACTION2_ACTIONTYPENAME, ACTION2_ACTIONSTATE)
+    with("http://localhost:9998/actions?actiontype=%s&state=%s", ACTION_NOTFOUND, ACTION_NOTFOUND)
         .assertResponseCodeIs(HttpStatus.NO_CONTENT)
         .assertResponseLengthIs(-1)
         .andClose();
-  } 
-*/
+  }
+
   /**
-   * Test requesting Actions filtered by action type name found
+   * Test requesting Actions filtered by action type name found.
    */
-/*  @Test
+  @Test
   public void findActionsByActionTypeFound() {
     with("http://localhost:9998/actions?actiontype=%s", ACTION2_ACTIONTYPENAME)
         .assertResponseCodeIs(HttpStatus.OK)
-        .assertIntegerInBody("$.actionId", ACTIONID)
-        .assertIntegerInBody("$.caseId", ACTION_CASEID)
-        .assertIntegerInBody("$.actionPlanId", ACTION2_PLANID)
-        .assertStringInBody("$.state", ACTION2_ACTIONSTATE)
-        .assertStringInBody("$.actionTypeName", ACTION2_ACTIONTYPENAME)
-        .assertStringInBody("$.priority", ACTION2_PRIORITY)
-        .assertStringInBody("$.situation", ACTION2_SITUATION)
-        .assertStringInBody("$.createdDatetime", ACTION_CREATEDDATE_VALUE)
-        .assertStringInBody("$.createdBy", ACTION_CREATEDBY)
+        .assertIntegerListInBody("$..actionId", ACTIONID)
+        .assertIntegerListInBody("$..caseId", ACTION_CASEID)
+        .assertIntegerListInBody("$..actionPlanId", ACTION2_PLANID)
+        .assertIntegerListInBody("$..actionRuleId", ACTION2_RULEID)
+        .assertStringListInBody("$..actionTypeName", ACTION2_ACTIONTYPENAME)
+        .assertStringListInBody("$..createdBy", ACTION_CREATEDBY)
+        .assertStringListInBody("$..priority", ACTION2_PRIORITY)
+        .assertStringListInBody("$..situation", ACTION2_SITUATION)
+        .assertStringListInBody("$..state", ACTION2_ACTIONSTATE)
+        .assertStringListInBody("$..createdDatetime", ACTION_CREATEDDATE_VALUE)
         .andClose();
   }
-*/
+
   /**
-   * Test requesting Actions filtered by action type name not found
+   * Test requesting Actions filtered by action type name not found.
    */
-/*  @Test
+  @Test
   public void findActionsByActionTypeNotFound() {
-    with("http://localhost:9998/actions?actiontype=%s", ACTION2_ACTIONTYPENAME)
+    with("http://localhost:9998/actions?actiontype=%s", ACTION_NOTFOUND)
         .assertResponseCodeIs(HttpStatus.NO_CONTENT)
         .assertResponseLengthIs(-1)
         .andClose();
   }
-*/
+
   /**
-   * Test requesting Actions filtered by state found
+   * Test requesting Actions filtered by action state found.
    */
- /* @Test
+  @Test
   public void findActionsByStateFound() {
     with("http://localhost:9998/actions?state=%s", ACTION2_ACTIONSTATE)
         .assertResponseCodeIs(HttpStatus.OK)
-        .assertIntegerInBody("$.actionId", ACTIONID)
-        .assertIntegerInBody("$.caseId", ACTION_CASEID)
-        .assertIntegerInBody("$.actionPlanId", ACTION2_PLANID)
-        .assertStringInBody("$.state", ACTION2_ACTIONSTATE)
-        .assertStringInBody("$.actionTypeName", ACTION2_ACTIONTYPENAME)
-        .assertStringInBody("$.priority", ACTION2_PRIORITY)
-        .assertStringInBody("$.situation", ACTION2_SITUATION)
-        .assertStringInBody("$.createdDatetime", ACTION_CREATEDDATE_VALUE)
-        .assertStringInBody("$.createdBy", ACTION_CREATEDBY)
+        .assertIntegerListInBody("$..actionId", ACTIONID)
+        .assertIntegerListInBody("$..caseId", ACTION_CASEID)
+        .assertIntegerListInBody("$..actionPlanId", ACTION2_PLANID)
+        .assertIntegerListInBody("$..actionRuleId", ACTION2_RULEID)
+        .assertStringListInBody("$..actionTypeName", ACTION2_ACTIONTYPENAME)
+        .assertStringListInBody("$..createdBy", ACTION_CREATEDBY)
+        .assertStringListInBody("$..priority", ACTION2_PRIORITY)
+        .assertStringListInBody("$..situation", ACTION2_SITUATION)
+        .assertStringListInBody("$..state", ACTION2_ACTIONSTATE)
+        .assertStringListInBody("$..createdDatetime", ACTION_CREATEDDATE_VALUE)
         .andClose();
   }
-*/
+
   /**
-   * Test requesting Actions filtered by state not found
+   * Test requesting Actions filtered by action state not found.
    */
-/*  @Test
+  @Test
   public void findActionsByStateNotFound() {
-    with("http://localhost:9998/actions?state=%s", ACTION2_ACTIONTYPENAME)
+    with("http://localhost:9998/actions?state=%s", ACTION_NOTFOUND)
         .assertResponseCodeIs(HttpStatus.NO_CONTENT)
         .assertResponseLengthIs(-1)
         .andClose();
   }
-*/
-/*  @Test
-  public void findActionsByCaseIdFound() {
-    with("http://localhost:9998/actions/case/%s", ACTION_CASEID)
-        .assertResponseCodeIs(HttpStatus.OK)
-        .assertArrayLengthInBodyIs(2)
-        .assertIntegerOccursThroughoutListInBody("$..caseId", ACTION_CASEID)
-        .assertIntegerListInBody("$..actionPlanId", ACTION1_PLANID, ACTION2_PLANID)
-        .assertStringListInBody("$..state", ACTION1_ACTIONSTATE, ACTION2_ACTIONSTATE)
-        .assertStringListInBody("$..actionTypeName", ACTION1_ACTIONTYPENAME, ACTION2_ACTIONTYPENAME)
-        .assertStringListInBody("$..priority", ACTION1_PRIORITY, ACTION2_PRIORITY)
-        .assertStringOccursThroughoutListInBody("$..createdDatetime", ACTION_CREATEDDATE_VALUE)
-        .assertStringOccursThroughoutListInBody("$..createdBy", ACTION_CREATEDBY)
-        .andClose();
-  }
-*/
- /* @Test
+
+  /**
+   * Test requesting Actions by action Id found.
+   */
+  @Test
   public void findActionByActionIdFound() {
     with("http://localhost:9998/actions/%s", ACTIONID)
         .assertResponseCodeIs(HttpStatus.OK)
         .assertIntegerInBody("$.actionId", ACTIONID)
         .assertIntegerInBody("$.caseId", ACTION_CASEID)
         .assertIntegerInBody("$.actionPlanId", ACTION2_PLANID)
-        .assertStringInBody("$.state", ACTION2_ACTIONSTATE)
+        .assertIntegerInBody("$.actionRuleId", ACTION2_RULEID)
         .assertStringInBody("$.actionTypeName", ACTION2_ACTIONTYPENAME)
+        .assertStringInBody("$.createdBy", ACTION_CREATEDBY)
         .assertStringInBody("$.priority", ACTION2_PRIORITY)
         .assertStringInBody("$.situation", ACTION2_SITUATION)
+        .assertStringInBody("$.state", ACTION2_ACTIONSTATE)
         .assertStringInBody("$.createdDatetime", ACTION_CREATEDDATE_VALUE)
-        .assertStringInBody("$.createdBy", ACTION_CREATEDBY)
-        .andClose();
-  }
-*/
-  @Test
-  public void findActionByCaseIdNotFound() {
-    with("http://localhost:9998/actions/case/%s", NON_EXISTING_ID)
-        .assertResponseCodeIs(HttpStatus.NO_CONTENT)
-        .assertResponseLengthIs(-1)
         .andClose();
   }
 
+  /**
+   * Test requesting Actions by action Id not found.
+   */
   @Test
   public void findActionByActionIdNotFound() {
     with("http://localhost:9998/actions/%s", NON_EXISTING_ID)
@@ -178,6 +166,32 @@ public final class ActionEndpointUnitTest extends CTPJerseyTest {
         .assertFaultIs(CTPException.Fault.RESOURCE_NOT_FOUND)
         .assertTimestampExists()
         .assertMessageEquals("Action not found for id %s", NON_EXISTING_ID)
+        .andClose();
+  }
+
+  
+  @Test
+  public void findActionsByCaseIdFound() {
+    with("http://localhost:9998/actions/case/%s", ACTION_CASEID)
+    .assertResponseCodeIs(HttpStatus.OK)
+    .assertIntegerListInBody("$..actionId", new Integer(1), new Integer(2))
+    .assertIntegerListInBody("$..caseId", ACTION_CASEID, ACTION_CASEID)
+    .assertIntegerListInBody("$..actionPlanId", ACTION1_PLANID, ACTION2_PLANID)
+    .assertIntegerListInBody("$..actionRuleId", ACTION1_RULEID, ACTION2_RULEID)
+    .assertStringListInBody("$..actionTypeName", ACTION1_ACTIONTYPENAME, ACTION2_ACTIONTYPENAME)
+    .assertStringListInBody("$..createdBy", ACTION_CREATEDBY, ACTION_CREATEDBY)
+    .assertStringListInBody("$..priority", ACTION1_PRIORITY, ACTION2_PRIORITY)
+    .assertStringListInBody("$..situation", ACTION1_SITUATION, ACTION2_SITUATION)
+    .assertStringListInBody("$..state", ACTION1_ACTIONSTATE, ACTION2_ACTIONSTATE)
+    .assertStringListInBody("$..createdDatetime", ACTION_CREATEDDATE_VALUE, ACTION_CREATEDDATE_VALUE)
+    .andClose();
+  }
+
+  @Test
+  public void findActionByCaseIdNotFound() {
+    with("http://localhost:9998/actions/case/%s", NON_EXISTING_ID)
+        .assertResponseCodeIs(HttpStatus.NO_CONTENT)
+        .assertResponseLengthIs(-1)
         .andClose();
   }
 

@@ -11,7 +11,7 @@ info:
     a day, when a certain action should be taken. action plans are applied to open cases to create
     actions. Once an action is created it is forwarded to an appropriate remote handler service to be
     completed.
-  version: 8.12.0
+  version: 8.13.0
 schemes:
   - http
 basePath: /
@@ -177,10 +177,8 @@ paths:
             type: array
             items:
               $ref: '#/definitions/Action'
-        404:
-           description: Case not found
-           schema:
-             $ref: '#/definitions/Error'
+        204:
+           description: No actions
         default:
           description: Unexpected error
           schema:

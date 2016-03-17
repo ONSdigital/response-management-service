@@ -10,17 +10,35 @@ import uk.gov.ons.ctp.response.action.domain.model.Action;
  * on the Action entity model.
  */
 public interface ActionService extends CTPService {
-  
+
   /**
-   * Find Actions filtered by ActionType and. or state.
-   * @param actionType Action type name by which to filter
+   * Find Actions filtered by ActionType and state.
+   *
+   * @param actionTypeName Action type name by which to filter
    * @param state State by which to filter
-   * @return List<Action> List of Actions or empty List 
+   * @return List<Action> List of Actions or empty List
    */
   List<Action> findActionsByTypeAndState(String actionTypeName, String state);
 
   /**
+   * Find Actions filtered by ActionType.
+   *
+   * @param actionTypeName Action type name by which to filter
+   * @return List<Action> List of Actions or empty List
+   */
+  List<Action> findActionsByType(String actionTypeName);
+
+  /**
+   * Find Actions filtered by state.
+   *
+   * @param state State by which to filter
+   * @return List<Action> List of Actions or empty List
+   */
+  List<Action> findActionsByState(String state);
+
+  /**
    * Find Action entity by specified action id.
+   *
    * @param actionId This is the action id
    * @return Action Returns the action for the specified action id.
    */
@@ -28,6 +46,7 @@ public interface ActionService extends CTPService {
 
   /**
    * Find all actions for the specified Case Id.
+   *
    * @param caseId This is the case id
    * @return List<Action> Returns all actions for the specified Case Id.
    */

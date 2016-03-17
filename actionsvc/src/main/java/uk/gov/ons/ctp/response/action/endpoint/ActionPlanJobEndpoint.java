@@ -65,9 +65,10 @@ public class ActionPlanJobEndpoint implements CTPEndpoint {
   }
 
   /**
-   * Executes an action plan by creating an action plan job from the mandatory actionPlanId and createdBy properties.
+   * To create a new Action Plan Job having received an action plan id and some json
    * @param actionPlanId the given action plan id.
-   * @return the created action plan job
+   * @param requestObject the ActionPlanJobDTO representation of the provided json
+   * @return the created ActionPlanJobDTO
    * @throws CTPException
    */
   @POST
