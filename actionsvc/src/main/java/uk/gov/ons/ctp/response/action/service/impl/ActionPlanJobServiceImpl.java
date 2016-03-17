@@ -24,7 +24,7 @@ import java.util.List;
 public class ActionPlanJobServiceImpl implements ActionPlanJobService {
 
   private static final int TRANSACTION_TIMEOUT = 30;
-  private static final String SUBMITTED = "Submitted";
+  private static final String SUBMITTED = "SUBMITTED";
 
   @Inject
   private ActionPlanRepository actionPlanRepo;

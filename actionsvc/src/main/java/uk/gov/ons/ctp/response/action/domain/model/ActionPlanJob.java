@@ -19,7 +19,8 @@ import java.sql.Timestamp;
 public class ActionPlanJob {
 
   @Id
-  @GeneratedValue
+  @GeneratedValue(strategy=GenerationType.AUTO, generator="actionplanjobseq_gen")
+  @SequenceGenerator(name="actionplanjobseq_gen", sequenceName="action.actionplanjobseq")
   @Column(name = "actionplanjobid")
   private Integer actionPlanJobId;
 
