@@ -8,7 +8,6 @@ import uk.gov.ons.ctp.common.utility.CTPMessageBodyReader;
 import uk.gov.ons.ctp.response.action.ActionBeanMapper;
 import uk.gov.ons.ctp.response.action.representation.ActionPlanJobDTO;
 import uk.gov.ons.ctp.response.action.service.ActionPlanJobService;
-import uk.gov.ons.ctp.response.action.utility.GenericMessageBodyReader;
 import uk.gov.ons.ctp.response.action.utility.MockActionPlanJobServiceFactory;
 
 import javax.ws.rs.core.Application;
@@ -29,7 +28,7 @@ public class ActionPlanJobEndpointUnitTest extends CTPJerseyTest {
 
   @Override
   public Application configure() {
-    return super.init(ActionPlanJobEndpoint.class, ActionPlanJobService.class, MockActionPlanJobServiceFactory.class, new ActionBeanMapper(), new GenericMessageBodyReader<ActionPlanJobDTO>(ActionPlanJobDTO.class) {});
+    return super.init(ActionPlanJobEndpoint.class, ActionPlanJobService.class, MockActionPlanJobServiceFactory.class, new ActionBeanMapper(), new CTPMessageBodyReader<ActionPlanJobDTO>(ActionPlanJobDTO.class) {});
   }
 
   @Test

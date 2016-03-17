@@ -36,19 +36,19 @@ public class ActionPlanJobServiceImpl implements ActionPlanJobService {
   private MapperFacade mapperFacade;
 
   @Override
-  public ActionPlanJob findActionPlanJob(Integer actionPlanJobId) {
+  public final ActionPlanJob findActionPlanJob(final Integer actionPlanJobId) {
     log.debug("Entering findActionPlanJob with {}", actionPlanJobId);
     return actionPlanJobRepo.findOne(actionPlanJobId);
   }
 
   @Override
-  public List<ActionPlanJob> findActionPlanJobsForActionPlan(Integer actionPlanId) {
+  public final List<ActionPlanJob> findActionPlanJobsForActionPlan(final Integer actionPlanId) {
     return actionPlanJobRepo.findByActionPlanId(actionPlanId);
   }
 
   @Transactional(propagation = Propagation.REQUIRED, readOnly = false, timeout = TRANSACTION_TIMEOUT)
   @Override
-  public ActionPlanJob executeActionPlan(Integer actionPlanId, ActionPlanJobDTO actionPlanJobDTO) {
+  public final ActionPlanJob executeActionPlan(final Integer actionPlanId, final ActionPlanJobDTO actionPlanJobDTO) {
     ActionPlan actionPlan = actionPlanRepo.findOne(actionPlanId);
     if (actionPlan != null) {
       ActionPlanJob actionPlanJob = mapperFacade.map(actionPlanJobDTO, ActionPlanJob.class);
