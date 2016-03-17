@@ -21,7 +21,7 @@ import static uk.gov.ons.ctp.response.action.utility.MockActionPlanJobServiceFac
  */
 public class ActionPlanJobEndpointUnitTest extends CTPJerseyTest {
 
-  // TODO It should be createdBy with an empty string as we expect @Size in ActionPlanJobDTO to be taken into account
+  // invalid as createdBy can NOT be empty
   private static final String ACTIONPLANJOB_INVALIDJSON = "{\"createdBy\":\"\"}";
   private static final String ACTIONPLANJOB_VALIDJSON = "{\"createdBy\":\"unittest\"}";
   private static final String CREATED_DATE_TIME = "2016-03-09T11:15:48.023+0000";
