@@ -59,7 +59,7 @@ public final class ActionEndpointUnitTest extends CTPJerseyTest {
         .assertStringListInBody("$..priority", ACTION2_PRIORITY)
         .assertStringListInBody("$..situation", ACTION2_SITUATION)
         .assertStringListInBody("$..state", ACTION2_ACTIONSTATE)
-        .assertStringListInBody("$..createdDatetime", ACTION_CREATEDDATE_VALUE)
+        .assertStringListInBody("$..createdDateTime", ACTION_CREATEDDATE_VALUE)
         .andClose();
   }
 
@@ -90,7 +90,7 @@ public final class ActionEndpointUnitTest extends CTPJerseyTest {
         .assertStringListInBody("$..priority", ACTION2_PRIORITY)
         .assertStringListInBody("$..situation", ACTION2_SITUATION)
         .assertStringListInBody("$..state", ACTION2_ACTIONSTATE)
-        .assertStringListInBody("$..createdDatetime", ACTION_CREATEDDATE_VALUE)
+        .assertStringListInBody("$..createdDateTime", ACTION_CREATEDDATE_VALUE)
         .andClose();
   }
 
@@ -121,7 +121,7 @@ public final class ActionEndpointUnitTest extends CTPJerseyTest {
         .assertStringListInBody("$..priority", ACTION2_PRIORITY)
         .assertStringListInBody("$..situation", ACTION2_SITUATION)
         .assertStringListInBody("$..state", ACTION2_ACTIONSTATE)
-        .assertStringListInBody("$..createdDatetime", ACTION_CREATEDDATE_VALUE)
+        .assertStringListInBody("$..createdDateTime", ACTION_CREATEDDATE_VALUE)
         .andClose();
   }
 
@@ -152,7 +152,7 @@ public final class ActionEndpointUnitTest extends CTPJerseyTest {
         .assertStringInBody("$.priority", ACTION2_PRIORITY)
         .assertStringInBody("$.situation", ACTION2_SITUATION)
         .assertStringInBody("$.state", ACTION2_ACTIONSTATE)
-        .assertStringInBody("$.createdDatetime", ACTION_CREATEDDATE_VALUE)
+        .assertStringInBody("$.createdDateTime", ACTION_CREATEDDATE_VALUE)
         .andClose();
   }
 
@@ -183,7 +183,7 @@ public final class ActionEndpointUnitTest extends CTPJerseyTest {
     .assertStringListInBody("$..priority", ACTION1_PRIORITY, ACTION2_PRIORITY)
     .assertStringListInBody("$..situation", ACTION1_SITUATION, ACTION2_SITUATION)
     .assertStringListInBody("$..state", ACTION1_ACTIONSTATE, ACTION2_ACTIONSTATE)
-    .assertStringListInBody("$..createdDatetime", ACTION_CREATEDDATE_VALUE, ACTION_CREATEDDATE_VALUE)
+    .assertStringListInBody("$..createdDateTime", ACTION_CREATEDDATE_VALUE, ACTION_CREATEDDATE_VALUE)
     .andClose();
   }
 
