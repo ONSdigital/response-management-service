@@ -27,8 +27,10 @@ import org.junit.Test;
 import org.springframework.http.HttpStatus;
 
 import uk.gov.ons.ctp.common.error.CTPException;
+import uk.gov.ons.ctp.common.jaxrs.CTPMessageBodyReader;
 import uk.gov.ons.ctp.common.jersey.CTPJerseyTest;
 import uk.gov.ons.ctp.response.action.ActionBeanMapper;
+import uk.gov.ons.ctp.response.action.representation.ActionDTO;
 import uk.gov.ons.ctp.response.action.service.ActionService;
 import uk.gov.ons.ctp.response.action.utility.MockActionServiceFactory;
 
@@ -37,10 +39,33 @@ import uk.gov.ons.ctp.response.action.utility.MockActionServiceFactory;
  */
 public final class ActionEndpointUnitTest extends CTPJerseyTest {
 
+  private static final String ACTION_VALIDJSON = "{\"caseId\": " + ACTION_CASEID + ","
+      + "\"actionPlanId\": " + ACTION2_PLANID + ","
+      + "\"actionRuleId\": " + ACTION2_RULEID + ","
+      + "\"actionTypeName\": \"" + ACTION2_ACTIONTYPENAME + "\","
+      + "\"createdBy\": \"" + ACTION_CREATEDBY + "\","
+      + "\"priority\": " + ACTION2_PRIORITY + ","
+      + "\"state\": \"" + ACTION2_ACTIONSTATE + "\"}";
+
+  private static final String ACTION_INVALIDJSON_PROP = "{\"caseId\": " + ACTION_CASEID + ","
+      + "\"actionPlanId\": " + ACTION2_PLANID + ","
+      + "\"actionRuleId\": " + ACTION2_RULEID + ","
+      + "\"actionTypename\": \"" + ACTION2_ACTIONTYPENAME + "\","
+      + "\"createdBy\": \"" + ACTION_CREATEDBY + "\","
+      + "\"priority\": " + ACTION2_PRIORITY + ","
+      + "\"state\": \"" + ACTION2_ACTIONSTATE + "\"}";
+
+  private static final String ACTION_INVALIDJSON_MISSING_PROP = "{\"caseId\": " + ACTION_CASEID + ","
+      + "\"actionRuleId\": " + ACTION2_RULEID + ","
+      + "\"actionTypeName\": \"" + ACTION2_ACTIONTYPENAME + "\","
+      + "\"createdBy\": " + ACTION_CREATEDBY + ","
+      + "\"priority\": " + ACTION2_PRIORITY + ","
+      + "\"state\": \"" + ACTION2_ACTIONSTATE + "\"}";
+
   @Override
   public Application configure() {
     return super.init(ActionEndpoint.class, ActionService.class, MockActionServiceFactory.class,
-        new ActionBeanMapper());
+        new ActionBeanMapper(), new CTPMessageBodyReader<ActionDTO>(ActionDTO.class));
   }
 
   /**
@@ -137,7 +162,7 @@ public final class ActionEndpointUnitTest extends CTPJerseyTest {
   }
 
   /**
-   * Test requesting Actions by action Id found.
+   * Test requesting an Action by action Id found.
    */
   @Test
   public void findActionByActionIdFound() {
@@ -157,7 +182,7 @@ public final class ActionEndpointUnitTest extends CTPJerseyTest {
   }
 
   /**
-   * Test requesting Actions by action Id not found.
+   * Test requesting an Action by action Id not found.
    */
   @Test
   public void findActionByActionIdNotFound() {
@@ -169,24 +194,29 @@ public final class ActionEndpointUnitTest extends CTPJerseyTest {
         .andClose();
   }
 
-  
+  /**
+   * Test requesting Actions by case Id found.
+   */
   @Test
   public void findActionsByCaseIdFound() {
     with("http://localhost:9998/actions/case/%s", ACTION_CASEID)
-    .assertResponseCodeIs(HttpStatus.OK)
-    .assertIntegerListInBody("$..actionId", new Integer(1), new Integer(2))
-    .assertIntegerListInBody("$..caseId", ACTION_CASEID, ACTION_CASEID)
-    .assertIntegerListInBody("$..actionPlanId", ACTION1_PLANID, ACTION2_PLANID)
-    .assertIntegerListInBody("$..actionRuleId", ACTION1_RULEID, ACTION2_RULEID)
-    .assertStringListInBody("$..actionTypeName", ACTION1_ACTIONTYPENAME, ACTION2_ACTIONTYPENAME)
-    .assertStringListInBody("$..createdBy", ACTION_CREATEDBY, ACTION_CREATEDBY)
-    .assertStringListInBody("$..priority", ACTION1_PRIORITY, ACTION2_PRIORITY)
-    .assertStringListInBody("$..situation", ACTION1_SITUATION, ACTION2_SITUATION)
-    .assertStringListInBody("$..state", ACTION1_ACTIONSTATE, ACTION2_ACTIONSTATE)
-    .assertStringListInBody("$..createdDateTime", ACTION_CREATEDDATE_VALUE, ACTION_CREATEDDATE_VALUE)
-    .andClose();
+        .assertResponseCodeIs(HttpStatus.OK)
+        .assertIntegerListInBody("$..actionId", new Integer(1), new Integer(2))
+        .assertIntegerListInBody("$..caseId", ACTION_CASEID, ACTION_CASEID)
+        .assertIntegerListInBody("$..actionPlanId", ACTION1_PLANID, ACTION2_PLANID)
+        .assertIntegerListInBody("$..actionRuleId", ACTION1_RULEID, ACTION2_RULEID)
+        .assertStringListInBody("$..actionTypeName", ACTION1_ACTIONTYPENAME, ACTION2_ACTIONTYPENAME)
+        .assertStringListInBody("$..createdBy", ACTION_CREATEDBY, ACTION_CREATEDBY)
+        .assertStringListInBody("$..priority", ACTION1_PRIORITY, ACTION2_PRIORITY)
+        .assertStringListInBody("$..situation", ACTION1_SITUATION, ACTION2_SITUATION)
+        .assertStringListInBody("$..state", ACTION1_ACTIONSTATE, ACTION2_ACTIONSTATE)
+        .assertStringListInBody("$..createdDateTime", ACTION_CREATEDDATE_VALUE, ACTION_CREATEDDATE_VALUE)
+        .andClose();
   }
 
+  /**
+   * Test requesting Actions by case Id not found.
+   */
   @Test
   public void findActionByCaseIdNotFound() {
     with("http://localhost:9998/actions/case/%s", NON_EXISTING_ID)
@@ -195,6 +225,9 @@ public final class ActionEndpointUnitTest extends CTPJerseyTest {
         .andClose();
   }
 
+  /**
+   * Test requesting an Action creating an Unchecked Exception.
+   */
   @Test
   public void findActionByActionIdUnCheckedException() {
     with("http://localhost:9998/actions/%s", UNCHECKED_EXCEPTION)
@@ -202,6 +235,52 @@ public final class ActionEndpointUnitTest extends CTPJerseyTest {
         .assertFaultIs(CTPException.Fault.SYSTEM_ERROR)
         .assertTimestampExists()
         .assertMessageEquals(OUR_EXCEPTION_MESSAGE)
+        .andClose();
+  }
+
+  /**
+   * Test creating an Action with valid JSON.
+   */
+  @Test
+  public void createActionGoodJsonProvided() {
+    with("http://localhost:9998/actions").post(ACTION_VALIDJSON)
+        .assertResponseCodeIs(HttpStatus.OK)
+        .assertIntegerInBody("$.actionId", ACTIONID)
+        .assertIntegerInBody("$.caseId", ACTION_CASEID)
+        .assertIntegerInBody("$.actionPlanId", ACTION2_PLANID)
+        .assertIntegerInBody("$.actionRuleId", ACTION2_RULEID)
+        .assertStringInBody("$.actionTypeName", ACTION2_ACTIONTYPENAME)
+        .assertStringInBody("$.createdBy", ACTION_CREATEDBY)
+        .assertStringInBody("$.priority", ACTION2_PRIORITY)
+        .assertStringInBody("$.situation", ACTION2_SITUATION)
+        .assertStringInBody("$.state", ACTION2_ACTIONSTATE)
+        .assertStringInBody("$.createdDateTime", ACTION_CREATEDDATE_VALUE)
+        .andClose();
+  }
+
+  /**
+   * Test creating an Action with invalid JSON Property.
+   */
+  @Test
+  public void createActionInvalidPropJsonProvided() {
+    with("http://localhost:9998/actions").post(ACTION_INVALIDJSON_PROP)
+        .assertResponseCodeIs(HttpStatus.BAD_REQUEST)
+        .assertFaultIs(CTPException.Fault.VALIDATION_FAILED)
+        .assertTimestampExists()
+        .assertMessageEquals("Provided json is incorrect.")
+        .andClose();
+  }
+
+  /**
+   * Test creating an Action with missing JSON Property.
+   */
+  @Test
+  public void createActionMissingPropJsonProvided() {
+    with("http://localhost:9998/actions").post(ACTION_INVALIDJSON_MISSING_PROP)
+        .assertResponseCodeIs(HttpStatus.BAD_REQUEST)
+        .assertFaultIs(CTPException.Fault.VALIDATION_FAILED)
+        .assertTimestampExists()
+        .assertMessageEquals("Provided json is incorrect.")
         .andClose();
   }
 }

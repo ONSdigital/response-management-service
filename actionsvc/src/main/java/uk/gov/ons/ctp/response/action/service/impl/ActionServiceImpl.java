@@ -24,7 +24,7 @@ import uk.gov.ons.ctp.response.action.service.ActionService;
 public final class ActionServiceImpl implements ActionService {
 
   private static final int TRANSACTION_TIMEOUT = 30;
-  
+
   @Inject
   private ActionRepository actionRepo;
 

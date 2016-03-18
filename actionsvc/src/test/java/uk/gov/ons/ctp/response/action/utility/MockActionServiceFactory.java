@@ -8,6 +8,7 @@ import org.glassfish.hk2.api.Factory;
 import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
+import static org.mockito.Matchers.any;
 
 import uk.gov.ons.ctp.response.action.domain.model.Action;
 import uk.gov.ons.ctp.response.action.service.ActionService;
@@ -28,8 +29,8 @@ public final class MockActionServiceFactory implements Factory<ActionService> {
   public static final Boolean ACTION2_MANUALLY_CREATED = false;
   public static final String ACTION1_ACTIONTYPENAME = "actiontypename1";
   public static final String ACTION2_ACTIONTYPENAME = "actiontypename2";
-  public static final String ACTION1_PRIORITY = "Low";
-  public static final String ACTION2_PRIORITY = "High";
+  public static final String ACTION1_PRIORITY = "1";
+  public static final String ACTION2_PRIORITY = "3";
   public static final String ACTION1_SITUATION = "Assigned";
   public static final String ACTION2_SITUATION = "Sent";
   public static final String ACTION_CREATEDDATE_VALUE = "2016-02-26T18:30:00.000+0000";
@@ -140,6 +141,15 @@ public final class MockActionServiceFactory implements Factory<ActionService> {
       public List<Action> answer(final InvocationOnMock invocation)
           throws Throwable {
         return new ArrayList<Action>();
+      }
+    });
+
+    Mockito.when(mockedService.createAction(any(Action.class))).thenAnswer(new Answer<Action>() {
+      public Action answer(final InvocationOnMock invocation)
+          throws Throwable {
+        return new Action(2, ACTION_CASEID, ACTION2_PLANID, ACTION2_RULEID, ACTION2_ACTIONTYPENAME,
+            ACTION_CREATEDBY, ACTION2_MANUALLY_CREATED, ACTION2_PRIORITY, ACTION2_SITUATION, ACTION2_ACTIONSTATE,
+            ACTION_CREATEDDATE_TIMESTAMP, null);
       }
     });
 

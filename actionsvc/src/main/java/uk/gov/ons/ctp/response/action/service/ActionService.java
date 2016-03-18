@@ -56,7 +56,7 @@ public interface ActionService extends CTPService {
    * Create an action.
    *
    * @param action Action to be created
-   * @return  Action Returns created Action.
+   * @return Action Returns created Action.
    */
   Action createAction(Action action);
 

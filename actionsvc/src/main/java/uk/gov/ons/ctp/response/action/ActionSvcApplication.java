@@ -27,7 +27,7 @@ import uk.gov.ons.ctp.response.action.representation.ActionPlanJobDTO;
 public class ActionSvcApplication {
 
   /**
-  * To register classes in the JAX-RS world.
+   * To register classes in the JAX-RS world.
    */
   @Named
   public static class JerseyConfig extends ResourceConfig {
@@ -38,13 +38,16 @@ public class ActionSvcApplication {
       packages("uk.gov.ons.ctp");
 
       register(ActionEndpoint.class);
-      register(new CTPMessageBodyReader<ActionDTO>(ActionDTO.class) {} );
+      register(new CTPMessageBodyReader<ActionDTO>(ActionDTO.class) {
+      });
 
       register(ActionPlanEndpoint.class);
-      register(new CTPMessageBodyReader<ActionPlanDTO>(ActionPlanDTO.class) {});
+      register(new CTPMessageBodyReader<ActionPlanDTO>(ActionPlanDTO.class) {
+      });
 
       register(ActionPlanJobEndpoint.class);
-      register(new CTPMessageBodyReader<ActionPlanJobDTO>(ActionPlanJobDTO.class) {});
+      register(new CTPMessageBodyReader<ActionPlanJobDTO>(ActionPlanJobDTO.class) {
+      });
 
       System.setProperty("ma.glasnost.orika.writeSourceFiles", "false");
       System.setProperty("ma.glasnost.orika.writeClassFiles", "false");
@@ -53,6 +56,7 @@ public class ActionSvcApplication {
 
   /**
    * This method is the entry point to the Spring Boot application.
+   *
    * @param args These are the optional command line arguments
    */
   public static void main(final String[] args) {

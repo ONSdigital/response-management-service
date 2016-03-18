@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
-import javax.validation.Valid;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -53,7 +52,7 @@ public final class ActionEndpoint implements CTPEndpoint {
       @QueryParam("state") final String state) {
 
     List<Action> actions = null;
-    
+
     if (actionType != null) {
       if (state != null) {
         log.debug("Entering findActionsByTypeAndState with {} {}", actionType, state);
@@ -63,22 +62,22 @@ public final class ActionEndpoint implements CTPEndpoint {
         actions = actionService.findActionsByType(actionType);
       }
     } else {
-        if (state != null) {
-          log.debug("Entering findActionsByState with {}", state);
-          actions = actionService.findActionsByState(state);         
-        } else {
-          actions = new ArrayList<Action>();
-        }
+      if (state != null) {
+        log.debug("Entering findActionsByState with {}", state);
+        actions = actionService.findActionsByState(state);
+      } else {
+        actions = new ArrayList<Action>();
       }
+    }
 
     List<ActionDTO> actionDTOs = mapperFacade.mapAsList(actions, ActionDTO.class);
     return CollectionUtils.isEmpty(actionDTOs) ? null : actionDTOs;
   }
 
   /**
-   * POST Create an Action. 
+   * POST Create an Action.
    *
-   * @param actionDTO Incoming ActionDTO with details to validate and from which
+   * @param requestObject Incoming ActionDTO with details to validate and from which
    *          to create Action
    * @return ActionDTO Created Action
    * @throws CTPException on failure to create Action
@@ -87,9 +86,6 @@ public final class ActionEndpoint implements CTPEndpoint {
   @Path("/")
   public ActionDTO createAction(final ActionDTO requestObject) throws CTPException {
     log.debug("Entering createAction with Action {}", requestObject);
-    if (requestObject == null) {
-      throw new CTPException(CTPException.Fault.VALIDATION_FAILED, "Provided json is incorrect.");
-    }
     Action action = actionService.createAction(mapperFacade.map(requestObject, Action.class));
     ActionDTO result = mapperFacade.map(action, ActionDTO.class);
     return result;

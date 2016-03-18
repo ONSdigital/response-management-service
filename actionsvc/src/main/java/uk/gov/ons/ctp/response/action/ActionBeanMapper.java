@@ -36,6 +36,6 @@ public class ActionBeanMapper extends ConfigurableMapper {
 		factory.classMap(Action.class, ActionDTO.class).byDefault().register();
 		factory.classMap(ActionPlan.class, ActionPlanDTO.class).byDefault().register();
 		factory.classMap(ActionPlanJob.class, ActionPlanJobDTO.class).byDefault().register();
-		factory.classMap(ActionRule.class, ActionRuleDTO.class).byDefault().register();
-	}
+    factory.classMap(ActionRule.class, ActionRuleDTO.class).byDefault().register();
+  }
 }
