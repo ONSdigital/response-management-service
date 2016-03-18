@@ -52,4 +52,12 @@ public interface ActionService extends CTPService {
    */
   List<Action> findActionsByCaseId(Integer caseId);
 
+  /**
+   * Create an action.
+   *
+   * @param action Action to be created
+   * @return  Action Returns created Action.
+   */
+  Action createAction(Action action);
+
 }

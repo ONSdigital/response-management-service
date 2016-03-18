@@ -1,9 +1,13 @@
 package uk.gov.ons.ctp.response.action.service.impl;
 
+import java.sql.Timestamp;
 import java.util.List;
 
 import javax.inject.Inject;
 import javax.inject.Named;
+
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import lombok.extern.slf4j.Slf4j;
 import uk.gov.ons.ctp.response.action.domain.model.Action;
@@ -19,6 +23,8 @@ import uk.gov.ons.ctp.response.action.service.ActionService;
 @Slf4j
 public final class ActionServiceImpl implements ActionService {
 
+  private static final int TRANSACTION_TIMEOUT = 30;
+  
   @Inject
   private ActionRepository actionRepo;
 
@@ -50,5 +56,14 @@ public final class ActionServiceImpl implements ActionService {
   public List<Action> findActionsByCaseId(final Integer caseId) {
     log.debug("Entering findActionsByCaseId with {}", caseId);
     return actionRepo.findByCaseId(caseId);
+  }
+
+  @Transactional(propagation = Propagation.REQUIRED, readOnly = false, timeout = TRANSACTION_TIMEOUT)
+  @Override
+  public Action createAction(final Action action) {
+    log.debug("Entering createAction with {}", action);
+    action.setManuallyCreated(true);
+    action.setCreatedDateTime(new Timestamp(System.currentTimeMillis()));
+    return actionRepo.saveAndFlush(action);
   }
 }

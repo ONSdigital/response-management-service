@@ -6,6 +6,7 @@ import java.sql.Timestamp;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
@@ -27,7 +28,7 @@ public class Action implements Serializable {
   private static final long serialVersionUID = 8539984354009320104L;
 
   @Id
-  @GeneratedValue
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "actionid")
   private Integer actionId;
 
@@ -56,9 +57,9 @@ public class Action implements Serializable {
   private String state;
 
   @Column(name = "createddatetime")
-  private Timestamp createdDatetime;
+  private Timestamp createdDateTime;
 
   @Column(name = "updateddatetime")
-  private Timestamp updatedDatetime;
+  private Timestamp updatedDateTime;
 
 }
