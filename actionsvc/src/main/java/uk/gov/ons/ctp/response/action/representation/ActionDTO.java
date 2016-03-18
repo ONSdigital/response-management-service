@@ -17,26 +17,31 @@ public class ActionDTO {
   @NotNull
   private Integer caseId;
 
+  @NotNull
   private Integer actionPlanId;
 
   @NotNull
   private Integer actionRuleId;
 
+  @NotNull
   private String actionTypeName;
 
   @NotNull
   private String createdBy;
 
+
   private Boolean manuallyCreated;
 
+  @NotNull
   private String priority;
 
   private String situation;
 
+  @NotNull
   private String state;
 
-  private Date createdDatetime;
+  private Date createdDateTime;
 
-  private Date updatedDatetime;
+  private Date updatedDateTime;
 
 }

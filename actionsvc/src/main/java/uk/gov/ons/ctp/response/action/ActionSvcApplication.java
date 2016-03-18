@@ -13,6 +13,7 @@ import uk.gov.ons.ctp.common.jaxrs.CTPMessageBodyReader;
 import uk.gov.ons.ctp.response.action.endpoint.ActionEndpoint;
 import uk.gov.ons.ctp.response.action.endpoint.ActionPlanEndpoint;
 import uk.gov.ons.ctp.response.action.endpoint.ActionPlanJobEndpoint;
+import uk.gov.ons.ctp.response.action.representation.ActionDTO;
 import uk.gov.ons.ctp.response.action.representation.ActionPlanDTO;
 import uk.gov.ons.ctp.response.action.representation.ActionPlanJobDTO;
 
@@ -37,6 +38,7 @@ public class ActionSvcApplication {
       packages("uk.gov.ons.ctp");
 
       register(ActionEndpoint.class);
+      register(new CTPMessageBodyReader<ActionDTO>(ActionDTO.class) {} );
 
       register(ActionPlanEndpoint.class);
       register(new CTPMessageBodyReader<ActionPlanDTO>(ActionPlanDTO.class) {});

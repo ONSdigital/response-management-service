@@ -29,7 +29,8 @@ import uk.gov.ons.ctp.response.action.service.ActionService;
  * The REST endpoint controller for Actions.
  */
 @Path("/actions")
-@Produces({ "application/json" })
+@Consumes({ MediaType.APPLICATION_JSON })
+@Produces({ MediaType.APPLICATION_JSON })
 @Slf4j
 public final class ActionEndpoint implements CTPEndpoint {
 
@@ -75,8 +76,7 @@ public final class ActionEndpoint implements CTPEndpoint {
   }
 
   /**
-   * POST Create an Action. CaseId, actionTypeName and createdBy body parameters
-   * are mandatory.
+   * POST Create an Action. 
    *
    * @param actionDTO Incoming ActionDTO with details to validate and from which
    *          to create Action
@@ -84,15 +84,13 @@ public final class ActionEndpoint implements CTPEndpoint {
    * @throws CTPException on failure to create Action
    */
   @POST
-  @Consumes({ MediaType.APPLICATION_JSON })
   @Path("/")
-  public ActionDTO createAction(@Valid final ActionDTO actionDTO) throws CTPException {
-    log.debug("Entering createAction ...");
-    // TODO add call to service
-    Action action = new Action();
-    if (action == null) {
-      throw new CTPException(CTPException.Fault.SYSTEM_ERROR, "Action not created");
+  public ActionDTO createAction(final ActionDTO requestObject) throws CTPException {
+    log.debug("Entering createAction with Action {}", requestObject);
+    if (requestObject == null) {
+      throw new CTPException(CTPException.Fault.VALIDATION_FAILED, "Provided json is incorrect.");
     }
+    Action action = actionService.createAction(mapperFacade.map(requestObject, Action.class));
     ActionDTO result = mapperFacade.map(action, ActionDTO.class);
     return result;
   }
@@ -131,7 +129,7 @@ public final class ActionEndpoint implements CTPEndpoint {
     // TODO add call to service
     Action action = new Action();
     if (action == null) {
-      throw new CTPException(CTPException.Fault.SYSTEM_ERROR, "Action not updated for if %s", actionId);
+      throw new CTPException(CTPException.Fault.SYSTEM_ERROR, "Action not updated for id %s", actionId);
     }
     ActionDTO result = mapperFacade.map(action, ActionDTO.class);
     return result;
