@@ -81,9 +81,6 @@ public class ActionPlanEndpoint implements CTPEndpoint {
   public final ActionPlanDTO updateActionPlanByActionPlanId(@PathParam("actionplanid") final Integer actionPlanId,
       final ActionPlanDTO requestObject) throws CTPException {
     log.debug("UpdateActionPlanByActionPlanId with actionplanid {} - actionPlan {}", actionPlanId, requestObject);
-    if (requestObject == null) {
-      throw new CTPException(CTPException.Fault.VALIDATION_FAILED, "Provided json is incorrect.");
-    }
 
     ActionPlan actionPlan = actionPlanService.updateActionPlan(actionPlanId,
         mapperFacade.map(requestObject, ActionPlan.class));

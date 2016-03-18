@@ -125,8 +125,8 @@ public class ActionPlanEndpointUnitTest extends CTPJerseyTest {
   }
 
   @Test
-  public void createActionPlanNegativeScenario() {
-    with("http://localhost:9998/actionplans").post(ACTIONPLAN_INVALIDJSON)
+  public void createActionPlanUnimplementedPostScenario() {
+    with("http://localhost:9998/actionplans").post(ACTIONPLAN_JSON)
         .assertResponseCodeIs(HttpStatus.NOT_IMPLEMENTED)
         .andClose();
   }
