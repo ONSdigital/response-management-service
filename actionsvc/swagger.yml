@@ -479,15 +479,15 @@ definitions:
       state:
         description: Action state
         type: string
-        default: Submitted
+        default: SUBMITTED
         enum:
-          - Submitted
-          - Pending
-          - Active
-          - Completed
-          - CancelSubmitted
-          - Cancelled
-          - Failed
+          - SUBMITTED
+          - PENDING
+          - ACTIVE
+          - COMPLETED
+          - CANCELSUBMITTED
+          - CANCELLED
+          - FAILED
       createdDateTime:
         description: Action creation date/time
         type: string
@@ -533,14 +533,15 @@ definitions:
       state:
         description: Action state
         type: string
+        default: SUBMITTED
         enum:
-          - Submitted
-          - Pending
-          - Active
-          - Completed
-          - CancelSubmitted
-          - Cancelled
-          - Failed
+          - SUBMITTED
+          - PENDING
+          - ACTIVE
+          - COMPLETED
+          - CANCELSUBMITTED
+          - CANCELLED
+          - FAILED
   ActionPlan:
     type: object
     required:
@@ -625,12 +626,12 @@ definitions:
       state:
         description: Action plan job state
         type: string
-        default: Submitted
+        default: SUBMITTED
         enum:
-          - Submitted
-          - Started
-          - Completed
-          - Failed
+          - SUBMITTED
+          - STARTED
+          - COMPLETED
+          - FAILED
       createdDateTime:
         description: Action plan job creation date/time
         type: string
