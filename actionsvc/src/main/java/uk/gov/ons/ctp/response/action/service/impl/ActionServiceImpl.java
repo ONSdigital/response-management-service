@@ -64,6 +64,7 @@ public final class ActionServiceImpl implements ActionService {
     log.debug("Entering createAction with {}", action);
     action.setManuallyCreated(true);
     action.setCreatedDateTime(new Timestamp(System.currentTimeMillis()));
+    action.setState(Action.StateType.SUBMITTED);
     return actionRepo.saveAndFlush(action);
   }
 }

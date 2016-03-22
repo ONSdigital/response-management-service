@@ -17,10 +17,8 @@ public class ActionDTO {
   @NotNull
   private Integer caseId;
 
-  @NotNull
   private Integer actionPlanId;
 
-  @NotNull
   private Integer actionRuleId;
 
   @NotNull
@@ -29,15 +27,12 @@ public class ActionDTO {
   @NotNull
   private String createdBy;
 
-
   private Boolean manuallyCreated;
 
-  @NotNull
-  private String priority;
+  private Integer priority;
 
   private String situation;
 
-  @NotNull
   private String state;
 
   private Date createdDateTime;

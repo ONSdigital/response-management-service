@@ -5,6 +5,8 @@ import java.sql.Timestamp;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -26,6 +28,10 @@ import lombok.NoArgsConstructor;
 public class Action implements Serializable {
 
   private static final long serialVersionUID = 8539984354009320104L;
+
+  public enum StateType {
+    ACTIVE, CANCELLED, CANCELSUBMITTED, COMPLETED, FAILED, PENDING, SUBMITTED
+  }
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -50,11 +56,12 @@ public class Action implements Serializable {
   @Column(name = "manuallycreated")
   private Boolean manuallyCreated;
 
-  private String priority;
+  private Integer priority;
 
   private String situation;
 
-  private String state;
+  @Enumerated(EnumType.STRING)
+  private StateType state;
 
   @Column(name = "createddatetime")
   private Timestamp createdDateTime;
