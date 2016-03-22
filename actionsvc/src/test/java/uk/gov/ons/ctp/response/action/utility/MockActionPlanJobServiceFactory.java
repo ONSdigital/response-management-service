@@ -33,7 +33,7 @@ public class MockActionPlanJobServiceFactory implements Factory<ActionPlanJobSer
   public static final Integer ACTIONPLANID_WITHNOACTIONPLANJOB = 13;
 
   public static final String OUR_EXCEPTION_MESSAGE = "this is what we throw";
-  public static final String PROVIDED_JSON_INCORRECT = "Provided json is incorrect.";
+  public static final String PROVIDED_JSON_INVALID = "Provided json fails validation.";
 
   public ActionPlanJobService provide() {
     final ActionPlanJobService mockedService = Mockito.mock(ActionPlanJobService.class);

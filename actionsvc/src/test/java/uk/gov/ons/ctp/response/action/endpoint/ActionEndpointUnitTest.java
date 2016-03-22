@@ -57,8 +57,7 @@ public final class ActionEndpointUnitTest extends CTPJerseyTest {
 
   private static final String ACTION_INVALIDJSON_MISSING_PROP = "{\"caseId\": " + ACTION_CASEID + ","
       + "\"actionRuleId\": " + ACTION2_RULEID + ","
-      + "\"actionTypeName\": \"" + ACTION2_ACTIONTYPENAME + "\","
-      + "\"createdBy\": " + ACTION_CREATEDBY + ","
+      + "\"createdBy\": \"" + ACTION_CREATEDBY + "\","
       + "\"priority\": " + ACTION2_PRIORITY + ","
       + "\"state\": \"" + ACTION2_ACTIONSTATE + "\"}";
 
@@ -73,7 +72,7 @@ public final class ActionEndpointUnitTest extends CTPJerseyTest {
    */
   @Test
   public void findActionsByActionTypeAndStateFound() {
-    with("http://localhost:9998/actions?actiontype=%s&state=%s", ACTION2_ACTIONTYPENAME, ACTION2_ACTIONSTATE)
+    with("http://localhost:9998/actions?actiontype=%s&state=%s", ACTION2_ACTIONTYPENAME, ACTION2_ACTIONSTATE.toString())
         .assertResponseCodeIs(HttpStatus.OK)
         .assertIntegerListInBody("$..actionId", ACTIONID)
         .assertIntegerListInBody("$..caseId", ACTION_CASEID)
@@ -81,9 +80,9 @@ public final class ActionEndpointUnitTest extends CTPJerseyTest {
         .assertIntegerListInBody("$..actionRuleId", ACTION2_RULEID)
         .assertStringListInBody("$..actionTypeName", ACTION2_ACTIONTYPENAME)
         .assertStringListInBody("$..createdBy", ACTION_CREATEDBY)
-        .assertStringListInBody("$..priority", ACTION2_PRIORITY)
+        .assertIntegerListInBody("$..priority", ACTION2_PRIORITY)
         .assertStringListInBody("$..situation", ACTION2_SITUATION)
-        .assertStringListInBody("$..state", ACTION2_ACTIONSTATE)
+        .assertStringListInBody("$..state", ACTION2_ACTIONSTATE.toString())
         .assertStringListInBody("$..createdDateTime", ACTION_CREATEDDATE_VALUE)
         .andClose();
   }
@@ -112,9 +111,9 @@ public final class ActionEndpointUnitTest extends CTPJerseyTest {
         .assertIntegerListInBody("$..actionRuleId", ACTION2_RULEID)
         .assertStringListInBody("$..actionTypeName", ACTION2_ACTIONTYPENAME)
         .assertStringListInBody("$..createdBy", ACTION_CREATEDBY)
-        .assertStringListInBody("$..priority", ACTION2_PRIORITY)
+        .assertIntegerListInBody("$..priority", ACTION2_PRIORITY)
         .assertStringListInBody("$..situation", ACTION2_SITUATION)
-        .assertStringListInBody("$..state", ACTION2_ACTIONSTATE)
+        .assertStringListInBody("$..state", ACTION2_ACTIONSTATE.toString())
         .assertStringListInBody("$..createdDateTime", ACTION_CREATEDDATE_VALUE)
         .andClose();
   }
@@ -135,7 +134,7 @@ public final class ActionEndpointUnitTest extends CTPJerseyTest {
    */
   @Test
   public void findActionsByStateFound() {
-    with("http://localhost:9998/actions?state=%s", ACTION2_ACTIONSTATE)
+    with("http://localhost:9998/actions?state=%s", ACTION2_ACTIONSTATE.toString())
         .assertResponseCodeIs(HttpStatus.OK)
         .assertIntegerListInBody("$..actionId", ACTIONID)
         .assertIntegerListInBody("$..caseId", ACTION_CASEID)
@@ -143,9 +142,9 @@ public final class ActionEndpointUnitTest extends CTPJerseyTest {
         .assertIntegerListInBody("$..actionRuleId", ACTION2_RULEID)
         .assertStringListInBody("$..actionTypeName", ACTION2_ACTIONTYPENAME)
         .assertStringListInBody("$..createdBy", ACTION_CREATEDBY)
-        .assertStringListInBody("$..priority", ACTION2_PRIORITY)
+        .assertIntegerListInBody("$..priority", ACTION2_PRIORITY)
         .assertStringListInBody("$..situation", ACTION2_SITUATION)
-        .assertStringListInBody("$..state", ACTION2_ACTIONSTATE)
+        .assertStringListInBody("$..state", ACTION2_ACTIONSTATE.toString())
         .assertStringListInBody("$..createdDateTime", ACTION_CREATEDDATE_VALUE)
         .andClose();
   }
@@ -174,9 +173,9 @@ public final class ActionEndpointUnitTest extends CTPJerseyTest {
         .assertIntegerInBody("$.actionRuleId", ACTION2_RULEID)
         .assertStringInBody("$.actionTypeName", ACTION2_ACTIONTYPENAME)
         .assertStringInBody("$.createdBy", ACTION_CREATEDBY)
-        .assertStringInBody("$.priority", ACTION2_PRIORITY)
+        .assertIntegerInBody("$.priority", ACTION2_PRIORITY)
         .assertStringInBody("$.situation", ACTION2_SITUATION)
-        .assertStringInBody("$.state", ACTION2_ACTIONSTATE)
+        .assertStringInBody("$.state", ACTION2_ACTIONSTATE.toString())
         .assertStringInBody("$.createdDateTime", ACTION_CREATEDDATE_VALUE)
         .andClose();
   }
@@ -207,9 +206,9 @@ public final class ActionEndpointUnitTest extends CTPJerseyTest {
         .assertIntegerListInBody("$..actionRuleId", ACTION1_RULEID, ACTION2_RULEID)
         .assertStringListInBody("$..actionTypeName", ACTION1_ACTIONTYPENAME, ACTION2_ACTIONTYPENAME)
         .assertStringListInBody("$..createdBy", ACTION_CREATEDBY, ACTION_CREATEDBY)
-        .assertStringListInBody("$..priority", ACTION1_PRIORITY, ACTION2_PRIORITY)
+        .assertIntegerListInBody("$..priority", ACTION1_PRIORITY, ACTION2_PRIORITY)
         .assertStringListInBody("$..situation", ACTION1_SITUATION, ACTION2_SITUATION)
-        .assertStringListInBody("$..state", ACTION1_ACTIONSTATE, ACTION2_ACTIONSTATE)
+        .assertStringListInBody("$..state", ACTION1_ACTIONSTATE.toString(), ACTION2_ACTIONSTATE.toString())
         .assertStringListInBody("$..createdDateTime", ACTION_CREATEDDATE_VALUE, ACTION_CREATEDDATE_VALUE)
         .andClose();
   }
@@ -251,9 +250,9 @@ public final class ActionEndpointUnitTest extends CTPJerseyTest {
         .assertIntegerInBody("$.actionRuleId", ACTION2_RULEID)
         .assertStringInBody("$.actionTypeName", ACTION2_ACTIONTYPENAME)
         .assertStringInBody("$.createdBy", ACTION_CREATEDBY)
-        .assertStringInBody("$.priority", ACTION2_PRIORITY)
+        .assertIntegerInBody("$.priority", ACTION2_PRIORITY)
         .assertStringInBody("$.situation", ACTION2_SITUATION)
-        .assertStringInBody("$.state", ACTION2_ACTIONSTATE)
+        .assertStringInBody("$.state", ACTION2_ACTIONSTATE.toString())
         .assertStringInBody("$.createdDateTime", ACTION_CREATEDDATE_VALUE)
         .andClose();
   }
@@ -280,7 +279,7 @@ public final class ActionEndpointUnitTest extends CTPJerseyTest {
         .assertResponseCodeIs(HttpStatus.BAD_REQUEST)
         .assertFaultIs(CTPException.Fault.VALIDATION_FAILED)
         .assertTimestampExists()
-        .assertMessageEquals("Provided json is incorrect.")
+        .assertMessageEquals("Provided json fails validation.")
         .andClose();
   }
 }

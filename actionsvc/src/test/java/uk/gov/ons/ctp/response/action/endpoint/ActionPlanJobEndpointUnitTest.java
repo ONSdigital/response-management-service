@@ -91,7 +91,7 @@ public class ActionPlanJobEndpointUnitTest extends CTPJerseyTest {
         .assertResponseCodeIs(HttpStatus.BAD_REQUEST)
         .assertFaultIs(CTPException.Fault.VALIDATION_FAILED)
         .assertTimestampExists()
-        .assertMessageEquals(PROVIDED_JSON_INCORRECT)
+        .assertMessageEquals(PROVIDED_JSON_INVALID)
         .andClose();
   }
 

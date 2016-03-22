@@ -29,7 +29,7 @@ public class ActionDTO {
 
   private Boolean manuallyCreated;
 
-  private Integer priority;
+  private Integer priority = 3;
 
   private String situation;
 
