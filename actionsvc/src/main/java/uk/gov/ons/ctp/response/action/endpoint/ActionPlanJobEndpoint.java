@@ -10,6 +10,7 @@ import uk.gov.ons.ctp.response.action.representation.ActionPlanJobDTO;
 import uk.gov.ons.ctp.response.action.service.ActionPlanJobService;
 
 import javax.inject.Inject;
+import javax.validation.Valid;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.util.List;
@@ -74,7 +75,7 @@ public class ActionPlanJobEndpoint implements CTPEndpoint {
   @POST
   @Path("/{actionplanid}/jobs")
   public final ActionPlanJobDTO executeActionPlan(@PathParam("actionplanid") final Integer actionPlanId,
-      final ActionPlanJobDTO requestObject) throws CTPException {
+      final @Valid ActionPlanJobDTO requestObject) throws CTPException {
     log.debug("Entering executeActionPlan with {}", actionPlanId);
 
     if (requestObject == null) {

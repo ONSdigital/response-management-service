@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
+import javax.validation.Valid;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -84,7 +85,7 @@ public final class ActionEndpoint implements CTPEndpoint {
    */
   @POST
   @Path("/")
-  public ActionDTO createAction(final ActionDTO requestObject) throws CTPException {
+  public ActionDTO createAction(final @Valid  ActionDTO requestObject) throws CTPException {
     log.debug("Entering createAction with Action {}", requestObject);
     Action action = actionService.createAction(mapperFacade.map(requestObject, Action.class));
     ActionDTO result = mapperFacade.map(action, ActionDTO.class);
