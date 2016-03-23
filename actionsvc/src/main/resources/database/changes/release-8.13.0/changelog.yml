@@ -40,3 +40,13 @@ databaseChangeLog:
               comment: apply actionplanjobid sequence
               path: actionplanjobid-sequence-apply.sql
               relativeToChangelogFile: true
+
+
+  - changeSet:
+      id: 8.13.0-5
+      author: martinh
+      changes:
+          - sqlFile:
+              comment: alter action priority column to integer with default of 3
+              path: action-priority.sql
+              relativeToChangelogFile: true
