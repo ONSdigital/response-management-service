@@ -1,5 +1,7 @@
 package uk.gov.ons.ctp.response.action.utility;
 
+import static org.mockito.Matchers.any;
+
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
@@ -8,7 +10,6 @@ import org.glassfish.hk2.api.Factory;
 import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
-import static org.mockito.Matchers.any;
 
 import uk.gov.ons.ctp.response.action.domain.model.Action;
 import uk.gov.ons.ctp.response.action.domain.model.Action.StateType;
@@ -49,7 +50,7 @@ public final class MockActionServiceFactory implements Factory<ActionService> {
 
     final ActionService mockedService = Mockito.mock(ActionService.class);
 
-    Mockito.when(mockedService.findActionsByTypeAndState(ACTION2_ACTIONTYPENAME, ACTION2_ACTIONSTATE.toString()))
+    Mockito.when(mockedService.findActionsByTypeAndState(ACTION2_ACTIONTYPENAME, ACTION2_ACTIONSTATE))
         .thenAnswer(new Answer<List<Action>>() {
           public List<Action> answer(final InvocationOnMock invocation)
               throws Throwable {
@@ -61,7 +62,7 @@ public final class MockActionServiceFactory implements Factory<ActionService> {
           }
         });
 
-    Mockito.when(mockedService.findActionsByTypeAndState(ACTION_NOTFOUND, ACTION_NOTFOUND))
+    Mockito.when(mockedService.findActionsByTypeAndState(ACTION_NOTFOUND, ACTION2_ACTIONSTATE))
         .thenAnswer(new Answer<List<Action>>() {
           public List<Action> answer(final InvocationOnMock invocation)
               throws Throwable {
@@ -87,7 +88,7 @@ public final class MockActionServiceFactory implements Factory<ActionService> {
       }
     });
 
-    Mockito.when(mockedService.findActionsByState(ACTION2_ACTIONSTATE.toString())).thenAnswer(new Answer<List<Action>>() {
+    Mockito.when(mockedService.findActionsByState(ACTION2_ACTIONSTATE)).thenAnswer(new Answer<List<Action>>() {
       public List<Action> answer(final InvocationOnMock invocation)
           throws Throwable {
         List<Action> result = new ArrayList<Action>();
@@ -95,13 +96,6 @@ public final class MockActionServiceFactory implements Factory<ActionService> {
             ACTION_CREATEDBY, ACTION2_MANUALLY_CREATED, ACTION2_PRIORITY, ACTION2_SITUATION, ACTION2_ACTIONSTATE,
             ACTION_CREATEDDATE_TIMESTAMP, ACTION_UPDATEDDATE_TIMESTAMP));
         return result;
-      }
-    });
-
-    Mockito.when(mockedService.findActionsByState(ACTION_NOTFOUND)).thenAnswer(new Answer<List<Action>>() {
-      public List<Action> answer(final InvocationOnMock invocation)
-          throws Throwable {
-        return new ArrayList<Action>();
       }
     });
 

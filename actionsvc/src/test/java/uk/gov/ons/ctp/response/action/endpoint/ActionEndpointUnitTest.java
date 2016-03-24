@@ -72,7 +72,7 @@ public final class ActionEndpointUnitTest extends CTPJerseyTest {
    */
   @Test
   public void findActionsByActionTypeAndStateFound() {
-    with("http://localhost:9998/actions?actiontype=%s&state=%s", ACTION2_ACTIONTYPENAME, ACTION2_ACTIONSTATE.toString())
+    with("http://localhost:9998/actions?actiontype=%s&state=%s", ACTION2_ACTIONTYPENAME, ACTION2_ACTIONSTATE)
         .assertResponseCodeIs(HttpStatus.OK)
         .assertIntegerListInBody("$..actionId", ACTIONID)
         .assertIntegerListInBody("$..caseId", ACTION_CASEID)
@@ -92,7 +92,7 @@ public final class ActionEndpointUnitTest extends CTPJerseyTest {
    */
   @Test
   public void findActionsByActionTypeAndStateNotFound() {
-    with("http://localhost:9998/actions?actiontype=%s&state=%s", ACTION_NOTFOUND, ACTION_NOTFOUND)
+    with("http://localhost:9998/actions?actiontype=%s&state=%s", ACTION_NOTFOUND, ACTION2_ACTIONSTATE)
         .assertResponseCodeIs(HttpStatus.NO_CONTENT)
         .assertResponseLengthIs(-1)
         .andClose();
@@ -155,8 +155,9 @@ public final class ActionEndpointUnitTest extends CTPJerseyTest {
   @Test
   public void findActionsByStateNotFound() {
     with("http://localhost:9998/actions?state=%s", ACTION_NOTFOUND)
-        .assertResponseCodeIs(HttpStatus.NO_CONTENT)
-        .assertResponseLengthIs(-1)
+        .assertResponseCodeIs(HttpStatus.BAD_REQUEST)
+        .assertFaultIs(CTPException.Fault.VALIDATION_FAILED)
+        .assertTimestampExists()
         .andClose();
   }
 

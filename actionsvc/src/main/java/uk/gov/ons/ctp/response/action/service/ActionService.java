@@ -4,6 +4,7 @@ import java.util.List;
 
 import uk.gov.ons.ctp.common.service.CTPService;
 import uk.gov.ons.ctp.response.action.domain.model.Action;
+import uk.gov.ons.ctp.response.action.domain.model.Action.StateType;
 
 /**
  * The Action Service interface defines all business behaviours for operations
@@ -18,7 +19,7 @@ public interface ActionService extends CTPService {
    * @param state State by which to filter
    * @return List<Action> List of Actions or empty List
    */
-  List<Action> findActionsByTypeAndState(String actionTypeName, String state);
+  List<Action> findActionsByTypeAndState(String actionTypeName, StateType state);
 
   /**
    * Find Actions filtered by ActionType.
@@ -34,7 +35,7 @@ public interface ActionService extends CTPService {
    * @param state State by which to filter
    * @return List<Action> List of Actions or empty List
    */
-  List<Action> findActionsByState(String state);
+  List<Action> findActionsByState(StateType state);
 
   /**
    * Find Action entity by specified action id.
@@ -59,5 +60,13 @@ public interface ActionService extends CTPService {
    * @return Action Returns created Action.
    */
   Action createAction(Action action);
+
+  /**
+   * Update an action.
+   *
+   * @param action Action with update information
+   * @return Action Returns updated Action.
+   */
+  Action updateAction(Action action);
 
 }

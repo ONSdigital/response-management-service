@@ -22,6 +22,7 @@ import ma.glasnost.orika.MapperFacade;
 import uk.gov.ons.ctp.common.endpoint.CTPEndpoint;
 import uk.gov.ons.ctp.common.error.CTPException;
 import uk.gov.ons.ctp.response.action.domain.model.Action;
+import uk.gov.ons.ctp.response.action.domain.model.Action.StateType;
 import uk.gov.ons.ctp.response.action.representation.ActionDTO;
 import uk.gov.ons.ctp.response.action.service.ActionService;
 
@@ -50,7 +51,7 @@ public final class ActionEndpoint implements CTPEndpoint {
   @GET
   @Path("/")
   public List<ActionDTO> findActions(@QueryParam("actiontype") final String actionType,
-      @QueryParam("state") final String state) {
+      @QueryParam("state") final StateType state) {
 
     List<Action> actions = null;
 
@@ -78,14 +79,14 @@ public final class ActionEndpoint implements CTPEndpoint {
   /**
    * POST Create an Action.
    *
-   * @param requestObject Incoming ActionDTO with details to validate and from which
-   *          to create Action
+   * @param requestObject Incoming ActionDTO with details to validate and from
+   *          which to create Action
    * @return ActionDTO Created Action
    * @throws CTPException on failure to create Action
    */
   @POST
   @Path("/")
-  public ActionDTO createAction(final @Valid  ActionDTO requestObject) throws CTPException {
+  public ActionDTO createAction(final @Valid ActionDTO requestObject) throws CTPException {
     log.debug("Entering createAction with Action {}", requestObject);
     Action action = actionService.createAction(mapperFacade.map(requestObject, Action.class));
     ActionDTO result = mapperFacade.map(action, ActionDTO.class);
@@ -115,18 +116,20 @@ public final class ActionEndpoint implements CTPEndpoint {
   /**
    * PUT to update the specified Action.
    *
-   * @param actionId Action Id of the Action to Update
+   * @param actionId Action Id of the Action to update
+   * @param requestObject Incoming ActionDTO with details to update
    * @return ActionDTO Returns the updated Action details
    * @throws CTPException if update operation fails
    */
   @PUT
   @Path("/{actionid}")
-  public ActionDTO updateAction(@PathParam("actionId") final int actionId) throws CTPException {
-    log.debug("Updating Action with {}", actionId);
-    // TODO add call to service
-    Action action = new Action();
+  public ActionDTO updateAction(@PathParam("actionid") final int actionId, final ActionDTO requestObject)
+      throws CTPException {
+    log.debug("Updating Action with {} {}", actionId, requestObject);
+    requestObject.setActionId(actionId);
+    Action action = actionService.updateAction(mapperFacade.map(requestObject, Action.class));
     if (action == null) {
-      throw new CTPException(CTPException.Fault.SYSTEM_ERROR, "Action not updated for id %s", actionId);
+      throw new CTPException(CTPException.Fault.RESOURCE_NOT_FOUND, "Action not updated for id %s", actionId);
     }
     ActionDTO result = mapperFacade.map(action, ActionDTO.class);
     return result;

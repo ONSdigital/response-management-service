@@ -5,6 +5,7 @@ import java.util.Date;
 import javax.validation.constraints.NotNull;
 
 import lombok.Data;
+import uk.gov.ons.ctp.response.action.domain.model.Action.StateType;
 
 /**
  * Domain model object for representation.
@@ -33,7 +34,7 @@ public class ActionDTO {
 
   private String situation;
 
-  private String state;
+  private StateType state;
 
   private Date createdDateTime;
 

@@ -30,7 +30,7 @@ public class Action implements Serializable {
   private static final long serialVersionUID = 8539984354009320104L;
 
   public enum StateType {
-    ACTIVE, CANCELLED, CANCELSUBMITTED, COMPLETED, FAILED, PENDING, SUBMITTED
+    ACTIVE, CANCELLED, CANCELSUBMITTED, COMPLETED, FAILED, PENDING, SUBMITTED;
   }
 
   @Id
