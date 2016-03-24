@@ -11,7 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import lombok.extern.slf4j.Slf4j;
 import uk.gov.ons.ctp.response.action.domain.model.Action;
-import uk.gov.ons.ctp.response.action.domain.model.Action.StateType;
+import uk.gov.ons.ctp.response.action.domain.model.Action.ActionState;
 import uk.gov.ons.ctp.response.action.domain.repository.ActionRepository;
 import uk.gov.ons.ctp.response.action.service.ActionService;
 
@@ -30,7 +30,7 @@ public final class ActionServiceImpl implements ActionService {
   private ActionRepository actionRepo;
 
   @Override
-  public List<Action> findActionsByTypeAndState(final String actionTypeName, final StateType state) {
+  public List<Action> findActionsByTypeAndState(final String actionTypeName, final ActionState state) {
     log.debug("Entering findActionsByTypeAndState with {} {}", actionTypeName, state);
     return actionRepo.findByActionTypeNameAndStateOrderByCreatedDateTimeDesc(actionTypeName, state);
   }
@@ -42,7 +42,7 @@ public final class ActionServiceImpl implements ActionService {
   }
 
   @Override
-  public List<Action> findActionsByState(final StateType state) {
+  public List<Action> findActionsByState(final ActionState state) {
     log.debug("Entering findActionsByState with {}", state);
     return actionRepo.findByStateOrderByCreatedDateTimeDesc(state);
   }
@@ -65,7 +65,7 @@ public final class ActionServiceImpl implements ActionService {
     log.debug("Entering createAction with {}", action);
     action.setManuallyCreated(true);
     action.setCreatedDateTime(new Timestamp(System.currentTimeMillis()));
-    action.setState(Action.StateType.SUBMITTED);
+    action.setState(Action.ActionState.SUBMITTED);
     return actionRepo.saveAndFlush(action);
   }
 
@@ -91,7 +91,7 @@ public final class ActionServiceImpl implements ActionService {
         existingAction.setSituation(newSituation);
       }
 
-      StateType newState = action.getState();
+      ActionState newState = action.getState();
       log.debug("newState = {}", newState);
       if (newState != null) {
         needsUpdate = true;

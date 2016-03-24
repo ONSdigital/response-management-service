@@ -29,7 +29,7 @@ public class Action implements Serializable {
 
   private static final long serialVersionUID = 8539984354009320104L;
 
-  public enum StateType {
+  public enum ActionState {
     ACTIVE, CANCELLED, CANCELSUBMITTED, COMPLETED, FAILED, PENDING, SUBMITTED;
   }
 
@@ -61,7 +61,7 @@ public class Action implements Serializable {
   private String situation;
 
   @Enumerated(EnumType.STRING)
-  private StateType state;
+  private ActionState state;
 
   @Column(name = "createddatetime")
   private Timestamp createdDateTime;
