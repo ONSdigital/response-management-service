@@ -25,14 +25,14 @@ security:
     password: secret
 
 management:
-  port: 8261
+  port: 8251
   context-path: /mgmt
   security:
     role: SUPERUSER
     enabled: false
 
 server:
-  port: 8161
+  port: 8151
   servlet-path: /mgmt
 
 endpoints:
