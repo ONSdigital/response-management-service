@@ -2,33 +2,40 @@ databaseChangeLog:
 
 
   - changeSet:
-      id: 8.14.0-1
-      author: whilesp
-      changes:
-          - sqlFile:
-              comment: alter actiontypename to be actiontypeid
-              path: alteractiontypeid.sql
-              relativeToChangelogFile: true
+    id: 8.14.0-1
+    author: sarahr
+    changes:
+      - sqlFile:
+        comment: seed data creation
+        path: seed-data.sql
+        relativeToChangelogFile: true
+
+  - changeSet:
+    id: 8.14.0-2
+    author: whilesp
+    changes:
+      - sqlFile:
+        comment: alter actiontypename to be actiontypeid
+        path: alteractiontypeid.sql
+        relativeToChangelogFile: true
 
 
   - changeSet:
-      id: 8.14.0-2
-      author: whilesp
-      changes:
-          - sqlFile:
-              comment: alter create action plsql function regarding actiontypeid
-              path: altercreateactionsfunction.sql
-              relativeToChangelogFile: true
-              splitStatements: false
+    id: 8.14.0-3
+    author: whilesp
+    changes:
+      - sqlFile:
+        comment: alter create action plsql function regarding actiontypeid
+        path: altercreateactionsfunction.sql
+        relativeToChangelogFile: true
+        splitStatements: false
 
 
   - changeSet:
-      id: 8.14.0-3
-      author: whilesp
-      changes:
-          - sqlFile:
-              comment: modified seed data takingactiontypeid into account
-              path: actionseeddata.sql
-              relativeToChangelogFile: true
-
-
+    id: 8.14.0-4
+    author: whilesp
+    changes:
+      - sqlFile:
+        comment: modified seed data takingactiontypeid into account
+        path: actionseeddata.sql
+        relativeToChangelogFile: true

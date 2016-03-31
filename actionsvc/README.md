@@ -12,24 +12,24 @@ The app can be started from the command line using : ./mvnw spring-boot:run
 
 
 ## To test action plans
-curl http://localhost:8161/actionplans -v -X GET
+curl http://localhost:8151/actionplans -v -X GET
 200 [{"actionPlanId":1,"surveyId":1,"name":"HH","description":"Household Action Plan","createdBy":"SYSTEM", "createdDatetime":"2016-03-09T11:15:48.002+0000","lastGoodRunDatetime":null},...
 
-curl  -H "Accept: application/json" -H "Content-Type: application/json" http://localhost:8161/actionplans/1 -v -X PUT -d "{\"description\":\"philippe2testing\"}"
+curl  -H "Accept: application/json" -H "Content-Type: application/json" http://localhost:8151/actionplans/1 -v -X PUT -d "{\"description\":\"philippe2testing\"}"
 200 {"actionPlanId":1,"surveyId":1,"name":"HH","description":"philippetesting","createdBy":"SYSTEM","createdDatetime":"2016-03-10T15:10:39.494+0000","lastGoodRunDatetime":null}
 
 
 ## To test action plan jobs
-curl http://localhost:8161/actionplans/1/jobs -v -X GET
+curl http://localhost:8151/actionplans/1/jobs -v -X GET
 204
 
-curl http://localhost:8161/actionplans/jobs/1 -v -X GET
+curl http://localhost:8151/actionplans/jobs/1 -v -X GET
 404 {"error":{"code":"RESOURCE_NOT_FOUND","timestamp":"20160315173011978","message":"ActionPlanJob not found for id 1"}}
 
-curl  -H "Accept: application/json" -H "Content-Type: application/json" http://localhost:8161/actionplans/1/jobs -v -X POST -d "{\"createdBy\":\"philippeb\"}"
+curl  -H "Accept: application/json" -H "Content-Type: application/json" http://localhost:8151/actionplans/1/jobs -v -X POST -d "{\"createdBy\":\"philippeb\"}"
 500 TODO Retest once the sequence for actionplanid has been created
 
-curl  -H "Accept: application/json" -H "Content-Type: application/json" http://localhost:8161/actionplans/1/jobs -v -X POST -d "{\"created\":\"philippeb\"}"
+curl  -H "Accept: application/json" -H "Content-Type: application/json" http://localhost:8151/actionplans/1/jobs -v -X POST -d "{\"created\":\"philippeb\"}"
 400 {"error":{"code":"VALIDATION_FAILED","timestamp":"20160316151946434","message":"Provided json is incorrect."}}
 
 
