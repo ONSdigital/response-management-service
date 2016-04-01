@@ -24,8 +24,8 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 //import org.springframework.integration.samples.testing.gateway.VoidGateway;
 
 //@ContextConfiguration (locations = { "/integration-context.xml" })  // commented out as using this configuration generates an error on startup
-@ContextConfiguration (locations = { "FeedbackServiceTest-context.xml" })
-@RunWith(SpringJUnit4ClassRunner.class)
+//@ContextConfiguration (locations = { "FeedbackServiceTest-context.xml" })
+//@RunWith(SpringJUnit4ClassRunner.class)
 public class FeedbackServiceTest {
 
   @Before
