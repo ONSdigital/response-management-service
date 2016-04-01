@@ -69,15 +69,15 @@
   <int-xml:unmarshalling-transformer
     input-channel="feedbackXmlValid" output-channel="feedbackTransformed"
     unmarshaller="feedbackUnmarshaller" />
-
+  
   <!-- The transformer uses this unmarshaller to do the heavy (un)lifting -->
   <bean id="feedbackUnmarshaller" class="org.springframework.oxm.jaxb.Jaxb2Marshaller">
     <property name="contextPath" value="uk.gov.ons.ctp.response.action.message.feedback" />
   </bean>
-
+  
   <!-- Finally .. see the  @ServiceActivator(inputChannel="feedback.transformed") -->
 
-
+ 
 
 
   <!--  Now configure the outbound flow -->
