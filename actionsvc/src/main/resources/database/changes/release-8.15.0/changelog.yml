@@ -1,0 +1,11 @@
+databaseChangeLog:
+
+
+  - changeSet:
+      id: 8.15.0-1
+      author: philippeb
+      changes:
+          - sqlFile:
+              comment: sequence for actionplanid on table actionplan
+              path: actionplanid_sequence.sql
+              relativeToChangelogFile: true
