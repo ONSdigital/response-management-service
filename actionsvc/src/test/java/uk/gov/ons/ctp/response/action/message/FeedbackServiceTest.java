@@ -22,7 +22,6 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @ContextConfiguration (locations = { "FeedbackServiceTest-context.xml" })
-//@ContextConfiguration (locations = { "/integration-context.xml" })  
 @RunWith(SpringJUnit4ClassRunner.class)
 public class FeedbackServiceTest {
   
@@ -41,7 +40,7 @@ public class FeedbackServiceTest {
   MessageChannel feedbackXml;
 
   @Autowired
-  QueueChannel feedbackTransformed; 
+  QueueChannel testChannel; 
   
   @Autowired
   @Qualifier("feedbackUnmarshaller")
@@ -62,13 +61,13 @@ public class FeedbackServiceTest {
 
       feedbackXml.send(MessageBuilder.withPayload(testMessage).build());  
       
-      Message<?> outMessage = feedbackTransformed.receive(0);
+      Message<?> outMessage = testChannel.receive(0);
       assertNotNull("outMessage should not be null", outMessage);
       boolean payLoadContainsAdaptor = outMessage.getPayload().toString().contains("uk.gov.ons.ctp.response.action.message.feedback.ActionFeedback");
       assertTrue("Payload does not contain reference to ActionFeedback adaptor", payLoadContainsAdaptor);
       assertThat(outMessage, hasHeaderKey("timestamp"));
       assertThat(outMessage, hasHeaderKey("id"));
-      outMessage = feedbackTransformed.receive(0);
+      outMessage = testChannel.receive(0);
       assertNull("Only one message expected from feedbackTransformed", outMessage); 
      
       
