@@ -9,3 +9,12 @@ databaseChangeLog:
               comment: sequence for actionplanid on table actionplan
               path: actionplanid_sequence.sql
               relativeToChangelogFile: true
+
+  - changeSet:
+      id: 8.15.0-2
+      author: philippeb
+      changes:
+          - sqlFile:
+              comment: actionplan seed data
+              path: actionplan_seedData.sql
+              relativeToChangelogFile: true
