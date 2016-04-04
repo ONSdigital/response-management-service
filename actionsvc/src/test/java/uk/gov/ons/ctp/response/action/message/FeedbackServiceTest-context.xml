@@ -51,27 +51,26 @@
   </bean>
 
   <!-- need an input channel defined for MQ adapter to input to -->
-  <int:channel id="feedback_xml" />
+  <int:channel id="feedbackXml" />
 
   <!-- anything sent to this channel is written to disk -->
-  <int:channel id="feedback_xml_invalid" />
-  <int-file:outbound-channel-adapter directory ="/var/log/ctp/responsemanagement/actionsvc/feedback" channel="feedback_xml_invalid"/>	
+  <int:channel id="feedbackXmlInvalid" />
+  <int-file:outbound-channel-adapter directory ="/var/log/ctp/responsemanagement/actionsvc/feedback" channel="feedbackXmlInvalid"/>	
 
   <!-- the MQ channel adapter reads from testQueue (see the container above) and inputs to feedback.xml -->
   <int-jms:message-driven-channel-adapter
-    id="jmsIn" container="feedbackMessageListenerContainer" channel="feedback_xml" />
+    id="jmsIn" container="feedbackMessageListenerContainer" channel="feedbackXml" />
 
   <!-- First the SI message provided by the channel adapter is validated against the inbound schema -->
-  <int-xml:validating-filter id="feedbackValidator" input-channel="feedback_xml"
-    output-channel="feedback_xml_valid" schema-location="classpath:xsd/inboundMessage.xsd" discard-channel="feedback_xml_invalid"/>
+  <int-xml:validating-filter id="feedbackValidator" input-channel="feedbackXml"
+    output-channel="feedbackXmlValid" schema-location="classpath:xsd/inboundMessage.xsd" discard-channel="feedbackXmlInvalid"/>
 
   <!-- Secondly the now validated xml is transformed into the jaxb generated object model -->
-  <int:channel id="feedback_transformed">
+  <int:channel id="feedbackTransformed">
   	<int:queue/>
-  </int:channel>
-  	
+  </int:channel>  	
   <int-xml:unmarshalling-transformer
-    input-channel="feedback_xml_valid" output-channel="feedback_transformed"
+    input-channel="feedbackXmlValid" output-channel="feedbackTransformed"
     unmarshaller="feedbackUnmarshaller" />
 
   <!-- The transformer uses this unmarshaller to do the heavy (un)lifting -->
