@@ -12,7 +12,7 @@ import uk.gov.ons.ctp.response.action.message.instruction.ActionRequests;
 @Named
 public class InstructionService {
 
-  @Publisher(channel="instruction.outbound")
+  @Publisher(channel="instructionOutbound")
   public ActionInstruction sendRequest(@Header("HANDLER") String handler, String actionType) {
     ActionInstruction instruction = new ActionInstruction();
     ActionRequest request = new ActionRequest();
