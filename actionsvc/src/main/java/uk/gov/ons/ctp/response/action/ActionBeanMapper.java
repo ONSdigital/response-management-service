@@ -33,9 +33,25 @@ public class ActionBeanMapper extends ConfigurableMapper {
 	 */
 	@Override
 	protected final void configure(final MapperFactory factory) {
-		factory.classMap(Action.class, ActionDTO.class).byDefault().register();
-		factory.classMap(ActionPlan.class, ActionPlanDTO.class).byDefault().register();
-		factory.classMap(ActionPlanJob.class, ActionPlanJobDTO.class).byDefault().register();
-    factory.classMap(ActionRule.class, ActionRuleDTO.class).byDefault().register();
+		factory
+		  .classMap(Action.class, ActionDTO.class)
+		  .field("actionType.name", "actionTypeName")
+		  .byDefault()
+		  .register();
+		
+		factory
+		  .classMap(ActionPlan.class, ActionPlanDTO.class)
+		  .byDefault()
+		  .register();
+		
+		factory
+		  .classMap(ActionPlanJob.class, ActionPlanJobDTO.class)
+		  .byDefault() 
+		  .register();
+		
+    factory
+      .classMap(ActionRule.class, ActionRuleDTO.class)
+      .byDefault()
+      .register();
   }
 }

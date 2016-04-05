@@ -9,17 +9,17 @@ TRUNCATE action.actionplanjobstate CASCADE;
 INSERT INTO action.survey (surveyid, surveydate, name) VALUES (1,'2016-06-26 00:00','2016 Test');
 
 
-INSERT INTO action.actiontype (actiontypeid, name, description, handler, cancanel) VALUES (1,'HH_IC','Household Initial Contact','Printer',FALSE);
-INSERT INTO action.actiontype (actiontypeid, name, description, handler, cancanel) VALUES (2,'HH_IAC_LOAD','Household upload IAC','HHSurvey',FALSE);
-INSERT INTO action.actiontype (actiontypeid, name, description, handler, cancanel) VALUES (3,'HH_CV','Household Create Visit','Field',FALSE);
-INSERT INTO action.actiontype (actiontypeid, name, description, handler, cancanel) VALUES (4,'CH_IC','Care Home Initial Contact','Printer',FALSE);
-INSERT INTO action.actiontype (actiontypeid, name, description, handler, cancanel) VALUES (5,'CH_CV','Care Home Create Visit','Field',FALSE);
-INSERT INTO action.actiontype (actiontypeid, name, description, handler, cancanel) VALUES (6,'HGH_IC','Hotel and Guest House Initial Contact','Printer',FALSE);
-INSERT INTO action.actiontype (actiontypeid, name, description, handler, cancanel) VALUES (7,'HGH_IAC_LOAD','Hotel upload IAC','HotelSurvey',FALSE);
-INSERT INTO action.actiontype (actiontypeid, name, description, handler, cancanel) VALUES (8,'HGH_CV','Hotel and Guest House Create Visit','Field',FALSE);
-INSERT INTO action.actiontype (actiontypeid, name, description, handler, cancanel) VALUES (9,'ESC_GENERAL','Escalated General','CensusSupport',FALSE);
-INSERT INTO action.actiontype (actiontypeid, name, description, handler, cancanel) VALUES (10,'ESC_SURVEY','Escalated Survey','CensusSupport',FALSE);
-INSERT INTO action.actiontype (actiontypeid, name, description, handler, cancanel) VALUES (11,'ESC_COMPLAINT','Escalated Complaint','CensusSupport',FALSE);
+INSERT INTO action.actiontype (actiontypeid, name, description, handler, cancancel) VALUES (1,'HH_IC','Household Initial Contact','Printer',FALSE);
+INSERT INTO action.actiontype (actiontypeid, name, description, handler, cancancel) VALUES (2,'HH_IAC_LOAD','Household upload IAC','HHSurvey',FALSE);
+INSERT INTO action.actiontype (actiontypeid, name, description, handler, cancancel) VALUES (3,'HH_CV','Household Create Visit','Field',FALSE);
+INSERT INTO action.actiontype (actiontypeid, name, description, handler, cancancel) VALUES (4,'CH_IC','Care Home Initial Contact','Printer',FALSE);
+INSERT INTO action.actiontype (actiontypeid, name, description, handler, cancancel) VALUES (5,'CH_CV','Care Home Create Visit','Field',FALSE);
+INSERT INTO action.actiontype (actiontypeid, name, description, handler, cancancel) VALUES (6,'HGH_IC','Hotel and Guest House Initial Contact','Printer',FALSE);
+INSERT INTO action.actiontype (actiontypeid, name, description, handler, cancancel) VALUES (7,'HGH_IAC_LOAD','Hotel upload IAC','HotelSurvey',FALSE);
+INSERT INTO action.actiontype (actiontypeid, name, description, handler, cancancel) VALUES (8,'HGH_CV','Hotel and Guest House Create Visit','Field',FALSE);
+INSERT INTO action.actiontype (actiontypeid, name, description, handler, cancancel) VALUES (9,'ESC_GENERAL','Escalated General','CensusSupport',FALSE);
+INSERT INTO action.actiontype (actiontypeid, name, description, handler, cancancel) VALUES (10,'ESC_SURVEY','Escalated Survey','CensusSupport',FALSE);
+INSERT INTO action.actiontype (actiontypeid, name, description, handler, cancancel) VALUES (11,'ESC_COMPLAINT','Escalated Complaint','CensusSupport',FALSE);
 
 
 INSERT INTO action.actionplan (actionplanid, surveyid, name, description, createdby, createddatetime, lastgoodrundatetime) VALUES (1,1,'HH'   ,'Household Action Plan','SYSTEM', current_timestamp, NULL);

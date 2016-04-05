@@ -10,7 +10,7 @@ import uk.gov.ons.ctp.response.action.domain.model.Action.ActionState;
  * The Action Service interface defines all business behaviours for operations
  * on the Action entity model.
  */
-public interface ActionService extends CTPService {
+public interface ActionTypeService extends CTPService {
 
   /**
    * Find Actions filtered by ActionType and state.
@@ -57,10 +57,9 @@ public interface ActionService extends CTPService {
    * Create an action.
    *
    * @param action Action to be created
-   * @param actionTypeName name of the action type to associate with the action
    * @return Action Returns created Action.
    */
-  Action createAction(Action action, String actionTypeName);
+  Action createAction(Action action);
 
   /**
    * Update an action.

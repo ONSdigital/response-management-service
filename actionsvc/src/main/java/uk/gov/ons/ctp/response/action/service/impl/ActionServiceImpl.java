@@ -12,7 +12,9 @@ import org.springframework.transaction.annotation.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import uk.gov.ons.ctp.response.action.domain.model.Action;
 import uk.gov.ons.ctp.response.action.domain.model.Action.ActionState;
+import uk.gov.ons.ctp.response.action.domain.model.ActionType;
 import uk.gov.ons.ctp.response.action.domain.repository.ActionRepository;
+import uk.gov.ons.ctp.response.action.domain.repository.ActionTypeRepository;
 import uk.gov.ons.ctp.response.action.service.ActionService;
 
 /**
@@ -28,6 +30,9 @@ public final class ActionServiceImpl implements ActionService {
 
   @Inject
   private ActionRepository actionRepo;
+  
+  @Inject
+  private ActionTypeRepository actionTypeRepo;
 
   @Override
   public List<Action> findActionsByTypeAndState(final String actionTypeName, final ActionState state) {
@@ -61,8 +66,10 @@ public final class ActionServiceImpl implements ActionService {
 
   @Transactional(propagation = Propagation.REQUIRED, readOnly = false, timeout = TRANSACTION_TIMEOUT)
   @Override
-  public Action createAction(final Action action) {
-    log.debug("Entering createAction with {}", action);
+  public Action createAction(final Action action, final String actionTypeName) {
+    log.debug("Entering createAction with {} and actiontypename {}", action, actionTypeName);
+    ActionType actionType = actionTypeRepo.findByName(actionTypeName);
+    action.setActionType(actionType);
     action.setManuallyCreated(true);
     action.setCreatedDateTime(new Timestamp(System.currentTimeMillis()));
     action.setState(Action.ActionState.SUBMITTED);
