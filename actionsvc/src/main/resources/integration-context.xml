@@ -109,17 +109,17 @@
 
   <int:annotation-config/>
   <!--  setup the outbound channels - note each queue needs a channel -->
-  <int:channel id="instruction.outbound" />
-  <int:channel id="instruction.xml" />
-  <int:channel id="instruction.Field" />
-  <int:channel id="instruction.Printer" />
-  <int:channel id="instruction.CensusSupport" />
-  <int:channel id="instruction.HHSurvey" />
-  <int:channel id="instruction.HotelSurvey" />
+  <int:channel id="instructionOutbound" />
+  <int:channel id="instructionXml" />
+  <int:channel id="instructionField" />
+  <int:channel id="instructionPrinter" />
+  <int:channel id="instructionCensusSupport" />
+  <int:channel id="instructionHHSurvey" />
+  <int:channel id="instructionHotelSurvey" />
 
   <!--  the @Publisher sends to the marshalling-transformers input channel -->
   <int-xml:marshalling-transformer
-    input-channel="instruction.outbound" output-channel="instruction.xml"
+    input-channel="instructionOutbound" output-channel="instructionXml"
     marshaller="instructionMarshaller" 
     result-transformer="instructionTransformer"/>
    <!--  the instructionMarshaller turns java objs into xml dom -->
@@ -131,13 +131,13 @@
 
   <!-- the router ... routes ... using the header 'HANDLER' set by the @Publisher -->
   <!-- the  SpEL constructs the channel name to send our xml string to -->
-  <int:router input-channel="instruction.xml" expression="'instruction.'.concat(headers.HANDLER)" />
+  <int:router input-channel="instructionXml" expression="'instruction'.concat(headers.HANDLER)" />
 
   <!--  each channel adapter listens to one of our routed channels and adapts the SI message to a JMS message -->
-  <int-jms:outbound-channel-adapter id="jmsout.Field" channel="instruction.Field" destination="fieldInstructionQueue"/>
-  <int-jms:outbound-channel-adapter id="jmsout.Printer" channel="instruction.Printer" destination="printerInstructionQueue"/>
-  <int-jms:outbound-channel-adapter id="jmsout.CensusSupport" channel="instruction.CensusSupport" destination="supportInstructionQueue"/>
-  <int-jms:outbound-channel-adapter id="jmsout.HHSurvey" channel="instruction.HHSurvey" destination="householdSurveyInstructionQueue"/>
-  <int-jms:outbound-channel-adapter id="jmsout.HotelSurvey" channel="instruction.HotelSurvey" destination="hotelSurveyInstructionQueue"/>
+  <int-jms:outbound-channel-adapter id="jmsout.Field" channel="instructionField" destination="fieldInstructionQueue"/>
+  <int-jms:outbound-channel-adapter id="jmsout.Printer" channel="instructionPrinter" destination="printerInstructionQueue"/>
+  <int-jms:outbound-channel-adapter id="jmsout.CensusSupport" channel="instructionCensusSupport" destination="supportInstructionQueue"/>
+  <int-jms:outbound-channel-adapter id="jmsout.HHSurvey" channel="instructionHHSurvey" destination="householdSurveyInstructionQueue"/>
+  <int-jms:outbound-channel-adapter id="jmsout.HotelSurvey" channel="instructionHotelSurvey" destination="hotelSurveyInstructionQueue"/>
 </beans>
 
