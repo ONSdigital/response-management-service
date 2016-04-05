@@ -12,11 +12,4 @@ databaseChangeLog:
       file: database/changes/release-8.13.0/changelog.yml
 
   - include:
-<<<<<<< HEAD
       file: database/changes/release-8.14.0/changelog.yml
-=======
-        file: database/changes/release-8.14.0/changelog.yml
-
-  - include:
-       file: database/changes/release-8.15.0/changelog.yml
->>>>>>> 599d3eac8f9d28fd0afd93f342806a813d26bdb6
