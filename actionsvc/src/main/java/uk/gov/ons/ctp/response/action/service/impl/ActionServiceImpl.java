@@ -66,9 +66,11 @@ public final class ActionServiceImpl implements ActionService {
 
   @Transactional(propagation = Propagation.REQUIRED, readOnly = false, timeout = TRANSACTION_TIMEOUT)
   @Override
-  public Action createAction(final Action action, final String actionTypeName) {
-    log.debug("Entering createAction with {} and actiontypename {}", action, actionTypeName);
-    ActionType actionType = actionTypeRepo.findByName(actionTypeName);
+  public Action createAction(final Action action) {
+    log.debug("Entering createAction with {}", action);
+    // the incoming action has a placeholder action type with the name as provided to the caller
+    // but we need the entire action type object for that action type name
+    ActionType actionType = actionTypeRepo.findByName(action.getActionType().getName());
     action.setActionType(actionType);
     action.setManuallyCreated(true);
     action.setCreatedDateTime(new Timestamp(System.currentTimeMillis()));

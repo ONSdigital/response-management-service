@@ -60,7 +60,7 @@ public interface ActionService extends CTPService {
    * @param actionTypeName name of the action type to associate with the action
    * @return Action Returns created Action.
    */
-  Action createAction(Action action, String actionTypeName);
+  Action createAction(Action action);
 
   /**
    * Update an action.

@@ -88,7 +88,7 @@ public final class ActionEndpoint implements CTPEndpoint {
   @Path("/")
   public ActionDTO createAction(final @Valid ActionDTO actionDTO) throws CTPException {
     log.debug("Entering createAction with Action {}", actionDTO);
-    Action action = actionService.createAction(mapperFacade.map(actionDTO, Action.class), actionDTO.getActionTypeName());
+    Action action = actionService.createAction(mapperFacade.map(actionDTO, Action.class));
     ActionDTO result = mapperFacade.map(action, ActionDTO.class);
     return result;
   }
