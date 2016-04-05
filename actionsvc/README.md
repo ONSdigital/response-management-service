@@ -21,15 +21,13 @@ curl  -H "Accept: application/json" -H "Content-Type: application/json" http://l
 
 ## To test action plan jobs
 curl http://localhost:8151/actionplans/1/jobs -v -X GET
-204
+200 [{"actionPlanJobId":3,"actionPlanId":1,"createdBy":"philippeb","state":"SUBMITTED","createdDatetime":"2016-04-04T11:04:27.102+0000","updatedDateTime":"2016-04-04T11:04:27.102+0000"}]
 
 curl http://localhost:8151/actionplans/jobs/1 -v -X GET
 404 {"error":{"code":"RESOURCE_NOT_FOUND","timestamp":"20160315173011978","message":"ActionPlanJob not found for id 1"}}
 
 curl  -H "Accept: application/json" -H "Content-Type: application/json" http://localhost:8151/actionplans/1/jobs -v -X POST -d "{\"createdBy\":\"philippeb\"}"
-500 TODO Retest once the sequence for actionplanid has been created
+200 {"actionPlanJobId":3,"actionPlanId":1,"createdBy":"philippeb","state":"SUBMITTED","createdDatetime":"2016-04-04T11:04:27.102+0000","updatedDateTime":"2016-04-04T11:04:27.102+0000"}
 
 curl  -H "Accept: application/json" -H "Content-Type: application/json" http://localhost:8151/actionplans/1/jobs -v -X POST -d "{\"created\":\"philippeb\"}"
 400 {"error":{"code":"VALIDATION_FAILED","timestamp":"20160316151946434","message":"Provided json is incorrect."}}
-
-
