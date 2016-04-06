@@ -1,0 +1,20 @@
+/* Action service action plan job states. Run using dot -Tpng actionplanjobstates.dot > actionplanjobstates.png */
+/* See https://fsteeg.wordpress.com/2006/11/16/uml-activity-diagrams-with-graphviz/ */
+digraph actionplanjobstates {
+    size="10,10";
+    edge[arrowhead=open]
+    node [shape=rectangle];
+    start[shape=circle, label="", fillcolor=black, style=filled]
+    end[shape=doublecircle, label="", fillcolor=black, style=filled]
+    submitted[label="SUBMITTED", fontname="helvetica", style=rounded]
+    started[label="STARTED", fontname="helvetica", style=rounded]
+    completed[label="COMPLETED", fontname="helvetica", style=rounded]
+    failed[label="FAILED", fontname="helvetica", style=rounded]
+
+    start -> submitted
+    submitted -> started
+    started -> completed
+    started -> failed
+    completed -> end
+    failed -> end
+}
