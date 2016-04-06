@@ -46,8 +46,11 @@ public class FeedbackServiceTest {
   @Qualifier("feedbackUnmarshaller")
   Jaxb2Marshaller feedbackMarshaller;
 
+  @Autowired
+  QueueChannel feedbackXmlInvalid;
+  
   @Test
-  public void testSendctiveMQMessage() {
+  public void testSendactiveMQMessage() {
     try {
 
       String testMessage = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
@@ -73,9 +76,8 @@ public class FeedbackServiceTest {
 
       String contextPath = feedbackMarshaller.getContextPath();
       String jaxbContext = feedbackMarshaller.getJaxbContext().toString();
-
-      System.out.println("Marshaller context path: " + contextPath);
-      System.out.println("Marshaller jaxbContext: " + jaxbContext);
+      assertTrue("Marshaller JAXB context does not contain reference to ActionFeedback", 
+    		  jaxbContext.contains("uk.gov.ons.ctp.response.action.message.feedback.ActionFeedback"));
 
     }
     catch (Exception ex) {
@@ -84,4 +86,27 @@ public class FeedbackServiceTest {
 
   }
 
+  @Test
+  public void testSendactiveMQInvalidMessage() {
+    try {
+
+      String testMessage = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
+        "<p:actionFeedbackWrong xmlns:p=\"http://ons.gov.uk/ctp/response/action/message/feedback\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"http://ons.gov.uk/ctp/response/action/message/feedback inboundMessage.xsd \">" +
+        "<actionId>1</actionId>" +
+        "<situation>situation</situation>" +
+        "<isComplete>true</isComplete>" +
+        "<isFailed>true</isFailed>" +
+        "<notes>notes</notes>" +
+        "</p:actionFeedbackWrong>";
+
+      feedbackXml.send(MessageBuilder.withPayload(testMessage).build());
+      
+      // expect a file to be added to the log folder
+
+    }
+    catch (Exception ex) {
+      fail("testSendactiveMQInvalidMessage has failed " + ex.getMessage());
+    }
+
+  }
 }
