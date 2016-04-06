@@ -9,17 +9,22 @@
 
 	<beans:import resource="classpath:/integration-context.xml" />
 	
-	<bridge input-channel="feedbackTransformed"
-		output-channel="testChannel"/>
-		
+	<!-- <bridge input-channel="feedbackTransformed"
+		output-channel="testFeedbackChannel"/> 
+	    <bridge input-channel="instructionXml"
+		output-channel="testInstructionXml"/>
+	
 	<channel id="testFeedbackChannel">
 		<queue/>
 	</channel>
+	<channel id="testInstructionXml">
+		<queue/>
+	</channel> -->
 	
 	<bridge input-channel="instructionField"
-		output-channel="testChannel"/>
+		output-channel="testInstructionFieldChannel"/>
 		
-	<channel id="testChannel">
+	<channel id="testInstructionFieldChannel">
 		<queue/>
 	</channel>
 	

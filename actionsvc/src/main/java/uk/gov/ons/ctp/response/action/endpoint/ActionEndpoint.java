@@ -45,28 +45,28 @@ public final class ActionEndpoint implements CTPEndpoint {
    * GET all Actions optionally filtered by ActionType and or state
    *
    * @param actionType Optional filter by ActionType
-   * @param state Optional filter by Action state
+   * @param actionState Optional filter by Action state
    * @return List<ActionDTO> Actions for the specified filters
    */
   @GET
   @Path("/")
   public List<ActionDTO> findActions(@QueryParam("actiontype") final String actionType,
-      @QueryParam("state") final ActionState state) {
+      @QueryParam("state") final ActionState actionState) {
 
     List<Action> actions = null;
 
     if (actionType != null) {
-      if (state != null) {
-        log.debug("Entering findActionsByTypeAndState with {} {}", actionType, state);
-        actions = actionService.findActionsByTypeAndState(actionType, state);
+      if (actionState != null) {
+        log.debug("Entering findActionsByTypeAndState with {} {}", actionType, actionState);
+        actions = actionService.findActionsByTypeAndState(actionType, actionState);
       } else {
         log.debug("Entering findActionsByType with {}", actionType);
         actions = actionService.findActionsByType(actionType);
       }
     } else {
-      if (state != null) {
-        log.debug("Entering findActionsByState with {}", state);
-        actions = actionService.findActionsByState(state);
+      if (actionState != null) {
+        log.debug("Entering findActionsByState with {}", actionState);
+        actions = actionService.findActionsByState(actionState);
       } else {
         actions = new ArrayList<Action>();
       }
@@ -79,16 +79,16 @@ public final class ActionEndpoint implements CTPEndpoint {
   /**
    * POST Create an Action.
    *
-   * @param requestObject Incoming ActionDTO with details to validate and from
+   * @param actionDTO Incoming ActionDTO with details to validate and from
    *          which to create Action
    * @return ActionDTO Created Action
    * @throws CTPException on failure to create Action
    */
   @POST
   @Path("/")
-  public ActionDTO createAction(final @Valid ActionDTO requestObject) throws CTPException {
-    log.debug("Entering createAction with Action {}", requestObject);
-    Action action = actionService.createAction(mapperFacade.map(requestObject, Action.class));
+  public ActionDTO createAction(final @Valid ActionDTO actionDTO) throws CTPException {
+    log.debug("Entering createAction with Action {}", actionDTO);
+    Action action = actionService.createAction(mapperFacade.map(actionDTO, Action.class));
     ActionDTO result = mapperFacade.map(action, ActionDTO.class);
     return result;
   }
@@ -117,17 +117,17 @@ public final class ActionEndpoint implements CTPEndpoint {
    * PUT to update the specified Action.
    *
    * @param actionId Action Id of the Action to update
-   * @param requestObject Incoming ActionDTO with details to update
+   * @param actionDTO Incoming ActionDTO with details to update
    * @return ActionDTO Returns the updated Action details
    * @throws CTPException if update operation fails
    */
   @PUT
   @Path("/{actionid}")
-  public ActionDTO updateAction(@PathParam("actionid") final int actionId, final ActionDTO requestObject)
+  public ActionDTO updateAction(@PathParam("actionid") final int actionId, final ActionDTO actionDTO)
       throws CTPException {
-    log.debug("Updating Action with {} {}", actionId, requestObject);
-    requestObject.setActionId(actionId);
-    Action action = actionService.updateAction(mapperFacade.map(requestObject, Action.class));
+    log.debug("Updating Action with {} {}", actionId, actionDTO);
+    actionDTO.setActionId(actionId);
+    Action action = actionService.updateAction(mapperFacade.map(actionDTO, Action.class));
     if (action == null) {
       throw new CTPException(CTPException.Fault.RESOURCE_NOT_FOUND, "Action not updated for id %s", actionId);
     }

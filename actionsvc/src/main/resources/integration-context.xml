@@ -5,6 +5,7 @@
   xmlns:int-jme="http://www.springframework.org/schema/integration"
   xmlns:int="http://www.springframework.org/schema/integration"
   xmlns:int-jms="http://www.springframework.org/schema/integration/jms"
+  xmlns:int-http="http://www.springframework.org/schema/integration/http"
   xmlns:int-xml="http://www.springframework.org/schema/integration/xml"
   xmlns:int-file="http://www.springframework.org/schema/integration/file"
   xsi:schemaLocation="http://www.springframework.org/schema/beans   
@@ -17,6 +18,8 @@
   http://www.springframework.org/schema/jms/spring-jms-4.2.xsd
   http://www.springframework.org/schema/integration/file
   http://www.springframework.org/schema/integration/file/spring-integration-file.xsd
+  http://www.springframework.org/schema/integration/http
+  http://www.springframework.org/schema/integration/http/spring-integration-http.xsd
   http://www.springframework.org/schema/integration/xml
   http://www.springframework.org/schema/integration/xml/spring-integration-xml.xsd">
 
@@ -66,6 +69,7 @@
     output-channel="feedbackXmlValid" schema-location="classpath:xsd/inboundMessage.xsd" discard-channel="feedbackXmlInvalid"/>
 
   <!-- Secondly the now validated xml is transformed into the jaxb generated object model -->
+  <int:channel id="feedbackTransformed"/>
   <int-xml:unmarshalling-transformer
     input-channel="feedbackXmlValid" output-channel="feedbackTransformed"
     unmarshaller="feedbackUnmarshaller" />
@@ -77,7 +81,12 @@
   
   <!-- Finally .. see the  @ServiceActivator(inputChannel="feedback.transformed") -->
 
- 
+<!--
+  <int-http:outbound-gateway url="http://localhost:8071/cases/">
+  
+  </int-http:outbound-gateway>
+  -->
+
 
 
   <!--  Now configure the outbound flow -->
