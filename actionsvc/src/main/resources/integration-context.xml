@@ -66,6 +66,7 @@
     output-channel="feedbackXmlValid" schema-location="classpath:xsd/inboundMessage.xsd" discard-channel="feedbackXmlInvalid"/>
 
   <!-- Secondly the now validated xml is transformed into the jaxb generated object model -->
+  <int:channel id="feedbackTransformed"/>
   <int-xml:unmarshalling-transformer
     input-channel="feedbackXmlValid" output-channel="feedbackTransformed"
     unmarshaller="feedbackUnmarshaller" />
