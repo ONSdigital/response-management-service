@@ -147,7 +147,7 @@
         </snapshotRepository>
       </distributionManagement>
       <activation>
-        <activeByDefault>false</activeByDefault>
+        <activeByDefault>true</activeByDefault>
       </activation>
       <id>artifactory</id>
     </profile>
