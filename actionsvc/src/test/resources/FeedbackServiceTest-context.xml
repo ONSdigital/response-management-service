@@ -11,7 +11,7 @@
 	
 	<bridge input-channel="feedbackTransformed"
 		output-channel="testChannel"/>
-		
+				
 	<channel id="testChannel">
 		<queue/>
 	</channel>
