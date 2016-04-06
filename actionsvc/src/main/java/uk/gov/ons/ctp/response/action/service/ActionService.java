@@ -5,6 +5,7 @@ import java.util.List;
 import uk.gov.ons.ctp.common.service.CTPService;
 import uk.gov.ons.ctp.response.action.domain.model.Action;
 import uk.gov.ons.ctp.response.action.domain.model.Action.ActionState;
+import uk.gov.ons.ctp.response.action.domain.model.ActionType;
 
 /**
  * The Action Service interface defines all business behaviours for operations
@@ -12,62 +13,78 @@ import uk.gov.ons.ctp.response.action.domain.model.Action.ActionState;
  */
 public interface ActionService extends CTPService {
 
-  /**
-   * Find Actions filtered by ActionType and state.
-   *
-   * @param actionTypeName Action type name by which to filter
-   * @param state State by which to filter
-   * @return List<Action> List of Actions or empty List
-   */
-  List<Action> findActionsByTypeAndState(String actionTypeName, ActionState state);
+	/**
+	 * Find all ActionTypes
+	 *
+	 * @return List<ActionTypes> List of ActionTypes
+	 */
+	List<ActionType> findActionTypes();
 
-  /**
-   * Find Actions filtered by ActionType.
-   *
-   * @param actionTypeName Action type name by which to filter
-   * @return List<Action> List of Actions or empty List
-   */
-  List<Action> findActionsByType(String actionTypeName);
+	/**
+	 * Find Actions filtered by ActionType and state.
+	 *
+	 * @param actionTypeName
+	 *            Action type name by which to filter
+	 * @param state
+	 *            State by which to filter
+	 * @return List<Action> List of Actions or empty List
+	 */
+	List<Action> findActionsByTypeAndState(String actionTypeName, ActionState state);
 
-  /**
-   * Find Actions filtered by state.
-   *
-   * @param state State by which to filter
-   * @return List<Action> List of Actions or empty List
-   */
-  List<Action> findActionsByState(ActionState state);
+	/**
+	 * Find Actions filtered by ActionType.
+	 *
+	 * @param actionTypeName
+	 *            Action type name by which to filter
+	 * @return List<Action> List of Actions or empty List
+	 */
+	List<Action> findActionsByType(String actionTypeName);
 
-  /**
-   * Find Action entity by specified action id.
-   *
-   * @param actionId This is the action id
-   * @return Action Returns the action for the specified action id.
-   */
-  Action findActionByActionId(Integer actionId);
+	/**
+	 * Find Actions filtered by state.
+	 *
+	 * @param state
+	 *            State by which to filter
+	 * @return List<Action> List of Actions or empty List
+	 */
+	List<Action> findActionsByState(ActionState state);
 
-  /**
-   * Find all actions for the specified Case Id.
-   *
-   * @param caseId This is the case id
-   * @return List<Action> Returns all actions for the specified Case Id.
-   */
-  List<Action> findActionsByCaseId(Integer caseId);
+	/**
+	 * Find Action entity by specified action id.
+	 *
+	 * @param actionId
+	 *            This is the action id
+	 * @return Action Returns the action for the specified action id.
+	 */
+	Action findActionByActionId(Integer actionId);
 
-  /**
-   * Create an action.
-   *
-   * @param action Action to be created
-   * @param actionTypeName name of the action type to associate with the action
-   * @return Action Returns created Action.
-   */
-  Action createAction(Action action);
+	/**
+	 * Find all actions for the specified Case Id.
+	 *
+	 * @param caseId
+	 *            This is the case id
+	 * @return List<Action> Returns all actions for the specified Case Id.
+	 */
+	List<Action> findActionsByCaseId(Integer caseId);
 
-  /**
-   * Update an action.
-   *
-   * @param action Action with update information
-   * @return Action Returns updated Action.
-   */
-  Action updateAction(Action action);
+	/**
+	 * Create an action.
+	 *
+	 * @param action
+	 *            Action to be created
+	 * @param actionTypeName
+	 *            name of the action type to associate with the action
+	 * @return Action Returns created Action.
+	 */
+	Action createAction(Action action);
+
+	/**
+	 * Update an action.
+	 *
+	 * @param action
+	 *            Action with update information
+	 * @return Action Returns updated Action.
+	 */
+	Action updateAction(Action action);
 
 }
