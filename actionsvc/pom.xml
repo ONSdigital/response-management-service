@@ -181,14 +181,14 @@
             <configuration>
               <bindingDirectory>src/main/resources/xsd</bindingDirectory>
               <bindingIncludes>
-                <include>inboundBindings.xjb</include>
+                <include>actionFeedback.xjb</include>
               </bindingIncludes>
               <bindingExcludes>
-                <include>outboundBindings.xjb</include>
+                <include>actionInstruction.xjb</include>
               </bindingExcludes>
               <schemaDirectory>src/main/resources/xsd</schemaDirectory>
               <schemaIncludes>
-                <include>inboundMessage.xsd</include>
+                <include>actionFeedback.xsd</include>
               </schemaIncludes>
               <generateDirectory>${project.build.directory}/generated-sources/xjc/inbound</generateDirectory>
             </configuration>
@@ -203,14 +203,14 @@
             <configuration>
               <bindingDirectory>src/main/resources/xsd</bindingDirectory>
               <bindingIncludes>
-                <include>outboundBindings.xjb</include>
+                <include>actionInstruction.xjb</include>
               </bindingIncludes>
               <bindingExcludes>
-                <include>inboundBindings.xjb</include>
+                <include>actionFeedback.xjb</include>
               </bindingExcludes>
               <schemaDirectory>src/main/resources/xsd</schemaDirectory>
               <schemaIncludes>
-                <include>outboundMessage.xsd</include>
+                <include>actionInstruction.xsd</include>
               </schemaIncludes>
               <generateDirectory>${project.build.directory}/generated-sources/xjc/outbound</generateDirectory>
             </configuration>
