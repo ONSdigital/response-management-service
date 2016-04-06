@@ -1,0 +1,27 @@
+/* Action service action states. Run using dot -Tpng actionstates.dot > actionstates.png */
+/* See https://fsteeg.wordpress.com/2006/11/16/uml-activity-diagrams-with-graphviz/ */
+digraph actionstates {
+    size="10,10";
+    edge[arrowhead=open]
+    node [shape=rectangle];
+    start[shape=circle, label="", fillcolor=black, style=filled]
+    end[shape=doublecircle, label="", fillcolor=black, style=filled]
+    submitted[label="SUBMITTED", fontname="helvetica", style=rounded]
+    pending[label="PENDING", fontname="helvetica", style=rounded]
+    active[label="ACTIVE", fontname="helvetica", style=rounded]
+    completed[label="COMPLETED", fontname="helvetica", style=rounded]
+    cancelsubmitted[label="CANCELSUBMITTED", fontname="helvetica", style=rounded]
+    cancelled[label="CANCELLED", fontname="helvetica", style=rounded]
+    failed[label="FAILED", fontname="helvetica", style=rounded]
+
+    start -> submitted
+    submitted -> pending
+    pending-> active
+    active -> completed
+    active -> cancelsubmitted
+    active -> failed
+    completed -> end
+    cancelsubmitted -> cancelled
+    failed -> end
+    cancelled -> end
+}

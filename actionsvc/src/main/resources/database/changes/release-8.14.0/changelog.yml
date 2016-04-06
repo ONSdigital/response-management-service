@@ -5,7 +5,55 @@ databaseChangeLog:
       id: 8.14.0-1
       author: sarahr
       changes:
+        - sqlFile:
+            comment: seed data creation
+            path: seed-data.sql
+            relativeToChangelogFile: true
+
+  - changeSet:
+      id: 8.14.0-2
+      author: whilesp
+      changes:
+        - sqlFile:
+            comment: alter actiontypename to be actiontypeid
+            path: alteractiontypeid.sql
+            relativeToChangelogFile: true
+
+
+  - changeSet:
+      id: 8.14.0-3
+      author: whilesp
+      changes:
+        - sqlFile:
+            comment: alter create action plsql function regarding actiontypeid
+            path: altercreateactionsfunction.sql
+            relativeToChangelogFile: true
+            splitStatements: false
+
+
+  - changeSet:
+      id: 8.14.0-4
+      author: whilesp
+      changes:
+        - sqlFile:
+            comment: modified seed data takingactiontypeid into account
+            path: actionseeddata.sql
+            relativeToChangelogFile: true
+
+  - changeSet:
+      id: 8.15.0-5
+      author: philippeb
+      changes:
           - sqlFile:
-              comment: seed data creation
-              path: seed-data.sql
+              comment: sequence for actionplanid on table actionplan
+              path: actionplanid_sequence.sql
               relativeToChangelogFile: true
+
+  - changeSet:
+      id: 8.15.0-6
+      author: philippeb
+      changes:
+          - sqlFile:
+              comment: actionplan seed data
+              path: actionplan_seedData.sql
+              relativeToChangelogFile: true 
