@@ -1,0 +1,693 @@
+swagger: '2.0'
+info:
+  title: Action Service API
+  description: >
+    The Action service manages actions and action plans and forms part of the Response Management product.
+    This service communicates with the Case Frame Service to find open cases and create
+    case events to record operations.
+
+    An action represents an operation that is required for a case; it could be to post out a
+    paper form or arrange a visit. The action plan is a set of rules that define, in terms of
+    a day, when a certain action should be taken. action plans are applied to open cases to create
+    actions. Once an action is created it is forwarded to an appropriate remote handler service to be
+    completed.
+  version: 8.13.0
+schemes:
+  - http
+basePath: /
+produces:
+  - application/json
+tags:
+  - name: Action
+    description: Everything about the management of actions
+  - name: ActionPlan
+    description: Everything about the management of action plans
+  - name: ActionPlanJob
+    description: Everything about the management of action plan jobs
+paths:
+  /actions:
+    get:
+      summary: List Actions
+      description: Lists all actions, optionally filtered by ActionType and/or state. Actions are returned in descending createdDateTime order i.e. most recent first.
+      parameters:
+        - name: Accept
+          in: header
+          description: Response type, application/json
+          required: false
+          type: string
+        - name: actiontype
+          in: query
+          description: ActionType to filter by
+          required: false
+          type: string
+        - name: state
+          in: query
+          description: Action state to filter by
+          required: false
+          type: string
+      tags:
+        - Action
+      responses:
+        200:
+          description: Actions found
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Action'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+    post:
+      summary: Create Action
+      description: Creates an action from the mandatory caseId, actionTypeName and createdBy properties. The manuallyCreated property will automatically be set to true for actions created via this endpoint.
+      consumes:
+        - application/json
+      parameters:
+        - name: Accept
+          in: header
+          description: Response type, application/json
+          required: false
+          type: string
+        - in: body
+          name: action
+          description: Action to create
+          required: true
+          schema:
+            $ref: '#/definitions/ActionCreationRequest'
+      tags:
+        - Action
+      responses:
+        201:
+          description: Action created
+          schema:
+            $ref: '#/definitions/Action'
+        400:
+          description: Invalid input
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+  /actions/{actionId}:
+    get:
+      summary: Get Action
+      description: Gets the specified action.
+      parameters:
+        - name: Accept
+          in: header
+          description: Response type, application/json
+          required: false
+          type: string
+        - in: path
+          name: actionId
+          description: Unique action ID
+          required: true
+          type: integer
+      tags:
+        - Action
+      responses:
+        200:
+          description: Action found
+          schema:
+            $ref: '#/definitions/Action'
+        404:
+          description: Action not found
+          schema:
+            $ref: '#/definitions/Error'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+    put:
+      summary: Update Action
+      description: Updates the specified action with at least one or more of the optional priority, situation or state properties.
+      consumes:
+        - application/json
+      parameters:
+        - name: Accept
+          in: header
+          description: Response type, application/json
+          required: false
+          type: string
+        - in: path
+          name: actionId
+          description: Unique action ID of the action to update
+          required: true
+          type: integer
+        - in: body
+          name: action
+          description: Action properties to update
+          required: true
+          schema:
+            $ref: '#/definitions/ActionUpdateRequest'
+      tags:
+        - Action
+      responses:
+        200:
+          description: Action updated
+          schema:
+            $ref: '#/definitions/Action'
+        400:
+          description: Invalid input
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+  /actions/case/{caseId}:
+    get:
+     summary: List Actions for Case
+     description: Lists all actions for the specified case. Actions are returned in descending createdDateTime order i.e. most recent first.
+     parameters:
+       - name: Accept
+         in: header
+         description: Response type, application/json
+         required: false
+         type: string
+       - in: path
+         name: caseId
+         description: Unique case ID
+         required: true
+         type: integer
+     tags:
+       - Action
+     responses:
+        200:
+          description: Actions found
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Action'
+        204:
+           description: No actions
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+  /actionplans:
+    get:
+      summary: List Action Plans
+      description: Lists all action plans. Action plans are returned in descending createdDateTime order i.e. most recent first.
+      parameters:
+        - name: Accept
+          in: header
+          description: Response type, application/json
+          required: false
+          type: string
+      tags:
+        - ActionPlan
+      responses:
+        200:
+          description: Action plans found
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/ActionPlan'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+    post:
+      summary: Create Action Plan (Not Implemented in 2016)
+      description: Creates an action plan from the mandatory surveyId, name, description, surveyDateDaysOffet and createdBy properties. Note that this operation will not be implemented for the 2016 test; action plans will be created via seed data.
+      consumes:
+        - application/json
+      parameters:
+        - name: Accept
+          in: header
+          description: Response type, application/json
+          required: false
+          type: string
+        - in: body
+          name: actionplan
+          description: Action plan to create
+          required: true
+          schema:
+            $ref: '#/definitions/ActionPlanCreationRequest'
+      tags:
+        - ActionPlan
+      responses:
+        501:
+          description: Action plan creation not implemented
+          schema:
+            $ref: '#/definitions/Error'
+  /actionplans/{actionPlanId}:
+    get:
+      summary: Get Action Plan
+      description: Gets the specified action plan.
+      parameters:
+        - name: Accept
+          in: header
+          description: Response type, application/json
+          required: false
+          type: string
+        - in: path
+          name: actionPlanId
+          description: Unique action plan ID
+          required: true
+          type: integer
+      tags:
+        - ActionPlan
+      responses:
+        200:
+          description: Action plan found
+          schema:
+            $ref: '#/definitions/ActionPlan'
+        404:
+          description: Action plan not found
+          schema:
+            $ref: '#/definitions/Error'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+    put:
+      summary: Update Action Plan
+      description: Updates the specified action plan with at least one or more of the optional description or lastGoodRunDateTime properties.
+      consumes:
+        - application/json
+      parameters:
+        - name: Accept
+          in: header
+          description: Response type, application/json
+          required: false
+          type: string
+        - in: path
+          name: actionPlanId
+          description: Unique action Plan ID of the action plan to update
+          required: true
+          type: integer
+        - in: body
+          name: actionplan
+          description: Action plan properties to update
+          required: true
+          schema:
+            $ref: '#/definitions/ActionPlanUpdateRequest'
+      tags:
+        - ActionPlan
+      responses:
+        200:
+          description: Action updated
+          schema:
+            $ref: '#/definitions/ActionPlan'
+        400:
+          description: Invalid input
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+  /actionplans/{actionPlanId}/rules:
+    get:
+      summary: List Action Rules for Action Plan
+      description: Lists all action rules for the specified action plan. Action rules are returned in ascending surveyDateDaysOffet order i.e. earliest first.
+      parameters:
+        - name: Accept
+          in: header
+          description: Response type, application/json
+          required: false
+          type: string
+        - in: path
+          name: actionPlanId
+          description: Unique action plan ID
+          required: true
+          type: integer
+      tags:
+        - ActionPlan
+      responses:
+        200:
+          description: Action rules found
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/ActionRule'
+        204:
+          description: No action rules
+        404:
+          description: Action plan not found
+          schema:
+            $ref: '#/definitions/Error'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+  /actionplans/jobs/{actionPlanJobId}:
+    get:
+      summary: Get Action Plan Job
+      description: Gets the specified action plan job.
+      parameters:
+        - name: Accept
+          in: header
+          description: Response type, application/json
+          required: false
+          type: string
+        - in: path
+          name: actionPlanJobId
+          description: Unique action plan job ID
+          required: true
+          type: integer
+      tags:
+        - ActionPlanJob
+      responses:
+        200:
+          description: Action plan job found
+          schema:
+            $ref: '#/definitions/ActionPlanJob'
+        404:
+          description: Action plan job not found
+          schema:
+            $ref: '#/definitions/Error'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+  /actionplans/{actionPlanId}/jobs:
+    get:
+      summary: List Action Plan Jobs
+      description: Lists all action plan jobs for the specified action plan. Action plan jobs are returned in descending createdDateTime order i.e. most recent first.
+      parameters:
+        - name: Accept
+          in: header
+          description: Response type, application/json
+          required: false
+          type: string
+        - in: path
+          name: actionPlanId
+          description: Unique action plan ID
+          required: true
+          type: integer
+      tags:
+        - ActionPlanJob
+      responses:
+        200:
+          description: Action plan jobs found
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/ActionPlanJob'
+        204:
+          description: No action plan jobs
+        404:
+          description: Action plan not found
+          schema:
+            $ref: '#/definitions/Error'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+    post:
+      summary: Execute Action Plan
+      description: Executes an action plan by creating an action plan job from the mandatory actionPlanId and createdBy properties.
+      consumes:
+        - application/json
+      parameters:
+        - name: Accept
+          in: header
+          description: Response type, application/json
+          required: false
+          type: string
+        - in: path
+          name: actionPlanId
+          description: Unique action plan ID of the action plan to execute
+          required: true
+          type: integer
+        - in: body
+          name: actionplanjob
+          description: Action plan job to create
+          required: true
+          schema:
+            $ref: '#/definitions/ActionPlanJobCreationRequest'
+      tags:
+        - ActionPlanJob
+      responses:
+        201:
+          description: Action plan job created
+          schema:
+            $ref: '#/definitions/ActionPlanJob'
+        400:
+          description: Invalid input
+        404:
+          description: Action plan not found
+          schema:
+            $ref: '#/definitions/Error'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+definitions:
+  Action:
+    type: object
+    required:
+      - actionId
+      - caseId
+      - actionTypeName
+      - createdBy
+      - createdDateTime
+      - manuallyCreated
+      - priority
+      - state
+    properties:
+      actionId:
+        description: Unique action ID
+        type: integer
+      caseId:
+        description: Unique open case ID this action is for
+        type: integer
+      actionPlanId:
+        description: Unique action plan ID this action belongs to. Optional for manually-created actions
+        type: integer
+      actionRuleId:
+        description: Unique action rule ID this action belongs to. Optional for manually-created actions
+        type: integer
+      actionTypeName:
+        description: Unique action type this action is for
+        type: string
+      createdBy:
+        description: User who created this action
+        type: string
+      manuallyCreated:
+        description: Whether the action was manually-created
+        type: boolean
+        default: false
+      priority:
+        description: Action priority as passed to the remote handler service. 1 = highest priority, 5 = lowest priority
+        type: integer
+        minimum: 1
+        maximum: 5
+        default: 3
+      situation:
+        description: Action status as recorded by the remote handler service
+        type: string
+      state:
+        description: Action state
+        type: string
+        default: SUBMITTED
+        enum:
+          - SUBMITTED
+          - PENDING
+          - ACTIVE
+          - COMPLETED
+          - CANCELSUBMITTED
+          - CANCELLED
+          - FAILED
+      createdDateTime:
+        description: Action creation date/time
+        type: string
+        format: date-time
+      updatedDateTime:
+        description: Action updated date/time
+        type: string
+        format: date-time
+  ActionCreationRequest:
+    type: object
+    required:
+      - actionTypeName
+      - caseId
+      - createdBy
+    properties:
+      caseId:
+        description: Unique open case ID this action is for
+        type: integer
+      actionTypeName:
+        description: Unique action type this action is for
+        type: string
+      priority:
+        description: Action priority as passed to the remote handler service. 1 = highest priority, 5 = lowest priority
+        type: integer
+        minimum: 1
+        maximum: 5
+        default: 3
+      createdBy:
+        description: User who created this action
+        type: string
+  ActionUpdateRequest:
+    type: object
+    properties:
+      priority:
+        description: Action priority as passed to the remote handler service. 1 = highest priority, 5 = lowest priority
+        type: integer
+        minimum: 1
+        maximum: 5
+        default: 3
+      situation:
+        description: Action status as recorded by the remote handler service
+        type: string
+      state:
+        description: Action state
+        type: string
+        default: SUBMITTED
+        enum:
+          - SUBMITTED
+          - PENDING
+          - ACTIVE
+          - COMPLETED
+          - CANCELSUBMITTED
+          - CANCELLED
+          - FAILED
+  ActionPlan:
+    type: object
+    required:
+      - actionPlanId
+      - surveyId
+      - name
+      - description
+      - createdBy
+      - createdDateTime
+    properties:
+      actionPlanId:
+        description: Unique action plan ID
+        type: integer
+      surveyId:
+        description: Unique survey ID this action plan is for
+        type: integer
+      name:
+        description: Action plan name
+        type: string
+      description:
+        description: Action plan description
+        type: string
+      createdBy:
+        description: User who created this action plan
+        type: string
+      createdDateTime:
+        description: Action plan creation date/time
+        type: string
+        format: date-time
+      lastGoodRunDateTime:
+        description: Action plan last successful run date/time
+        type: string
+        format: date-time
+  ActionPlanCreationRequest:
+    type: object
+    required:
+      - surveyId
+      - name
+      - description
+      - createdBy
+    properties:
+      surveyId:
+        description: Unique survey ID this action plan is for
+        type: integer
+      name:
+        description: Action plan name
+        type: string
+      description:
+        description: Action plan description
+        type: string
+      createdBy:
+        description: User who created this action plan
+        type: string
+  ActionPlanUpdateRequest:
+    type: object
+    properties:
+      description:
+        description: Action plan description
+        type: string
+      lastGoodRunDateTime:
+        description: Action plan last successful run date/time
+        type: string
+        format: date-time
+  ActionPlanJob:
+    type: object
+    required:
+      - actionPlanJobId
+      - actionPlanId
+      - createdBy
+      - state
+      - createdDateTime
+    properties:
+      actionPlanJobId:
+        description: Unique action plan job ID
+        type: integer
+      actionPlanId:
+        description: Unique action plan ID this action plan job is for
+        type: integer
+      createdBy:
+        description: User who created this action plan job
+        type: string
+      state:
+        description: Action plan job state
+        type: string
+        default: SUBMITTED
+        enum:
+          - SUBMITTED
+          - STARTED
+          - COMPLETED
+          - FAILED
+      createdDateTime:
+        description: Action plan job creation date/time
+        type: string
+        format: date-time
+      updatedDateTime:
+        description: Action plan job updated date/time
+        type: string
+        format: date-time
+  ActionPlanJobCreationRequest:
+    type: object
+    required:
+      - createdBy
+    properties:
+      createdBy:
+        description: User who created this action plan job
+        type: string
+  ActionRule:
+    type: object
+    required:
+      - actionPlanId
+      - actionTypeName
+      - name
+      - description
+      - surveyDateDaysOffet
+      - priority
+    properties:
+      actionPlanId:
+        description: Unique action plan ID
+        type: integer
+      actionTypeName:
+        description: Unique action type this action rule is for
+        type: string
+      name:
+        description: Action rule name
+        type: string
+      description:
+        description: Action rule description
+        type: string
+      surveyDateDaysOffet:
+        description: Number of days offset from the survey date (may be negative)
+        type: integer
+      priority:
+        description: Action priority as passed to the remote handler service. 1 = highest priority, 5 = lowest priority
+        type: integer
+        minimum: 1
+        maximum: 5
+        default: 3
+  Error:
+    type: object
+    properties:
+      code:
+        description: Error code
+        type: string
+      timestamp:
+        description:  Unique error timestamp that can be searched for in logs
+        type: integer
+      message:
+        description: Error message
+        type: string
