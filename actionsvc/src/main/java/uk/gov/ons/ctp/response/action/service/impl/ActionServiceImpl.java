@@ -40,17 +40,18 @@ public final class ActionServiceImpl implements ActionService {
     return actionTypeRepo.findAll();
   }
 
-  public List<Action> findActionsByActionTypeAndState(final ActionType actionType, final ActionState state) {
-    log.debug("Entering findActionsByActionTypeAndState with {} {}", actionType, state);
-    //return actionRepo.findByActionTypeNameAndStateOrderByCreatedDateTimeDesc(actionType, state);
-    return null;
+ 
+  @Override
+  public List<Action> findActionsByTypeAndStateOrderedByCreatedDateTimeDescending(final String actionTypeName, final ActionState state) {
+    log.debug("Entering findActionsByTypeAndState with {} {}", actionTypeName, state);
+    return actionRepo.findByActionTypeNameAndStateOrderByCreatedDateTimeDesc(actionTypeName, state);
   }
 
  
   @Override
-  public List<Action> findActionsByTypeAndState(final String actionTypeName, final ActionState state) {
+  public List<Action> findActionsForDistribution(final String actionTypeName, final ActionState state) {
     log.debug("Entering findActionsByTypeAndState with {} {}", actionTypeName, state);
-    return actionRepo.findByActionTypeNameAndStateOrderByCreatedDateTimeDesc(actionTypeName, state);
+    return actionRepo.findFirst100ByActionTypeNameAndStateOrderByCreatedDateTimeAsc(actionTypeName, state);
   }
 
   @Override

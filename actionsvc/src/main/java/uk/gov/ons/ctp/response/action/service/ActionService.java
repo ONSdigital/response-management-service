@@ -21,7 +21,7 @@ public interface ActionService extends CTPService {
 	List<ActionType> findActionTypes();
 
 	/**
-	 * Find Actions filtered by ActionType and state.
+	 * Find Actions filtered by ActionType and state ordered by created date time descending
 	 *
 	 * @param actionTypeName
 	 *            Action type name by which to filter
@@ -29,7 +29,18 @@ public interface ActionService extends CTPService {
 	 *            State by which to filter
 	 * @return List<Action> List of Actions or empty List
 	 */
-	List<Action> findActionsByTypeAndState(String actionTypeName, ActionState state);
+	List<Action> findActionsByTypeAndStateOrderedByCreatedDateTimeDescending(String actionTypeName, ActionState state);
+
+	/**
+	 * Find Actions filtered by ActionType and state ordered by created date time ascending limited to the first 100
+	 *
+	 * @param actionTypeName
+	 *            Action type name by which to filter
+	 * @param state
+	 *            State by which to filter
+	 * @return List<Action> List of Actions or empty List
+	 */
+	List<Action> findActionsForDistribution(String actionTypeName, ActionState state);
 
 	/**
 	 * Find Actions filtered by ActionType.
