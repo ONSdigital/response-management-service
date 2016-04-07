@@ -23,13 +23,22 @@ public interface ActionRepository extends JpaRepository<Action, Integer> {
   List<Action> findByCaseIdOrderByCreatedDateTimeDesc(Integer caseId);
 
   /**
-   * Return all actions for the specified actionTypeName and state.
+   * Return all actions for the specified actionTypeName and state in created date time order descending.
    *
    * @param actionTypeName ActionTypeName filter criteria
    * @param state State of Action
    * @return List<Action> returns all actions for actionTypeName and state
    */
   List<Action> findByActionTypeNameAndStateOrderByCreatedDateTimeDesc(String actionTypeName, ActionState state);
+
+  /**
+   * Return all actions for the specified actionTypeName and state.in created date time order ascending.
+   *
+   * @param actionTypeName ActionTypeName filter criteria
+   * @param state State of Action
+   * @return List<Action> returns all actions for actionTypeName and state
+   */
+  List<Action> findFirst100ByActionTypeNameAndStateOrderByCreatedDateTimeAsc(String actionTypeName, ActionState state);
 
   /**
    * Return all actions for the specified actionTypeName.

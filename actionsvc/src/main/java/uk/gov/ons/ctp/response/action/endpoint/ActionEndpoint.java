@@ -58,7 +58,7 @@ public final class ActionEndpoint implements CTPEndpoint {
     if (actionType != null) {
       if (actionState != null) {
         log.debug("Entering findActionsByTypeAndState with {} {}", actionType, actionState);
-        actions = actionService.findActionsByTypeAndState(actionType, actionState);
+        actions = actionService.findActionsByTypeAndStateOrderedByCreatedDateTimeDescending(actionType, actionState);
       } else {
         log.debug("Entering findActionsByType with {}", actionType);
         actions = actionService.findActionsByType(actionType);

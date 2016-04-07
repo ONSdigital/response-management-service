@@ -2,6 +2,8 @@ package uk.gov.ons.ctp.response.action.domain.model;
 
 import java.io.Serializable;
 import java.sql.Timestamp;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -35,6 +37,42 @@ public class Action implements Serializable {
     ACTIVE, CANCELLED, CANCELSUBMITTED, COMPLETED, FAILED, PENDING, SUBMITTED;
   }
 
+  // NOTE: the names need to match those in the outbound xsd
+  public enum ActionPriority {
+    HIGHEST (1, "highest"),
+    HIGHER (2, "higher"),
+    MEDIUM (3, "medium"),
+    LOWER (4, "lower"),
+    LOWEST (5, "lowest");
+
+    private final int level;   // numeric level
+    private final String name; // the level name
+    
+    private static Map<Integer, ActionPriority> map = new HashMap<Integer, ActionPriority>();
+
+    static {
+        for (ActionPriority priority : ActionPriority.values()) {
+            map.put(priority.level, priority);
+        }
+    }
+
+    public static ActionPriority valueOf(int priorityLevel) {
+        return map.get(priorityLevel);
+    }
+    
+    ActionPriority (int value, String label) {
+      this.level = value;
+      this.name = label;
+    }
+    
+    public int getLevel() {
+      return this.level;
+    }
+    public String getName() {
+      return this.name;
+    }
+  }
+  
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "actionid")

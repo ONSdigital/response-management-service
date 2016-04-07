@@ -57,7 +57,7 @@ public final class MockActionServiceFactory implements Factory<ActionService> {
 
     final ActionService mockedService = Mockito.mock(ActionService.class);
 
-    Mockito.when(mockedService.findActionsByTypeAndState(ACTION2_ACTIONTYPENAME, ACTION2_ACTIONSTATE))
+    Mockito.when(mockedService.findActionsByTypeAndStateOrderedByCreatedDateTimeDescending(ACTION2_ACTIONTYPENAME, ACTION2_ACTIONSTATE))
         .thenAnswer(new Answer<List<Action>>() {
           public List<Action> answer(final InvocationOnMock invocation)
               throws Throwable {
@@ -72,7 +72,7 @@ public final class MockActionServiceFactory implements Factory<ActionService> {
           }
         });
 
-    Mockito.when(mockedService.findActionsByTypeAndState(ACTION_NOTFOUND, ACTION2_ACTIONSTATE))
+    Mockito.when(mockedService.findActionsByTypeAndStateOrderedByCreatedDateTimeDescending(ACTION_NOTFOUND, ACTION2_ACTIONSTATE))
         .thenAnswer(new Answer<List<Action>>() {
           public List<Action> answer(final InvocationOnMock invocation)
               throws Throwable {
