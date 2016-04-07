@@ -18,6 +18,8 @@ import uk.gov.ons.ctp.response.action.message.instruction.ActionRequest;
 import uk.gov.ons.ctp.response.action.message.instruction.ActionRequests;
 import uk.gov.ons.ctp.response.action.message.instruction.Priority;
 import uk.gov.ons.ctp.response.action.service.ActionService;
+import uk.gov.ons.ctp.response.caseframe.representation.CaseDTO;
+import uk.gov.ons.ctp.response.caseframe.representation.QuestionnaireDTO;
 
 @Named
 @Slf4j
@@ -39,17 +41,29 @@ public class ActionDistributor {
 
         for (Action action:actions) {
           ActionRequest actionRequest = new ActionRequest();
+          CaseDTO caseDTO = getCase(action.getCaseId());
+          QuestionnaireDTO questionnaireDTO = getQuestionnaire(action.getCaseId());
           actionRequest.setActionId(BigInteger.valueOf(action.getActionId()));
           actionRequest.setActionType(actionType.getName());
           actionRequest.setCaseId(BigInteger.valueOf(action.getCaseId()));
           actionRequest.setContactName("TODO"); // TODO
           actionRequest.setEvents(null); //TODO
-          actionRequest.setIac(""); //TODO
+          actionRequest.setIac(questionnaireDTO.getIac()); //TODO
           actionRequest.setPriority(Priority.fromValue(ActionPriority.valueOf(action.getPriority()).getName()));
 //          actionRequest.setQuestionnaireId(action.);
         }
         
       }
+  }
+  
+  private QuestionnaireDTO getQuestionnaire(Integer caseId) {
+    // TODO call caseframsvc restfully
+    return new QuestionnaireDTO();
+  }
+  
+  private CaseDTO getCase(Integer caseId) {
+    // TODO call caseframsvc restfully
+    return new CaseDTO();
   }
   
 }

@@ -23,7 +23,7 @@
   </properties>
 
   <modules>
-    <module>caseframesvc-model</module>
+    <module>caseframesvc-api</module>
     <module>caseframesvc</module>
     <module>actionsvc</module>
   </modules>
