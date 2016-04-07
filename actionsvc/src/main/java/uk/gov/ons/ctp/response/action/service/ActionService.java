@@ -4,8 +4,8 @@ import java.util.List;
 
 import uk.gov.ons.ctp.common.service.CTPService;
 import uk.gov.ons.ctp.response.action.domain.model.Action;
-import uk.gov.ons.ctp.response.action.domain.model.Action.ActionState;
 import uk.gov.ons.ctp.response.action.domain.model.ActionType;
+import uk.gov.ons.ctp.response.action.representation.ActionDTO;
 
 /**
  * The Action Service interface defines all business behaviours for operations
@@ -29,7 +29,7 @@ public interface ActionService extends CTPService {
 	 *            State by which to filter
 	 * @return List<Action> List of Actions or empty List
 	 */
-	List<Action> findActionsByTypeAndStateOrderedByCreatedDateTimeDescending(String actionTypeName, ActionState state);
+	List<Action> findActionsByTypeAndStateOrderedByCreatedDateTimeDescending(String actionTypeName, ActionDTO.ActionState state);
 
 	/**
 	 * Find Actions filtered by ActionType and state ordered by created date time ascending limited to the first 100
@@ -40,7 +40,7 @@ public interface ActionService extends CTPService {
 	 *            State by which to filter
 	 * @return List<Action> List of Actions or empty List
 	 */
-	List<Action> findActionsForDistribution(String actionTypeName, ActionState state);
+	List<Action> findActionsForDistribution(String actionTypeName, ActionDTO.ActionState state);
 
 	/**
 	 * Find Actions filtered by ActionType.
@@ -58,7 +58,7 @@ public interface ActionService extends CTPService {
 	 *            State by which to filter
 	 * @return List<Action> List of Actions or empty List
 	 */
-	List<Action> findActionsByState(ActionState state);
+	List<Action> findActionsByState(ActionDTO.ActionState state);
 
 	/**
 	 * Find Action entity by specified action id.
@@ -83,8 +83,7 @@ public interface ActionService extends CTPService {
 	 *
 	 * @param action
 	 *            Action to be created
-	 * @param actionTypeName
-	 *            name of the action type to associate with the action
+	 *
 	 * @return Action Returns created Action.
 	 */
 	Action createAction(Action action);
@@ -92,8 +91,7 @@ public interface ActionService extends CTPService {
 	/**
 	 * Update an action.
 	 *
-	 * @param action
-	 *            Action with update information
+	 * @param action Action with update information
 	 * @return Action Returns updated Action.
 	 */
 	Action updateAction(Action action);

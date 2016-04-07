@@ -11,10 +11,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import lombok.extern.slf4j.Slf4j;
 import uk.gov.ons.ctp.response.action.domain.model.Action;
-import uk.gov.ons.ctp.response.action.domain.model.Action.ActionState;
 import uk.gov.ons.ctp.response.action.domain.model.ActionType;
 import uk.gov.ons.ctp.response.action.domain.repository.ActionRepository;
 import uk.gov.ons.ctp.response.action.domain.repository.ActionTypeRepository;
+import uk.gov.ons.ctp.response.action.representation.ActionDTO;
 import uk.gov.ons.ctp.response.action.service.ActionService;
 
 /**
@@ -42,14 +42,15 @@ public final class ActionServiceImpl implements ActionService {
 
  
   @Override
-  public List<Action> findActionsByTypeAndStateOrderedByCreatedDateTimeDescending(final String actionTypeName, final ActionState state) {
+  public List<Action> findActionsByTypeAndStateOrderedByCreatedDateTimeDescending(final String actionTypeName,
+      final ActionDTO.ActionState state) {
     log.debug("Entering findActionsByTypeAndState with {} {}", actionTypeName, state);
     return actionRepo.findByActionTypeNameAndStateOrderByCreatedDateTimeDesc(actionTypeName, state);
   }
 
  
   @Override
-  public List<Action> findActionsForDistribution(final String actionTypeName, final ActionState state) {
+  public List<Action> findActionsForDistribution(final String actionTypeName, final ActionDTO.ActionState state) {
     log.debug("Entering findActionsByTypeAndState with {} {}", actionTypeName, state);
     return actionRepo.findFirst100ByActionTypeNameAndStateOrderByCreatedDateTimeAsc(actionTypeName, state);
   }
@@ -61,7 +62,7 @@ public final class ActionServiceImpl implements ActionService {
   }
 
   @Override
-  public List<Action> findActionsByState(final ActionState state) {
+  public List<Action> findActionsByState(final ActionDTO.ActionState state) {
     log.debug("Entering findActionsByState with {}", state);
     return actionRepo.findByStateOrderByCreatedDateTimeDesc(state);
   }
@@ -88,7 +89,7 @@ public final class ActionServiceImpl implements ActionService {
     action.setActionType(actionType);
     action.setManuallyCreated(true);
     action.setCreatedDateTime(new Timestamp(System.currentTimeMillis()));
-    action.setState(Action.ActionState.SUBMITTED);
+    action.setState(ActionDTO.ActionState.SUBMITTED);
     return actionRepo.saveAndFlush(action);
   }
 
@@ -114,7 +115,7 @@ public final class ActionServiceImpl implements ActionService {
         existingAction.setSituation(newSituation);
       }
 
-      ActionState newState = action.getState();
+      ActionDTO.ActionState newState = action.getState();
       log.debug("newState = {}", newState);
       if (newState != null) {
         needsUpdate = true;

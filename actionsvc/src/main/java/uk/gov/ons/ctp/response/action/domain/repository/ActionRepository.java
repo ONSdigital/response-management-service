@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import uk.gov.ons.ctp.response.action.domain.model.Action;
-import uk.gov.ons.ctp.response.action.domain.model.Action.ActionState;
+import uk.gov.ons.ctp.response.action.representation.ActionDTO;
 
 /**
  * JPA Data Repository.
@@ -29,7 +29,8 @@ public interface ActionRepository extends JpaRepository<Action, Integer> {
    * @param state State of Action
    * @return List<Action> returns all actions for actionTypeName and state
    */
-  List<Action> findByActionTypeNameAndStateOrderByCreatedDateTimeDesc(String actionTypeName, ActionState state);
+  List<Action> findByActionTypeNameAndStateOrderByCreatedDateTimeDesc(String actionTypeName,
+      ActionDTO.ActionState state);
 
   /**
    * Return all actions for the specified actionTypeName and state.in created date time order ascending.
@@ -38,7 +39,8 @@ public interface ActionRepository extends JpaRepository<Action, Integer> {
    * @param state State of Action
    * @return List<Action> returns all actions for actionTypeName and state
    */
-  List<Action> findFirst100ByActionTypeNameAndStateOrderByCreatedDateTimeAsc(String actionTypeName, ActionState state);
+  List<Action> findFirst100ByActionTypeNameAndStateOrderByCreatedDateTimeAsc(String actionTypeName,
+      ActionDTO.ActionState state);
 
   /**
    * Return all actions for the specified actionTypeName.
@@ -54,6 +56,6 @@ public interface ActionRepository extends JpaRepository<Action, Integer> {
    * @param state State filter criteria
    * @return List<Action> returns all actions for state
    */
-  List<Action> findByStateOrderByCreatedDateTimeDesc(ActionState state);
+  List<Action> findByStateOrderByCreatedDateTimeDesc(ActionDTO.ActionState state);
 
 }
