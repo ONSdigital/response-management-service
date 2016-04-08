@@ -20,6 +20,7 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import uk.gov.ons.ctp.response.action.representation.ActionDTO;
 
 /**
  * Domain model object.
@@ -32,10 +33,6 @@ import lombok.NoArgsConstructor;
 public class Action implements Serializable {
 
   private static final long serialVersionUID = 8539984354009320104L;
-
-  public enum ActionState {
-    ACTIVE, CANCELLED, CANCELSUBMITTED, COMPLETED, FAILED, PENDING, SUBMITTED;
-  }
 
   // NOTE: the names need to match those in the outbound xsd
   public enum ActionPriority {
@@ -102,7 +99,7 @@ public class Action implements Serializable {
   private String situation;
 
   @Enumerated(EnumType.STRING)
-  private ActionState state;
+  private ActionDTO.ActionState state;
 
   @Column(name = "createddatetime")
   private Timestamp createdDateTime;

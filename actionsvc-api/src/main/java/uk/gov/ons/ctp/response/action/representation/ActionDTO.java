@@ -5,13 +5,16 @@ import java.util.Date;
 import javax.validation.constraints.NotNull;
 
 import lombok.Data;
-import uk.gov.ons.ctp.response.action.domain.model.Action.ActionState;
 
 /**
  * Domain model object for representation.
  */
 @Data
 public class ActionDTO {
+
+  public enum ActionState {
+    ACTIVE, CANCELLED, CANCELSUBMITTED, COMPLETED, FAILED, PENDING, SUBMITTED;
+  }
 
   private Integer actionId;
 

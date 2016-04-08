@@ -12,8 +12,8 @@ import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
 import uk.gov.ons.ctp.response.action.domain.model.Action;
-import uk.gov.ons.ctp.response.action.domain.model.Action.ActionState;
 import uk.gov.ons.ctp.response.action.domain.model.ActionType;
+import uk.gov.ons.ctp.response.action.representation.ActionDTO;
 import uk.gov.ons.ctp.response.action.service.ActionService;
 
 /**
@@ -26,8 +26,8 @@ public final class MockActionServiceFactory implements Factory<ActionService> {
   public static final Integer ACTION2_PLANID = 2;
   public static final Integer ACTION1_RULEID = 1;
   public static final Integer ACTION2_RULEID = 2;
-  public static final ActionState ACTION1_ACTIONSTATE = Action.ActionState.ACTIVE;
-  public static final ActionState ACTION2_ACTIONSTATE = Action.ActionState.COMPLETED;
+  public static final ActionDTO.ActionState ACTION1_ACTIONSTATE = ActionDTO.ActionState.ACTIVE;
+  public static final ActionDTO.ActionState ACTION2_ACTIONSTATE = ActionDTO.ActionState.COMPLETED;
   public static final Boolean ACTION1_MANUALLY_CREATED = true;
   public static final Boolean ACTION2_MANUALLY_CREATED = false;
   public static final String ACTION1_ACTIONTYPENAME = "actiontypename1";

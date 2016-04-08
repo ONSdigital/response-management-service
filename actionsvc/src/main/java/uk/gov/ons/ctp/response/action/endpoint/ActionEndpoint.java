@@ -22,7 +22,6 @@ import ma.glasnost.orika.MapperFacade;
 import uk.gov.ons.ctp.common.endpoint.CTPEndpoint;
 import uk.gov.ons.ctp.common.error.CTPException;
 import uk.gov.ons.ctp.response.action.domain.model.Action;
-import uk.gov.ons.ctp.response.action.domain.model.Action.ActionState;
 import uk.gov.ons.ctp.response.action.representation.ActionDTO;
 import uk.gov.ons.ctp.response.action.service.ActionService;
 
@@ -51,7 +50,7 @@ public final class ActionEndpoint implements CTPEndpoint {
   @GET
   @Path("/")
   public List<ActionDTO> findActions(@QueryParam("actiontype") final String actionType,
-      @QueryParam("state") final ActionState actionState) {
+      @QueryParam("state") final ActionDTO.ActionState actionState) {
 
     List<Action> actions = null;
 
