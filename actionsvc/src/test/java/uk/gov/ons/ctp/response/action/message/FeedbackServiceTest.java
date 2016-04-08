@@ -26,11 +26,6 @@ import uk.gov.ons.ctp.response.action.message.impl.FeedbackReceiverImpl;
 @RunWith(SpringJUnit4ClassRunner.class)
 public class FeedbackServiceTest {
 
-<<<<<<< HEAD
-  public FeedbackReceiver feedbackService = new FeedbackReceiverImpl();
-
-=======
->>>>>>> 2e7b810f8a132e3ad0aa4a987f68d4044178d1b0
 	@Before
 	public void setUp() throws Exception {
 	}
