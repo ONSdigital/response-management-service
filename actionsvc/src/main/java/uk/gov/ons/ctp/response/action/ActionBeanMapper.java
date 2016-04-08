@@ -10,10 +10,12 @@ import uk.gov.ons.ctp.response.action.domain.model.Action;
 import uk.gov.ons.ctp.response.action.domain.model.ActionPlan;
 import uk.gov.ons.ctp.response.action.domain.model.ActionPlanJob;
 import uk.gov.ons.ctp.response.action.domain.model.ActionRule;
+import uk.gov.ons.ctp.response.action.message.instruction.ActionAddress;
 import uk.gov.ons.ctp.response.action.representation.ActionDTO;
 import uk.gov.ons.ctp.response.action.representation.ActionPlanDTO;
 import uk.gov.ons.ctp.response.action.representation.ActionPlanJobDTO;
 import uk.gov.ons.ctp.response.action.representation.ActionRuleDTO;
+import uk.gov.ons.ctp.response.caseframe.representation.AddressDTO;
 
 /**
  * The bean mapper to go from Entity objects to Presentation objects.
@@ -53,5 +55,11 @@ public class ActionBeanMapper extends ConfigurableMapper {
       .classMap(ActionRule.class, ActionRuleDTO.class)
       .byDefault()
       .register();
+    
+    // slight deviation from norm here - AddressDTO is from caseframesvc !!
+    factory
+		  .classMap(AddressDTO.class, ActionAddress.class)
+		  .byDefault()
+		  .register();
   }
 }

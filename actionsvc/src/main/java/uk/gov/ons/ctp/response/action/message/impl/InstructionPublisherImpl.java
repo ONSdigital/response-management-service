@@ -1,25 +1,27 @@
-package uk.gov.ons.ctp.response.action.message;
+package uk.gov.ons.ctp.response.action.message.impl;
+
+import java.util.List;
 
 import javax.inject.Named;
 
 import org.springframework.integration.annotation.Publisher;
 import org.springframework.messaging.handler.annotation.Header;
 
+import uk.gov.ons.ctp.response.action.message.InstructionPublisher;
 import uk.gov.ons.ctp.response.action.message.instruction.ActionInstruction;
 import uk.gov.ons.ctp.response.action.message.instruction.ActionRequest;
 import uk.gov.ons.ctp.response.action.message.instruction.ActionRequests;
 
 @Named
-public class InstructionService {
+public class InstructionPublisherImpl implements InstructionPublisher {
 
+  @Override
   @Publisher(channel="instructionOutbound")
-  public ActionInstruction sendRequest(@Header("HANDLER") String handler, String actionType) {
+  public ActionInstruction sendRequests(@Header("HANDLER") String handler, List<ActionRequest> actionRequests) {
     ActionInstruction instruction = new ActionInstruction();
-    ActionRequest request = new ActionRequest();
     
-    request.setActionType(actionType);
     ActionRequests requests = new ActionRequests();
-    requests.getActionRequests().add(request);
+    requests.getActionRequests().addAll(actionRequests);
     instruction.setActionRequests(requests);
     return instruction;
   }

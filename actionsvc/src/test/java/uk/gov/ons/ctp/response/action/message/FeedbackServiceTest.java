@@ -21,11 +21,13 @@ import org.springframework.oxm.jaxb.Jaxb2Marshaller;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import uk.gov.ons.ctp.response.action.message.impl.FeedbackReceiverImpl;
+
 @ContextConfiguration (locations = { "/FeedbackServiceTest-context.xml" })
 @RunWith(SpringJUnit4ClassRunner.class)
 public class FeedbackServiceTest {
   
-  public FeedbackService feedbackService = new FeedbackService();
+  public FeedbackReceiver feedbackService = new FeedbackReceiverImpl();
 
   @Before
   public void setUp() throws Exception {

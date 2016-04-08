@@ -91,3 +91,6 @@ spring:
         hibernate:
           ddl-auto: update
 
+caseframesvc:
+  casesurl: http://localhost:8171/cases
+  questionnairessurl: http://localhost:8171/questionnaires

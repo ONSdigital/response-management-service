@@ -5,20 +5,16 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
-import static org.springframework.integration.test.matcher.HeaderMatcher.hasHeaderKey;
 import static org.springframework.integration.test.matcher.HeaderMatcher.hasHeader;
 
-import java.util.Iterator;
-import java.util.Properties;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
-import org.apache.activemq.command.ActiveMQQueue;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.integration.channel.QueueChannel;
 import org.springframework.integration.support.MessageBuilder;
 import org.springframework.messaging.Message;
@@ -26,6 +22,7 @@ import org.springframework.messaging.MessageChannel;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import uk.gov.ons.ctp.response.action.message.impl.InstructionPublisherImpl;
 import uk.gov.ons.ctp.response.action.message.instruction.ActionInstruction;
 import uk.gov.ons.ctp.response.action.message.instruction.ActionRequest;
 import uk.gov.ons.ctp.response.action.message.instruction.ActionRequests;
@@ -34,7 +31,7 @@ import uk.gov.ons.ctp.response.action.message.instruction.ActionRequests;
 @RunWith(SpringJUnit4ClassRunner.class)
 public class InstructionServiceTest {
 
-	public InstructionService instructionService = new InstructionService();
+	public InstructionPublisher instructionService = new InstructionPublisherImpl();
 
 	@Before
 	public void setUp() throws Exception {
@@ -86,8 +83,8 @@ public class InstructionServiceTest {
 	public void testSendRequest() {
 		try {
 			String handler = "Field";
-			String actionType = "testActionType";
-			instructionService.sendRequest(handler, actionType);
+			List<ActionRequest> actionRequests = new ArrayList<ActionRequest> ();
+			instructionService.sendRequests(handler, actionRequests);
 
 		} catch (Exception ex) {
 			fail("testSendRequest has failed " + ex.getMessage());
