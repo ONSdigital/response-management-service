@@ -1,12 +1,12 @@
 package uk.gov.ons.ctp.response.action.message;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
-import static org.springframework.integration.test.matcher.HeaderMatcher.hasHeaderKey;
 
+import java.io.File;
+
+import org.apache.commons.io.FileUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -15,7 +15,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.integration.channel.QueueChannel;
 import org.springframework.integration.support.MessageBuilder;
-import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
 import org.springframework.oxm.jaxb.Jaxb2Marshaller;
 import org.springframework.test.context.ContextConfiguration;
@@ -27,11 +26,13 @@ import uk.gov.ons.ctp.response.action.message.impl.FeedbackReceiverImpl;
 @RunWith(SpringJUnit4ClassRunner.class)
 public class FeedbackServiceTest {
 
+<<<<<<< HEAD
   public FeedbackReceiver feedbackService = new FeedbackReceiverImpl();
 
+=======
+>>>>>>> 2e7b810f8a132e3ad0aa4a987f68d4044178d1b0
 	@Before
 	public void setUp() throws Exception {
-		System.out.println("Test");
 	}
 
 	@After
@@ -42,15 +43,15 @@ public class FeedbackServiceTest {
 	MessageChannel feedbackXml;
 
 	@Autowired
-	QueueChannel testChannel;
-
-	@Autowired
 	@Qualifier("feedbackUnmarshaller")
 	Jaxb2Marshaller feedbackMarshaller;
 
 	@Autowired
 	QueueChannel feedbackXmlInvalid;
 
+	@Autowired
+	FeedbackService feedbackService;
+	
 	@Test
 	public void testSendactiveMQMessage() {
 		try {
@@ -62,23 +63,12 @@ public class FeedbackServiceTest {
 
 			feedbackXml.send(MessageBuilder.withPayload(testMessage).build());
 
-			Message<?> outMessage = testChannel.receive(0);
-			assertNotNull("outMessage should not be null", outMessage);
-			boolean payLoadContainsAdaptor = outMessage.getPayload().toString()
-					.contains("uk.gov.ons.ctp.response.action.message.feedback.ActionFeedback");
-			assertTrue("Payload does not contain reference to ActionFeedback adaptor", payLoadContainsAdaptor);
-			assertThat(outMessage, hasHeaderKey("timestamp"));
-			assertThat(outMessage, hasHeaderKey("id"));
-			outMessage = testChannel.receive(0);
-			assertNull("Only one message expected from feedbackTransformed", outMessage);
-
-			String contextPath = feedbackMarshaller.getContextPath();
 			String jaxbContext = feedbackMarshaller.getJaxbContext().toString();
 			assertTrue("Marshaller JAXB context does not contain reference to ActionFeedback",
 					jaxbContext.contains("uk.gov.ons.ctp.response.action.message.feedback.ActionFeedback"));
 
-			// TODO
-			// test FeedbackService @ServiceActivator for signs of life
+			// expect FeedbackService.acceptFeedback() to have been implemented
+			assertEquals("FeedbackServce not received", feedbackService.getStatus(), "feedbackAccepted");
 
 		} catch (Exception ex) {
 			fail("testSendctiveMQMessage has failed " + ex.getMessage());
@@ -90,14 +80,20 @@ public class FeedbackServiceTest {
 	public void testSendactiveMQInvalidMessage() {
 		try {
 
+			FileUtils.cleanDirectory(new File("/var/log/ctp/responsemanagement/actionsvc/feedback"));
+		    
 			String testMessage = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
 					+ "<p:actionFeedbackWrong xmlns:p=\"http://ons.gov.uk/ctp/response/action/message/feedback\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"http://ons.gov.uk/ctp/response/action/message/feedback inboundMessage.xsd \">"
 					+ "<actionId>1</actionId>" + "<situation>situation</situation>" + "<isComplete>true</isComplete>"
 					+ "<isFailed>true</isFailed>" + "<notes>notes</notes>" + "</p:actionFeedbackWrong>";
 
 			feedbackXml.send(MessageBuilder.withPayload(testMessage).build());
+			
+			// expect one file to be added to the log folder
+			File logDir = new File("/var/log/ctp/responsemanagement/actionsvc/feedback");
+			File[] files = logDir.listFiles();
+			assertEquals("More of less than one file added to the log", files.length, 1);
 
-			// expect a file to be added to the log folder
 
 		} catch (Exception ex) {
 			fail("testSendactiveMQInvalidMessage has failed " + ex.getMessage());

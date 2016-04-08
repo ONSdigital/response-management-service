@@ -42,6 +42,8 @@
   <!-- bean required for integration testing  -->
   <bean id="instructionService" class="uk.gov.ons.ctp.response.action.message.InstructionService"/>
   
+  <bean id="feedbackService" class="uk.gov.ons.ctp.response.action.message.FeedbackService"/> 
+  
   <!--  First the inbound flow -->
 
   <!-- The inbound message container config - the inbound queue is defined here -->
