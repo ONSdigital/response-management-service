@@ -40,9 +40,9 @@
   </bean>
 
   <!-- bean required for integration testing  -->
-  <bean id="instructionService" class="uk.gov.ons.ctp.response.action.message.InstructionService"/>
+  <bean id="instructionService" class="uk.gov.ons.ctp.response.action.message.impl.InstructionPublisherImpl"/>
   
-  <bean id="feedbackService" class="uk.gov.ons.ctp.response.action.message.FeedbackService"/> 
+  <bean id="feedbackService" class="uk.gov.ons.ctp.response.action.message.impl.FeedbackReceiverImpl"/> 
   
   <!--  First the inbound flow -->
 

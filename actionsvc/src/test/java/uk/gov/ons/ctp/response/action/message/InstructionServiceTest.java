@@ -82,10 +82,9 @@ public class InstructionServiceTest {
 		} catch (Exception ex) {
 			fail("testCreateOutBoundMessageToFieldHandler has failed " + ex.getMessage());
 		}
-
 	}
 
-	@Test
+//	@Test
 	public void testSendRequestViaInstructionService() {
 		try {
 			String handler = "Field";
