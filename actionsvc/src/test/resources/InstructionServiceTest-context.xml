@@ -16,4 +16,11 @@
 		<queue/>
 	</channel>
 	
+	<bridge input-channel="instructionOutbound"
+		output-channel="testInstructionOutbound"/>
+		
+	<channel id="testInstructionOutbound">
+		<queue/>
+	</channel>	
+	
 </beans:beans>
