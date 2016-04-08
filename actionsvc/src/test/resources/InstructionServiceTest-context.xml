@@ -7,7 +7,7 @@
 			http://www.springframework.org/schema/integration
 			http://www.springframework.org/schema/integration/spring-integration.xsd">
 
-	<beans:import resource="classpath:/integration-context.xml" />
+	<beans:import resource="classpath:/Test-integration-context.xml" />
 	
 	<bridge input-channel="instructionXml"
 		output-channel="testInstructionXml"/>
@@ -15,5 +15,12 @@
 	<channel id="testInstructionXml">
 		<queue/>
 	</channel>
+	
+	<bridge input-channel="instructionOutbound"
+		output-channel="testInstructionOutbound"/>
+		
+	<channel id="testInstructionOutbound">
+		<queue/>
+	</channel>	
 	
 </beans:beans>
