@@ -27,8 +27,6 @@ import uk.gov.ons.ctp.response.action.message.instruction.ActionRequests;
 @RunWith(SpringJUnit4ClassRunner.class)
 public class InstructionServiceTest {
 
-	public InstructionService instructionService = new InstructionService();
-
 	@Before
 	public void setUp() throws Exception {
 	}
@@ -37,6 +35,9 @@ public class InstructionServiceTest {
 	public void tearDown() throws Exception {
 	}
 
+	@Autowired
+	InstructionService instructionService;
+	
 	@Autowired
 	MessageChannel instructionOutbound;
 
