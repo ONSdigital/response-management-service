@@ -7,8 +7,16 @@ import uk.gov.ons.ctp.response.action.message.feedback.ActionFeedback;
 
 @MessageEndpoint
 public class FeedbackService {
-  @ServiceActivator(inputChannel="feedbackTransformed")
-  public void acceptFeedback(ActionFeedback feedback) {
-    System.out.println("We have feedback with situation " + feedback.getSituation());
-  }
+
+	private String status = "feedbackNotAccepted";
+
+	@ServiceActivator(inputChannel = "feedbackTransformed")
+	public void acceptFeedback(ActionFeedback feedback) {
+		status = "feedbackAccepted";
+		System.out.println("We have feedback with situation " + feedback.getSituation());
+	}
+
+	public String getStatus() {
+		return status;
+	}
 }
