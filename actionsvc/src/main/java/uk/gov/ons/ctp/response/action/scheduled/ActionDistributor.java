@@ -4,16 +4,21 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 import javax.inject.Named;
-import javax.ws.rs.core.HttpHeaders;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -21,14 +26,13 @@ import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import uk.gov.ons.ctp.response.action.domain.model.Action;
 import uk.gov.ons.ctp.response.action.domain.model.Action.ActionPriority;
-import uk.gov.ons.ctp.response.action.domain.model.Action.ActionState;
 import uk.gov.ons.ctp.response.action.domain.model.ActionType;
 import uk.gov.ons.ctp.response.action.message.InstructionPublisher;
 import uk.gov.ons.ctp.response.action.message.instruction.ActionAddress;
 import uk.gov.ons.ctp.response.action.message.instruction.ActionEvent;
 import uk.gov.ons.ctp.response.action.message.instruction.ActionRequest;
 import uk.gov.ons.ctp.response.action.message.instruction.Priority;
-import uk.gov.ons.ctp.response.action.representation.ActionDTO;
+import uk.gov.ons.ctp.response.action.representation.ActionDTO.ActionState;
 import uk.gov.ons.ctp.response.action.service.ActionService;
 import uk.gov.ons.ctp.response.caseframe.representation.AddressDTO;
 import uk.gov.ons.ctp.response.caseframe.representation.CaseDTO;
@@ -107,22 +111,23 @@ public class ActionDistributor {
     
   }
   
-//  private void doSomeShit() {
-//    HttpHeaders headers = new HttpHeaders();
-//    headers.set("Accept", MediaType.APPLICATION_JSON_VALUE);
-//
-//    UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(url)
-//            .queryParam("msisdn", msisdn)
-//            .queryParam("email", email)
-//            .queryParam("clientVersion", clientVersion)
-//            .queryParam("clientType", clientType)
-//            .queryParam("issuerName", issuerName)
-//            .queryParam("applicationName", applicationName);
-//
-//    HttpEntity<?> entity = new HttpEntity<>(headers);
-//
-//    HttpEntity<String> response = restTemplate.exchange(builder.build().encode().toUri(), HttpMethod.GET, entity, String.class);
-//  }
+  private <T> T getResource(Class<T> clazz, String url, Map<String, String> headerParams, MultiValueMap<String, String> queryParams, Object ... pathParams) throws Exception {
+    HttpHeaders headers = new HttpHeaders();
+    headers.set("Accept", MediaType.APPLICATION_JSON_VALUE);
+    if (headerParams != null) {
+      for (Map.Entry<String, String> me : headerParams.entrySet()) {
+        headers.set(me.getKey(), me.getValue());
+      }
+    }
+
+    UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(String.format(url, pathParams)).queryParams(queryParams);
+    HttpEntity<?> httpEntity = new HttpEntity<>(headers);
+    ResponseEntity<T> response = restTemplate.exchange(builder.build().encode().toUri(), HttpMethod.GET, httpEntity, clazz);
+    if (response.getStatusCode().equals(HttpStatus.OK)) {
+      throw new RestClientException("Expected status 200 but got " + response.getStatusCode().value());
+    }
+    return response.getBody();
+  }
   
   private ActionRequest createActionRequest(Action action) throws Exception {
     log.debug("constructing ActionRequest to publish to downstream handler");
@@ -165,7 +170,7 @@ public class ActionDistributor {
   }
 
   private CaseDTO getCase(Integer caseId) throws Exception {
-    CaseDTO caseDTO = restTemplate.getForObject(caseFrameSvcCasesUrl, CaseDTO.class, caseId); 
+    CaseDTO caseDTO = getResource(CaseDTO.class, "", null, null, caseId); 
 
     return caseDTO;
   }
