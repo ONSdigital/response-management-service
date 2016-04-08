@@ -75,7 +75,7 @@ public class InstructionServiceTest {
 			assertNull("Only one message expected from instructionXml", instructionMessage);
 			
 			// TODO
-			// test FeedbackService @ServiceActivator for signs of life
+			// test ActiveMQ message generated with expected content
 		
 		} catch (Exception ex) {
 			fail("testCreateOutBoundMessageToFieldHandler has failed " + ex.getMessage());

@@ -21,92 +21,85 @@ import org.springframework.oxm.jaxb.Jaxb2Marshaller;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-@ContextConfiguration (locations = { "/FeedbackServiceTest-context.xml" })
+@ContextConfiguration(locations = { "/FeedbackServiceTest-context.xml" })
 @RunWith(SpringJUnit4ClassRunner.class)
 public class FeedbackServiceTest {
-  
-  public FeedbackService feedbackService = new FeedbackService();
 
-  @Before
-  public void setUp() throws Exception {
-    System.out.println("Test");
-  }
+	public FeedbackService feedbackService = new FeedbackService();
 
-  @After
-  public void tearDown() throws Exception {
-  }
+	@Before
+	public void setUp() throws Exception {
+		System.out.println("Test");
+	}
 
-  @Autowired
-  MessageChannel feedbackXml;
+	@After
+	public void tearDown() throws Exception {
+	}
 
-  @Autowired
-  QueueChannel testChannel;
+	@Autowired
+	MessageChannel feedbackXml;
 
-  @Autowired
-  @Qualifier("feedbackUnmarshaller")
-  Jaxb2Marshaller feedbackMarshaller;
+	@Autowired
+	QueueChannel testChannel;
 
-  @Autowired
-  QueueChannel feedbackXmlInvalid;
-  
-  @Test
-  public void testSendactiveMQMessage() {
-    try {
+	@Autowired
+	@Qualifier("feedbackUnmarshaller")
+	Jaxb2Marshaller feedbackMarshaller;
 
-      String testMessage = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
-        "<p:actionFeedback xmlns:p=\"http://ons.gov.uk/ctp/response/action/message/feedback\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"http://ons.gov.uk/ctp/response/action/message/feedback inboundMessage.xsd \">" +
-        "<actionId>1</actionId>" +
-        "<situation>situation</situation>" +
-        "<isComplete>true</isComplete>" +
-        "<isFailed>true</isFailed>" +
-        "<notes>notes</notes>" +
-        "</p:actionFeedback>";
+	@Autowired
+	QueueChannel feedbackXmlInvalid;
 
-      feedbackXml.send(MessageBuilder.withPayload(testMessage).build());
+	@Test
+	public void testSendactiveMQMessage() {
+		try {
 
-      Message<?> outMessage = testChannel.receive(0);
-      assertNotNull("outMessage should not be null", outMessage);
-      boolean payLoadContainsAdaptor = outMessage.getPayload().toString().contains("uk.gov.ons.ctp.response.action.message.feedback.ActionFeedback");
-      assertTrue("Payload does not contain reference to ActionFeedback adaptor", payLoadContainsAdaptor);
-      assertThat(outMessage, hasHeaderKey("timestamp"));
-      assertThat(outMessage, hasHeaderKey("id"));
-      outMessage = testChannel.receive(0);
-      assertNull("Only one message expected from feedbackTransformed", outMessage);
+			String testMessage = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
+					+ "<p:actionFeedback xmlns:p=\"http://ons.gov.uk/ctp/response/action/message/feedback\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"http://ons.gov.uk/ctp/response/action/message/feedback inboundMessage.xsd \">"
+					+ "<actionId>1</actionId>" + "<situation>situation</situation>" + "<isComplete>true</isComplete>"
+					+ "<isFailed>true</isFailed>" + "<notes>notes</notes>" + "</p:actionFeedback>";
 
+			feedbackXml.send(MessageBuilder.withPayload(testMessage).build());
 
-      String contextPath = feedbackMarshaller.getContextPath();
-      String jaxbContext = feedbackMarshaller.getJaxbContext().toString();
-      assertTrue("Marshaller JAXB context does not contain reference to ActionFeedback", 
-    		  jaxbContext.contains("uk.gov.ons.ctp.response.action.message.feedback.ActionFeedback"));
+			Message<?> outMessage = testChannel.receive(0);
+			assertNotNull("outMessage should not be null", outMessage);
+			boolean payLoadContainsAdaptor = outMessage.getPayload().toString()
+					.contains("uk.gov.ons.ctp.response.action.message.feedback.ActionFeedback");
+			assertTrue("Payload does not contain reference to ActionFeedback adaptor", payLoadContainsAdaptor);
+			assertThat(outMessage, hasHeaderKey("timestamp"));
+			assertThat(outMessage, hasHeaderKey("id"));
+			outMessage = testChannel.receive(0);
+			assertNull("Only one message expected from feedbackTransformed", outMessage);
 
-    }
-    catch (Exception ex) {
-      fail("testSendctiveMQMessage has failed " + ex.getMessage());
-    }
+			String contextPath = feedbackMarshaller.getContextPath();
+			String jaxbContext = feedbackMarshaller.getJaxbContext().toString();
+			assertTrue("Marshaller JAXB context does not contain reference to ActionFeedback",
+					jaxbContext.contains("uk.gov.ons.ctp.response.action.message.feedback.ActionFeedback"));
 
-  }
+			// TODO
+			// test FeedbackService @ServiceActivator for signs of life
 
-  @Test
-  public void testSendactiveMQInvalidMessage() {
-    try {
+		} catch (Exception ex) {
+			fail("testSendctiveMQMessage has failed " + ex.getMessage());
+		}
 
-      String testMessage = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
-        "<p:actionFeedbackWrong xmlns:p=\"http://ons.gov.uk/ctp/response/action/message/feedback\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"http://ons.gov.uk/ctp/response/action/message/feedback inboundMessage.xsd \">" +
-        "<actionId>1</actionId>" +
-        "<situation>situation</situation>" +
-        "<isComplete>true</isComplete>" +
-        "<isFailed>true</isFailed>" +
-        "<notes>notes</notes>" +
-        "</p:actionFeedbackWrong>";
+	}
 
-      feedbackXml.send(MessageBuilder.withPayload(testMessage).build());
-      
-      // expect a file to be added to the log folder
+	@Test
+	public void testSendactiveMQInvalidMessage() {
+		try {
 
-    }
-    catch (Exception ex) {
-      fail("testSendactiveMQInvalidMessage has failed " + ex.getMessage());
-    }
+			String testMessage = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
+					+ "<p:actionFeedbackWrong xmlns:p=\"http://ons.gov.uk/ctp/response/action/message/feedback\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"http://ons.gov.uk/ctp/response/action/message/feedback inboundMessage.xsd \">"
+					+ "<actionId>1</actionId>" + "<situation>situation</situation>" + "<isComplete>true</isComplete>"
+					+ "<isFailed>true</isFailed>" + "<notes>notes</notes>" + "</p:actionFeedbackWrong>";
 
-  }
+			feedbackXml.send(MessageBuilder.withPayload(testMessage).build());
+
+			// expect a file to be added to the log folder
+
+		} catch (Exception ex) {
+			fail("testSendactiveMQInvalidMessage has failed " + ex.getMessage());
+		}
+
+	}
 }
