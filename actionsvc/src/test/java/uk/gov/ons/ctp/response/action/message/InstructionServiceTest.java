@@ -5,20 +5,13 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
-import static org.springframework.integration.test.matcher.HeaderMatcher.hasHeaderKey;
 import static org.springframework.integration.test.matcher.HeaderMatcher.hasHeader;
 
-import java.util.Iterator;
-import java.util.Properties;
-import java.util.Set;
-
-import org.apache.activemq.command.ActiveMQQueue;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.integration.channel.QueueChannel;
 import org.springframework.integration.support.MessageBuilder;
 import org.springframework.messaging.Message;
@@ -49,7 +42,7 @@ public class InstructionServiceTest {
 
 	@Autowired
 	QueueChannel testInstructionXml;
-
+	
 	@Test
 	public void testCreateOutBoundMessageToFieldHandler() {
 		try {
@@ -75,7 +68,7 @@ public class InstructionServiceTest {
 
 			instructionMessage = testInstructionXml.receive(0);
 			assertNull("Only one message expected from instructionXml", instructionMessage);
-
+		
 		} catch (Exception ex) {
 			fail("testCreateOutBoundMessageToFieldHandler has failed " + ex.getMessage());
 		}
