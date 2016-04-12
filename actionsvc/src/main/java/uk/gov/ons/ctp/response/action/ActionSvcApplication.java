@@ -3,15 +3,18 @@ package uk.gov.ons.ctp.response.action;
 import javax.inject.Named;
 
 import org.glassfish.jersey.server.ResourceConfig;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ImportResource;
 import org.springframework.integration.annotation.IntegrationComponentScan;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
-import org.springframework.context.annotation.ImportResource;
 
 import uk.gov.ons.ctp.common.jaxrs.CTPMessageBodyReader;
+import uk.gov.ons.ctp.common.rest.RestClient;
 import uk.gov.ons.ctp.response.action.endpoint.ActionEndpoint;
 import uk.gov.ons.ctp.response.action.endpoint.ActionPlanEndpoint;
 import uk.gov.ons.ctp.response.action.endpoint.ActionPlanJobEndpoint;
@@ -29,6 +32,15 @@ import uk.gov.ons.ctp.response.action.representation.ActionPlanJobDTO;
 @EnableScheduling
 @ImportResource("integration-context.xml")
 public class ActionSvcApplication {
+
+  @Autowired
+  private ApplicationConfig appConfig;
+  
+  @Bean
+  public RestClient caseFrameClient () {
+    RestClient restHelper = new RestClient (appConfig.getCaseFrameSvcScheme(), appConfig.getCaseFrameSvcHost(), appConfig.getCaseFrameSvcPort());
+    return restHelper;
+  }
 
   /**
    * To register classes in the JAX-RS world.

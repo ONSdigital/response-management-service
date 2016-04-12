@@ -14,13 +14,6 @@ import uk.gov.ons.ctp.response.action.representation.ActionDTO;
 public interface ActionService extends CTPService {
 
 	/**
-	 * Find all ActionTypes
-	 *
-	 * @return List<ActionTypes> List of ActionTypes
-	 */
-	List<ActionType> findActionTypes();
-
-	/**
 	 * Find Actions filtered by ActionType and state ordered by created date time descending
 	 *
 	 * @param actionTypeName
@@ -30,17 +23,6 @@ public interface ActionService extends CTPService {
 	 * @return List<Action> List of Actions or empty List
 	 */
 	List<Action> findActionsByTypeAndStateOrderedByCreatedDateTimeDescending(String actionTypeName, ActionDTO.ActionState state);
-
-	/**
-	 * Find Actions filtered by ActionType and state ordered by created date time ascending limited to the first 100
-	 *
-	 * @param actionTypeName
-	 *            Action type name by which to filter
-	 * @param state
-	 *            State by which to filter
-	 * @return List<Action> List of Actions or empty List
-	 */
-	List<Action> findActionsForDistribution(String actionTypeName, ActionDTO.ActionState state);
 
 	/**
 	 * Find Actions filtered by ActionType.

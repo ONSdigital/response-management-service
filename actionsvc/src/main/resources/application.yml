@@ -92,5 +92,11 @@ spring:
           ddl-auto: update
 
 caseframesvc:
-  casesurl: http://localhost:8171/cases
-  questionnairessurl: http://localhost:8171/questionnaires
+  scheme: http
+  host: localhost
+  port: 8171
+  caseByCaseGetPath: /cases/{caseid}
+  questionnairesByCaseGetPath: /questionnaires/case/{caseid}
+  caseEventsByCaseGetPath: /cases/{caseid}/events
+  caseEventsByCasePostPath: /cases/{caseid}/events
+  addressByUprnGetPath: /addresses/{uprn}
