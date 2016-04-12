@@ -1,6 +1,7 @@
 package uk.gov.ons.ctp.response.action.message;
 
 import static org.junit.Assert.assertNotNull;
+import uk.gov.ons.ctp.response.action.message.impl.InstructionPublisherImpl;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
@@ -54,62 +55,58 @@ public class InstructionServiceTest {
 		try {
 
 			ActionInstruction instruction = new ActionInstruction();
-			ActionRequest request = new ActionRequest();
-			request.setActionType("testActionType");
-			ActionRequests requests = new ActionRequests();
-			requests.getActionRequests().add(request);
-			instruction.setActionRequests(requests);
-
+		    
+			ActionRequest actionRequest = new ActionRequest();
+			actionRequest.setActionType("testActionType");									
+		    ActionRequests requests = new ActionRequests();
+		    requests.getActionRequests().add(actionRequest);
+		    instruction.setActionRequests(requests);
+						
 			instructionOutbound.send(MessageBuilder.withPayload(instruction).setHeader("HANDLER", "Field").build());
 
-			Message<?> instructionMessage = testInstructionXml.receive(0);
-			assertNotNull("instructionMessage should not be null", instructionMessage);
-			System.out.println("instructionMessage: " + instructionMessage);
+			Message<?> instructionXmlMessage = testInstructionXml.receive(0);
+			assertNotNull("instructionXmlMessage should not be null", instructionXmlMessage);
+			System.out.println("instructionXmlMessage: " + instructionXmlMessage);
 
 			// test instructionXml payload contains <actionType> value testActionType
-			boolean payLoadContainsAdaptor = instructionMessage.getPayload().toString()
+			boolean payLoadContainsAdaptor = instructionXmlMessage.getPayload().toString()
 					.contains("<actionType>testActionType</actionType>");
 			assertTrue("Payload does not contain reference to <actionType>testActionType</actionType>",
 					payLoadContainsAdaptor);
-			assertThat(instructionMessage, hasHeader("HANDLER", "Field"));
+			assertThat(instructionXmlMessage, hasHeader("HANDLER", "Field"));
 
-			instructionMessage = testInstructionXml.receive(0);
-			assertNull("Only one message expected from instructionXml", instructionMessage);
+			instructionXmlMessage = testInstructionXml.receive(0);
+			assertNull("Only one message expected from instructionXml", instructionXmlMessage);
 			
-			// TODO
-			// test ActiveMQ message generated with expected content
 		
 		} catch (Exception ex) {
 			fail("testCreateOutBoundMessageToFieldHandler has failed " + ex.getMessage());
 		}
 	}
 
-//	@Test
+	@Test
 	public void testSendRequestViaInstructionService() {
 		try {
 			String handler = "Field";
 			
-			ActionInstruction actionInstruction = instructionService.sendRequests(handler, new ArrayList<ActionRequest>());
-			actionInstruction.getActionRequests();
+			ActionRequest actionRequest = new ActionRequest();
+			actionRequest.setActionType("testActionType");			
+			ArrayList<ActionRequest> actionRequests = new ArrayList<ActionRequest>();
+			actionRequests.add(actionRequest);
 			
-			// test if instructionFieldMessage channel has an ActionInstruction payload
-			Message<?> instructionFieldMessage = testInstructionOutbound.receive(0);
-			assertNotNull("instructionMessage should not be null", instructionFieldMessage);
-			String payload = instructionFieldMessage.getPayload().toString();
-			System.out.println("instructionOutbound: " + payload);			
-			assertTrue("instructionOutbound message missing content", payload.contains("uk.gov.ons.ctp.response.action.message.instruction.ActionInstruction"));
+			ActionInstruction actionInstruction = instructionService.sendRequests(handler, actionRequests);
 			
-			// test instructionXml payload contains <actionType> value testActionType
-			Message<?> instructionMessage = testInstructionXml.receive(0);
-			assertNotNull("instructionMessage should not be null", instructionMessage);
-			System.out.println("instructionMessage: " + instructionMessage);
-//			boolean payLoadContainsAdaptor = instructionMessage.getPayload().toString()
-//					.contains("<actionType>testActionType</actionType>");
-//			assertTrue("Payload does not contain reference to <actionType>testActionType</actionType>",
-//					payLoadContainsAdaptor);
-			assertThat(instructionMessage, hasHeader("HANDLER", "Field"));
+			// test if instructionOutboundMessage channel has an ActionInstruction payload
+			Message<?> instructionOutboundMessage = testInstructionOutbound.receive(0);
+			assertNotNull("instructionOutboundMessage should not be null", instructionOutboundMessage);
+			String payload = instructionOutboundMessage.getPayload().toString();
+			System.out.println("instructionOutboundMessage: " + payload);			
+			assertTrue("instructionOutboundMessage message missing content", payload.contains("uk.gov.ons.ctp.response.action.message.instruction.ActionInstruction"));
 			
-
+			
+			// TODO
+			// test ActiveMQ message generated with expected content
+						
 		} catch (Exception ex) {
 			fail("testSendRequestViaInstructionService has failed " + ex.getMessage());
 		}
