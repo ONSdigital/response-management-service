@@ -230,6 +230,7 @@ public class ActionDistributor {
     for (CaseEventDTO caseEventDTO : caseEvents) {
       actionEvent.getEvents().add(formatCaseEvent(caseEventDTO));
     }
+    actionRequest.setEvents(actionEvent);
     actionRequest.setIac(questionnaireDTO.getIac());
     actionRequest.setPriority(Priority.fromValue(ActionPriority.valueOf(action.getPriority()).getName()));
     actionRequest.setQuestionnaireId(BigInteger.valueOf(questionnaireDTO.getQuestionnaireId()));
