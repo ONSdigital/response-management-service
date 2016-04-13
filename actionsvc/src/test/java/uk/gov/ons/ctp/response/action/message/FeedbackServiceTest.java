@@ -63,7 +63,6 @@ public class FeedbackServiceTest {
 					jaxbContext.contains("uk.gov.ons.ctp.response.action.message.feedback.ActionFeedback"));
 
 			// expect FeedbackService.acceptFeedback() to have been implemented
-//			assertEquals("FeedbackServce not received", feedbackService.getStatus(), "feedbackAccepted");
 
 		} catch (Exception ex) {
 			fail("testSendctiveMQMessage has failed " + ex.getMessage());
