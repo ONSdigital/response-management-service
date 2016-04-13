@@ -4,7 +4,6 @@ import static org.junit.Assert.assertNotNull;
 
 import uk.gov.ons.ctp.response.action.message.impl.ActionMessageListener;
 import uk.gov.ons.ctp.response.action.message.impl.InstructionPublisherImpl;
-import uk.gov.ons.ctp.response.action.message.impl.ReceiverDelegate;
 
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
