@@ -33,16 +33,40 @@
     <property name="targetConnectionFactory">
       <bean class="org.apache.activemq.ActiveMQConnectionFactory">
         <property name="brokerURL" value="tcp://localhost:61616" />
-<!-- 				<property name="brokerURL" value="vm://localhost"/>
- -->			</bean>
+      </bean>
     </property>
     <property name="sessionCacheSize" value="10"/>
   </bean>
 
-  <!-- bean required for integration testing  -->
+  <!-- beans required for integration testing  -->
   <bean id="instructionService" class="uk.gov.ons.ctp.response.action.message.impl.InstructionPublisherImpl"/>
   
   <bean id="feedbackService" class="uk.gov.ons.ctp.response.action.message.impl.FeedbackReceiverImpl"/> 
+  
+  <!-- <bean id="fieldInstructionQueueMessageListenerContainer"
+    class="org.springframework.jms.listener.DefaultMessageListenerContainer">
+    <property name="connectionFactory" ref="connectionFactory" />
+    <property name="destinationName" value="fieldInstructionQueue" />
+    <property name="messageListener" ref="myMessageListener" />
+    <property name="maxConcurrentConsumers" value="50" />
+    <property name="concurrentConsumers" value="10" />
+    <property name="receiveTimeout" value="5000" />
+    <property name="idleTaskExecutionLimit" value="10" />
+    <property name="idleConsumerLimit" value="5" />
+  </bean>
+  
+  <bean id="myMessageAdapter" class="org.springframework.jms.listener.adapter.MessageListenerAdapter">
+    <property name="delegate" ref="myMessageReceiverDelegate" />
+    <property name="defaultListenerMethod" value="processMessage" />
+  </bean>
+   
+  <bean id="myMessageReceiverDelegate" class="uk.gov.ons.ctp.response.action.message.impl.ReceiverDelegate"/> -->
+  
+  <bean id="myMessageListener" class="uk.gov.ons.ctp.response.action.message.impl.ActionMessageListener"/>
+  
+  <jms:listener-container container-type="default" connection-factory="connectionFactory" acknowledge="auto"> 
+    <jms:listener destination="fieldInstructionQueue" ref="myMessageListener" method="onMessage" />
+  </jms:listener-container>
   
   <!--  First the inbound flow -->
 
