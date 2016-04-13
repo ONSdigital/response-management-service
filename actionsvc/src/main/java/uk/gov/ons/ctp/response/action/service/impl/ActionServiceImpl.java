@@ -35,24 +35,10 @@ public final class ActionServiceImpl implements ActionService {
   private ActionTypeRepository actionTypeRepo;
 
   @Override
-  public List<ActionType> findActionTypes() {
-    log.debug("Entering findActionTypes with {} {}");
-    return actionTypeRepo.findAll();
-  }
-
- 
-  @Override
   public List<Action> findActionsByTypeAndStateOrderedByCreatedDateTimeDescending(final String actionTypeName,
       final ActionDTO.ActionState state) {
     log.debug("Entering findActionsByTypeAndState with {} {}", actionTypeName, state);
     return actionRepo.findByActionTypeNameAndStateOrderByCreatedDateTimeDesc(actionTypeName, state);
-  }
-
- 
-  @Override
-  public List<Action> findActionsForDistribution(final String actionTypeName, final ActionDTO.ActionState state) {
-    log.debug("Entering findActionsByTypeAndState with {} {}", actionTypeName, state);
-    return actionRepo.findFirst100ByActionTypeNameAndStateOrderByCreatedDateTimeAsc(actionTypeName, state);
   }
 
   @Override

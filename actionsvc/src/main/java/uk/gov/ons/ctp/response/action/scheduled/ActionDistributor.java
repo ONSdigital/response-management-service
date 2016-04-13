@@ -1,53 +1,67 @@
 package uk.gov.ons.ctp.response.action.scheduled;
 
 import java.math.BigInteger;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.util.MultiValueMap;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.support.TransactionCallback;
+import org.springframework.transaction.support.TransactionTemplate;
 import org.springframework.web.client.RestClientException;
-import org.springframework.web.client.RestTemplate;
-import org.springframework.web.util.UriComponentsBuilder;
 
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
+import uk.gov.ons.ctp.common.rest.RestClient;
+import uk.gov.ons.ctp.response.action.ApplicationConfig;
 import uk.gov.ons.ctp.response.action.domain.model.Action;
 import uk.gov.ons.ctp.response.action.domain.model.Action.ActionPriority;
 import uk.gov.ons.ctp.response.action.domain.model.ActionType;
+import uk.gov.ons.ctp.response.action.domain.repository.ActionRepository;
+import uk.gov.ons.ctp.response.action.domain.repository.ActionTypeRepository;
 import uk.gov.ons.ctp.response.action.message.InstructionPublisher;
 import uk.gov.ons.ctp.response.action.message.instruction.ActionAddress;
 import uk.gov.ons.ctp.response.action.message.instruction.ActionEvent;
 import uk.gov.ons.ctp.response.action.message.instruction.ActionRequest;
 import uk.gov.ons.ctp.response.action.message.instruction.Priority;
 import uk.gov.ons.ctp.response.action.representation.ActionDTO.ActionState;
-import uk.gov.ons.ctp.response.action.service.ActionService;
 import uk.gov.ons.ctp.response.caseframe.representation.AddressDTO;
 import uk.gov.ons.ctp.response.caseframe.representation.CaseDTO;
 import uk.gov.ons.ctp.response.caseframe.representation.CaseEventDTO;
 import uk.gov.ons.ctp.response.caseframe.representation.QuestionnaireDTO;
 
+/**
+ * This class has a scheduled task wakeUp(), which looks for Actions in
+ * SUBMITTED state to send to downstream handlers. On each wake cycle it fetches
+ * the first n actions of each type, by createddatatime, and attempts to enrich
+ * them with case,questionnaire,address and caseevent details all fetched in
+ * individual calls to the caseframe service through its RESTful endpoints.
+ * 
+ * It then updates its own action table to change the action state to PENDING,
+ * posts a new CaseEvent to the CaseFrameService, and constructs an outbound
+ * ActionRequest instance. That instance is added to the list of request objects
+ * that will sent out as a batch inside an ActionInstruction to the
+ * SpringIntegration @Publisher once the N actions for the individual type have
+ * all been processed.
+ * 
+ */
 @Named
 @Slf4j
 public class ActionDistributor {
 
+  private static final int TRANSACTION_TIMEOUT = 30;
 
-  private final RestTemplate restTemplate;
+  @Inject
+  private RestClient caseFrameClient;
 
-  @Value("${caseframesvc.casesurl}")
-  private String caseFrameSvcCasesUrl;
+  @Inject
+  private ApplicationConfig appConfig;
 
   @Inject
   private InstructionPublisher instructionPublisher;
@@ -56,81 +70,102 @@ public class ActionDistributor {
   private MapperFacade mapperFacade;
 
   @Inject
-  private ActionService actionService;
-  
-  public ActionDistributor() {
-    super();
-    restTemplate = new RestTemplate();
+  private ActionRepository actionRepo;
+
+  @Inject
+  private ActionTypeRepository actionTypeRepo;
+
+  private List<ActionType> actionTypes;
+
+  // single TransactionTemplate shared amongst all methods in this instance
+  private final TransactionTemplate transactionTemplate;
+
+  @Inject
+  public ActionDistributor(PlatformTransactionManager transactionManager) {
+    this.transactionTemplate = new TransactionTemplate(transactionManager);
   }
 
-  @Scheduled(fixedRate = 5000)
+  @Scheduled(initialDelay = 10 * 1000, fixedDelay = 5000) // 30 * 60 * 1000)
   public void wakeUp() {
-    log.debug("ActionDistributor is in the house!");
+    log.debug("ActionDistributor awoken from slumber");
 
-    List<ActionType> actionTypes = actionService.findActionTypes();
+    List<ActionType> actionTypes = getActionTypes();
+
     for (ActionType actionType : actionTypes) {
-      List<Action> actions = actionService.findActionsForDistribution(actionType.getName(), ActionState.SUBMITTED);
-      List<ActionRequest> actionRequests = new ArrayList<ActionRequest> ();
+      List<Action> actions = actionRepo
+          .findFirst100ByActionTypeNameAndStateOrderByCreatedDateTimeAsc(actionType.getName(), ActionState.SUBMITTED);
 
+      // container for outbound requests for this action type
+      List<ActionRequest> actionRequests = new ArrayList<ActionRequest>();
+
+      log.debug("Dealing with actionType {}", actionType.getName());
       for (Action action : actions) {
         try {
-          // create the request, filling in details by GETs from caseframesvc
-          ActionRequest actionRequest = createActionRequest(action);
-          // advise caseframesvc to create a corresponding caseevent for our action
-          postNewCaseEvent(action);
-          
-          // update our actions state in db 
-          updateActionStatusToPending(action);
-          
+          ActionRequest actionRequest = processAction(action);
+
           // add the request to the list to be published to downstream handler
-          actionRequests.add(actionRequest);
+          if (actionRequest != null) {
+            log.debug("Adding actionRequest");
+            actionRequests.add(actionRequest);
+          }
         } catch (Exception e) {
-          // do what?!
+          log.debug("Rolledback?");
         }
       }
-      // send the list of requests for this action type to the handler
-      instructionPublisher.sendRequests(actionType.getHandler(), actionRequests);
+
+      log.debug("Done with actionType {}", actionType.getName());
+      if (actionRequests.size() > 0) {
+        // send the list of requests for this action type to the handler
+        instructionPublisher.sendRequests(actionType.getHandler(), actionRequests);
+      }
     }
+
+  }
+
+  private ActionRequest processAction(final Action action) {
+    return transactionTemplate.execute(new TransactionCallback<ActionRequest>() {
+      // the code in this method executes in a transactional context
+      public ActionRequest doInTransaction(TransactionStatus status) {
+        ActionRequest actionRequest = null;
+        log.debug("Preparing action {} for distribution", action.getActionId());
+
+        // update our actions state in db
+        updateActionStatusToPending(action);
+        // create the request, filling in details by GETs from caseframesvc
+        actionRequest = createActionRequest(action);
+
+        // advise caseframesvc to create a corresponding caseevent for our
+        // action
+        postNewCaseEvent(action);
+
+        return actionRequest;
+      }
+    });
   }
 
   private void updateActionStatusToPending(Action action) {
-    action.setState(ActionState.PENDING); 
-    actionService.updateAction(action);
+    action.setState(ActionState.PENDING);
+    action.setUpdatedDateTime(new Timestamp(System.currentTimeMillis()));
+    action = actionRepo.saveAndFlush(action);
   }
 
-  private void postNewCaseEvent(Action action) throws Exception {
+  private void postNewCaseEvent(Action action) {
     log.debug("posting caseEvent for actionId {} to caseframesvc for creation", action.getActionId());
-    CaseEventDTO caseEventDTO = new CaseEventDTO ();
+    CaseEventDTO caseEventDTO = new CaseEventDTO();
     caseEventDTO.setCaseId(action.getCaseId());
-    caseEventDTO.setCategory("?");
+    caseEventDTO.setCategory("ActionCreated");
     caseEventDTO.setCreatedBy(action.getCreatedBy());
     caseEventDTO.setCreatedDateTime(new Date());
-    caseEventDTO.setDescription(action.getActionType().getDescription());  //?
-    caseEventDTO.setSubCategory("?");
-    // POST to /cases/{casedId}/events
-    
-  }
-  
-  private <T> T getResource(Class<T> clazz, String url, Map<String, String> headerParams, MultiValueMap<String, String> queryParams, Object ... pathParams) throws Exception {
-    HttpHeaders headers = new HttpHeaders();
-    headers.set("Accept", MediaType.APPLICATION_JSON_VALUE);
-    if (headerParams != null) {
-      for (Map.Entry<String, String> me : headerParams.entrySet()) {
-        headers.set(me.getKey(), me.getValue());
-      }
-    }
+    caseEventDTO.setDescription(action.getActionType().getDescription());
+    caseEventDTO.setSubCategory(null); // TODO - will be avail in data 2017+
 
-    UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(String.format(url, pathParams)).queryParams(queryParams);
-    HttpEntity<?> httpEntity = new HttpEntity<>(headers);
-    ResponseEntity<T> response = restTemplate.exchange(builder.build().encode().toUri(), HttpMethod.GET, httpEntity, clazz);
-    if (response.getStatusCode().equals(HttpStatus.OK)) {
-      throw new RestClientException("Expected status 200 but got " + response.getStatusCode().value());
-    }
-    return response.getBody();
+    caseFrameClient.postResource(appConfig.getCaseFrameSvcCaseEventsByCasePostPath(), caseEventDTO, CaseEventDTO.class,
+        action.getCaseId());
   }
-  
-  private ActionRequest createActionRequest(Action action) throws Exception {
-    log.debug("constructing ActionRequest to publish to downstream handler");
+
+  private ActionRequest createActionRequest(Action action) {
+    log.debug("constructing ActionRequest to publish to downstream handler for action id {} and case id {}",
+        action.getActionId(), action.getCaseId());
     ActionRequest actionRequest = new ActionRequest();
     // now call caseframe for the following
     CaseDTO caseDTO = getCase(action.getCaseId());
@@ -142,7 +177,7 @@ public class ActionDistributor {
     actionRequest.setActionId(BigInteger.valueOf(action.getActionId()));
     actionRequest.setActionType(action.getActionType().getName());
     actionRequest.setCaseId(BigInteger.valueOf(action.getCaseId()));
-    actionRequest.setContactName(""); // TODO - will be avail in data 2017+
+    actionRequest.setContactName(null); // TODO - will be avail in data 2017+
     ActionEvent actionEvent = new ActionEvent();
     for (CaseEventDTO caseEventDTO : caseEvents) {
       actionEvent.getEvents().add(formatCaseEvent(caseEventDTO));
@@ -158,21 +193,36 @@ public class ActionDistributor {
     return actionRequest;
   }
 
-  private AddressDTO getAddress(Integer uprn) throws Exception {
-    // TODO call caseframsvc restfully asking for the address for a uprn
-    return new AddressDTO();
-  }
-
-  private QuestionnaireDTO getQuestionnaire(Integer caseId) throws Exception {
-    // TODO call caseframsvc restfully asking for all questionnaires for case
-    // then return the questionnaire with the latest dispatch date time
-    return new QuestionnaireDTO();
-  }
-
-  private CaseDTO getCase(Integer caseId) throws Exception {
-    CaseDTO caseDTO = getResource(CaseDTO.class, "", null, null, caseId); 
-
+  private AddressDTO getAddress(Integer uprn) {
+    AddressDTO caseDTO = caseFrameClient.getResource(appConfig.getCaseFrameSvcAddressByUprnGetPath(),
+        AddressDTO.class, uprn);
     return caseDTO;
+  }
+
+  private QuestionnaireDTO getQuestionnaire(Integer caseId) {
+    List<QuestionnaireDTO> questionnaireDTOs = caseFrameClient.getResources(
+        appConfig.getCaseFrameSvcQuestionnairesByCaseGetPath(),
+        QuestionnaireDTO[].class, caseId);
+    return (questionnaireDTOs.size() > 0) ? questionnaireDTOs.get(0) : null;
+  }
+
+  private CaseDTO getCase(Integer caseId) throws RestClientException {
+    CaseDTO caseDTO = caseFrameClient.getResource(appConfig.getCaseFrameSvcCaseGetPath(),
+        CaseDTO.class, caseId);
+    return caseDTO;
+  }
+
+  private List<CaseEventDTO> getCaseEvents(Integer caseId) {
+    List<CaseEventDTO> caseEventDTOs = caseFrameClient.getResources(appConfig.getCaseFrameSvcCaseEventsByCaseGetPath(),
+        CaseEventDTO[].class, caseId);
+    return caseEventDTOs;
+  }
+
+  private List<ActionType> getActionTypes() {
+    if (this.actionTypes == null) {
+      this.actionTypes = actionTypeRepo.findAll();
+    }
+    return this.actionTypes;
   }
 
   private String formatCaseEvent(CaseEventDTO caseEventDTO) {
@@ -184,13 +234,4 @@ public class ActionDistributor {
         caseEventDTO.getDescription());
   }
 
-  /**
-   * "/cases/{caseId}/events"
-   * 
-   * @param caseId
-   */
-  private List<CaseEventDTO> getCaseEvents(Integer caseId) {
-    // TODO call caseframsvc restfully
-    return new ArrayList<CaseEventDTO>();
-  }
 }
