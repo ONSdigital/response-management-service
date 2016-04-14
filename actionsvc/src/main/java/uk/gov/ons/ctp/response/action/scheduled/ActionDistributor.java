@@ -19,7 +19,7 @@ import org.springframework.web.client.RestClientException;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import uk.gov.ons.ctp.common.rest.RestClient;
-import uk.gov.ons.ctp.response.action.ApplicationConfig;
+import uk.gov.ons.ctp.response.action.config.AppConfig;
 import uk.gov.ons.ctp.response.action.domain.model.Action;
 import uk.gov.ons.ctp.response.action.domain.model.Action.ActionPriority;
 import uk.gov.ons.ctp.response.action.domain.model.ActionType;
@@ -69,7 +69,7 @@ public class ActionDistributor {
   private RestClient caseFrameClient;
 
   @Inject
-  private ApplicationConfig appConfig;
+  private AppConfig appConfig;
 
   @Inject
   private InstructionPublisher instructionPublisher;
@@ -199,7 +199,7 @@ public class ActionDistributor {
     caseEventDTO.setDescription(action.getActionType().getDescription());
     caseEventDTO.setSubCategory(null); // TODO - will be avail in data 2017+
 
-    caseFrameClient.postResource(appConfig.getCaseFrameSvcCaseEventsByCasePostPath(), caseEventDTO, CaseEventDTO.class,
+    caseFrameClient.postResource(appConfig.getCaseFrameSvc().getCaseEventsByCasePostPath(), caseEventDTO, CaseEventDTO.class,
         action.getCaseId());
   }
 
@@ -249,7 +249,7 @@ public class ActionDistributor {
    * @return the Address we fetched
    */
   private AddressDTO getAddress(Integer uprn) {
-    AddressDTO caseDTO = caseFrameClient.getResource(appConfig.getCaseFrameSvcAddressByUprnGetPath(),
+    AddressDTO caseDTO = caseFrameClient.getResource(appConfig.getCaseFrameSvc().getAddressByUprnGetPath(),
         AddressDTO.class, uprn);
     return caseDTO;
   }
@@ -262,7 +262,7 @@ public class ActionDistributor {
    */
   private QuestionnaireDTO getQuestionnaire(Integer caseId) {
     List<QuestionnaireDTO> questionnaireDTOs = caseFrameClient.getResources(
-        appConfig.getCaseFrameSvcQuestionnairesByCaseGetPath(),
+        appConfig.getCaseFrameSvc().getQuestionnairesByCaseGetPath(),
         QuestionnaireDTO[].class, caseId);
     return (questionnaireDTOs.size() > 0) ? questionnaireDTOs.get(0) : null;
   }
@@ -274,7 +274,7 @@ public class ActionDistributor {
    * @return the Case we fetched
    */
   private CaseDTO getCase(Integer caseId) throws RestClientException {
-    CaseDTO caseDTO = caseFrameClient.getResource(appConfig.getCaseFrameSvcCaseGetPath(),
+    CaseDTO caseDTO = caseFrameClient.getResource(appConfig.getCaseFrameSvc().getCaseByCaseGetPath(),
         CaseDTO.class, caseId);
     return caseDTO;
   }
@@ -286,7 +286,7 @@ public class ActionDistributor {
    * @return the CaseEvents we found for the case
    */
   private List<CaseEventDTO> getCaseEvents(Integer caseId) {
-    List<CaseEventDTO> caseEventDTOs = caseFrameClient.getResources(appConfig.getCaseFrameSvcCaseEventsByCaseGetPath(),
+    List<CaseEventDTO> caseEventDTOs = caseFrameClient.getResources(appConfig.getCaseFrameSvc().getCaseEventsByCaseGetPath(),
         CaseEventDTO[].class, caseId);
     return caseEventDTOs;
   }
