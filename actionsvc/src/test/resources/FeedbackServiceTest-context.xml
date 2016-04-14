@@ -7,7 +7,7 @@
 			http://www.springframework.org/schema/integration
 			http://www.springframework.org/schema/integration/spring-integration.xsd">
 
-	<beans:import resource="classpath:/Test-integration-context.xml" />
+	<beans:import resource="classpath:/combined-integration-context.xml" />
 	
 	<bridge input-channel="feedbackTransformed"
 		output-channel="testChannel"/>

@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+  xmlns:jms="http://www.springframework.org/schema/jms" xmlns:p="http://www.springframework.org/schema/p"
+  xmlns:int-jme="http://www.springframework.org/schema/integration"
+  xmlns:int="http://www.springframework.org/schema/integration"
+  xmlns:int-jms="http://www.springframework.org/schema/integration/jms"
+  xmlns:int-http="http://www.springframework.org/schema/integration/http"
+  xmlns:int-xml="http://www.springframework.org/schema/integration/xml"
+  xmlns:int-file="http://www.springframework.org/schema/integration/file"
+  xsi:schemaLocation="http://www.springframework.org/schema/beans   
+  http://www.springframework.org/schema/beans/spring-beans-4.2.xsd  
+  http://www.springframework.org/schema/context  
+  http://www.springframework.org/schema/context/spring-context-4.2.xsd  
+  http://www.springframework.org/schema/integration http://www.springframework.org/schema/integration/spring-integration.xsd
+  http://www.springframework.org/schema/integration/jms http://www.springframework.org/schema/integration/jms/spring-integration-jms.xsd
+  http://www.springframework.org/schema/jms  
+  http://www.springframework.org/schema/jms/spring-jms-4.2.xsd
+  http://www.springframework.org/schema/integration/file
+  http://www.springframework.org/schema/integration/file/spring-integration-file.xsd
+  http://www.springframework.org/schema/integration/http
+  http://www.springframework.org/schema/integration/http/spring-integration-http.xsd
+  http://www.springframework.org/schema/integration/xml
+  http://www.springframework.org/schema/integration/xml/spring-integration-xml.xsd">
+
+  <!-- beans required for integration testing  -->
+  
+  <bean id="instructionService" class="uk.gov.ons.ctp.response.action.message.impl.InstructionPublisherImpl"/>
+  
+  <bean id="feedbackService" class="uk.gov.ons.ctp.response.action.message.impl.FeedbackReceiverImpl"/> 
+  
+  <bean id="connectionFactory" class="org.springframework.jms.connection.CachingConnectionFactory">
+    <property name="targetConnectionFactory">
+      <bean class="org.apache.activemq.ActiveMQConnectionFactory">
+        <property name="brokerURL" value="vm://localhost?broker.persistent=false" />
+	  </bean>
+    </property>
+    <property name="sessionCacheSize" value="10"/>
+  </bean>
+  
+  <bean id="myMessageListener" class="uk.gov.ons.ctp.response.action.utility.ActionMessageListener"/>
+ 
+  
+<!--   <jms:listener-container container-type="default" connection-factory="jmsConnectionFactory" acknowledge="auto">  -->
+<!--     <jms:listener destination="Action.Field" ref="myMessageListener" method="onMessage" /> -->
+<!--   </jms:listener-container> -->
+  
+<!--   <jms:listener-container container-type="default" connection-factory="jmsConnectionFactory" acknowledge="auto">  -->
+<!--     <jms:listener destination="fieldInstructionQueue" ref="myMessageListener" method="onMessage" /> -->
+<!--   </jms:listener-container> -->
+  
+  <!-- Alternative to jms:listener-container -->
+  <!-- the message listener container -->
+  <bean id="jmsContainer" class="org.springframework.jms.listener.DefaultMessageListenerContainer">
+    <property name="connectionFactory" ref="connectionFactory"/>
+    <property name="destinationName" value="Action.Field" />
+    <property name="messageListener" ref="myMessageListener" />
+  </bean>
+
+</beans>
+
