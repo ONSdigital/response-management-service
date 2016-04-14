@@ -80,7 +80,7 @@ public class InstructionServiceTest {
 	@Autowired
 	ActionMessageListener myMessageListener;
 	
-	@Test
+//	@Test
 	public void testCreateOutBoundMessageToFieldHandler() {
 		try {
 
