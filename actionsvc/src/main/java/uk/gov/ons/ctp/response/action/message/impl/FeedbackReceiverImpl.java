@@ -6,6 +6,10 @@ import org.springframework.integration.annotation.ServiceActivator;
 import uk.gov.ons.ctp.response.action.message.FeedbackReceiver;
 import uk.gov.ons.ctp.response.action.message.feedback.ActionFeedback;
 
+/**
+ * The entry point for inbound feedback messages from SpringIntegration. See the integration-context.xml
+ *
+ */
 @MessageEndpoint
 public class FeedbackReceiverImpl implements FeedbackReceiver {
   /* (non-Javadoc)

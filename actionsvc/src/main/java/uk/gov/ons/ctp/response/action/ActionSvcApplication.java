@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import uk.gov.ons.ctp.common.jaxrs.CTPMessageBodyReader;
 import uk.gov.ons.ctp.common.rest.RestClient;
+import uk.gov.ons.ctp.response.action.config.AppConfig;
 import uk.gov.ons.ctp.response.action.endpoint.ActionEndpoint;
 import uk.gov.ons.ctp.response.action.endpoint.ActionPlanEndpoint;
 import uk.gov.ons.ctp.response.action.endpoint.ActionPlanJobEndpoint;
@@ -34,11 +35,11 @@ import uk.gov.ons.ctp.response.action.representation.ActionPlanJobDTO;
 public class ActionSvcApplication {
 
   @Autowired
-  private ApplicationConfig appConfig;
+  private AppConfig appConfig;
   
   @Bean
   public RestClient caseFrameClient () {
-    RestClient restHelper = new RestClient (appConfig.getCaseFrameSvcScheme(), appConfig.getCaseFrameSvcHost(), appConfig.getCaseFrameSvcPort());
+    RestClient restHelper = new RestClient (appConfig.getCaseFrameSvc().getScheme(), appConfig.getCaseFrameSvc().getHost(), appConfig.getCaseFrameSvc().getPort());
     return restHelper;
   }
 

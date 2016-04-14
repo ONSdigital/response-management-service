@@ -91,12 +91,12 @@ spring:
         hibernate:
           ddl-auto: update
 
-caseframesvc:
+case-frame-svc:
   scheme: http
   host: localhost
   port: 8171
-  caseByCaseGetPath: /cases/{caseid}
-  questionnairesByCaseGetPath: /questionnaires/case/{caseid}
-  caseEventsByCaseGetPath: /cases/{caseid}/events
-  caseEventsByCasePostPath: /cases/{caseid}/events
-  addressByUprnGetPath: /addresses/{uprn}
+  case-by-case-get-path: /cases/{caseid}
+  questionnaires-by-case-get-path: /questionnaires/case/{caseid}
+  case-events-by-case-get-path: /cases/{caseid}/events
+  case-events-by-case-post-path: /cases/{caseid}/events
+  address-by-uprn-get-path: /addresses/{uprn}
