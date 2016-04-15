@@ -1,0 +1,21 @@
+{  
+   "uprn":1234,
+   "addressType":"CareHome",
+   "estabType":"Estab Type",
+   "locality":"Somehere",
+   "organisationName":"Co-Op",
+   "addressLine1":"address line1",
+   "addressLine2":"address line 2",
+   "townName":"town",
+   "postcode":"SO22 4HJ",
+   "outputArea":"output area",
+   "lsoaArea":"lsoa area",
+   "msoaArea":"msoa area",
+   "ladCode":"lad code",
+   "regionCode":"region code",
+   "eastings":1,
+   "northings":2,
+   "htc":3,
+   "latitude":4.0,
+   "longitude":5.0
+}

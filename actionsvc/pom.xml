@@ -117,6 +117,11 @@
     	<artifactId>spring-boot-configuration-processor</artifactId>
     	<optional>true</optional>
     </dependency>
+    <dependency>
+    	<groupId>org.opensaml</groupId>
+    	<artifactId>opensaml</artifactId>
+    	<version>2.5.1-1</version>
+    </dependency>
   </dependencies>
 
   <build>

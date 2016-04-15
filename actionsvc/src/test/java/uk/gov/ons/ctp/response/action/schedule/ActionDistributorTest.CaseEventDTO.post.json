@@ -1,0 +1,30 @@
+[
+{  
+   "caseId":1,
+   "category":"ActionCreated",
+   "subCategory":"",
+   "createdBy":"me",
+   "description":"Household Initial Contact"
+},
+{  
+   "caseId":2,
+   "category":"ActionCreated",
+   "subCategory":"",
+   "createdBy":"me",
+   "description":"Household Initial Contact"
+},
+{  
+   "caseId":3,
+   "category":"ActionCreated",
+   "subCategory":"",
+   "createdBy":"me",
+   "description":"Household Initial Contact"
+},
+{  
+   "caseId":4,
+   "category":"ActionCreated",
+   "subCategory":"",
+   "createdBy":"me",
+   "description":"Household Initial Contact"
+}
+]
