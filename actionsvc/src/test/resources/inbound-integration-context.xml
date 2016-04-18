@@ -23,21 +23,17 @@
   http://www.springframework.org/schema/integration/xml
   http://www.springframework.org/schema/integration/xml/spring-integration-xml.xsd">
 
-  <!-- beans required for integration testing  -->
   
-  <bean id="instructionService" class="uk.gov.ons.ctp.response.action.message.impl.InstructionPublisherImpl"/>
-  
-  <bean id="feedbackService" class="uk.gov.ons.ctp.response.action.message.impl.FeedbackReceiverImpl"/> 
-  
-  <bean id="connectionFactory" class="org.springframework.jms.connection.CachingConnectionFactory">
-    <property name="targetConnectionFactory">
-      <bean class="org.apache.activemq.ActiveMQConnectionFactory">
-        <property name="brokerURL" value="vm://localhost?broker.persistent=false" />
-	  </bean>
-    </property>
-    <property name="sessionCacheSize" value="10"/>
+  <bean id="feedbackMessageListenerContainer"
+    class="org.springframework.jms.listener.DefaultMessageListenerContainer">
+    <property name="connectionFactory" ref="connectionFactory" />
+    <property name="destinationName" value="feedbackQueue" />
+    <property name="maxConcurrentConsumers" value="1" />
+    <property name="concurrentConsumers" value="1" />
+    <property name="receiveTimeout" value="5000" />
+    <property name="recoveryInterval" value="60000" />
+    <property name="autoStartup" value="true" />
   </bean>
   
-
 </beans>
 

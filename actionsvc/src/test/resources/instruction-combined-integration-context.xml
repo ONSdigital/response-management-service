@@ -4,7 +4,8 @@
 	xsi:schemaLocation="http://www.springframework.org/schema/beans
 	http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
 
-	<import resource="flows-integration-context.xml"/>
-    <import resource="test-integration-context.xml"/>
-	
+	<import resource="flows-integration-context.xml" />
+	<import resource="test-integration-context.xml" />
+	<import resource="outbound-integration-context.xml" />
+
 </beans>

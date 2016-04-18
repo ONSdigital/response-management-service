@@ -7,16 +7,20 @@ import org.springframework.jms.listener.DefaultMessageListenerContainer;
 
 public class ActionMessageListener implements MessageListener{
 
-	private String payload = "no payload";
+	private String payload = "payload default: ";
 	
 	@Override
 	public void onMessage(Message arg0) {
-		payload  = "message found";
-		System.out.println("Message processed by ActionMessageListener");
+		this.payload  = "message found";
+		System.out.println("Message processed by ActionMessageListener: " + this.payload);
 	}
 
 	public String getPayload() {
 		return payload;
+	}
+	
+	public void setPayload(String payload){
+		this.payload = payload;
 	}
 	
 }

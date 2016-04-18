@@ -15,12 +15,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.integration.channel.QueueChannel;
 import org.springframework.integration.support.MessageBuilder;
+import org.springframework.jms.listener.DefaultMessageListenerContainer;
 import org.springframework.messaging.MessageChannel;
 import org.springframework.oxm.jaxb.Jaxb2Marshaller;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import uk.gov.ons.ctp.response.action.message.impl.FeedbackReceiverImpl;
+import uk.gov.ons.ctp.response.action.utility.ActionMessageListener;
 
 @ContextConfiguration(locations = { "/FeedbackServiceTest-context.xml" })
 @RunWith(SpringJUnit4ClassRunner.class)
