@@ -39,7 +39,7 @@ import uk.gov.ons.ctp.response.caseframe.representation.CaseDTO;
 import uk.gov.ons.ctp.response.caseframe.representation.CaseEventDTO;
 import uk.gov.ons.ctp.response.caseframe.representation.QuestionnaireDTO;
 
-//@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.class)
 public class ActionDistributorTest {
 
   @Mock
@@ -74,7 +74,7 @@ public class ActionDistributorTest {
     MockitoAnnotations.initMocks(this);
   }
 
-//  @Test
+  @Test
   public void testBlueSky() throws Exception {
     // set up dummy data
     CaseFrameSvc caseFrameSvcConfig = new CaseFrameSvc();
