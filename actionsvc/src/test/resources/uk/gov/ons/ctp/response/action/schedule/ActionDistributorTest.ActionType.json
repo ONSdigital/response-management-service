@@ -1,0 +1,16 @@
+[
+  {
+    "actionTypeId": 1,
+    "name": "HH_IC",
+    "description": "Household Initial Contact",
+    "handler": "Printer",
+    "canCancel": false
+  },
+  {
+    "actionTypeId": 2,
+    "name": "HH_IAC_LOAD",
+    "description": "Household upload IAC",
+    "handler": "HHSurvey",
+    "canCancel": true
+  }
+]

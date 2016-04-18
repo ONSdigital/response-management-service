@@ -1,15 +1,21 @@
 package uk.gov.ons.ctp.response.action.representation;
 
-import lombok.Data;
+import java.sql.Timestamp;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import java.sql.Timestamp;
+
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * Domain model object for representation.
  */
 @Data
+@AllArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PUBLIC)
 public class ActionPlanJobDTO {
   private Integer actionPlanJobId;
   private Integer actionPlanId;
