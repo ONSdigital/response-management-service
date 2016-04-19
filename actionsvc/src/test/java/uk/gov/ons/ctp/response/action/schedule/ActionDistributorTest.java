@@ -23,7 +23,7 @@ import org.springframework.transaction.support.TransactionTemplate;
 import org.springframework.web.client.RestClientException;
 
 import ma.glasnost.orika.MapperFacade;
-import uk.gov.ons.ctp.common.TestHelper;
+import uk.gov.ons.ctp.common.FixtureHelper;
 import uk.gov.ons.ctp.common.rest.RestClient;
 import uk.gov.ons.ctp.response.action.config.AppConfig;
 import uk.gov.ons.ctp.response.action.config.CaseFrameSvc;
@@ -133,20 +133,20 @@ public class ActionDistributorTest {
     // set up dummy data
     CaseFrameSvc caseFrameSvcConfig = new CaseFrameSvc();
 
-    List<ActionType> actionTypes = TestHelper.loadClassFixtures(ActionType[].class);
+    List<ActionType> actionTypes = FixtureHelper.loadClassFixtures(ActionType[].class);
 
-    List<Action> actionsHHIC = TestHelper.loadClassFixtures(Action[].class, "HH_IC");
-    List<Action> actionsHHIACLOAD = TestHelper.loadClassFixtures(Action[].class, "HH_IAC_LOAD");
+    List<Action> actionsHHIC = FixtureHelper.loadClassFixtures(Action[].class, "HH_IC");
+    List<Action> actionsHHIACLOAD = FixtureHelper.loadClassFixtures(Action[].class, "HH_IAC_LOAD");
 
-    List<QuestionnaireDTO> questionnaireDTOs = TestHelper.loadClassFixtures(QuestionnaireDTO[].class);
+    List<QuestionnaireDTO> questionnaireDTOs = FixtureHelper.loadClassFixtures(QuestionnaireDTO[].class);
 
-    List<CaseDTO> caseDTOs = TestHelper.loadClassFixtures(CaseDTO[].class);
+    List<CaseDTO> caseDTOs = FixtureHelper.loadClassFixtures(CaseDTO[].class);
 
-    List<AddressDTO> addressDTOsUprn1234 = TestHelper.loadClassFixtures(AddressDTO[].class, "uprn1234");
+    List<AddressDTO> addressDTOsUprn1234 = FixtureHelper.loadClassFixtures(AddressDTO[].class, "uprn1234");
 
-    List<CaseEventDTO> caseEventDTOs = TestHelper.loadClassFixtures(CaseEventDTO[].class);
+    List<CaseEventDTO> caseEventDTOs = FixtureHelper.loadClassFixtures(CaseEventDTO[].class);
 
-    List<CaseEventDTO> caseEventDTOsPost = TestHelper.loadClassFixtures(CaseEventDTO[].class, "post");
+    List<CaseEventDTO> caseEventDTOsPost = FixtureHelper.loadClassFixtures(CaseEventDTO[].class, "post");
 
     // wire up mock responses
     Mockito.when(appConfig.getCaseFrameSvc()).thenReturn(caseFrameSvcConfig);
@@ -221,20 +221,20 @@ public class ActionDistributorTest {
     // set up dummy data
     CaseFrameSvc caseFrameSvcConfig = new CaseFrameSvc();
 
-    List<ActionType> actionTypes = TestHelper.loadClassFixtures(ActionType[].class);
+    List<ActionType> actionTypes = FixtureHelper.loadClassFixtures(ActionType[].class);
 
-    List<Action> actionsHHIC = TestHelper.loadClassFixtures(Action[].class, "HH_IC");
-    List<Action> actionsHHIACLOAD = TestHelper.loadClassFixtures(Action[].class, "HH_IAC_LOAD");
+    List<Action> actionsHHIC = FixtureHelper.loadClassFixtures(Action[].class, "HH_IC");
+    List<Action> actionsHHIACLOAD = FixtureHelper.loadClassFixtures(Action[].class, "HH_IAC_LOAD");
 
-    List<QuestionnaireDTO> questionnaireDTOs = TestHelper.loadClassFixtures(QuestionnaireDTO[].class);
+    List<QuestionnaireDTO> questionnaireDTOs = FixtureHelper.loadClassFixtures(QuestionnaireDTO[].class);
 
-    List<CaseDTO> caseDTOs = TestHelper.loadClassFixtures(CaseDTO[].class);
+    List<CaseDTO> caseDTOs = FixtureHelper.loadClassFixtures(CaseDTO[].class);
 
-    List<AddressDTO> addressDTOsUprn1234 = TestHelper.loadClassFixtures(AddressDTO[].class, "uprn1234");
+    List<AddressDTO> addressDTOsUprn1234 = FixtureHelper.loadClassFixtures(AddressDTO[].class, "uprn1234");
 
-    List<CaseEventDTO> caseEventDTOs = TestHelper.loadClassFixtures(CaseEventDTO[].class);
+    List<CaseEventDTO> caseEventDTOs = FixtureHelper.loadClassFixtures(CaseEventDTO[].class);
 
-    List<CaseEventDTO> caseEventDTOsPost = TestHelper.loadClassFixtures(CaseEventDTO[].class, "post");
+    List<CaseEventDTO> caseEventDTOsPost = FixtureHelper.loadClassFixtures(CaseEventDTO[].class, "post");
 
     // wire up mock responses
     Mockito.when(appConfig.getCaseFrameSvc()).thenReturn(caseFrameSvcConfig);
