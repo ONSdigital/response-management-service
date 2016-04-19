@@ -25,18 +25,6 @@
 
   <!--  First the inbound flow -->
 
-  <!-- The inbound message container config - the inbound queue is defined here -->
-  <bean id="feedbackMessageListenerContainer"
-    class="org.springframework.jms.listener.DefaultMessageListenerContainer">
-    <property name="connectionFactory" ref="connectionFactory" />
-    <property name="destinationName" value="feedbackQueue" />
-    <property name="maxConcurrentConsumers" value="1" />
-    <property name="concurrentConsumers" value="1" />
-    <property name="receiveTimeout" value="5000" />
-    <property name="recoveryInterval" value="60000" />
-    <property name="autoStartup" value="true" />
-  </bean>
-
   <!-- need an input channel defined for MQ adapter to input to -->
   <int:channel id="feedbackXml" />
 
