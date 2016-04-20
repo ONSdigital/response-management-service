@@ -49,9 +49,9 @@ import uk.gov.ons.ctp.response.caseframe.representation.QuestionnaireDTO;
  * allows both rollback and for us to catch the runtime exception and handle it.
  *
  * This class has a scheduled task wakeUp(), which looks for Actions in
- * SUBMITTED state to send to downstream handlers. On each wake cycle it fetches
+ * SUBMITTED state to send to downstream handlers. On each wake cycle, it fetches
  * the first n actions of each type, by createddatatime, and attempts to enrich
- * them with case,questionnaire,address and caseevent details all fetched in
+ * them with case, questionnaire, address and caseevent details all fetched in
  * individual calls to the caseframe service through its RESTful endpoints.
  *
  * It then updates its own action table to change the action state to PENDING,
@@ -114,6 +114,7 @@ public class ActionDistributorImpl implements ActionDistributor {
     log.debug("ActionDistributor awoken from slumber");
 
     try {
+      // TODO PB These could be cached as they will not change very often.
       List<ActionType> actionTypes = actionTypeRepo.findAll();
 
       for (ActionType actionType : actionTypes) {

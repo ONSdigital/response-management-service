@@ -72,8 +72,8 @@ spring:
     name: ONS ActionService
 
   activemq:
-    in-memory: true
-    pooled: false
+    broker-url: tcp://localhost:53445
+    pooled: true
 
   datasource:
     url: jdbc:postgresql://localhost:5432/postgres
