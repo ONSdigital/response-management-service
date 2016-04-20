@@ -72,6 +72,7 @@ spring:
     name: ONS ActionService
 
   activemq:
+    broker-url: tcp://localhost:53445
     in-memory: true
     pooled: false
 
