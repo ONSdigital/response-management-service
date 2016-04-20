@@ -55,11 +55,6 @@ public class InstructionServiceTest {
 
 	@Autowired
 	DefaultMessageListenerContainer jmsContainer;
-	
-	// just required for debugging - remove later
-	@Autowired
-	CachingConnectionFactory connectionFactory;
-
 
 	@Test
 	public void testSendRequestViaInstructionService() {
@@ -99,37 +94,15 @@ public class InstructionServiceTest {
 			ArrayList<ActionRequest> actionRequests = new ArrayList<ActionRequest>();
 			actionRequests.add(actionRequest);
 
-			// some debugging
-			String destinationName = jmsContainer.getDestinationName();
-			System.out.println("DestinationName: " + destinationName);
-			
-			Object obj = connectionFactory.getTargetConnectionFactory();
-			System.out.println("TargetConnectionFactory: " + obj.toString());
-			
-			String myMessageListenerPayload = myMessageListener.getPayload();
-			System.out.println("1 - myMessageListenerPayload: " + myMessageListenerPayload);
-			
 			ActionInstruction actionInstruction = instructionService.sendRequests(handler, actionRequests);
 
 			ActionMessageListener listener = (ActionMessageListener)jmsContainer.getMessageListener();
-			String listenerPayload = listener.getPayload();
-			if (listener.equals(myMessageListener)) {
-				System.out.println("3a - The two listeners are the same");
-			}
-			System.out.println("3b -ListenerPayload: " + listenerPayload);
 			
 			// wait for a few seconds
 			TimeUnit.SECONDS.sleep(5);
 
-			ActionMessageListener listener2 = (ActionMessageListener)jmsContainer.getMessageListener();
-			String listenerPayload2 = listener2.getPayload();
-			if (listener2.equals(myMessageListener)) {
-				System.out.println("4a - The two listeners are the same");
-			}
-			System.out.println("4aa - ListenerPayload: " + listenerPayload2);
-			
 			// test ActiveMQ message generated with expected content
-			myMessageListenerPayload = myMessageListener.getPayload();
+			String myMessageListenerPayload = myMessageListener.getPayload();
 			System.out.println("4b - myMessageListenerPayload: " + myMessageListenerPayload);
 			assertEquals("MessageListenerPayload not found", "message found", myMessageListenerPayload);
 
