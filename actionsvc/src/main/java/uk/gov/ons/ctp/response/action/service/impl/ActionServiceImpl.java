@@ -72,6 +72,8 @@ public final class ActionServiceImpl implements ActionService {
     // the incoming action has a placeholder action type with the name as provided to the caller
     // but we need the entire action type object for that action type name
     ActionType actionType = actionTypeRepo.findByName(action.getActionType().getName());
+    // guard against the caller providing an id - we would perform an update otherwise
+    action.setActionId(null);
     action.setActionType(actionType);
     action.setManuallyCreated(true);
     action.setCreatedDateTime(new Timestamp(System.currentTimeMillis()));
