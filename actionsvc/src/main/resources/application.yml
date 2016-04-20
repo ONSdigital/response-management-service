@@ -73,8 +73,7 @@ spring:
 
   activemq:
     broker-url: tcp://localhost:53445
-    in-memory: true
-    pooled: false
+    pooled: true
 
   datasource:
     url: jdbc:postgresql://localhost:5432/postgres
