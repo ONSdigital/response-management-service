@@ -1,4 +1,4 @@
-package uk.gov.ons.ctp.response.action.scheduled.impl;
+package uk.gov.ons.ctp.response.action.scheduled;
 
 import java.math.BigInteger;
 import java.sql.Timestamp;
@@ -31,7 +31,6 @@ import uk.gov.ons.ctp.response.action.message.instruction.ActionEvent;
 import uk.gov.ons.ctp.response.action.message.instruction.ActionRequest;
 import uk.gov.ons.ctp.response.action.message.instruction.Priority;
 import uk.gov.ons.ctp.response.action.representation.ActionDTO.ActionState;
-import uk.gov.ons.ctp.response.action.scheduled.ActionDistributor;
 import uk.gov.ons.ctp.response.caseframe.representation.AddressDTO;
 import uk.gov.ons.ctp.response.caseframe.representation.CaseDTO;
 import uk.gov.ons.ctp.response.caseframe.representation.CaseEventDTO;
@@ -64,7 +63,7 @@ import uk.gov.ons.ctp.response.caseframe.representation.QuestionnaireDTO;
  */
 @Named
 @Slf4j
-public class ActionDistributorImpl implements ActionDistributor {
+public class ActionDistributorImpl {
   // TODO - parameterize from external config
   public static final long DEV_DELAY_INITIAL = 10L * 1000L;
   public static final long DEV_DELAY_INTER = 10L * 1000L;
@@ -108,7 +107,6 @@ public class ActionDistributorImpl implements ActionDistributor {
    * @see
    * uk.gov.ons.ctp.response.action.scheduled.impl.ActionDistributor#wakeUp()
    */
-  @Override
   @Scheduled(initialDelay = PROD_DELAY_INITIAL, fixedDelay = PROD_DELAY_INTER)
   public final void wakeUp() {
     log.debug("ActionDistributor awoken from slumber");

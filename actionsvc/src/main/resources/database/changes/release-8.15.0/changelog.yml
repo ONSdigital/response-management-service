@@ -1,0 +1,11 @@
+databaseChangeLog:
+
+
+  - changeSet:
+      id: 8.15.0-1
+      author: sarahr
+      changes:
+        - sqlFile:
+            comment: action type names changed
+            path: actiontypes-renamed.sql
+            relativeToChangelogFile: true
