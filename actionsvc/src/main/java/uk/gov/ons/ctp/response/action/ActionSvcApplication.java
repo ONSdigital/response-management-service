@@ -31,7 +31,7 @@ import uk.gov.ons.ctp.response.action.representation.ActionPlanJobDTO;
 @IntegrationComponentScan
 @EnableAsync
 @EnableScheduling
-@ImportResource("main-integration-context.xml")
+@ImportResource("main-int.xml")
 public class ActionSvcApplication {
 
   @Autowired
