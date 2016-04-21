@@ -8,8 +8,8 @@
 			http://www.springframework.org/schema/integration/spring-integration.xsd">
 
 	<beans:import resource="flows-int.xml" />
-	<beans:import resource="test-integration-context.xml" />
-	<beans:import resource="outbound-integration-context.xml" />
+	<beans:import resource="test-common-int.xml" />
+	<beans:import resource="test-outbound-int.xml" />
 	
 	<bridge input-channel="instructionXml"
 		output-channel="testInstructionXml"/>
