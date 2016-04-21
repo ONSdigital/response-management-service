@@ -51,15 +51,6 @@
     <property name="contextPath" value="uk.gov.ons.ctp.response.action.message.feedback" />
   </bean>
   
-  <!-- Finally .. see the  @ServiceActivator(inputChannel="feedback.transformed") -->
-
-<!--
-  <int-http:outbound-gateway url="http://localhost:8071/cases/">
-  
-  </int-http:outbound-gateway>
-  -->
-
-
 
   <!--  Now configure the outbound flow -->
   <!-- setup the outbound jms queues -->
