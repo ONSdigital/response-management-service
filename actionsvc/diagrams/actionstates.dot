@@ -1,7 +1,7 @@
 /* Action service action states. Run using dot -Tpng actionstates.dot > actionstates.png */
 /* See https://fsteeg.wordpress.com/2006/11/16/uml-activity-diagrams-with-graphviz/ */
 digraph actionstates {
-    size="10,10";
+    size="20,20";
     edge[arrowhead=open]
     node [shape=rectangle];
     start[shape=circle, label="", fillcolor=black, style=filled]
@@ -10,18 +10,32 @@ digraph actionstates {
     pending[label="PENDING", fontname="helvetica", style=rounded]
     active[label="ACTIVE", fontname="helvetica", style=rounded]
     completed[label="COMPLETED", fontname="helvetica", style=rounded]
+    aborted[label="ABORTED", fontname="helvetica", style=rounded]
     cancelsubmitted[label="CANCELSUBMITTED", fontname="helvetica", style=rounded]
+    cancelpending[label="CANCELPENDING", fontname="helvetica", style=rounded]
+    cancelling[label="CANCELLING", fontname="helvetica", style=rounded]
     cancelled[label="CANCELLED", fontname="helvetica", style=rounded]
-    failed[label="FAILED", fontname="helvetica", style=rounded]
 
     start -> submitted
-    submitted -> pending
-    pending-> active
-    active -> completed
-    active -> cancelsubmitted
-    active -> failed
+    submitted -> pending[fontname="helvetica", label="Request Distributed"]
+    submitted -> aborted[fontname="helvetica", label="Request Cancelled"]
+    pending -> active[fontname="helvetica", label="Request Accepted"]
+    active -> completed[fontname="helvetica", label="Request Completed"]
+    cancelsubmitted -> cancelpending[fontname="helvetica", label="Cancellation Distributed"]
+    cancelpending -> cancelling[fontname="helvetica", label="Cancellation Accepted"]
+    cancelling -> cancelled[fontname="helvetica", label="Cancellation Completed"]
+    active -> submitted[fontname="helvetica", label="Request Failed"]
+    pending -> submitted[fontname="helvetica", label="Request Failed"]
+    active -> cancelsubmitted[fontname="helvetica", label="Request Cancelled"]
+    pending -> cancelsubmitted[fontname="helvetica", label="Request Cancelled"]
+    cancelling -> cancelsubmitted[fontname="helvetica", label="Cancellation Failed"]
+    cancelpending -> cancelsubmitted[fontname="helvetica", label="Cancellation Failed"]
+    cancelsubmitted -> cancelsubmitted[fontname="helvetica", label="\lRequest Accepted\lRequest Cancelled\lRequest Completed\lRequest Failed\l"]
+    cancelpending -> cancelpending[fontname="helvetica", label="\lRequest Accepted\lRequest Cancelled\lRequest Completed\lRequest Failed\l"]
+    completed -> completed[fontname="helvetica", label="Request Cancelled"]
+    cancelled -> cancelled[fontname="helvetica", label="Request Cancelled"]
+    cancelling -> cancelling[fontname="helvetica", label="Request Cancelled"]
+    aborted -> end
     completed -> end
-    cancelsubmitted -> cancelled
-    failed -> end
     cancelled -> end
 }
