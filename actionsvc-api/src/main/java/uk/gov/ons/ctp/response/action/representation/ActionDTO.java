@@ -18,7 +18,7 @@ import lombok.NoArgsConstructor;
 public class ActionDTO {
 
   public enum ActionState {
-    ACTIVE, CANCELLED, CANCELSUBMITTED, COMPLETED, FAILED, PENDING, SUBMITTED;
+    SUBMITTED, PENDING, ACTIVE, COMPLETED, CANCEL_SUBMITTED, CANCEL_PENDING, CANCELLING, CANCELLED, ABORTED;
   }
 
   private Integer actionId;

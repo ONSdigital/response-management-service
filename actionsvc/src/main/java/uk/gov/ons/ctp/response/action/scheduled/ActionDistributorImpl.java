@@ -19,6 +19,8 @@ import org.springframework.web.client.RestClientException;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import uk.gov.ons.ctp.common.rest.RestClient;
+import uk.gov.ons.ctp.common.state.StateTransitionException;
+import uk.gov.ons.ctp.common.state.StateTransitionManager;
 import uk.gov.ons.ctp.response.action.config.AppConfig;
 import uk.gov.ons.ctp.response.action.domain.model.Action;
 import uk.gov.ons.ctp.response.action.domain.model.Action.ActionPriority;
@@ -30,6 +32,7 @@ import uk.gov.ons.ctp.response.action.message.instruction.ActionAddress;
 import uk.gov.ons.ctp.response.action.message.instruction.ActionEvent;
 import uk.gov.ons.ctp.response.action.message.instruction.ActionRequest;
 import uk.gov.ons.ctp.response.action.message.instruction.Priority;
+import uk.gov.ons.ctp.response.action.representation.ActionDTO;
 import uk.gov.ons.ctp.response.action.representation.ActionDTO.ActionState;
 import uk.gov.ons.ctp.response.caseframe.representation.AddressDTO;
 import uk.gov.ons.ctp.response.caseframe.representation.CaseDTO;
@@ -71,6 +74,9 @@ public class ActionDistributorImpl {
   public static final long PROD_DELAY_INTER = 30L * 60L * 1000L;
 
   @Inject
+  private StateTransitionManager<ActionState, uk.gov.ons.ctp.response.action.state.ActionEvent> actionSvcStateTransitionManager;
+
+  @Inject
   private RestClient caseFrameClient;
 
   @Inject
@@ -107,12 +113,11 @@ public class ActionDistributorImpl {
    * @see
    * uk.gov.ons.ctp.response.action.scheduled.impl.ActionDistributor#wakeUp()
    */
-  @Scheduled(initialDelay = PROD_DELAY_INITIAL, fixedDelay = PROD_DELAY_INTER)
+  @Scheduled(initialDelay = DEV_DELAY_INITIAL, fixedDelay = DEV_DELAY_INTER)
   public final void wakeUp() {
     log.debug("ActionDistributor awoken from slumber");
 
     try {
-      // TODO PB These could be cached as they will not change very often.
       List<ActionType> actionTypes = actionTypeRepo.findAll();
 
       for (ActionType actionType : actionTypes) {
@@ -173,7 +178,7 @@ public class ActionDistributorImpl {
         log.debug("Preparing action {} for distribution", action.getActionId());
 
         // update our actions state in db
-        updateActionStatusToPending(action);
+        updateActionStatus(action);
         // create the request, filling in details by GETs from caseframesvc
         actionRequest = prepareActionRequest(action);
 
@@ -191,10 +196,15 @@ public class ActionDistributorImpl {
    *
    * @param action the action to change and persist
    */
-  private void updateActionStatusToPending(final Action action) {
-    action.setState(ActionState.PENDING);
-    action.setUpdatedDateTime(new Timestamp(System.currentTimeMillis()));
-    actionRepo.saveAndFlush(action);
+  private void updateActionStatus(final Action action) {
+    try {
+      ActionDTO.ActionState nextState = actionSvcStateTransitionManager.transition(action.getState(), uk.gov.ons.ctp.response.action.state.ActionEvent.REQUEST_DISTRIBUTED);
+      action.setState(nextState);
+      action.setUpdatedDateTime(new Timestamp(System.currentTimeMillis()));
+      actionRepo.saveAndFlush(action);
+    } catch (StateTransitionException ste) {
+      throw new RuntimeException(ste);
+    }
   }
 
   /**
@@ -298,7 +308,10 @@ public class ActionDistributorImpl {
     List<QuestionnaireDTO> questionnaireDTOs = caseFrameClient.getResources(
         appConfig.getCaseFrameSvc().getQuestionnairesByCaseGetPath(),
         QuestionnaireDTO[].class, caseId);
-    return (questionnaireDTOs.size() > 0) ? questionnaireDTOs.get(0) : null;
+    if (questionnaireDTOs.size() == 0) {
+      throw new RuntimeException ("Failed to find questionnaire for case " + caseId); 
+    }
+    return questionnaireDTOs.get(0);
   }
 
   /**

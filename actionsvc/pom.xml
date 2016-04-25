@@ -5,7 +5,7 @@
 
   <groupId>uk.gov.ons.ctp.product</groupId>
   <artifactId>actionsvc</artifactId>
-  <version>8.15.0-SNAPSHOT</version>
+  <version>8.16.0-SNAPSHOT</version>
   <packaging>jar</packaging>
 
   <name>CTP : ResponseManagement : ActionSvc</name>
@@ -14,7 +14,7 @@
   <parent>
     <groupId>uk.gov.ons.ctp.product</groupId>
     <artifactId>responsemanagement</artifactId>
-    <version>8.15.0-SNAPSHOT</version>
+    <version>8.16.0-SNAPSHOT</version>
     <relativePath>../</relativePath>
   </parent>
 
@@ -22,7 +22,7 @@
     <dependency>
       <groupId>uk.gov.ons.ctp.product</groupId>
       <artifactId>actionsvc-api</artifactId>
-      <version>8.15.0-SNAPSHOT</version>
+      <version>8.16.0-SNAPSHOT</version>
     </dependency>
 
     <dependency>
@@ -113,14 +113,14 @@
     </dependency>
 
     <dependency>
-    	<groupId>org.springframework.boot</groupId>
-    	<artifactId>spring-boot-configuration-processor</artifactId>
-    	<optional>true</optional>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-configuration-processor</artifactId>
+      <optional>true</optional>
     </dependency>
     <dependency>
-    	<groupId>org.opensaml</groupId>
-    	<artifactId>opensaml</artifactId>
-    	<version>2.5.1-1</version>
+      <groupId>org.opensaml</groupId>
+      <artifactId>opensaml</artifactId>
+      <version>2.5.1-1</version>
     </dependency>
   </dependencies>
 

@@ -15,6 +15,8 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import uk.gov.ons.ctp.common.jaxrs.CTPMessageBodyReader;
 import uk.gov.ons.ctp.common.rest.RestClient;
+import uk.gov.ons.ctp.common.state.StateTransitionManager;
+import uk.gov.ons.ctp.common.state.StateTransitionManagerFactory;
 import uk.gov.ons.ctp.response.action.config.AppConfig;
 import uk.gov.ons.ctp.response.action.endpoint.ActionEndpoint;
 import uk.gov.ons.ctp.response.action.endpoint.ActionPlanEndpoint;
@@ -22,6 +24,8 @@ import uk.gov.ons.ctp.response.action.endpoint.ActionPlanJobEndpoint;
 import uk.gov.ons.ctp.response.action.representation.ActionDTO;
 import uk.gov.ons.ctp.response.action.representation.ActionPlanDTO;
 import uk.gov.ons.ctp.response.action.representation.ActionPlanJobDTO;
+import uk.gov.ons.ctp.response.action.state.ActionEvent;
+import uk.gov.ons.ctp.response.action.state.ActionSvcStateTransitionManagerFactory;
 
 /**
  * The 'main' entry point into the Action Service SpringBoot Application.
@@ -43,6 +47,15 @@ public class ActionSvcApplication {
     return restHelper;
   }
 
+  @Autowired
+  private StateTransitionManagerFactory actionSvcStateTransitionManagerFactory;
+
+
+  @Bean
+  public StateTransitionManager<ActionDTO.ActionState,ActionEvent> actionSvcStateTransitionManager() {
+    return actionSvcStateTransitionManagerFactory.getStateTransitionManager(ActionSvcStateTransitionManagerFactory.ACTION_ENTITY);  
+  }
+  
   /**
    * To register classes in the JAX-RS world.
    */
