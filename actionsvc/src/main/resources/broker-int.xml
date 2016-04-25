@@ -29,6 +29,8 @@
     <property name="targetConnectionFactory">
       <bean class="org.apache.activemq.ActiveMQConnectionFactory">
         <property name="brokerURL" value="tcp://localhost:53445" />
+        <property name="userName" value="smx" />
+ 		<property name="password" value="smx" />
 	  </bean>
     </property>
     <property name="sessionCacheSize" value="10"/>
