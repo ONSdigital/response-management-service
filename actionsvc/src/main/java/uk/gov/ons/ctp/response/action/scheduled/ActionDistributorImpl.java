@@ -147,9 +147,9 @@ public class ActionDistributorImpl {
         }
       }
     } catch (Exception e) {
-      // something went wrong retrievnig action types or actions
+      // something went wrong retrieving action types or actions
       log.error("Failed to access local database for action types or actions");
-      // we will be back after a short snoooze
+      // we will be back after a short snooze
     }
     log.debug("ActionDistributor going back to sleep");
   }
@@ -177,8 +177,7 @@ public class ActionDistributorImpl {
         // create the request, filling in details by GETs from caseframesvc
         actionRequest = prepareActionRequest(action);
 
-        // advise caseframesvc to create a corresponding caseevent for our
-        // action
+        // advise caseframesvc to create a corresponding caseevent for our action
         postNewCaseEvent(action);
 
         return actionRequest;
