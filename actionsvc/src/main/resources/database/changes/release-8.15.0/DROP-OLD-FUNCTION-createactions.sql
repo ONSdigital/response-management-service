@@ -1,0 +1,1 @@
+DROP FUNCTION action.createactions(integer, integer);
