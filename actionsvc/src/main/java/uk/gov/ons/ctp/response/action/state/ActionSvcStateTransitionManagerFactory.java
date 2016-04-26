@@ -23,73 +23,95 @@ public class ActionSvcStateTransitionManagerFactory implements StateTransitionMa
   private Map<String, StateTransitionManager<?, ?>> managers;
 
   /**
-   * Create and init the factory with concrete StateTransitionManagers for each required entity
+   * Create and init the factory with concrete StateTransitionManagers for each
+   * required entity
    */
   public ActionSvcStateTransitionManagerFactory() {
     managers = new HashMap<>();
 
-    StateTransitionManager<ActionDTO.ActionState, ActionEvent> actionStateTransitionManager = new BasicStateTransitionManager<>();
-    actionStateTransitionManager.addTransition(ActionDTO.ActionState.SUBMITTED, ActionEvent.REQUEST_DISTRIBUTED,
-        ActionDTO.ActionState.PENDING);
-    actionStateTransitionManager.addTransition(ActionDTO.ActionState.SUBMITTED, ActionEvent.REQUEST_CANCELLED,
-        ActionDTO.ActionState.ABORTED);
+    Map<ActionDTO.ActionState, Map<ActionEvent, ActionDTO.ActionState>> transitions = new HashMap<>();
 
-    actionStateTransitionManager.addTransition(ActionDTO.ActionState.PENDING, ActionEvent.REQUEST_FAILED, ActionDTO.ActionState.SUBMITTED);
-    actionStateTransitionManager.addTransition(ActionDTO.ActionState.PENDING, ActionEvent.REQUEST_CANCELLED,
-        ActionDTO.ActionState.CANCEL_SUBMITTED);
-    actionStateTransitionManager.addTransition(ActionDTO.ActionState.PENDING, ActionEvent.REQUEST_ACCEPTED, ActionDTO.ActionState.ACTIVE);
+    Map<ActionEvent, ActionDTO.ActionState> transitionMapForSubmitted = new HashMap<>();
+    transitionMapForSubmitted.put(ActionEvent.REQUEST_DISTRIBUTED, ActionDTO.ActionState.PENDING);
+    transitionMapForSubmitted.put(ActionEvent.REQUEST_CANCELLED, ActionDTO.ActionState.ABORTED);
+    transitions.put(ActionDTO.ActionState.SUBMITTED, transitionMapForSubmitted);
 
-    actionStateTransitionManager.addTransition(ActionDTO.ActionState.ACTIVE, ActionEvent.REQUEST_FAILED, ActionDTO.ActionState.SUBMITTED);
-    actionStateTransitionManager.addTransition(ActionDTO.ActionState.ACTIVE, ActionEvent.REQUEST_CANCELLED,
+    Map<ActionEvent, ActionDTO.ActionState> transitionMapForPending = new HashMap<>();
+    transitionMapForPending.put(ActionEvent.REQUEST_FAILED, ActionDTO.ActionState.SUBMITTED);
+    transitionMapForPending.put(ActionEvent.REQUEST_CANCELLED,
         ActionDTO.ActionState.CANCEL_SUBMITTED);
-    actionStateTransitionManager.addTransition(ActionDTO.ActionState.ACTIVE, ActionEvent.REQUEST_COMPLETED,
+    transitionMapForPending.put(ActionEvent.REQUEST_ACCEPTED, ActionDTO.ActionState.ACTIVE);
+    transitionMapForPending.put(ActionEvent.REQUEST_COMPLETED, ActionDTO.ActionState.COMPLETED);
+    transitions.put(ActionDTO.ActionState.PENDING, transitionMapForPending);
+
+    Map<ActionEvent, ActionDTO.ActionState> transitionMapForActive = new HashMap<>();
+    transitionMapForActive.put(ActionEvent.REQUEST_FAILED, ActionDTO.ActionState.SUBMITTED);
+    transitionMapForActive.put(ActionEvent.REQUEST_CANCELLED,
+        ActionDTO.ActionState.CANCEL_SUBMITTED);
+    transitionMapForActive.put(ActionEvent.REQUEST_COMPLETED,
         ActionDTO.ActionState.COMPLETED);
+    transitions.put(ActionDTO.ActionState.ACTIVE, transitionMapForActive);
 
-    actionStateTransitionManager.addTransition(ActionDTO.ActionState.COMPLETED, ActionEvent.REQUEST_CANCELLED,
+    Map<ActionEvent, ActionDTO.ActionState> transitionMapForCompleted = new HashMap<>();
+    transitionMapForCompleted.put(ActionEvent.REQUEST_CANCELLED,
         ActionDTO.ActionState.COMPLETED);
+    transitions.put(ActionDTO.ActionState.COMPLETED, transitionMapForCompleted);
 
-    actionStateTransitionManager.addTransition(ActionDTO.ActionState.CANCEL_SUBMITTED, ActionEvent.REQUEST_CANCELLED,
+    Map<ActionEvent, ActionDTO.ActionState> transitionMapForCancelSubmitted = new HashMap<>();
+    transitionMapForCancelSubmitted.put(ActionEvent.REQUEST_CANCELLED,
         ActionDTO.ActionState.CANCEL_SUBMITTED);
-    actionStateTransitionManager.addTransition(ActionDTO.ActionState.CANCEL_SUBMITTED, ActionEvent.REQUEST_FAILED,
+    transitionMapForCancelSubmitted.put(ActionEvent.REQUEST_FAILED,
         ActionDTO.ActionState.CANCEL_SUBMITTED);
-    actionStateTransitionManager.addTransition(ActionDTO.ActionState.CANCEL_SUBMITTED, ActionEvent.REQUEST_ACCEPTED,
+    transitionMapForCancelSubmitted.put(ActionEvent.REQUEST_ACCEPTED,
         ActionDTO.ActionState.CANCEL_SUBMITTED);
-    actionStateTransitionManager.addTransition(ActionDTO.ActionState.CANCEL_SUBMITTED, ActionEvent.REQUEST_COMPLETED,
+    transitionMapForCancelSubmitted.put(ActionEvent.REQUEST_COMPLETED,
         ActionDTO.ActionState.CANCEL_SUBMITTED);
-    actionStateTransitionManager.addTransition(ActionDTO.ActionState.CANCEL_SUBMITTED, ActionEvent.CANCELLATION_DISTRIBUTED,
+    transitionMapForCancelSubmitted.put(ActionEvent.CANCELLATION_DISTRIBUTED,
         ActionDTO.ActionState.CANCEL_PENDING);
+    transitions.put(ActionDTO.ActionState.CANCEL_SUBMITTED, transitionMapForCancelSubmitted);
 
-    actionStateTransitionManager.addTransition(ActionDTO.ActionState.CANCEL_PENDING, ActionEvent.REQUEST_CANCELLED,
+    Map<ActionEvent, ActionDTO.ActionState> transitionMapForCancelPending = new HashMap<>();
+    transitionMapForCancelPending.put(ActionEvent.REQUEST_CANCELLED,
         ActionDTO.ActionState.CANCEL_PENDING);
-    actionStateTransitionManager.addTransition(ActionDTO.ActionState.CANCEL_PENDING, ActionEvent.REQUEST_FAILED,
+    transitionMapForCancelPending.put(ActionEvent.REQUEST_FAILED,
         ActionDTO.ActionState.CANCEL_PENDING);
-    actionStateTransitionManager.addTransition(ActionDTO.ActionState.CANCEL_PENDING, ActionEvent.REQUEST_ACCEPTED,
+    transitionMapForCancelPending.put(ActionEvent.REQUEST_ACCEPTED,
         ActionDTO.ActionState.CANCEL_PENDING);
-    actionStateTransitionManager.addTransition(ActionDTO.ActionState.CANCEL_PENDING, ActionEvent.REQUEST_COMPLETED,
+    transitionMapForCancelPending.put(ActionEvent.REQUEST_COMPLETED,
         ActionDTO.ActionState.CANCEL_PENDING);
-    actionStateTransitionManager.addTransition(ActionDTO.ActionState.CANCEL_PENDING, ActionEvent.CANCELLATION_FAILED,
+    transitionMapForCancelPending.put(ActionEvent.CANCELLATION_FAILED,
         ActionDTO.ActionState.CANCEL_SUBMITTED);
-    actionStateTransitionManager.addTransition(ActionDTO.ActionState.CANCEL_PENDING, ActionEvent.CANCELLATION_ACCEPTED,
+    transitionMapForCancelPending.put(ActionEvent.CANCELLATION_ACCEPTED,
         ActionDTO.ActionState.CANCELLING);
-    actionStateTransitionManager.addTransition(ActionDTO.ActionState.CANCEL_PENDING, ActionEvent.CANCELLATION_COMPLETED,
+    transitionMapForCancelPending.put(ActionEvent.CANCELLATION_COMPLETED,
         ActionDTO.ActionState.CANCELLED);
+    transitions.put(ActionDTO.ActionState.CANCEL_PENDING, transitionMapForCancelPending);
 
-    actionStateTransitionManager.addTransition(ActionDTO.ActionState.CANCELLING, ActionEvent.REQUEST_CANCELLED,
+    Map<ActionEvent, ActionDTO.ActionState> transitionMapForCancelling = new HashMap<>();
+    transitionMapForCancelling.put(ActionEvent.REQUEST_CANCELLED,
         ActionDTO.ActionState.CANCELLING);
-    actionStateTransitionManager.addTransition(ActionDTO.ActionState.CANCELLING, ActionEvent.CANCELLATION_FAILED,
+    transitionMapForCancelling.put(ActionEvent.CANCELLATION_FAILED,
         ActionDTO.ActionState.CANCEL_SUBMITTED);
-    actionStateTransitionManager.addTransition(ActionDTO.ActionState.CANCELLING, ActionEvent.CANCELLATION_COMPLETED,
+    transitionMapForCancelling.put(ActionEvent.CANCELLATION_COMPLETED,
         ActionDTO.ActionState.CANCELLED);
+    transitions.put(ActionDTO.ActionState.CANCELLING, transitionMapForCancelling);
 
-    actionStateTransitionManager.addTransition(ActionDTO.ActionState.CANCELLED, ActionEvent.REQUEST_CANCELLED,
+    Map<ActionEvent, ActionDTO.ActionState> transitionMapForCancelled = new HashMap<>();
+    transitionMapForCancelled.put(ActionEvent.REQUEST_CANCELLED,
         ActionDTO.ActionState.CANCELLED);
+    transitions.put(ActionDTO.ActionState.CANCELLED, transitionMapForCancelled);
 
+    StateTransitionManager<ActionDTO.ActionState, ActionEvent> actionStateTransitionManager = new BasicStateTransitionManager<>(
+        transitions);
     managers.put(ACTION_ENTITY, actionStateTransitionManager);
 
   }
 
-  /* (non-Javadoc)
-   * @see uk.gov.ons.ctp.response.action.state.StateTransitionManagerFactory#getStateTransitionManager(java.lang.String)
+  /*
+   * (non-Javadoc)
+   * 
+   * @see uk.gov.ons.ctp.response.action.state.StateTransitionManagerFactory#
+   * getStateTransitionManager(java.lang.String)
    */
   @Override
   public StateTransitionManager<?, ?> getStateTransitionManager(String entity) {
