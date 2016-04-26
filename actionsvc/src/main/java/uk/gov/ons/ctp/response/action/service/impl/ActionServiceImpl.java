@@ -103,6 +103,7 @@ public final class ActionServiceImpl implements ActionService {
         existingAction.setSituation(newSituation);
       }
 
+      // TODO disallow external state change
       ActionDTO.ActionState newState = action.getState();
       log.debug("newState = {}", newState);
       if (newState != null) {
