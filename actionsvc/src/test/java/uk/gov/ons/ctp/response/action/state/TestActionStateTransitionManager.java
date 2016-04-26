@@ -39,6 +39,7 @@ public class TestActionStateTransitionManager {
     pendingTransitions.put(ActionEvent.REQUEST_FAILED, ActionDTO.ActionState.SUBMITTED);
     pendingTransitions.put(ActionEvent.REQUEST_CANCELLED, ActionDTO.ActionState.CANCEL_SUBMITTED);
     pendingTransitions.put(ActionEvent.REQUEST_ACCEPTED, ActionDTO.ActionState.ACTIVE);
+    pendingTransitions.put(ActionEvent.REQUEST_COMPLETED, ActionDTO.ActionState.COMPLETED);
     validTransitions.put(ActionDTO.ActionState.PENDING, pendingTransitions);
 
     Map<ActionEvent, ActionDTO.ActionState> activeTransitions = new HashMap<> ();
