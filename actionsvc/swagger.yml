@@ -120,7 +120,7 @@ paths:
             $ref: '#/definitions/Error'
     put:
       summary: Update Action
-      description: Updates the specified action with at least one or more of the optional priority, situation or state properties.
+      description: Updates the specified action with the optional priority and/or situation properties.
       consumes:
         - application/json
       parameters:
@@ -562,18 +562,6 @@ definitions:
       situation:
         description: Action status as recorded by the remote handler service
         type: string
-      state:
-        description: Action state
-        type: string
-        default: SUBMITTED
-        enum:
-          - SUBMITTED
-          - PENDING
-          - ACTIVE
-          - COMPLETED
-          - CANCELSUBMITTED
-          - CANCELLED
-          - FAILED
   ActionPlan:
     type: object
     required:
