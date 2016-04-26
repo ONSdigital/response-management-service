@@ -516,8 +516,10 @@ definitions:
           - ACTIVE
           - COMPLETED
           - CANCELSUBMITTED
+          - CANCELPENDING
+          - CANCELLING
           - CANCELLED
-          - FAILED
+          - ABORTED
       createdDateTime:
         description: Action creation date/time
         type: string
