@@ -11,7 +11,7 @@ info:
     a day, when a certain action should be taken. action plans are applied to open cases to create
     actions. Once an action is created it is forwarded to an appropriate remote handler service to be
     completed.
-  version: 8.13.0
+  version: 8.16.0
 schemes:
   - http
 basePath: /
