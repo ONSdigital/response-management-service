@@ -20,6 +20,7 @@ digraph actionstates {
     submitted -> pending[fontname="helvetica", label="Request Distributed"]
     submitted -> aborted[fontname="helvetica", label="Request Cancelled"]
     pending -> active[fontname="helvetica", label="Request Accepted"]
+    pending -> completed[fontname="helvetica", label="Request Completed"]
     active -> completed[fontname="helvetica", label="Request Completed"]
     cancelsubmitted -> cancelpending[fontname="helvetica", label="Cancellation Distributed"]
     cancelpending -> cancelling[fontname="helvetica", label="Cancellation Accepted"]
