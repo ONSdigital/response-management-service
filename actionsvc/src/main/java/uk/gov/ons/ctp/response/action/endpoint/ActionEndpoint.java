@@ -143,7 +143,7 @@ public final class ActionEndpoint implements CTPEndpoint {
    */
   @PUT
   @Path("/case/{caseid}/cancel") 
-  public List<ActionDTO> cancelAction(@PathParam("caseid") final int caseId)
+  public List<ActionDTO> cancelActions(@PathParam("caseid") final int caseId)
       throws CTPException {
     log.debug("Cancelling Action with {}", caseId);
     List<Action> actions = actionService.cancelAction(caseId);

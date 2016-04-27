@@ -297,7 +297,7 @@ public final class ActionEndpointUnitTest extends CTPJerseyTest {
    * Test cancelling an Action.
    */
   @Test
-  public void cancelAction() {
+  public void cancelActions() {
     with("http://localhost:9998/actions/case/%s/cancel", ACTION_CASEID).put("")
         .assertResponseCodeIs(HttpStatus.OK)
         .assertIntegerListInBody("$..actionId", ACTIONID)
