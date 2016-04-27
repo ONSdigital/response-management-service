@@ -135,6 +135,24 @@ public final class ActionEndpoint implements CTPEndpoint {
   }
 
   /**
+   * PUT to cancel all the Actions for a specified caseId.
+   *
+   * @param caseId Case Id of the actions to cancel
+   * @return List<ActionDTO> Returns a list of cancelled Actions
+   * @throws CTPException if update operation fails
+   */
+  @PUT
+  @Path("/case/{caseid}/cancel") 
+  public List<ActionDTO> cancelAction(@PathParam("caseid") final int caseId)
+      throws CTPException {
+    log.debug("Cancelling Action with {}", caseId);
+    List<Action> actions = actionService.cancelAction(caseId);
+    
+    List<ActionDTO> results = mapperFacade.mapAsList(actions, ActionDTO.class);
+    return CollectionUtils.isEmpty(results) ? null : results;
+  }
+  
+  /**
    * GET Actions for the specified case Id.
    *
    * @param caseId caseID to which Actions apply
