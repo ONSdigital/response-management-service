@@ -9,8 +9,6 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -34,17 +32,20 @@ public class Action implements Serializable {
 
   private static final long serialVersionUID = 8539984354009320104L;
 
-  // NOTE: the names need to match those in the outbound xsd
+  /**
+   * Priority of action
+   * NOTE: the names need to match those in the outbound xsd
+   */
   public enum ActionPriority {
-    HIGHEST (1, "highest"),
-    HIGHER (2, "higher"),
-    MEDIUM (3, "medium"),
-    LOWER (4, "lower"),
-    LOWEST (5, "lowest");
+    HIGHEST(1, "highest"),
+    HIGHER(2, "higher"),
+    MEDIUM(3, "medium"),
+    LOWER(4, "lower"),
+    LOWEST(5, "lowest");
 
     private final int level;   // numeric level
     private final String name; // the level name
-    
+
     private static Map<Integer, ActionPriority> map = new HashMap<Integer, ActionPriority>();
 
     static {
@@ -53,25 +54,43 @@ public class Action implements Serializable {
         }
     }
 
+    /**
+     * return the enum for an integer level arg
+     * @param priorityLevel the int value
+     * @return the enum
+     */
     public static ActionPriority valueOf(int priorityLevel) {
         return map.get(priorityLevel);
     }
-    
-    ActionPriority (int value, String label) {
+
+    /**
+     * Create an instance of the enum
+     * @param value priority as integere
+     * @param label verbage
+     */
+    ActionPriority(int value, String label) {
       this.level = value;
       this.name = label;
     }
-    
+
+    /**
+     * Getter
+     * @return gotten
+     */
     public int getLevel() {
       return this.level;
     }
+
+    /**
+     * Getter
+     * @return gotten
+     */
     public String getName() {
       return this.name;
     }
   }
-  
+
   @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "actionid")
   private Integer actionId;
 
@@ -89,9 +108,9 @@ public class Action implements Serializable {
 
   @Column(name = "manuallycreated")
   private Boolean manuallyCreated;
-  
+
   @ManyToOne
-  @JoinColumn(name="actiontypeid")
+  @JoinColumn(name = "actiontypeid")
   private ActionType actionType;
 
   private Integer priority;

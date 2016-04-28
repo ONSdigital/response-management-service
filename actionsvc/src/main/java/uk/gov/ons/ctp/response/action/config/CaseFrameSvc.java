@@ -12,4 +12,5 @@ public class CaseFrameSvc {
   private String caseEventsByCaseGetPath;
   private String caseEventsByCasePostPath;
   private String addressByUprnGetPath;
+  private String caseByStatusAndActionPlanPath;
 }

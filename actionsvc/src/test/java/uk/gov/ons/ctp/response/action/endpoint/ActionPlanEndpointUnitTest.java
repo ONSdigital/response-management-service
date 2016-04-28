@@ -67,7 +67,6 @@ public class ActionPlanEndpointUnitTest extends CTPJerseyTest {
       .assertResponseCodeIs(HttpStatus.NOT_FOUND)
       .assertFaultIs(CTPException.Fault.RESOURCE_NOT_FOUND)
       .assertTimestampExists()
-      .assertMessageEquals("ActionPlan not found for id %s", NON_EXISTING_ACTIONPLANID)
       .andClose();
   }
 
@@ -113,7 +112,6 @@ public class ActionPlanEndpointUnitTest extends CTPJerseyTest {
         .assertResponseCodeIs(HttpStatus.NOT_FOUND)
         .assertFaultIs(CTPException.Fault.RESOURCE_NOT_FOUND)
         .assertTimestampExists()
-        .assertMessageEquals("ActionPlan not found for id %s", NON_EXISTING_ACTIONPLANID)
         .andClose();
   }
 

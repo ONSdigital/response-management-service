@@ -38,7 +38,7 @@ public class ActionPlanJobEndpointUnitTest extends CTPJerseyTest {
         .assertIntegerInBody("$.actionPlanJobId", ACTIONPLANJOBID)
         .assertIntegerInBody("$.actionPlanId", ACTIONPLANJOBID_ACTIONPLANID)
         .assertStringInBody("$.createdBy", ACTIONPLANJOBID_CREATED_BY)
-        .assertStringInBody("$.state", ACTIONPLANJOBID_STATE)
+        .assertStringInBody("$.state", ACTIONPLANJOBID_STATE.name())
         .assertStringInBody("$.createdDatetime", CREATED_DATE_TIME)
         .assertStringInBody("$.updatedDateTime", UPDATED_DATE_TIME)
         .andClose();
@@ -50,7 +50,6 @@ public class ActionPlanJobEndpointUnitTest extends CTPJerseyTest {
         .assertResponseCodeIs(HttpStatus.NOT_FOUND)
         .assertFaultIs(CTPException.Fault.RESOURCE_NOT_FOUND)
         .assertTimestampExists()
-        .assertMessageEquals("ActionPlanJob not found for id %s", NON_EXISTING_ACTIONPLANJOBID)
         .andClose();
   }
 
@@ -102,7 +101,7 @@ public class ActionPlanJobEndpointUnitTest extends CTPJerseyTest {
         .assertIntegerInBody("$.actionPlanJobId", ACTIONPLANJOBID)
         .assertIntegerInBody("$.actionPlanId", ACTIONPLANJOBID_ACTIONPLANID)
         .assertStringInBody("$.createdBy", ACTIONPLANJOBID_CREATED_BY)
-        .assertStringInBody("$.state", ACTIONPLANJOBID_STATE)
+        .assertStringInBody("$.state", ACTIONPLANJOBID_STATE.name())
         .assertStringInBody("$.createdDatetime", CREATED_DATE_TIME)
         .assertStringInBody("$.updatedDateTime", UPDATED_DATE_TIME)
         .andClose();

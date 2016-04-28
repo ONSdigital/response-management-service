@@ -24,10 +24,9 @@ public interface ActionPlanJobService extends CTPService {
   List<ActionPlanJob> findActionPlanJobsForActionPlan(Integer actionPlanId);
 
   /**
-   * Create an action plan job given an action plan id and an actionPlanJob
-   * @param actionPlanId This is the action plan id
+   * Create an action plan job and execute it
    * @param actionPlanJob This is the actionPlanJob for the action plan job to be created
    * @return ActionPlanJob This returns the newly created action plan job.
    */
-  ActionPlanJob executeActionPlan(Integer actionPlanId, ActionPlanJob actionPlanJob);
+  ActionPlanJob createAndExecuteActionPlanJob(ActionPlanJob actionPlanJob);
 }

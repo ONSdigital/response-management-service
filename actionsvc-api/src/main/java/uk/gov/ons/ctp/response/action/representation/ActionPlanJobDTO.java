@@ -16,7 +16,12 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PUBLIC)
-public class ActionPlanJobDTO {
+public class ActionPlanJobDTO {  
+
+  public enum ActionPlanJobState {
+    SUBMITTED, STARTED, COMPLETED, FAILED;
+  }
+
   private Integer actionPlanJobId;
   private Integer actionPlanId;
   @NotNull @Size(min=2, max=20)

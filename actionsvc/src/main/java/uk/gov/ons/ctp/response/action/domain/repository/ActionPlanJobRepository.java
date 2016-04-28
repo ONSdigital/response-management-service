@@ -11,5 +11,10 @@ import java.util.List;
  */
 @Repository
 public interface ActionPlanJobRepository extends JpaRepository<ActionPlanJob, Integer> {
+  /**
+   * Gte the actionplanjobs for an action plan by id
+   * @param actionPlanId the plan id
+   * @return the jobs
+   */
   List<ActionPlanJob> findByActionPlanId(Integer actionPlanId);
 }

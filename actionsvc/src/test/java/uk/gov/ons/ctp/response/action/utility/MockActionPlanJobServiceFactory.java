@@ -1,17 +1,19 @@
 package uk.gov.ons.ctp.response.action.utility;
 
-import org.glassfish.hk2.api.Factory;
-import org.mockito.Mockito;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
-import uk.gov.ons.ctp.response.action.domain.model.ActionPlanJob;
-import uk.gov.ons.ctp.response.action.service.ActionPlanJobService;
+import static org.mockito.Matchers.any;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.mockito.Matchers.any;
+import org.glassfish.hk2.api.Factory;
+import org.mockito.Mockito;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
+
+import uk.gov.ons.ctp.response.action.domain.model.ActionPlanJob;
+import uk.gov.ons.ctp.response.action.representation.ActionPlanJobDTO;
+import uk.gov.ons.ctp.response.action.service.ActionPlanJobService;
 
 /**
  * Created by philippe.brossier on 3/15/16.
@@ -20,7 +22,7 @@ public class MockActionPlanJobServiceFactory implements Factory<ActionPlanJobSer
   public static final Integer ACTIONPLANJOBID = 1;
   public static final Integer ACTIONPLANJOBID_ACTIONPLANID = 1;
   public static final String ACTIONPLANJOBID_CREATED_BY = "theTester";
-  public static final String ACTIONPLANJOBID_STATE = "theState";
+  public static final ActionPlanJobDTO.ActionPlanJobState ACTIONPLANJOBID_STATE = ActionPlanJobDTO.ActionPlanJobState.SUBMITTED;
   private static final Timestamp ACTIONPLANJOBID_CREATEDDATE_TIMESTAMP =
       Timestamp.valueOf("2016-03-09 11:15:48.023286");
   private static final Timestamp ACTIONPLANJOBID_UPDATED_DATE_TIMESTAMP =
@@ -79,7 +81,7 @@ public class MockActionPlanJobServiceFactory implements Factory<ActionPlanJobSer
       }
     });
 
-    Mockito.when(mockedService.executeActionPlan(any(Integer.class), any(ActionPlanJob.class))).thenAnswer(
+    Mockito.when(mockedService.createAndExecuteActionPlanJob(any(ActionPlanJob.class))).thenAnswer(
         new Answer<ActionPlanJob>() {
           public ActionPlanJob answer(InvocationOnMock invocation) throws Throwable {
             return new ActionPlanJob(ACTIONPLANJOBID, ACTIONPLANJOBID_ACTIONPLANID, ACTIONPLANJOBID_CREATED_BY,
