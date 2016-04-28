@@ -1,6 +1,0 @@
-<feed:actionFeedback xmlns:feed="http://ons.gov.uk/ctp/response/action/message/feedback">
-  <actionId>201</actionId>
-  <situation>string</situation>
-  <outcome>CANCELLATION_FAILED</outcome>
-  <notes>string</notes>
-</feed:actionFeedback>

@@ -54,7 +54,7 @@ public class ActionSvcApplication {
   @Bean
   public StateTransitionManager<ActionDTO.ActionState,ActionDTO.ActionEvent> actionSvcStateTransitionManager() {
     return actionSvcStateTransitionManagerFactory.getStateTransitionManager(
-            ActionSvcStateTransitionManagerFactory.ACTION_ENTITY);  
+            ActionSvcStateTransitionManagerFactory.ACTION_ENTITY);
   }
   
   /**
