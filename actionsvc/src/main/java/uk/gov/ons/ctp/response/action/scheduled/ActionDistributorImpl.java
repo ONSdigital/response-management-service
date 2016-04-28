@@ -74,7 +74,7 @@ public class ActionDistributorImpl {
   public static final long PROD_DELAY_INTER = 30L * 60L * 1000L;
 
   @Inject
-  private StateTransitionManager<ActionState, uk.gov.ons.ctp.response.action.state.ActionEvent>
+  private StateTransitionManager<ActionState, ActionDTO.ActionEvent>
     actionSvcStateTransitionManager;
 
   @Inject
@@ -198,7 +198,7 @@ public class ActionDistributorImpl {
     try {
       ActionDTO.ActionState nextState = actionSvcStateTransitionManager.transition(
           action.getState(),
-          uk.gov.ons.ctp.response.action.state.ActionEvent.REQUEST_DISTRIBUTED);
+          ActionDTO.ActionEvent.REQUEST_DISTRIBUTED);
       action.setState(nextState);
       action.setUpdatedDateTime(new Timestamp(System.currentTimeMillis()));
       actionRepo.saveAndFlush(action);

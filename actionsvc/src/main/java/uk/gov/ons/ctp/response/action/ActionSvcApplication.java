@@ -24,7 +24,6 @@ import uk.gov.ons.ctp.response.action.endpoint.ActionPlanJobEndpoint;
 import uk.gov.ons.ctp.response.action.representation.ActionDTO;
 import uk.gov.ons.ctp.response.action.representation.ActionPlanDTO;
 import uk.gov.ons.ctp.response.action.representation.ActionPlanJobDTO;
-import uk.gov.ons.ctp.response.action.state.ActionEvent;
 import uk.gov.ons.ctp.response.action.state.ActionSvcStateTransitionManagerFactory;
 
 /**
@@ -52,7 +51,7 @@ public class ActionSvcApplication {
 
 
   @Bean
-  public StateTransitionManager<ActionDTO.ActionState,ActionEvent> actionSvcStateTransitionManager() {
+  public StateTransitionManager<ActionDTO.ActionState,ActionDTO.ActionEvent> actionSvcStateTransitionManager() {
     return actionSvcStateTransitionManagerFactory.getStateTransitionManager(ActionSvcStateTransitionManagerFactory.ACTION_ENTITY);  
   }
   

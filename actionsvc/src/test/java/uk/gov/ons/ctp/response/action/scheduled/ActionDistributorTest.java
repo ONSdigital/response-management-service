@@ -34,8 +34,8 @@ import uk.gov.ons.ctp.response.action.domain.repository.ActionRepository;
 import uk.gov.ons.ctp.response.action.domain.repository.ActionTypeRepository;
 import uk.gov.ons.ctp.response.action.message.InstructionPublisher;
 import uk.gov.ons.ctp.response.action.message.instruction.ActionRequest;
+import uk.gov.ons.ctp.response.action.representation.ActionDTO;
 import uk.gov.ons.ctp.response.action.representation.ActionDTO.ActionState;
-import uk.gov.ons.ctp.response.action.state.ActionEvent;
 import uk.gov.ons.ctp.response.caseframe.representation.AddressDTO;
 import uk.gov.ons.ctp.response.caseframe.representation.CaseDTO;
 import uk.gov.ons.ctp.response.caseframe.representation.CaseEventDTO;
@@ -51,7 +51,7 @@ public class ActionDistributorTest {
   InstructionPublisher instructionPublisher;
 
   @Mock
-  StateTransitionManager<ActionState, uk.gov.ons.ctp.response.action.state.ActionEvent> actionSvcStateTransitionManager;
+  StateTransitionManager<ActionState, uk.gov.ons.ctp.response.action.representation.ActionDTO.ActionEvent> actionSvcStateTransitionManager;
 
   @Mock
   MapperFacade mapperFacade;
@@ -154,7 +154,7 @@ public class ActionDistributorTest {
     List<CaseEventDTO> caseEventDTOsPost = FixtureHelper.loadClassFixtures(CaseEventDTO[].class, "post");
 
     // wire up mock responses
-    Mockito.when(actionSvcStateTransitionManager.transition(ActionState.SUBMITTED, ActionEvent.REQUEST_DISTRIBUTED)).thenReturn(ActionState.PENDING);
+    Mockito.when(actionSvcStateTransitionManager.transition(ActionState.SUBMITTED, ActionDTO.ActionEvent.REQUEST_DISTRIBUTED)).thenReturn(ActionState.PENDING);
     Mockito.when(appConfig.getCaseFrameSvc()).thenReturn(caseFrameSvcConfig);
     Mockito.when(actionTypeRepo.findAll()).thenReturn(actionTypes);
     Mockito
@@ -243,7 +243,7 @@ public class ActionDistributorTest {
     List<CaseEventDTO> caseEventDTOsPost = FixtureHelper.loadClassFixtures(CaseEventDTO[].class, "post");
 
     // wire up mock responses
-    Mockito.when(actionSvcStateTransitionManager.transition(ActionState.SUBMITTED, ActionEvent.REQUEST_DISTRIBUTED)).thenReturn(ActionState.PENDING);
+    Mockito.when(actionSvcStateTransitionManager.transition(ActionState.SUBMITTED, ActionDTO.ActionEvent.REQUEST_DISTRIBUTED)).thenReturn(ActionState.PENDING);
 
     Mockito.when(appConfig.getCaseFrameSvc()).thenReturn(caseFrameSvcConfig);
     Mockito.when(actionTypeRepo.findAll()).thenReturn(actionTypes);

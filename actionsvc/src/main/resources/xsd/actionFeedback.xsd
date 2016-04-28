@@ -16,10 +16,22 @@
           </xs:restriction>
         </xs:simpleType>
       </xs:element>
-      <xs:element name="isComplete" type="xs:boolean"/>
-      <xs:element name="isFailed" type="xs:boolean"/>
+      <xs:element name="outcome" type="Outcome"/>
       <xs:element name="notes" type="xs:string"/>
     </xs:sequence>
   </xs:complexType>
 
+  <xs:simpleType name="Outcome">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="REQUEST_DISTRIBUTED" />
+      <xs:enumeration value="REQUEST_FAILED" />
+      <xs:enumeration value="REQUEST_ACCEPTED" />
+      <xs:enumeration value="REQUEST_COMPLETED" />
+      <xs:enumeration value="REQUEST_CANCELLED" />
+      <xs:enumeration value="CANCELLATION_DISTRIBUTED" />
+      <xs:enumeration value="CANCELLATION_FAILED" />
+      <xs:enumeration value="CANCELLATION_ACCEPTED" />
+      <xs:enumeration value="CANCELLATION_COMPLETED" />
+    </xs:restriction>
+  </xs:simpleType>
 </xs:schema>
