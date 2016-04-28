@@ -50,7 +50,6 @@ public class ActionPlanJobEndpointUnitTest extends CTPJerseyTest {
         .assertResponseCodeIs(HttpStatus.NOT_FOUND)
         .assertFaultIs(CTPException.Fault.RESOURCE_NOT_FOUND)
         .assertTimestampExists()
-        .assertMessageEquals("ActionPlanJob not found for id %s", NON_EXISTING_ACTIONPLANJOBID)
         .andClose();
   }
 
