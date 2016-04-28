@@ -83,7 +83,7 @@ public final class ActionServiceImpl implements ActionService {
       while (itr.hasNext()) {
         Action action = itr.next();
         ActionDTO.ActionState nextState = actionSvcStateTransitionManager.transition(action.getState(),
-            uk.gov.ons.ctp.response.action.representation.ActionDTO.ActionEvent.CANCELLATION_COMPLETED);
+            uk.gov.ons.ctp.response.action.representation.ActionDTO.ActionEvent.REQUEST_COMPLETED);
         action.setState(nextState);
         action.setUpdatedDateTime(new Timestamp(System.currentTimeMillis()));
         actionRepo.saveAndFlush(action);
