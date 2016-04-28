@@ -1,19 +1,26 @@
 package uk.gov.ons.ctp.response.action.endpoint;
 
+import java.util.List;
+
+import javax.inject.Inject;
+import javax.validation.Valid;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
+
+import org.springframework.util.CollectionUtils;
+
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
-import org.springframework.util.CollectionUtils;
 import uk.gov.ons.ctp.common.endpoint.CTPEndpoint;
 import uk.gov.ons.ctp.common.error.CTPException;
 import uk.gov.ons.ctp.response.action.domain.model.ActionPlanJob;
 import uk.gov.ons.ctp.response.action.representation.ActionPlanJobDTO;
 import uk.gov.ons.ctp.response.action.service.ActionPlanJobService;
-
-import javax.inject.Inject;
-import javax.validation.Valid;
-import javax.ws.rs.*;
-import javax.ws.rs.core.MediaType;
-import java.util.List;
 
 /**
  * The REST endpoint controller for ActionPlanJobs.
@@ -44,7 +51,7 @@ public class ActionPlanJobEndpoint implements CTPEndpoint {
     log.debug("Entering findActionPlanJobById with {}", actionPlanJobId);
     ActionPlanJob actionPlanJob = actionPlanJobService.findActionPlanJob(actionPlanJobId);
     if (actionPlanJob == null) {
-      throw new CTPException(CTPException.Fault.RESOURCE_NOT_FOUND, "ActionPlanJob not found for id %s", actionPlanJobId);
+      throw new CTPException(CTPException.Fault.RESOURCE_NOT_FOUND, "ActionPlanJob not found %d", actionPlanJobId);
     }
     return mapperFacade.map(actionPlanJob, ActionPlanJobDTO.class);
   }
@@ -53,7 +60,7 @@ public class ActionPlanJobEndpoint implements CTPEndpoint {
    * Returns all action plan jobs for the given action plan id.
    * @param actionPlanId the given action plan id.
    * @return Returns all action plan jobs for the given action plan id.
-   * @throws CTPException
+   * @throws CTPException summats went wrong
    */
   @GET
   @Path("/{actionplanid}/jobs")
@@ -68,21 +75,23 @@ public class ActionPlanJobEndpoint implements CTPEndpoint {
   /**
    * To create a new Action Plan Job having received an action plan id and some json
    * @param actionPlanId the given action plan id.
-   * @param requestObject the ActionPlanJobDTO representation of the provided json
+   * @param actionPlanJobDTO the ActionPlanJobDTO representation of the provided json
    * @return the created ActionPlanJobDTO
-   * @throws CTPException
+   * @throws CTPException summats went wrong
    */
   @POST
   @Path("/{actionplanid}/jobs")
   public final ActionPlanJobDTO executeActionPlan(@PathParam("actionplanid") final Integer actionPlanId,
-      final @Valid ActionPlanJobDTO requestObject) throws CTPException {
+      final @Valid ActionPlanJobDTO actionPlanJobDTO) throws CTPException {
     log.debug("Entering executeActionPlan with {}", actionPlanId);
 
-    if (requestObject == null) {
+    if (actionPlanJobDTO == null) {
       throw new CTPException(CTPException.Fault.VALIDATION_FAILED, "Provided json is incorrect.");
     }
 
-    ActionPlanJob actionPlanJob = actionPlanJobService.executeActionPlan(actionPlanId, mapperFacade.map(requestObject, ActionPlanJob.class));
+    ActionPlanJob job = mapperFacade.map(actionPlanJobDTO, ActionPlanJob.class);
+    job.setActionPlanId(actionPlanId);
+    ActionPlanJob actionPlanJob = actionPlanJobService.createAndExecuteActionPlanJob(job);
     if (actionPlanJob == null) {
       throw new CTPException(CTPException.Fault.RESOURCE_NOT_FOUND, "ActionPlan not found for id %s", actionPlanId);
     }

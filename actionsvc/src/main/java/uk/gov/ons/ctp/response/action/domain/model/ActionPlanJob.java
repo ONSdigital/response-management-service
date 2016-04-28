@@ -1,12 +1,22 @@
 package uk.gov.ons.ctp.response.action.domain.model;
 
+import java.sql.Timestamp;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
+
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import javax.persistence.*;
-import java.sql.Timestamp;
+import uk.gov.ons.ctp.response.action.representation.ActionPlanJobDTO;
 
 /**
  * Domain model object.
@@ -19,8 +29,8 @@ import java.sql.Timestamp;
 public class ActionPlanJob {
 
   @Id
-  @GeneratedValue(strategy=GenerationType.AUTO, generator="actionplanjobseq_gen")
-  @SequenceGenerator(name="actionplanjobseq_gen", sequenceName="action.actionplanjobseq")
+  @GeneratedValue(strategy = GenerationType.AUTO, generator = "actionplanjobseq_gen")
+  @SequenceGenerator(name = "actionplanjobseq_gen", sequenceName = "action.actionplanjobseq")
   @Column(name = "actionplanjobid")
   private Integer actionPlanJobId;
 
@@ -30,7 +40,8 @@ public class ActionPlanJob {
   @Column(name = "createdby")
   private String createdBy;
 
-  private String state;
+  @Enumerated(EnumType.STRING)
+  private ActionPlanJobDTO.ActionPlanJobState state;
 
   @Column(name = "createddatetime")
   private Timestamp createdDatetime;

@@ -12,11 +12,8 @@ import uk.gov.ons.ctp.response.action.message.feedback.ActionFeedback;
  */
 @MessageEndpoint
 public class FeedbackReceiverImpl implements FeedbackReceiver {
-  /* (non-Javadoc)
-   * @see uk.gov.ons.ctp.response.action.message.impl.FeedbackReceiver#acceptFeedback(uk.gov.ons.ctp.response.action.message.feedback.ActionFeedback)
-   */
   @Override
-  @ServiceActivator(inputChannel="feedbackTransformed")
+  @ServiceActivator(inputChannel = "feedbackTransformed")
   public void acceptFeedback(ActionFeedback feedback) {
     System.out.println("We have feedback with situation " + feedback.getSituation());
   }

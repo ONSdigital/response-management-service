@@ -101,18 +101,19 @@ public class ActionSvcStateTransitionManagerFactory implements StateTransitionMa
         ActionDTO.ActionState.CANCELLED);
     transitions.put(ActionDTO.ActionState.CANCELLED, transitionMapForCancelled);
 
-    StateTransitionManager<ActionDTO.ActionState, ActionEvent> actionStateTransitionManager = new BasicStateTransitionManager<>(
-        transitions);
+    StateTransitionManager<ActionDTO.ActionState, ActionEvent> actionStateTransitionManager =
+        new BasicStateTransitionManager<>(transitions);
+
     managers.put(ACTION_ENTITY, actionStateTransitionManager);
 
   }
 
   /*
    * (non-Javadoc)
-   * 
    * @see uk.gov.ons.ctp.response.action.state.StateTransitionManagerFactory#
    * getStateTransitionManager(java.lang.String)
    */
+  @SuppressWarnings("unchecked")
   @Override
   public StateTransitionManager<?, ?> getStateTransitionManager(String entity) {
     return managers.get(entity);

@@ -1,0 +1,21 @@
+databaseChangeLog:
+
+
+  - changeSet:
+      id: 8.16.0-1
+      author: whilep1
+      changes:
+        - sqlFile:
+            comment: create message log function.sql
+            path: create-message-log-function.sql
+            splitStatements: false
+            relativeToChangelogFile: true
+
+
+
+
+
+
+
+
+

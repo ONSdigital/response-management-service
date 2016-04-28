@@ -74,7 +74,8 @@ public class ActionDistributorImpl {
   public static final long PROD_DELAY_INTER = 30L * 60L * 1000L;
 
   @Inject
-  private StateTransitionManager<ActionState, uk.gov.ons.ctp.response.action.state.ActionEvent> actionSvcStateTransitionManager;
+  private StateTransitionManager<ActionState, uk.gov.ons.ctp.response.action.state.ActionEvent>
+    actionSvcStateTransitionManager;
 
   @Inject
   private RestClient caseFrameClient;
@@ -107,11 +108,8 @@ public class ActionDistributorImpl {
     this.transactionTemplate = new TransactionTemplate(transactionManager);
   }
 
-  /*
-   * (non-Javadoc)
-   *
-   * @see
-   * uk.gov.ons.ctp.response.action.scheduled.impl.ActionDistributor#wakeUp()
+  /**
+   * wake up on schedule and check for submitted actions, enrich and distribute them to spring integration channels
    */
   @Scheduled(initialDelay = DEV_DELAY_INITIAL, fixedDelay = DEV_DELAY_INTER)
   public final void wakeUp() {
@@ -198,7 +196,9 @@ public class ActionDistributorImpl {
    */
   private void updateActionStatus(final Action action) {
     try {
-      ActionDTO.ActionState nextState = actionSvcStateTransitionManager.transition(action.getState(), uk.gov.ons.ctp.response.action.state.ActionEvent.REQUEST_DISTRIBUTED);
+      ActionDTO.ActionState nextState = actionSvcStateTransitionManager.transition(
+          action.getState(),
+          uk.gov.ons.ctp.response.action.state.ActionEvent.REQUEST_DISTRIBUTED);
       action.setState(nextState);
       action.setUpdatedDateTime(new Timestamp(System.currentTimeMillis()));
       actionRepo.saveAndFlush(action);
@@ -309,7 +309,7 @@ public class ActionDistributorImpl {
         appConfig.getCaseFrameSvc().getQuestionnairesByCaseGetPath(),
         QuestionnaireDTO[].class, caseId);
     if (questionnaireDTOs.size() == 0) {
-      throw new RuntimeException ("Failed to find questionnaire for case " + caseId); 
+      throw new RuntimeException("Failed to find questionnaire for case " + caseId);
     }
     return questionnaireDTOs.get(0);
   }
