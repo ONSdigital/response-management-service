@@ -31,3 +31,5 @@ curl  -H "Accept: application/json" -H "Content-Type: application/json" http://l
 
 curl  -H "Accept: application/json" -H "Content-Type: application/json" http://localhost:8151/actionplans/1/jobs -v -X POST -d "{\"created\":\"philippeb\"}"
 400 {"error":{"code":"VALIDATION_FAILED","timestamp":"20160316151946434","message":"Provided json is incorrect."}}
+
+

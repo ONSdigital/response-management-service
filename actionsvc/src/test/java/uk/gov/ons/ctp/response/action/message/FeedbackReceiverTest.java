@@ -5,6 +5,8 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.io.File;
+import java.io.IOException;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.io.FileUtils;
 import org.junit.After;
@@ -26,58 +28,58 @@ import uk.gov.ons.ctp.response.action.utility.ActionMessageListener;
 
 @ContextConfiguration(locations = { "/FeedbackServiceTest-context.xml" })
 @RunWith(SpringJUnit4ClassRunner.class)
-public class FeedbackServiceTest {
-
-	@Before
-	public void setUp() throws Exception {
-	}
-
-	@After
-	public void tearDown() throws Exception {
-	}
+public class FeedbackReceiverTest {
 
 	@Autowired
 	MessageChannel feedbackXml;
 
 	@Autowired
 	@Qualifier("feedbackUnmarshaller")
-	Jaxb2Marshaller feedbackMarshaller;
+	Jaxb2Marshaller feedbackUnmarshaller;
 
-	@Autowired
-	QueueChannel feedbackXmlInvalid;
+//	@Autowired
+//	FeedbackReceiver feedbackService;
 
-	@Autowired
-	FeedbackReceiver feedbackService;
-	
-	@Test
-	public void testSendactiveMQMessage() {
-		try {
+	private static final String INVALID_ACTION_FEEDBACK_LOG_DIRECTORY_NAME = "/var/log/ctp/responsemanagement/actionsvc/feedback";
+	private static final String PACKAGE_ACTION_FEEDBACK = "uk.gov.ons.ctp.response.action.message.feedback.ActionFeedback";
 
-			String testMessage = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
-					+ "<p:actionFeedback xmlns:p=\"http://ons.gov.uk/ctp/response/action/message/feedback\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"http://ons.gov.uk/ctp/response/action/message/feedback inboundMessage.xsd \">"
-					+ "<actionId>1</actionId>" + "<situation>situation</situation>" + "<isComplete>true</isComplete>"
-					+ "<isFailed>true</isFailed>" + "<notes>notes</notes>" + "</p:actionFeedback>";
-
-			feedbackXml.send(MessageBuilder.withPayload(testMessage).build());
-
-			String jaxbContext = feedbackMarshaller.getJaxbContext().toString();
-			assertTrue("Marshaller JAXB context does not contain reference to ActionFeedback",
-					jaxbContext.contains("uk.gov.ons.ctp.response.action.message.feedback.ActionFeedback"));
-
-			// expect FeedbackService.acceptFeedback() to have been implemented
-
-		} catch (Exception ex) {
-			fail("testSendctiveMQMessage has failed " + ex.getMessage());
+	@Before
+	public void setUpAndInitialVerification() throws Exception {
+		File logDir = new File(INVALID_ACTION_FEEDBACK_LOG_DIRECTORY_NAME);
+		if (!logDir.exists()) {
+			logDir.mkdir();
 		}
+		FileUtils.cleanDirectory(logDir);
+		File[] files = logDir.listFiles();
+		assertEquals(0, files.length);
 
+		String jaxbContext = feedbackUnmarshaller.getJaxbContext().toString();
+		assertTrue(jaxbContext.contains(PACKAGE_ACTION_FEEDBACK));
 	}
 
 	@Test
-	public void testSendactiveMQInvalidMessage() {
-		try {
+	public void testSendActiveMQValidMessage() {
+		String testMessage = "<feed:actionFeedback xmlns:feed=\"http://ons.gov.uk/ctp/response/action/message/feedback\">\n" +
+            "  <actionId>201</actionId>\n" +
+            "  <situation>string</situation>\n" +
+            "  <outcome>CANCELLATION_FAILED</outcome>\n" +
+            "  <notes>string</notes>\n" +
+            "</feed:actionFeedback>";
+		feedbackXml.send(MessageBuilder.withPayload(testMessage).build());
 
-			FileUtils.cleanDirectory(new File("/var/log/ctp/responsemanagement/actionsvc/feedback"));
-		    
+		File logDir = new File(INVALID_ACTION_FEEDBACK_LOG_DIRECTORY_NAME);
+		File[] files = logDir.listFiles();
+		assertEquals(0, files.length);  // This validates the xml testMessage was deemed OK.
+
+		/**
+		 * The message above is picked up by FeedbackReceiverImpl. This can be verified putting a debug point at the
+		 * entrance of acceptFeedback.
+		 */
+		// TODO further assertions once acceptFeedback has been implemented
+	}
+
+	@Test
+	public void testSendActiveMQInvalidMessage() throws IOException {
 			String testMessage = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
 					+ "<p:actionFeedbackWrong xmlns:p=\"http://ons.gov.uk/ctp/response/action/message/feedback\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"http://ons.gov.uk/ctp/response/action/message/feedback inboundMessage.xsd \">"
 					+ "<actionId>1</actionId>" + "<situation>situation</situation>" + "<isComplete>true</isComplete>"
@@ -86,14 +88,8 @@ public class FeedbackServiceTest {
 			feedbackXml.send(MessageBuilder.withPayload(testMessage).build());
 			
 			// expect one file to be added to the log folder
-			File logDir = new File("/var/log/ctp/responsemanagement/actionsvc/feedback");
+			File logDir = new File(INVALID_ACTION_FEEDBACK_LOG_DIRECTORY_NAME);
 			File[] files = logDir.listFiles();
-			assertEquals("More of less than one file added to the log", files.length, 1);
-
-
-		} catch (Exception ex) {
-			fail("testSendactiveMQInvalidMessage has failed " + ex.getMessage());
-		}
-
+			assertEquals(1, files.length);
 	}
 }

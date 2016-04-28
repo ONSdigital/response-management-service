@@ -4,22 +4,17 @@
   xsi:schemaLocation="http://www.springframework.org/schema/beans   
   http://www.springframework.org/schema/beans/spring-beans-4.2.xsd">
 
-  <!-- The JMS broker -->
-
   <bean id="connectionFactory" class="org.springframework.jms.connection.CachingConnectionFactory">
     <property name="targetConnectionFactory">
       <bean class="org.apache.activemq.ActiveMQConnectionFactory">
-        <property name="brokerURL" value="tcp://localhost:53445" />
-        <property name="userName" value="smx" />
-        <property name="password" value="smx" />
+        <property name="brokerURL" value="vm://localhost?broker.persistent=false" />
 	  </bean>
     </property>
     <property name="sessionCacheSize" value="10"/>
   </bean>
 
-  <!-- The inbound message container config - the inbound queue is defined here -->
   <bean id="feedbackMessageListenerContainer"
-    class="org.springframework.jms.listener.DefaultMessageListenerContainer">
+        class="org.springframework.jms.listener.DefaultMessageListenerContainer">
     <property name="connectionFactory" ref="connectionFactory" />
     <property name="destinationName" value="feedbackQueue" />
     <property name="maxConcurrentConsumers" value="1" />
@@ -28,6 +23,5 @@
     <property name="recoveryInterval" value="60000" />
     <property name="autoStartup" value="true" />
   </bean>
-  
 </beans>
 
