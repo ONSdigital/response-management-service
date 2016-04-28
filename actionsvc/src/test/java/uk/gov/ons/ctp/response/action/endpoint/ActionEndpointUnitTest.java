@@ -20,6 +20,7 @@ import static uk.gov.ons.ctp.response.action.utility.MockActionServiceFactory.AC
 import static uk.gov.ons.ctp.response.action.utility.MockActionServiceFactory.NON_EXISTING_ID;
 import static uk.gov.ons.ctp.response.action.utility.MockActionServiceFactory.OUR_EXCEPTION_MESSAGE;
 import static uk.gov.ons.ctp.response.action.utility.MockActionServiceFactory.UNCHECKED_EXCEPTION;
+import static uk.gov.ons.ctp.response.action.utility.MockActionServiceFactory.ACTION3_ACTIONSTATE;
 
 import javax.ws.rs.core.Application;
 
@@ -61,6 +62,14 @@ public final class ActionEndpointUnitTest extends CTPJerseyTest {
       + "\"priority\": " + ACTION2_PRIORITY + ","
       + "\"state\": \"" + ACTION2_ACTIONSTATE + "\"}";
 
+  private static final String ACTION_VALIDJSON_CANCEL = "{\"caseId\": " + ACTION_CASEID + ","
+	      + "\"actionPlanId\": " + ACTION2_PLANID + ","
+	      + "\"actionRuleId\": " + ACTION2_RULEID + ","
+	      + "\"actionTypeName\": \"" + ACTION2_ACTIONTYPENAME + "\","
+	      + "\"createdBy\": \"" + ACTION_CREATEDBY + "\","
+	      + "\"priority\": " + ACTION2_PRIORITY + ","
+	      + "\"state\": \"" + ACTION3_ACTIONSTATE + "\"}";
+  
   @Override
   public Application configure() {
     return super.init(ActionEndpoint.class, ActionService.class, MockActionServiceFactory.class,
@@ -283,4 +292,25 @@ public final class ActionEndpointUnitTest extends CTPJerseyTest {
         .assertMessageEquals("Provided json fails validation.")
         .andClose();
   }
+  
+  /**
+   * Test cancelling an Action.
+   */
+  @Test
+  public void cancelActions() {
+    with("http://localhost:9998/actions/case/%s/cancel", ACTION_CASEID).put("")
+        .assertResponseCodeIs(HttpStatus.OK)
+        .assertIntegerListInBody("$..actionId", ACTIONID)
+        .assertIntegerListInBody("$..caseId", ACTION_CASEID)
+        .assertIntegerListInBody("$..actionPlanId", ACTION2_PLANID)
+        .assertIntegerListInBody("$..actionRuleId", ACTION2_RULEID)
+        .assertStringListInBody("$..actionTypeName", ACTION2_ACTIONTYPENAME)
+        .assertStringListInBody("$..createdBy", ACTION_CREATEDBY)
+        .assertIntegerListInBody("$..priority", ACTION2_PRIORITY)
+        .assertStringListInBody("$..situation", ACTION2_SITUATION)
+        .assertStringListInBody("$..state", ACTION3_ACTIONSTATE.toString())
+        .assertStringListInBody("$..createdDateTime", ACTION_CREATEDDATE_VALUE)
+        .andClose();
+  }
+  
 }

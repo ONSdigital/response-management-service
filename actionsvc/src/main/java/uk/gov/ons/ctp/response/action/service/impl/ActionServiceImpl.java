@@ -1,6 +1,8 @@
 package uk.gov.ons.ctp.response.action.service.impl;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -10,11 +12,14 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import lombok.extern.slf4j.Slf4j;
+import uk.gov.ons.ctp.common.state.StateTransitionException;
+import uk.gov.ons.ctp.common.state.StateTransitionManager;
 import uk.gov.ons.ctp.response.action.domain.model.Action;
 import uk.gov.ons.ctp.response.action.domain.model.ActionType;
 import uk.gov.ons.ctp.response.action.domain.repository.ActionRepository;
 import uk.gov.ons.ctp.response.action.domain.repository.ActionTypeRepository;
 import uk.gov.ons.ctp.response.action.representation.ActionDTO;
+import uk.gov.ons.ctp.response.action.representation.ActionDTO.ActionState;
 import uk.gov.ons.ctp.response.action.service.ActionService;
 
 /**
@@ -33,6 +38,9 @@ public final class ActionServiceImpl implements ActionService {
 
   @Inject
   private ActionTypeRepository actionTypeRepo;
+
+  @Inject
+  private StateTransitionManager<ActionState, uk.gov.ons.ctp.response.action.state.ActionEvent> actionSvcStateTransitionManager;
 
   @Override
   public List<Action> findActionsByTypeAndStateOrderedByCreatedDateTimeDescending(final String actionTypeName,
@@ -63,6 +71,28 @@ public final class ActionServiceImpl implements ActionService {
   public List<Action> findActionsByCaseId(final Integer caseId) {
     log.debug("Entering findActionsByCaseId with {}", caseId);
     return actionRepo.findByCaseIdOrderByCreatedDateTimeDesc(caseId);
+  }
+
+  @Transactional(propagation = Propagation.REQUIRED, readOnly = false, timeout = TRANSACTION_TIMEOUT)
+  @Override
+  public List<Action> cancelAction(final Integer caseId) {
+    log.debug("Entering cancelAction with {}", caseId);
+    List<Action> flushedActions = new ArrayList<Action>();
+    try {
+      Iterator<Action> itr = actionRepo.findByCaseIdOrderByCreatedDateTimeDesc(caseId).iterator();
+      while (itr.hasNext()) {
+        Action action = itr.next();
+        ActionDTO.ActionState nextState = actionSvcStateTransitionManager.transition(action.getState(),
+            uk.gov.ons.ctp.response.action.state.ActionEvent.CANCELLATION_COMPLETED);
+        action.setState(nextState);
+        action.setUpdatedDateTime(new Timestamp(System.currentTimeMillis()));
+        actionRepo.saveAndFlush(action);
+        flushedActions.add(action);
+      }
+    } catch (StateTransitionException ste) {
+      throw new RuntimeException(ste);
+    }
+    return flushedActions;
   }
 
   @Transactional(propagation = Propagation.REQUIRED, readOnly = false, timeout = TRANSACTION_TIMEOUT)
@@ -103,14 +133,6 @@ public final class ActionServiceImpl implements ActionService {
       if (newSituation != null) {
         needsUpdate = true;
         existingAction.setSituation(newSituation);
-      }
-
-      // TODO disallow external state change
-      ActionDTO.ActionState newState = action.getState();
-      log.debug("newState = {}", newState);
-      if (newState != null) {
-        needsUpdate = true;
-        existingAction.setState(newState);
       }
 
       if (needsUpdate) {

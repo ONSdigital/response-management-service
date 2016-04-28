@@ -55,14 +55,25 @@ public interface ActionService extends CTPService {
    */
   List<Action> findActionsByCaseId(Integer caseId);
 
-  /**
-   * Create an action.
-   *
-   * @param action Action to be created
-   *
-   * @return Action Returns created Action.
-   */
-  Action createAction(Action action);
+	/**
+	 * Cancel all the actions for a given caseId.
+	 *
+	 * @param caseId
+	 *            Integer caseId for all the Actions to be cancelled
+	 *
+	 * @return List<Action> Returns list of cancelled Actions.
+	 */
+	List<Action> cancelAction(Integer caseId);
+	
+	/**
+	 * Create an action.
+	 *
+	 * @param action
+	 *            Action to be created
+	 *
+	 * @return Action Returns created Action.
+	 */
+	Action createAction(Action action);
 
   /**
    * Update an action.
