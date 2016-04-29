@@ -39,7 +39,7 @@ public class InstructionPublisherTest {
 		instructionPublisher.sendRequests(FIELD_HANDLER, actionRequests);
 
 		ActionMessageListener listener = (ActionMessageListener)actionInstructionMessageListenerContainer.getMessageListener();
-		TimeUnit.SECONDS.sleep(5);
+		TimeUnit.SECONDS.sleep(10);
 		String listenerPayload = listener.getPayload();
 		assertTrue(listenerPayload.contains(ACTION_INSTRUCTION_XML_BITS));
     assertTrue(listenerPayload.contains(TEST_ACTION_TYPE));
