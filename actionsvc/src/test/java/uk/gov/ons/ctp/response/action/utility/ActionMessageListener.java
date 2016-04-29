@@ -1,26 +1,28 @@
 package uk.gov.ons.ctp.response.action.utility;
 
+import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.MessageListener;
 
-import org.springframework.jms.listener.DefaultMessageListenerContainer;
+import lombok.Data;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.activemq.command.ActiveMQTextMessage;
 
-public class ActionMessageListener implements MessageListener{
+@Slf4j
+@Data
+public class ActionMessageListener implements MessageListener {
 
-	private String payload = "payload default: ";
-	
+	private String payload;
+
 	@Override
 	public void onMessage(Message arg0) {
-		this.payload  = "message found";
-		System.out.println("Message processed by ActionMessageListener: " + this.payload);
+		log.debug("onMessage entrance with {}", arg0);
+		try {
+			ActiveMQTextMessage theMsg = (ActiveMQTextMessage)arg0;
+			payload = theMsg.getText();
+			log.debug("payload = {}", payload);
+		} catch (JMSException e) {
+			log.error("error retrieving message - ", e.getMessage());
+		}
 	}
-
-	public String getPayload() {
-		return payload;
-	}
-	
-	public void setPayload(String payload){
-		this.payload = payload;
-	}
-	
 }

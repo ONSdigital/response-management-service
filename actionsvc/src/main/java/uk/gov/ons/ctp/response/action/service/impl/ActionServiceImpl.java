@@ -77,13 +77,13 @@ public final class ActionServiceImpl implements ActionService {
   @Override
   public List<Action> cancelAction(final Integer caseId) {
     log.debug("Entering cancelAction with {}", caseId);
-    List<Action> flushedActions = new ArrayList<Action>();
+
+    List<Action> flushedActions = new ArrayList<>();
     try {
-      Iterator<Action> itr = actionRepo.findByCaseIdOrderByCreatedDateTimeDesc(caseId).iterator();
-      while (itr.hasNext()) {
-        Action action = itr.next();
+      List<Action> actions = actionRepo.findByCaseIdOrderByCreatedDateTimeDesc(caseId);
+      for (Action action : actions) {
         ActionDTO.ActionState nextState = actionSvcStateTransitionManager.transition(action.getState(),
-            uk.gov.ons.ctp.response.action.representation.ActionDTO.ActionEvent.REQUEST_COMPLETED);
+            uk.gov.ons.ctp.response.action.representation.ActionDTO.ActionEvent.REQUEST_CANCELLED);
         action.setState(nextState);
         action.setUpdatedDateTime(new Timestamp(System.currentTimeMillis()));
         actionRepo.saveAndFlush(action);

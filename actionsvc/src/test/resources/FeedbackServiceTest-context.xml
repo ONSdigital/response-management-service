@@ -8,15 +8,8 @@
 			http://www.springframework.org/schema/integration/spring-integration.xsd">
 
     <beans:import resource="flows-int.xml" />
-	<beans:import resource="test-common-int.xml" />
-	<beans:import resource="test-inbound-int.xml" />
-	
-	<bridge input-channel="feedbackTransformed"
-		output-channel="testChannel"/>
-				
-	<channel id="testChannel">
-		<queue/>
-	</channel>
-	
+	<beans:import resource="test-broker-int.xml" />
+	<beans:import resource="test-inbound-outbound-int.xml" />
+
 </beans:beans>
 

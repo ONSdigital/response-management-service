@@ -42,7 +42,8 @@ public class ActionSvcApplication {
   
   @Bean
   public RestClient caseFrameClient () {
-    RestClient restHelper = new RestClient (appConfig.getCaseFrameSvc().getScheme(), appConfig.getCaseFrameSvc().getHost(), appConfig.getCaseFrameSvc().getPort());
+    RestClient restHelper = new RestClient (appConfig.getCaseFrameSvc().getScheme(),
+            appConfig.getCaseFrameSvc().getHost(), appConfig.getCaseFrameSvc().getPort());
     return restHelper;
   }
 
@@ -52,7 +53,8 @@ public class ActionSvcApplication {
 
   @Bean
   public StateTransitionManager<ActionDTO.ActionState,ActionDTO.ActionEvent> actionSvcStateTransitionManager() {
-    return actionSvcStateTransitionManagerFactory.getStateTransitionManager(ActionSvcStateTransitionManagerFactory.ACTION_ENTITY);  
+    return actionSvcStateTransitionManagerFactory.getStateTransitionManager(
+            ActionSvcStateTransitionManagerFactory.ACTION_ENTITY);
   }
   
   /**
