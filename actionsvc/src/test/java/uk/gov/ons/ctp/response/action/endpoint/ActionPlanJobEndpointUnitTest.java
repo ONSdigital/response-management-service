@@ -39,7 +39,7 @@ public class ActionPlanJobEndpointUnitTest extends CTPJerseyTest {
         .assertIntegerInBody("$.actionPlanId", ACTIONPLANJOBID_ACTIONPLANID)
         .assertStringInBody("$.createdBy", ACTIONPLANJOBID_CREATED_BY)
         .assertStringInBody("$.state", ACTIONPLANJOBID_STATE.name())
-        .assertStringInBody("$.createdDatetime", CREATED_DATE_TIME)
+        .assertStringInBody("$.createdDateTime", CREATED_DATE_TIME)
         .assertStringInBody("$.updatedDateTime", UPDATED_DATE_TIME)
         .andClose();
   }
@@ -79,7 +79,7 @@ public class ActionPlanJobEndpointUnitTest extends CTPJerseyTest {
         .assertIntegerListInBody("$..actionPlanId", ACTIONPLANID, ACTIONPLANID, ACTIONPLANID)
         .assertStringListInBody("$..createdBy", ACTIONPLANJOBID_CREATED_BY, ACTIONPLANJOBID_CREATED_BY,
             ACTIONPLANJOBID_CREATED_BY)
-        .assertStringListInBody("$..createdDatetime", CREATED_DATE_TIME, CREATED_DATE_TIME, CREATED_DATE_TIME)
+        .assertStringListInBody("$..createdDateTime", CREATED_DATE_TIME, CREATED_DATE_TIME, CREATED_DATE_TIME)
         .assertStringListInBody("$..updatedDateTime", UPDATED_DATE_TIME, UPDATED_DATE_TIME, UPDATED_DATE_TIME)
         .andClose();
   }
@@ -102,7 +102,7 @@ public class ActionPlanJobEndpointUnitTest extends CTPJerseyTest {
         .assertIntegerInBody("$.actionPlanId", ACTIONPLANJOBID_ACTIONPLANID)
         .assertStringInBody("$.createdBy", ACTIONPLANJOBID_CREATED_BY)
         .assertStringInBody("$.state", ACTIONPLANJOBID_STATE.name())
-        .assertStringInBody("$.createdDatetime", CREATED_DATE_TIME)
+        .assertStringInBody("$.createdDateTime", CREATED_DATE_TIME)
         .assertStringInBody("$.updatedDateTime", UPDATED_DATE_TIME)
         .andClose();
   }
