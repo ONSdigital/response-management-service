@@ -73,7 +73,7 @@ public class ActionPlanJobServiceImpl implements ActionPlanJobService {
       // enrich and save the job
       actionPlanJob.setState(ActionPlanJobDTO.ActionPlanJobState.SUBMITTED);
       Timestamp now = new Timestamp(new Date().getTime());
-      actionPlanJob.setCreatedDatetime(now);
+      actionPlanJob.setCreatedDateTime(now);
       actionPlanJob.setUpdatedDateTime(now);
       createdJob = actionPlanJobRepo.save(actionPlanJob);
 

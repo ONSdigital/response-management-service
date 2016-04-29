@@ -44,7 +44,7 @@ public class ActionPlanJob {
   private ActionPlanJobDTO.ActionPlanJobState state;
 
   @Column(name = "createddatetime")
-  private Timestamp createdDatetime;
+  private Timestamp createdDateTime;
 
   @Column(name = "updateddatetime")
   private Timestamp updatedDateTime;

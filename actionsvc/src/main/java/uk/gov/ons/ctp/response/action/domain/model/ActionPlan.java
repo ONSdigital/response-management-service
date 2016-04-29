@@ -42,9 +42,9 @@ public class ActionPlan implements Serializable {
   private String createdBy;
 
   @Column(name = "createddatetime")
-  private Timestamp createdDatetime;
+  private Timestamp createdDateTime;
 
   @Column(name = "lastgoodrundatetime")
-  private Timestamp lastGoodRunDatetime;
+  private Timestamp lastGoodRunDateTime;
 
 }

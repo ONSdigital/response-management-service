@@ -27,6 +27,6 @@ public class ActionPlanJobDTO {
   @NotNull @Size(min=2, max=20)
   private String createdBy;
   private String state;
-  private Timestamp createdDatetime;
+  private Timestamp createdDateTime;
   private Timestamp updatedDateTime;
 }

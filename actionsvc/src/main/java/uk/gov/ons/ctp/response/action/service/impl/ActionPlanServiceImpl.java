@@ -73,11 +73,11 @@ public class ActionPlanServiceImpl implements ActionPlanService {
         existingActionPlan.setDescription(newDescription);
       }
 
-      Date newLastGoodRunDatetime = actionPlan.getLastGoodRunDatetime();
-      log.debug("newLastGoodRunDatetime = {}", newLastGoodRunDatetime);
-      if (newLastGoodRunDatetime != null) {
+      Date newLastGoodRunDateTime = actionPlan.getLastGoodRunDateTime();
+      log.debug("newLastGoodRunDatetime = {}", newLastGoodRunDateTime);
+      if (newLastGoodRunDateTime != null) {
         needsUpdate = true;
-        existingActionPlan.setLastGoodRunDatetime(new Timestamp(newLastGoodRunDatetime.getTime()));
+        existingActionPlan.setLastGoodRunDateTime(new Timestamp(newLastGoodRunDateTime.getTime()));
       }
 
       if (needsUpdate) {
