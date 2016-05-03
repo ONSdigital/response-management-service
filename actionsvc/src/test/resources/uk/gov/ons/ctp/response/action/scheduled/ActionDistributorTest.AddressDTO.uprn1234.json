@@ -1,7 +1,7 @@
 {  
    "uprn":1234,
    "type":"CareHome",
-   "estabType":"Estab Type",
+   "category":"Estab Type",
    "locality":"Somehere",
    "organisationName":"Co-Op",
    "line1":"address line1",

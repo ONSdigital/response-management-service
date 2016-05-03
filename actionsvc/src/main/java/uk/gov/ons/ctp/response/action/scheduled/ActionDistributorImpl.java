@@ -3,7 +3,6 @@ package uk.gov.ons.ctp.response.action.scheduled;
 import java.math.BigInteger;
 import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -14,14 +13,11 @@ import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.TransactionCallback;
 import org.springframework.transaction.support.TransactionTemplate;
-import org.springframework.web.client.RestClientException;
 
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
-import uk.gov.ons.ctp.common.rest.RestClient;
 import uk.gov.ons.ctp.common.state.StateTransitionException;
 import uk.gov.ons.ctp.common.state.StateTransitionManager;
-import uk.gov.ons.ctp.response.action.config.AppConfig;
 import uk.gov.ons.ctp.response.action.domain.model.Action;
 import uk.gov.ons.ctp.response.action.domain.model.Action.ActionPriority;
 import uk.gov.ons.ctp.response.action.domain.model.ActionType;
@@ -34,6 +30,7 @@ import uk.gov.ons.ctp.response.action.message.instruction.ActionRequest;
 import uk.gov.ons.ctp.response.action.message.instruction.Priority;
 import uk.gov.ons.ctp.response.action.representation.ActionDTO;
 import uk.gov.ons.ctp.response.action.representation.ActionDTO.ActionState;
+import uk.gov.ons.ctp.response.action.service.CaseFrameSvcClientService;
 import uk.gov.ons.ctp.response.caseframe.representation.AddressDTO;
 import uk.gov.ons.ctp.response.caseframe.representation.CaseDTO;
 import uk.gov.ons.ctp.response.caseframe.representation.CaseEventDTO;
@@ -78,12 +75,6 @@ public class ActionDistributorImpl {
     actionSvcStateTransitionManager;
 
   @Inject
-  private RestClient caseFrameClient;
-
-  @Inject
-  private AppConfig appConfig;
-
-  @Inject
   private InstructionPublisher instructionPublisher;
 
   @Inject
@@ -91,6 +82,9 @@ public class ActionDistributorImpl {
 
   @Inject
   private ActionRepository actionRepo;
+
+  @Inject
+  private CaseFrameSvcClientService caseFrameSvcClientService;
 
   @Inject
   private ActionTypeRepository actionTypeRepo;
@@ -181,7 +175,7 @@ public class ActionDistributorImpl {
         actionRequest = prepareActionRequest(action);
 
         // advise caseframesvc to create a corresponding caseevent for our action
-        postNewCaseEvent(action);
+        caseFrameSvcClientService.createNewCaseEvent(action, "ActionCreated");
 
         return actionRequest;
       }
@@ -207,25 +201,6 @@ public class ActionDistributorImpl {
     }
   }
 
-  /**
-   * Create and post to caseframe service a new CaseEvent
-   *
-   * @param action the action for which we need the event
-   */
-  private void postNewCaseEvent(final Action action) {
-    log.debug("posting caseEvent for actionId {} to caseframesvc for creation", action.getActionId());
-    CaseEventDTO caseEventDTO = new CaseEventDTO();
-    caseEventDTO.setCaseId(action.getCaseId());
-    caseEventDTO.setCategory("ActionCreated");
-    caseEventDTO.setCreatedBy(action.getCreatedBy());
-    caseEventDTO.setCreatedDateTime(new Date());
-    caseEventDTO.setDescription(action.getActionType().getDescription());
-    caseEventDTO.setSubCategory(null); // TODO - will be avail in data 2017+
-
-    caseFrameClient.postResource(appConfig.getCaseFrameSvc().getCaseEventsByCasePostPath(), caseEventDTO,
-        CaseEventDTO.class,
-        action.getCaseId());
-  }
 
   /**
    * Take an action and using it, fetch further info from caseframe service in a
@@ -239,10 +214,10 @@ public class ActionDistributorImpl {
     log.debug("constructing ActionRequest to publish to downstream handler for action id {} and case id {}",
         action.getActionId(), action.getCaseId());
     // now call caseframe for the following
-    CaseDTO caseDTO = getCase(action.getCaseId());
-    QuestionnaireDTO questionnaireDTO = getQuestionnaire(action.getCaseId());
-    AddressDTO addressDTO = getAddress(caseDTO.getUprn());
-    List<CaseEventDTO> caseEventDTOs = getCaseEvents(action.getCaseId());
+    CaseDTO caseDTO = caseFrameSvcClientService.getCase(action.getCaseId());
+    QuestionnaireDTO questionnaireDTO = caseFrameSvcClientService.getQuestionnaire(action.getCaseId());
+    AddressDTO addressDTO = caseFrameSvcClientService.getAddress(caseDTO.getUprn());
+    List<CaseEventDTO> caseEventDTOs = caseFrameSvcClientService.getCaseEvents(action.getCaseId());
 
     return createActionRequest(action, caseDTO, questionnaireDTO, addressDTO, caseEventDTOs);
   }
@@ -284,64 +259,7 @@ public class ActionDistributorImpl {
     return actionRequest;
   }
 
-  /**
-   * Call CaseFrameSvc using REST to get the Address MAY throw a
-   * RuntimeException if the call fails
-   *
-   * @param uprn identifies the Address to fetch
-   * @return the Address we fetched
-   */
-  private AddressDTO getAddress(final Integer uprn) {
-    AddressDTO caseDTO = caseFrameClient.getResource(appConfig.getCaseFrameSvc().getAddressByUprnGetPath(),
-        AddressDTO.class, uprn);
-    return caseDTO;
-  }
 
-  /**
-   * Call CaseFrameSvc using REST to get the Questionnaire MAY throw a
-   * RuntimeException if the call fails
-   *
-   * @param caseId used to find the questionnaire
-   * @return the Questionnaire we fetched
-   */
-  private QuestionnaireDTO getQuestionnaire(final Integer caseId) {
-    List<QuestionnaireDTO> questionnaireDTOs = caseFrameClient.getResources(
-        appConfig.getCaseFrameSvc().getQuestionnairesByCaseGetPath(),
-        QuestionnaireDTO[].class, caseId);
-    if (questionnaireDTOs.size() == 0) {
-      throw new RuntimeException("Failed to find questionnaire for case " + caseId);
-    }
-    return questionnaireDTOs.get(0);
-  }
-
-  /**
-   * Call CaseFrameSvc using REST to get the Case details MAY throw a
-   * RuntimeException if the call fails
-   *
-   * @param caseId identifies the Case to fetch
-   * @return the Case we fetched
-   * @throws RestClientException when we cannot connect or the service call errors
-   */
-  private CaseDTO getCase(final Integer caseId) throws RestClientException {
-    CaseDTO caseDTO = caseFrameClient.getResource(appConfig.getCaseFrameSvc().getCaseByCaseGetPath(),
-        CaseDTO.class, caseId);
-    return caseDTO;
-  }
-
-  /**
-   * Call CaseFrameSvc using REST to get the CaseEvents for the Case MAY throw a
-   * RuntimeException if the call fails
-   *
-   * @param caseId identifies the Case to fetch events for
-   * @return the CaseEvents we found for the case
-   * @throws RestClientException when we cannot connect or the service call errors
-   */
-  private List<CaseEventDTO> getCaseEvents(final Integer caseId) {
-    List<CaseEventDTO> caseEventDTOs = caseFrameClient.getResources(
-        appConfig.getCaseFrameSvc().getCaseEventsByCaseGetPath(),
-        CaseEventDTO[].class, caseId);
-    return caseEventDTOs;
-  }
 
   /**
    * Formats a CaseEvent as a string that can added to the ActionRequest

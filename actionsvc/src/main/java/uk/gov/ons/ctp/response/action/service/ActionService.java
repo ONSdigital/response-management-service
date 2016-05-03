@@ -12,6 +12,7 @@ import uk.gov.ons.ctp.response.action.representation.ActionDTO;
  */
 public interface ActionService extends CTPService {
 
+
   /**
    * Find Actions filtered by ActionType and state ordered by created date time
    * descending
