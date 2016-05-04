@@ -80,6 +80,7 @@ public class ActionPlanJobServiceImpl implements ActionPlanJobService {
       // setup and make the call to caseframe to find open cases for plan
       MultiValueMap<String, String> queryParamMap = new LinkedMultiValueMap<>();
       queryParamMap.put("status", Arrays.asList("INIT"));
+      //TODO - move to caseframesvcclientservice
       List<Integer> openCasesForPlan = caseFrameClient.getResources(
           appConfig.getCaseFrameSvc().getCaseByStatusAndActionPlanPath(), Integer[].class, null, queryParamMap,
           actionPlanId);

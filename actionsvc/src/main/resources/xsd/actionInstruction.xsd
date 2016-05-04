@@ -40,7 +40,7 @@
   <xs:complexType name="ActionAddress">
     <xs:sequence>
       <xs:element name="type" type="xs:string"/>
-      <xs:element name="category" type="xs:string"/>
+      <xs:element name="estabType" type="xs:string"/>
       <xs:element name="locality" type="xs:string"/>
       <xs:element name="organisationName" type="xs:string"/>
       <xs:element name="line1" type="xs:string"/>
