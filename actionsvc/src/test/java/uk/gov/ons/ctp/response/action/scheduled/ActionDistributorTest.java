@@ -36,6 +36,7 @@ import uk.gov.ons.ctp.response.action.message.InstructionPublisher;
 import uk.gov.ons.ctp.response.action.message.instruction.ActionRequest;
 import uk.gov.ons.ctp.response.action.representation.ActionDTO;
 import uk.gov.ons.ctp.response.action.representation.ActionDTO.ActionState;
+import uk.gov.ons.ctp.response.action.service.CaseFrameSvcClientService;
 import uk.gov.ons.ctp.response.caseframe.representation.AddressDTO;
 import uk.gov.ons.ctp.response.caseframe.representation.CaseDTO;
 import uk.gov.ons.ctp.response.caseframe.representation.CaseEventDTO;
@@ -57,7 +58,7 @@ public class ActionDistributorTest {
   MapperFacade mapperFacade;
 
   @Mock
-  RestClient caseFrameClient;
+  CaseFrameSvcClientService caseFrameSvcClientService;
 
   @Mock
   ActionRepository actionRepo;
@@ -107,21 +108,20 @@ public class ActionDistributorTest {
         ActionState.SUBMITTED);
 
 
-    verify(caseFrameClient, times(0)).getResources(anyString(), eq(QuestionnaireDTO[].class), eq(1));
-    verify(caseFrameClient, times(0)).getResources(anyString(), eq(QuestionnaireDTO[].class), eq(2));
-    verify(caseFrameClient, times(0)).getResources(anyString(), eq(QuestionnaireDTO[].class), eq(3));
-    verify(caseFrameClient, times(0)).getResources(anyString(), eq(QuestionnaireDTO[].class), eq(4));
+    verify(caseFrameSvcClientService, times(0)).getQuestionnaire(eq(1));
+    verify(caseFrameSvcClientService, times(0)).getQuestionnaire(eq(2));
+    verify(caseFrameSvcClientService, times(0)).getQuestionnaire(eq(3));
+    verify(caseFrameSvcClientService, times(0)).getQuestionnaire(eq(4));
 
-    verify(caseFrameClient, times(0)).getResource(anyString(), eq(CaseDTO.class), eq(3));
-    verify(caseFrameClient, times(0)).getResource(anyString(), eq(CaseDTO.class), eq(4));
+    verify(caseFrameSvcClientService, times(0)).getCase(eq(3));
+    verify(caseFrameSvcClientService, times(0)).getCase(eq(4));
 
-    verify(caseFrameClient, times(0)).getResource(anyString(), eq(AddressDTO.class), eq(1234));
+    verify(caseFrameSvcClientService, times(0)).getAddress(eq(1234));
 
-    verify(caseFrameClient, times(0)).getResources(anyString(), eq(CaseEventDTO[].class), eq(3));
-    verify(caseFrameClient, times(0)).getResources(anyString(), eq(CaseEventDTO[].class), eq(4));
+    verify(caseFrameSvcClientService, times(0)).getCaseEvents(eq(3));
+    verify(caseFrameSvcClientService, times(0)).getCaseEvents(eq(4));
 
-    verify(caseFrameClient, times(0)).postResource(anyString(), any(CaseEventDTO.class), eq(CaseEventDTO.class), eq(3));
-    verify(caseFrameClient, times(0)).postResource(anyString(), any(CaseEventDTO.class), eq(CaseEventDTO.class), eq(4));
+    verify(caseFrameSvcClientService, times(0)).createNewCaseEvent(any(Action.class), eq("ActionCreated"));
 
     verify(instructionPublisher, times(0)).sendRequests(eq("Printer"), anyListOf(ActionRequest.class));
     verify(instructionPublisher, times(0)).sendRequests(eq("HHSurvey"), anyListOf(ActionRequest.class));
@@ -140,8 +140,8 @@ public class ActionDistributorTest {
 
     List<ActionType> actionTypes = FixtureHelper.loadClassFixtures(ActionType[].class);
 
-    List<Action> actionsHHIC = FixtureHelper.loadClassFixtures(Action[].class, "HH_IC");
-    List<Action> actionsHHIACLOAD = FixtureHelper.loadClassFixtures(Action[].class, "HH_IAC_LOAD");
+    List<Action> actionsHHIC = FixtureHelper.loadClassFixtures(Action[].class, "HouseholdInitialContact");
+    List<Action> actionsHHIACLOAD = FixtureHelper.loadClassFixtures(Action[].class, "HouseholdUploadIAC");
 
     List<QuestionnaireDTO> questionnaireDTOs = FixtureHelper.loadClassFixtures(QuestionnaireDTO[].class);
 
@@ -158,61 +158,56 @@ public class ActionDistributorTest {
     Mockito.when(appConfig.getCaseFrameSvc()).thenReturn(caseFrameSvcConfig);
     Mockito.when(actionTypeRepo.findAll()).thenReturn(actionTypes);
     Mockito
-        .when(actionRepo.findFirst100ByActionTypeNameAndStateOrderByCreatedDateTimeAsc("HH_IC", ActionState.SUBMITTED))
+        .when(actionRepo.findFirst100ByActionTypeNameAndStateOrderByCreatedDateTimeAsc("HouseholdInitialContact", ActionState.SUBMITTED))
         .thenReturn(actionsHHIC);
     Mockito.when(
-        actionRepo.findFirst100ByActionTypeNameAndStateOrderByCreatedDateTimeAsc("HH_IAC_LOAD", ActionState.SUBMITTED))
+        actionRepo.findFirst100ByActionTypeNameAndStateOrderByCreatedDateTimeAsc("HouseholdUploadIAC", ActionState.SUBMITTED))
         .thenReturn(actionsHHIACLOAD);
 
-    Mockito.when(caseFrameClient.getResource(anyString(), eq(CaseDTO.class), eq(1)))
+    Mockito.when(caseFrameSvcClientService.getQuestionnaire(eq(1)))
         .thenThrow(new RestClientException("CaseFrameService Temporarily Unavailable"));
-    Mockito.when(caseFrameClient.getResource(anyString(), eq(CaseDTO.class), eq(2)))
+    Mockito.when(caseFrameSvcClientService.getQuestionnaire(eq(2)))
         .thenThrow(new RestClientException("CaseFrameService Temporarily Unavailable"));
-    Mockito.when(caseFrameClient.getResource(anyString(), eq(CaseDTO.class), eq(3))).thenReturn(caseDTOs.get(2));
-    Mockito.when(caseFrameClient.getResource(anyString(), eq(CaseDTO.class), eq(4))).thenReturn(caseDTOs.get(3));
+    Mockito.when(caseFrameSvcClientService.getCase(eq(3))).thenReturn(caseDTOs.get(2));
+    Mockito.when(caseFrameSvcClientService.getCase(eq(4))).thenReturn(caseDTOs.get(3));
 
-    Mockito.when(caseFrameClient.getResources(anyString(), eq(QuestionnaireDTO[].class), eq(3)))
-        .thenReturn(Arrays.asList(new QuestionnaireDTO[] { questionnaireDTOs.get(2) }));
-    Mockito.when(caseFrameClient.getResources(anyString(), eq(QuestionnaireDTO[].class), eq(4)))
-        .thenReturn(Arrays.asList(new QuestionnaireDTO[] { questionnaireDTOs.get(3) }));
+    Mockito.when(caseFrameSvcClientService.getQuestionnaire(eq(3))).thenReturn(questionnaireDTOs.get(2));
+    Mockito.when(caseFrameSvcClientService.getQuestionnaire(eq(4))).thenReturn(questionnaireDTOs.get(3));
 
-    Mockito.when(caseFrameClient.getResource(anyString(), eq(AddressDTO.class), eq(1234)))
+    Mockito.when(caseFrameSvcClientService.getAddress(eq(1234)))
         .thenReturn(addressDTOsUprn1234.get(0));
 
-    Mockito.when(caseFrameClient.getResource(anyString(), eq(CaseEventDTO.class), eq(3)))
-        .thenReturn(caseEventDTOs.get(2));
-    Mockito.when(caseFrameClient.getResource(anyString(), eq(CaseEventDTO.class), eq(4)))
-        .thenReturn(caseEventDTOs.get(3));
+    Mockito.when(caseFrameSvcClientService.getCaseEvents(eq(3)))
+        .thenReturn(Arrays.asList(new CaseEventDTO[] {caseEventDTOs.get(2)}));
+    Mockito.when(caseFrameSvcClientService.getCaseEvents(eq(4)))
+        .thenReturn(Arrays.asList(new CaseEventDTO[] {caseEventDTOs.get(3)}));
 
-    Mockito.when(caseFrameClient.postResource(anyString(), any(CaseEventDTO.class), eq(CaseEventDTO.class), eq(3)))
+    Mockito.when(caseFrameSvcClientService.createNewCaseEvent(any(Action.class), eq("ActionCreated")))
         .thenReturn(caseEventDTOsPost.get(2));
-    Mockito.when(caseFrameClient.postResource(anyString(), any(CaseEventDTO.class), eq(CaseEventDTO.class), eq(4)))
-        .thenReturn(caseEventDTOsPost.get(3));
 
     // let it roll
     actionDistributor.wakeUp();
 
     // assert the right calls were made
     verify(actionTypeRepo).findAll();
-    verify(actionRepo).findFirst100ByActionTypeNameAndStateOrderByCreatedDateTimeAsc("HH_IC", ActionState.SUBMITTED);
-    verify(actionRepo).findFirst100ByActionTypeNameAndStateOrderByCreatedDateTimeAsc("HH_IAC_LOAD",
+    verify(actionRepo).findFirst100ByActionTypeNameAndStateOrderByCreatedDateTimeAsc("HouseholdInitialContact", ActionState.SUBMITTED);
+    verify(actionRepo).findFirst100ByActionTypeNameAndStateOrderByCreatedDateTimeAsc("HouseholdUploadIAC",
         ActionState.SUBMITTED);
 
-    verify(caseFrameClient, times(0)).getResources(anyString(), eq(QuestionnaireDTO[].class), eq(1));
-    verify(caseFrameClient, times(0)).getResources(anyString(), eq(QuestionnaireDTO[].class), eq(2));
-    verify(caseFrameClient).getResources(anyString(), eq(QuestionnaireDTO[].class), eq(3));
-    verify(caseFrameClient).getResources(anyString(), eq(QuestionnaireDTO[].class), eq(4));
+    verify(caseFrameSvcClientService).getQuestionnaire(eq(1));
+    verify(caseFrameSvcClientService).getQuestionnaire(eq(2));
+    verify(caseFrameSvcClientService).getQuestionnaire(eq(3));
+    verify(caseFrameSvcClientService).getQuestionnaire(eq(4));
 
-    verify(caseFrameClient).getResource(anyString(), eq(CaseDTO.class), eq(3));
-    verify(caseFrameClient).getResource(anyString(), eq(CaseDTO.class), eq(4));
+    verify(caseFrameSvcClientService).getCase(eq(3));
+    verify(caseFrameSvcClientService).getCase(eq(4));
 
-    verify(caseFrameClient, times(2)).getResource(anyString(), eq(AddressDTO.class), eq(1234));
+    verify(caseFrameSvcClientService, times(2)).getAddress(eq(1234));
 
-    verify(caseFrameClient).getResources(anyString(), eq(CaseEventDTO[].class), eq(3));
-    verify(caseFrameClient).getResources(anyString(), eq(CaseEventDTO[].class), eq(4));
+    verify(caseFrameSvcClientService).getCaseEvents(eq(3));
+    verify(caseFrameSvcClientService).getCaseEvents(eq(4));
 
-    verify(caseFrameClient).postResource(anyString(), any(CaseEventDTO.class), eq(CaseEventDTO.class), eq(3));
-    verify(caseFrameClient).postResource(anyString(), any(CaseEventDTO.class), eq(CaseEventDTO.class), eq(4));
+    verify(caseFrameSvcClientService, times(2)).createNewCaseEvent(any(Action.class), eq("ActionCreated"));
 
     verify(instructionPublisher, times(0)).sendRequests(eq("Printer"), anyListOf(ActionRequest.class));
     verify(instructionPublisher, times(1)).sendRequests(eq("HHSurvey"), anyListOf(ActionRequest.class));
@@ -229,8 +224,8 @@ public class ActionDistributorTest {
 
     List<ActionType> actionTypes = FixtureHelper.loadClassFixtures(ActionType[].class);
 
-    List<Action> actionsHHIC = FixtureHelper.loadClassFixtures(Action[].class, "HH_IC");
-    List<Action> actionsHHIACLOAD = FixtureHelper.loadClassFixtures(Action[].class, "HH_IAC_LOAD");
+    List<Action> actionsHHIC = FixtureHelper.loadClassFixtures(Action[].class, "HouseholdInitialContact");
+    List<Action> actionsHHIACLOAD = FixtureHelper.loadClassFixtures(Action[].class, "HouseholdUploadIAC");
 
     List<QuestionnaireDTO> questionnaireDTOs = FixtureHelper.loadClassFixtures(QuestionnaireDTO[].class);
 
@@ -248,77 +243,69 @@ public class ActionDistributorTest {
     Mockito.when(appConfig.getCaseFrameSvc()).thenReturn(caseFrameSvcConfig);
     Mockito.when(actionTypeRepo.findAll()).thenReturn(actionTypes);
     Mockito
-        .when(actionRepo.findFirst100ByActionTypeNameAndStateOrderByCreatedDateTimeAsc("HH_IC", ActionState.SUBMITTED))
+        .when(actionRepo.findFirst100ByActionTypeNameAndStateOrderByCreatedDateTimeAsc("HouseholdInitialContact", ActionState.SUBMITTED))
         .thenReturn(actionsHHIC);
     Mockito.when(
-        actionRepo.findFirst100ByActionTypeNameAndStateOrderByCreatedDateTimeAsc("HH_IAC_LOAD", ActionState.SUBMITTED))
+        actionRepo.findFirst100ByActionTypeNameAndStateOrderByCreatedDateTimeAsc("HouseholdUploadIAC", ActionState.SUBMITTED))
         .thenReturn(actionsHHIACLOAD);
 
-    Mockito.when(caseFrameClient.getResources(anyString(), eq(QuestionnaireDTO[].class), eq(1)))
-        .thenReturn(Arrays.asList(new QuestionnaireDTO[] { questionnaireDTOs.get(0) }));
-    Mockito.when(caseFrameClient.getResources(anyString(), eq(QuestionnaireDTO[].class), eq(2)))
-        .thenReturn(Arrays.asList(new QuestionnaireDTO[] { questionnaireDTOs.get(1) }));
-    Mockito.when(caseFrameClient.getResources(anyString(), eq(QuestionnaireDTO[].class), eq(3)))
-        .thenReturn(Arrays.asList(new QuestionnaireDTO[] { questionnaireDTOs.get(2) }));
-    Mockito.when(caseFrameClient.getResources(anyString(), eq(QuestionnaireDTO[].class), eq(4)))
-        .thenReturn(Arrays.asList(new QuestionnaireDTO[] { questionnaireDTOs.get(3) }));
+    Mockito.when(caseFrameSvcClientService.getQuestionnaire(eq(1)))
+        .thenReturn(questionnaireDTOs.get(0));
+    Mockito.when(caseFrameSvcClientService.getQuestionnaire(eq(2)))
+        .thenReturn(questionnaireDTOs.get(1));
+    Mockito.when(caseFrameSvcClientService.getQuestionnaire(eq(3)))
+        .thenReturn(questionnaireDTOs.get(2));
+    Mockito.when(caseFrameSvcClientService.getQuestionnaire(eq(4)))
+        .thenReturn(questionnaireDTOs.get(3));
 
-    Mockito.when(caseFrameClient.getResource(anyString(), eq(CaseDTO.class), eq(1))).thenReturn(caseDTOs.get(0));
-    Mockito.when(caseFrameClient.getResource(anyString(), eq(CaseDTO.class), eq(2))).thenReturn(caseDTOs.get(1));
-    Mockito.when(caseFrameClient.getResource(anyString(), eq(CaseDTO.class), eq(3))).thenReturn(caseDTOs.get(2));
-    Mockito.when(caseFrameClient.getResource(anyString(), eq(CaseDTO.class), eq(4))).thenReturn(caseDTOs.get(3));
+    Mockito.when(caseFrameSvcClientService.getCase(eq(1))).thenReturn(caseDTOs.get(0));
+    Mockito.when(caseFrameSvcClientService.getCase(eq(2))).thenReturn(caseDTOs.get(1));
+    Mockito.when(caseFrameSvcClientService.getCase(eq(3))).thenReturn(caseDTOs.get(2));
+    Mockito.when(caseFrameSvcClientService.getCase(eq(4))).thenReturn(caseDTOs.get(3));
 
-    Mockito.when(caseFrameClient.getResource(anyString(), eq(AddressDTO.class), eq(1234)))
+    Mockito.when(caseFrameSvcClientService.getAddress(eq(1234)))
         .thenReturn(addressDTOsUprn1234.get(0));
 
-    Mockito.when(caseFrameClient.getResource(anyString(), eq(CaseEventDTO.class), eq(1)))
-        .thenReturn(caseEventDTOs.get(0));
-    Mockito.when(caseFrameClient.getResource(anyString(), eq(CaseEventDTO.class), eq(2)))
-        .thenReturn(caseEventDTOs.get(1));
-    Mockito.when(caseFrameClient.getResource(anyString(), eq(CaseEventDTO.class), eq(3)))
-        .thenReturn(caseEventDTOs.get(2));
-    Mockito.when(caseFrameClient.getResource(anyString(), eq(CaseEventDTO.class), eq(4)))
-        .thenReturn(caseEventDTOs.get(3));
+    Mockito.when(caseFrameSvcClientService.getCaseEvents(eq(1)))
+        .thenReturn(Arrays.asList(new CaseEventDTO[] {caseEventDTOs.get(0)}));
+    Mockito.when(caseFrameSvcClientService.getCaseEvents(eq(2)))
+        .thenReturn(Arrays.asList(new CaseEventDTO[] {caseEventDTOs.get(1)}));
+    Mockito.when(caseFrameSvcClientService.getCaseEvents(eq(3)))
+        .thenReturn(Arrays.asList(new CaseEventDTO[] {caseEventDTOs.get(2)}));
+    Mockito.when(caseFrameSvcClientService.getCaseEvents(eq(4)))
+        .thenReturn(Arrays.asList(new CaseEventDTO[] {caseEventDTOs.get(3)}));
 
-    Mockito.when(caseFrameClient.postResource(anyString(), any(CaseEventDTO.class), eq(CaseEventDTO.class), eq(1)))
-        .thenReturn(caseEventDTOsPost.get(0));
-    Mockito.when(caseFrameClient.postResource(anyString(), any(CaseEventDTO.class), eq(CaseEventDTO.class), eq(2)))
-        .thenReturn(caseEventDTOsPost.get(1));
-    Mockito.when(caseFrameClient.postResource(anyString(), any(CaseEventDTO.class), eq(CaseEventDTO.class), eq(3)))
+    Mockito.when(caseFrameSvcClientService.createNewCaseEvent(any(Action.class), eq("ActionCreated")))
         .thenReturn(caseEventDTOsPost.get(2));
-    Mockito.when(caseFrameClient.postResource(anyString(), any(CaseEventDTO.class), eq(CaseEventDTO.class), eq(4)))
-        .thenReturn(caseEventDTOsPost.get(3));
+
 
     // let it roll
     actionDistributor.wakeUp();
 
     // assert the right calls were made
     verify(actionTypeRepo).findAll();
-    verify(actionRepo).findFirst100ByActionTypeNameAndStateOrderByCreatedDateTimeAsc("HH_IC", ActionState.SUBMITTED);
-    verify(actionRepo).findFirst100ByActionTypeNameAndStateOrderByCreatedDateTimeAsc("HH_IAC_LOAD",
+    verify(actionRepo).findFirst100ByActionTypeNameAndStateOrderByCreatedDateTimeAsc("HouseholdInitialContact", ActionState.SUBMITTED);
+    verify(actionRepo).findFirst100ByActionTypeNameAndStateOrderByCreatedDateTimeAsc("HouseholdUploadIAC",
         ActionState.SUBMITTED);
 
-    verify(caseFrameClient).getResources(anyString(), eq(QuestionnaireDTO[].class), eq(1));
-    verify(caseFrameClient).getResources(anyString(), eq(QuestionnaireDTO[].class), eq(2));
-    verify(caseFrameClient).getResources(anyString(), eq(QuestionnaireDTO[].class), eq(3));
-    verify(caseFrameClient).getResources(anyString(), eq(QuestionnaireDTO[].class), eq(4));
+    verify(caseFrameSvcClientService).getQuestionnaire(eq(1));
+    verify(caseFrameSvcClientService).getQuestionnaire(eq(2));
+    verify(caseFrameSvcClientService).getQuestionnaire(eq(3));
+    verify(caseFrameSvcClientService).getQuestionnaire(eq(4));
 
-    verify(caseFrameClient).getResource(anyString(), eq(CaseDTO.class), eq(1));
-    verify(caseFrameClient).getResource(anyString(), eq(CaseDTO.class), eq(2));
-    verify(caseFrameClient).getResource(anyString(), eq(CaseDTO.class), eq(3));
-    verify(caseFrameClient).getResource(anyString(), eq(CaseDTO.class), eq(4));
+    verify(caseFrameSvcClientService).getCase(eq(1));
+    verify(caseFrameSvcClientService).getCase(eq(2));
+    verify(caseFrameSvcClientService).getCase(eq(3));
+    verify(caseFrameSvcClientService).getCase(eq(4));
 
-    verify(caseFrameClient, times(4)).getResource(anyString(), eq(AddressDTO.class), eq(1234));
+    verify(caseFrameSvcClientService, times(4)).getAddress(eq(1234));
 
-    verify(caseFrameClient).getResources(anyString(), eq(CaseEventDTO[].class), eq(1));
-    verify(caseFrameClient).getResources(anyString(), eq(CaseEventDTO[].class), eq(2));
-    verify(caseFrameClient).getResources(anyString(), eq(CaseEventDTO[].class), eq(3));
-    verify(caseFrameClient).getResources(anyString(), eq(CaseEventDTO[].class), eq(4));
+    verify(caseFrameSvcClientService).getCaseEvents(eq(1));
+    verify(caseFrameSvcClientService).getCaseEvents(eq(2));
+    verify(caseFrameSvcClientService).getCaseEvents(eq(3));
+    verify(caseFrameSvcClientService).getCaseEvents(eq(4));
 
-    verify(caseFrameClient).postResource(anyString(), any(CaseEventDTO.class), eq(CaseEventDTO.class), eq(1));
-    verify(caseFrameClient).postResource(anyString(), any(CaseEventDTO.class), eq(CaseEventDTO.class), eq(2));
-    verify(caseFrameClient).postResource(anyString(), any(CaseEventDTO.class), eq(CaseEventDTO.class), eq(3));
-    verify(caseFrameClient).postResource(anyString(), any(CaseEventDTO.class), eq(CaseEventDTO.class), eq(4));
+    verify(caseFrameSvcClientService, times(4)).createNewCaseEvent(any(Action.class), eq("ActionCreated"));
 
     verify(instructionPublisher, times(1)).sendRequests(eq("Printer"), anyListOf(ActionRequest.class));
     verify(instructionPublisher, times(1)).sendRequests(eq("HHSurvey"), anyListOf(ActionRequest.class));

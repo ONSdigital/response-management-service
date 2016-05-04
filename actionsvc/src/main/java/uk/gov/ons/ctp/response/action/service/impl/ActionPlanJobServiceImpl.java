@@ -24,6 +24,7 @@ import uk.gov.ons.ctp.response.action.domain.repository.ActionPlanJobRepository;
 import uk.gov.ons.ctp.response.action.domain.repository.ActionPlanRepository;
 import uk.gov.ons.ctp.response.action.representation.ActionPlanJobDTO;
 import uk.gov.ons.ctp.response.action.service.ActionPlanJobService;
+import uk.gov.ons.ctp.response.caseframe.representation.CaseDTO;
 
 /**
  * Implementation
@@ -79,7 +80,8 @@ public class ActionPlanJobServiceImpl implements ActionPlanJobService {
 
       // setup and make the call to caseframe to find open cases for plan
       MultiValueMap<String, String> queryParamMap = new LinkedMultiValueMap<>();
-      queryParamMap.put("status", Arrays.asList("INIT"));
+      queryParamMap.put("status", Arrays.asList(CaseDTO.CaseState.INIT.name()));
+      //TODO - move to caseframesvcclientservice
       List<Integer> openCasesForPlan = caseFrameClient.getResources(
           appConfig.getCaseFrameSvc().getCaseByStatusAndActionPlanPath(), Integer[].class, null, queryParamMap,
           actionPlanId);

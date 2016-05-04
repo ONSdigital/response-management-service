@@ -32,6 +32,7 @@ public final class ActionServiceImpl implements ActionService {
 
   private static final int TRANSACTION_TIMEOUT = 30;
 
+  
   @Inject
   private ActionRepository actionRepo;
 
@@ -40,6 +41,7 @@ public final class ActionServiceImpl implements ActionService {
 
   @Inject
   private StateTransitionManager<ActionState, uk.gov.ons.ctp.response.action.representation.ActionDTO.ActionEvent> actionSvcStateTransitionManager;
+
 
   @Override
   public List<Action> findActionsByTypeAndStateOrderedByCreatedDateTimeDescending(final String actionTypeName,

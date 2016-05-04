@@ -5,7 +5,7 @@
   http://www.springframework.org/schema/beans/spring-beans-4.2.xsd">
 
   <bean id="instructionPublisher" class="uk.gov.ons.ctp.response.action.message.impl.InstructionPublisherImpl"/>
-
+ 
   <bean id="actionInstructionMessageListenerContainer" class="org.springframework.jms.listener.DefaultMessageListenerContainer">
     <property name="connectionFactory" ref="connectionFactory"/>
     <property name="destinationName" value="Action.Field" />
