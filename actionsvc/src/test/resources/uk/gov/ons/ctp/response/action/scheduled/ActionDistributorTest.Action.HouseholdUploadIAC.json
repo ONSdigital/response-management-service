@@ -8,7 +8,7 @@
    "manuallyCreated":true,
    "actionType":{
     "actionTypeId": 2,
-    "name": "HH_IAC_LOAD",
+    "name": "HouseholdUploadIAC",
     "description": "Household upload IAC",
     "handler": "HHSurvey",
     "canCancel": true
@@ -28,7 +28,7 @@
    "manuallyCreated":true,
    "actionType":{
     "actionTypeId": 2,
-    "name": "HH_IAC_LOAD",
+    "name": "HouseholdUploadIAC",
     "description": "Household upload IAC",
     "handler": "HHSurvey",
     "canCancel": true

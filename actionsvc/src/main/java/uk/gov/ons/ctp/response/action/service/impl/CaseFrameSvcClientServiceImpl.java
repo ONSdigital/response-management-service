@@ -61,7 +61,7 @@ public class CaseFrameSvcClientServiceImpl implements CaseFrameSvcClientService 
   }
   
   @Override
-  public void createNewCaseEvent(final Action action, String actionCategory) {
+  public CaseEventDTO createNewCaseEvent(final Action action, String actionCategory) {
     log.debug("posting caseEvent for actionId {} to caseframesvc for category {} ", action.getActionId(), actionCategory);
     CaseEventDTO caseEventDTO = new CaseEventDTO();
     caseEventDTO.setCaseId(action.getCaseId());
@@ -71,9 +71,10 @@ public class CaseFrameSvcClientServiceImpl implements CaseFrameSvcClientService 
     caseEventDTO.setDescription(action.getActionType().getDescription());
     caseEventDTO.setSubCategory(action.getActionType().getName()); 
 
-    caseFrameClient.postResource(appConfig.getCaseFrameSvc().getCaseEventsByCasePostPath(), caseEventDTO,
+    CaseEventDTO returnedCaseEventDTO = caseFrameClient.postResource(appConfig.getCaseFrameSvc().getCaseEventsByCasePostPath(), caseEventDTO,
         CaseEventDTO.class,
         action.getCaseId());
+    return returnedCaseEventDTO;
   }
 
 }

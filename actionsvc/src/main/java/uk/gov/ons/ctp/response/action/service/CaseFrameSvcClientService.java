@@ -19,7 +19,7 @@ public interface CaseFrameSvcClientService {
    * @param action the action for which we need the event
    * @param actionCategory the category for the event
    */
-  void createNewCaseEvent(final Action action, String actionCategory);
+  CaseEventDTO createNewCaseEvent(final Action action, String actionCategory);
 
   /**
    * Call CaseFrameSvc using REST to get the Address MAY throw a

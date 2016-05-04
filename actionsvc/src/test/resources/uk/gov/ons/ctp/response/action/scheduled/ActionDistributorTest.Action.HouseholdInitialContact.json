@@ -8,7 +8,7 @@
    "manuallyCreated":true,
    "actionType":{  
       "actionTypeId":1,
-      "name":"HH_IC",
+      "name":"HouseholdInitialContact",
       "description":"Household Initial Contact",
       "handler":"Printer",
       "canCancel":false
@@ -28,7 +28,7 @@
    "manuallyCreated":true,
    "actionType":{  
       "actionTypeId":1,
-      "name":"HH_IC",
+      "name":"HouseholdInitialContact",
       "description":"Household Initial Contact",
       "handler":"Printer",
       "canCancel":false
