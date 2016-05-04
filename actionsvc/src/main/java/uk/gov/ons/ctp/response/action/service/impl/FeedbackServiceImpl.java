@@ -17,6 +17,7 @@ import uk.gov.ons.ctp.response.action.representation.ActionDTO;
 import uk.gov.ons.ctp.response.action.representation.ActionDTO.ActionState;
 import uk.gov.ons.ctp.response.action.service.CaseFrameSvcClientService;
 import uk.gov.ons.ctp.response.action.service.FeedbackService;
+import uk.gov.ons.ctp.response.caseframe.representation.CategoryDTO;
 
 /**
  * Accept feedback from handlers
@@ -51,7 +52,7 @@ public class FeedbackServiceImpl implements FeedbackService {
         actionRepo.saveAndFlush(action);
         
         if (nextState.equals(ActionDTO.ActionState.COMPLETED)) {
-          caseFrameSvcClientService.createNewCaseEvent(action, "ActionCompleted");
+          caseFrameSvcClientService.createNewCaseEvent(action, CategoryDTO.CategoryName.ACTION_COMPLETED.getLabel());
         }
       } catch (StateTransitionException ste) {
         throw new RuntimeException(ste);

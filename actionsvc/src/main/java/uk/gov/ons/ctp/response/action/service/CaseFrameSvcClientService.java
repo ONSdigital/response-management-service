@@ -60,4 +60,12 @@ public interface CaseFrameSvcClientService {
    *           errors
    */
   List<CaseEventDTO> getCaseEvents(final Integer caseId);
+
+  /**
+   * Get the list of case ids for all cases that are 'open' and associated with the given action plan
+   * @param actionPlanId the action plan id
+   * @return the list of case ids 
+   */
+  List<Integer> getOpenCasesForActionPlan(Integer actionPlanId);
+
 }

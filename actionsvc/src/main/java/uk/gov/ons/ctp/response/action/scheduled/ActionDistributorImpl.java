@@ -34,6 +34,7 @@ import uk.gov.ons.ctp.response.action.service.CaseFrameSvcClientService;
 import uk.gov.ons.ctp.response.caseframe.representation.AddressDTO;
 import uk.gov.ons.ctp.response.caseframe.representation.CaseDTO;
 import uk.gov.ons.ctp.response.caseframe.representation.CaseEventDTO;
+import uk.gov.ons.ctp.response.caseframe.representation.CategoryDTO;
 import uk.gov.ons.ctp.response.caseframe.representation.QuestionnaireDTO;
 
 /**
@@ -175,7 +176,7 @@ public class ActionDistributorImpl {
         actionRequest = prepareActionRequest(action);
 
         // advise caseframesvc to create a corresponding caseevent for our action
-        caseFrameSvcClientService.createNewCaseEvent(action, "ActionCreated");
+        caseFrameSvcClientService.createNewCaseEvent(action, CategoryDTO.CategoryName.ACTION_CREATED.getLabel());
 
         return actionRequest;
       }
