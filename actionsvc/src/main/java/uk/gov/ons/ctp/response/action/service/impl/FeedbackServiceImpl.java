@@ -3,6 +3,7 @@ package uk.gov.ons.ctp.response.action.service.impl;
 import java.sql.Timestamp;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,6 +24,7 @@ import uk.gov.ons.ctp.response.caseframe.representation.CategoryDTO;
  * Accept feedback from handlers
  */
 @Slf4j
+@Named
 public class FeedbackServiceImpl implements FeedbackService {
   private static final int TRANSACTION_TIMEOUT = 30;
 

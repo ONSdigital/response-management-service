@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.List;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -20,6 +21,7 @@ import uk.gov.ons.ctp.response.caseframe.representation.CaseEventDTO;
 import uk.gov.ons.ctp.response.caseframe.representation.QuestionnaireDTO;
 
 @Slf4j
+@Named
 public class CaseFrameSvcClientServiceImpl implements CaseFrameSvcClientService {
   @Inject
   private AppConfig appConfig;
