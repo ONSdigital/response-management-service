@@ -2,7 +2,6 @@ package uk.gov.ons.ctp.response.action.service.impl;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import javax.inject.Inject;
