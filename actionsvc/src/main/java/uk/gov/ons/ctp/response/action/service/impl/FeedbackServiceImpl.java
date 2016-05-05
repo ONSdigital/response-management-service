@@ -49,6 +49,7 @@ public class FeedbackServiceImpl implements FeedbackService {
         ActionDTO.ActionState nextState = actionSvcStateTransitionManager.transition(
             action.getState(),
             outcomeEvent);
+        action.setSituation(feedback.getSituation());
         action.setState(nextState);
         action.setUpdatedDateTime(new Timestamp(System.currentTimeMillis()));
         actionRepo.saveAndFlush(action);
