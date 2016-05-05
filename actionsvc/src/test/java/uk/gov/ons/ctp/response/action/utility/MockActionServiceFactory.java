@@ -160,7 +160,7 @@ public final class MockActionServiceFactory implements Factory<ActionService> {
 			}
 		});
 
-		Mockito.when(mockedService.cancelAction(any(Integer.class))).thenAnswer(new Answer<List<Action>>() {
+		Mockito.when(mockedService.cancelActions(any(Integer.class))).thenAnswer(new Answer<List<Action>>() {
 			public List<Action> answer(final InvocationOnMock invocation) throws Throwable {
 				List<Action> result = new ArrayList<Action>();
 				ActionType actionType = new ActionType(1, ACTION2_ACTIONTYPENAME, ACTION2_ACTIONTYPEDESC,
