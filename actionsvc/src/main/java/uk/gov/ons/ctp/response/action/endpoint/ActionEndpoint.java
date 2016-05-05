@@ -145,8 +145,8 @@ public final class ActionEndpoint implements CTPEndpoint {
   @Path("/case/{caseid}/cancel") 
   public List<ActionDTO> cancelActions(@PathParam("caseid") final int caseId)
       throws CTPException {
-    log.debug("Cancelling Action with {}", caseId);
-    List<Action> actions = actionService.cancelAction(caseId);
+    log.debug("Cancelling Actions for {}", caseId);
+    List<Action> actions = actionService.cancelActions(caseId);
     
     List<ActionDTO> results = mapperFacade.mapAsList(actions, ActionDTO.class);
     return CollectionUtils.isEmpty(results) ? null : results;

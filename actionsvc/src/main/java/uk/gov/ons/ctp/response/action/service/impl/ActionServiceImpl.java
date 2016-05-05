@@ -18,6 +18,7 @@ import uk.gov.ons.ctp.response.action.domain.model.ActionType;
 import uk.gov.ons.ctp.response.action.domain.repository.ActionRepository;
 import uk.gov.ons.ctp.response.action.domain.repository.ActionTypeRepository;
 import uk.gov.ons.ctp.response.action.representation.ActionDTO;
+import uk.gov.ons.ctp.response.action.representation.ActionDTO.ActionEvent;
 import uk.gov.ons.ctp.response.action.representation.ActionDTO.ActionState;
 import uk.gov.ons.ctp.response.action.service.ActionService;
 
@@ -76,7 +77,7 @@ public final class ActionServiceImpl implements ActionService {
 
   @Transactional(propagation = Propagation.REQUIRED, readOnly = false, timeout = TRANSACTION_TIMEOUT)
   @Override
-  public List<Action> cancelAction(final Integer caseId) {
+  public List<Action> cancelActions(final Integer caseId) {
     log.debug("Entering cancelAction with {}", caseId);
 
     List<Action> flushedActions = new ArrayList<>();
@@ -84,7 +85,7 @@ public final class ActionServiceImpl implements ActionService {
       List<Action> actions = actionRepo.findByCaseIdOrderByCreatedDateTimeDesc(caseId);
       for (Action action : actions) {
         ActionDTO.ActionState nextState = actionSvcStateTransitionManager.transition(action.getState(),
-            uk.gov.ons.ctp.response.action.representation.ActionDTO.ActionEvent.REQUEST_CANCELLED);
+            ActionEvent.REQUEST_CANCELLED);
         action.setState(nextState);
         action.setUpdatedDateTime(new Timestamp(System.currentTimeMillis()));
         actionRepo.saveAndFlush(action);

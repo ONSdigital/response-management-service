@@ -64,7 +64,7 @@ public interface ActionService extends CTPService {
 	 *
 	 * @return List<Action> Returns list of cancelled Actions.
 	 */
-	List<Action> cancelAction(Integer caseId);
+	List<Action> cancelActions(Integer caseId);
 	
 	/**
 	 * Create an action.
