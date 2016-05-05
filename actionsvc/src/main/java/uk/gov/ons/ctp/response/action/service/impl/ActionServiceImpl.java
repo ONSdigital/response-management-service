@@ -82,7 +82,7 @@ public final class ActionServiceImpl implements ActionService {
 
     List<Action> flushedActions = new ArrayList<>();
     try {
-      List<Action> actions = actionRepo.findByCaseIdOrderByCreatedDateTimeDesc(caseId);
+      List<Action> actions = actionRepo.findByCaseId(caseId);
       for (Action action : actions) {
         ActionDTO.ActionState nextState = actionSvcStateTransitionManager.transition(action.getState(),
             ActionEvent.REQUEST_CANCELLED);

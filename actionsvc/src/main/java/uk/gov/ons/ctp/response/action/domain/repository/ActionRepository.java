@@ -20,6 +20,14 @@ public interface ActionRepository extends JpaRepository<Action, Integer> {
    * @param caseId This is the case id
    * @return List<Action> This returns all actions for the specified case id.
    */
+  List<Action> findByCaseId(Integer caseId);
+  
+  /**
+   * Return all actions for the specified case id, ordered by created DateTime.
+   *
+   * @param caseId This is the case id
+   * @return List<Action> This returns all actions for the specified case id.
+   */
   List<Action> findByCaseIdOrderByCreatedDateTimeDesc(Integer caseId);
 
   /**
