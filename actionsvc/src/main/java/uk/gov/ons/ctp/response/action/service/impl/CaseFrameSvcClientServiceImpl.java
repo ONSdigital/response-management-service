@@ -18,6 +18,7 @@ import uk.gov.ons.ctp.response.action.service.CaseFrameSvcClientService;
 import uk.gov.ons.ctp.response.caseframe.representation.AddressDTO;
 import uk.gov.ons.ctp.response.caseframe.representation.CaseDTO;
 import uk.gov.ons.ctp.response.caseframe.representation.CaseEventDTO;
+import uk.gov.ons.ctp.response.caseframe.representation.CategoryDTO;
 import uk.gov.ons.ctp.response.caseframe.representation.QuestionnaireDTO;
 
 @Slf4j
@@ -63,12 +64,12 @@ public class CaseFrameSvcClientServiceImpl implements CaseFrameSvcClientService 
   }
 
   @Override
-  public CaseEventDTO createNewCaseEvent(final Action action, String actionCategory) {
+  public CaseEventDTO createNewCaseEvent(final Action action, CategoryDTO.CategoryName actionCategory) {
     log.debug("posting caseEvent for actionId {} to caseframesvc for category {} ", action.getActionId(),
         actionCategory);
     CaseEventDTO caseEventDTO = new CaseEventDTO();
     caseEventDTO.setCaseId(action.getCaseId());
-    caseEventDTO.setCategory(actionCategory);
+    caseEventDTO.setCategory(actionCategory.getLabel());
     caseEventDTO.setCreatedBy(action.getCreatedBy());
     caseEventDTO.setCreatedDateTime(new Date());
     caseEventDTO.setDescription(action.getActionType().getDescription());

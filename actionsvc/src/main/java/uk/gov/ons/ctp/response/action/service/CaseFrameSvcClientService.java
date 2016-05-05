@@ -2,10 +2,13 @@ package uk.gov.ons.ctp.response.action.service;
 
 import java.util.List;
 
+import org.springframework.web.client.RestClientException;
+
 import uk.gov.ons.ctp.response.action.domain.model.Action;
 import uk.gov.ons.ctp.response.caseframe.representation.AddressDTO;
 import uk.gov.ons.ctp.response.caseframe.representation.CaseDTO;
 import uk.gov.ons.ctp.response.caseframe.representation.CaseEventDTO;
+import uk.gov.ons.ctp.response.caseframe.representation.CategoryDTO;
 import uk.gov.ons.ctp.response.caseframe.representation.QuestionnaireDTO;
 
 /**
@@ -19,7 +22,7 @@ public interface CaseFrameSvcClientService {
    * @param action the action for which we need the event
    * @param actionCategory the category for the event
    */
-  CaseEventDTO createNewCaseEvent(final Action action, String actionCategory);
+  CaseEventDTO createNewCaseEvent(final Action action, CategoryDTO.CategoryName actionCategory);
 
   /**
    * Call CaseFrameSvc using REST to get the Address MAY throw a

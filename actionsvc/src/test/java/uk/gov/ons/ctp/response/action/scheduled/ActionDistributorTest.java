@@ -40,6 +40,7 @@ import uk.gov.ons.ctp.response.action.service.CaseFrameSvcClientService;
 import uk.gov.ons.ctp.response.caseframe.representation.AddressDTO;
 import uk.gov.ons.ctp.response.caseframe.representation.CaseDTO;
 import uk.gov.ons.ctp.response.caseframe.representation.CaseEventDTO;
+import uk.gov.ons.ctp.response.caseframe.representation.CategoryDTO;
 import uk.gov.ons.ctp.response.caseframe.representation.QuestionnaireDTO;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -121,7 +122,7 @@ public class ActionDistributorTest {
     verify(caseFrameSvcClientService, times(0)).getCaseEvents(eq(3));
     verify(caseFrameSvcClientService, times(0)).getCaseEvents(eq(4));
 
-    verify(caseFrameSvcClientService, times(0)).createNewCaseEvent(any(Action.class), eq("ActionCreated"));
+    verify(caseFrameSvcClientService, times(0)).createNewCaseEvent(any(Action.class), eq(CategoryDTO.CategoryName.ACTION_CREATED));
 
     verify(instructionPublisher, times(0)).sendRequests(eq("Printer"), anyListOf(ActionRequest.class));
     verify(instructionPublisher, times(0)).sendRequests(eq("HHSurvey"), anyListOf(ActionRequest.class));
@@ -182,7 +183,7 @@ public class ActionDistributorTest {
     Mockito.when(caseFrameSvcClientService.getCaseEvents(eq(4)))
         .thenReturn(Arrays.asList(new CaseEventDTO[] {caseEventDTOs.get(3)}));
 
-    Mockito.when(caseFrameSvcClientService.createNewCaseEvent(any(Action.class), eq("ActionCreated")))
+    Mockito.when(caseFrameSvcClientService.createNewCaseEvent(any(Action.class), eq(CategoryDTO.CategoryName.ACTION_CREATED)))
         .thenReturn(caseEventDTOsPost.get(2));
 
     // let it roll
@@ -207,7 +208,7 @@ public class ActionDistributorTest {
     verify(caseFrameSvcClientService).getCaseEvents(eq(3));
     verify(caseFrameSvcClientService).getCaseEvents(eq(4));
 
-    verify(caseFrameSvcClientService, times(2)).createNewCaseEvent(any(Action.class), eq("ActionCreated"));
+    verify(caseFrameSvcClientService, times(2)).createNewCaseEvent(any(Action.class), eq(CategoryDTO.CategoryName.ACTION_CREATED));
 
     verify(instructionPublisher, times(0)).sendRequests(eq("Printer"), anyListOf(ActionRequest.class));
     verify(instructionPublisher, times(1)).sendRequests(eq("HHSurvey"), anyListOf(ActionRequest.class));
@@ -275,7 +276,7 @@ public class ActionDistributorTest {
     Mockito.when(caseFrameSvcClientService.getCaseEvents(eq(4)))
         .thenReturn(Arrays.asList(new CaseEventDTO[] {caseEventDTOs.get(3)}));
 
-    Mockito.when(caseFrameSvcClientService.createNewCaseEvent(any(Action.class), eq("ActionCreated")))
+    Mockito.when(caseFrameSvcClientService.createNewCaseEvent(any(Action.class), eq(CategoryDTO.CategoryName.ACTION_CREATED)))
         .thenReturn(caseEventDTOsPost.get(2));
 
 
@@ -305,7 +306,7 @@ public class ActionDistributorTest {
     verify(caseFrameSvcClientService).getCaseEvents(eq(3));
     verify(caseFrameSvcClientService).getCaseEvents(eq(4));
 
-    verify(caseFrameSvcClientService, times(4)).createNewCaseEvent(any(Action.class), eq("ActionCreated"));
+    verify(caseFrameSvcClientService, times(4)).createNewCaseEvent(any(Action.class), eq(CategoryDTO.CategoryName.ACTION_CREATED));
 
     verify(instructionPublisher, times(1)).sendRequests(eq("Printer"), anyListOf(ActionRequest.class));
     verify(instructionPublisher, times(1)).sendRequests(eq("HHSurvey"), anyListOf(ActionRequest.class));

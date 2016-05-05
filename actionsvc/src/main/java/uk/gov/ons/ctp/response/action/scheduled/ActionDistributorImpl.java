@@ -176,7 +176,7 @@ public class ActionDistributorImpl {
         actionRequest = prepareActionRequest(action);
 
         // advise caseframesvc to create a corresponding caseevent for our action
-        caseFrameSvcClientService.createNewCaseEvent(action, CategoryDTO.CategoryName.ACTION_CREATED.getLabel());
+        caseFrameSvcClientService.createNewCaseEvent(action, CategoryDTO.CategoryName.ACTION_CREATED);
 
         return actionRequest;
       }
