@@ -1,7 +1,6 @@
 package uk.gov.ons.ctp.response.action.service.impl;
 
 import java.sql.Timestamp;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -10,12 +9,8 @@ import javax.inject.Named;
 
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
 
 import lombok.extern.slf4j.Slf4j;
-import uk.gov.ons.ctp.common.rest.RestClient;
-import uk.gov.ons.ctp.response.action.config.AppConfig;
 import uk.gov.ons.ctp.response.action.domain.model.ActionCase;
 import uk.gov.ons.ctp.response.action.domain.model.ActionPlan;
 import uk.gov.ons.ctp.response.action.domain.model.ActionPlanJob;
@@ -24,7 +19,7 @@ import uk.gov.ons.ctp.response.action.domain.repository.ActionPlanJobRepository;
 import uk.gov.ons.ctp.response.action.domain.repository.ActionPlanRepository;
 import uk.gov.ons.ctp.response.action.representation.ActionPlanJobDTO;
 import uk.gov.ons.ctp.response.action.service.ActionPlanJobService;
-import uk.gov.ons.ctp.response.caseframe.representation.CaseDTO;
+import uk.gov.ons.ctp.response.action.service.CaseFrameSvcClientService;
 
 /**
  * Implementation
@@ -37,10 +32,7 @@ public class ActionPlanJobServiceImpl implements ActionPlanJobService {
   private static final int TRANSACTION_TIMEOUT = 300;
 
   @Inject
-  private AppConfig appConfig;
-
-  @Inject
-  private RestClient caseFrameClient;
+  private CaseFrameSvcClientService caseFrameSvcClientService;
 
   @Inject
   private ActionPlanRepository actionPlanRepo;
@@ -78,13 +70,7 @@ public class ActionPlanJobServiceImpl implements ActionPlanJobService {
       actionPlanJob.setUpdatedDateTime(now);
       createdJob = actionPlanJobRepo.save(actionPlanJob);
 
-      // setup and make the call to caseframe to find open cases for plan
-      MultiValueMap<String, String> queryParamMap = new LinkedMultiValueMap<>();
-      queryParamMap.put("status", Arrays.asList(CaseDTO.CaseState.INIT.name()));
-      //TODO - move to caseframesvcclientservice
-      List<Integer> openCasesForPlan = caseFrameClient.getResources(
-          appConfig.getCaseFrameSvc().getCaseByStatusAndActionPlanPath(), Integer[].class, null, queryParamMap,
-          actionPlanId);
+      List<Integer> openCasesForPlan = caseFrameSvcClientService.getOpenCasesForActionPlan(actionPlanId);
 
       // create entry in action.case for each open case for job
       for (Integer openCaseId : openCasesForPlan) {
