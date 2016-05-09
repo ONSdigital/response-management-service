@@ -294,7 +294,7 @@ public class ActionDistributorImpl {
         action.getActionId(), action.getCaseId());
     ActionCancel actionCancel = new ActionCancel();
     actionCancel.setActionId(BigInteger.valueOf(action.getActionId()));
-    actionCancel.setReason("We changed our minds"); // TODO
+    actionCancel.setReason("Action cancelled by Response Management");
     return actionCancel;
   }
 

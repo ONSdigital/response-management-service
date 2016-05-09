@@ -31,7 +31,7 @@ public class CaseFrameSvcClientServiceImpl implements CaseFrameSvcClientService 
   private RestClient caseFrameClient;
 
   @Override
-  public AddressDTO getAddress(final Integer uprn) {
+  public AddressDTO getAddress(final Long uprn) {
     AddressDTO caseDTO = caseFrameClient.getResource(appConfig.getCaseFrameSvc().getAddressByUprnGetPath(),
         AddressDTO.class, uprn);
     return caseDTO;

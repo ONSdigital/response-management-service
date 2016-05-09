@@ -31,7 +31,7 @@ public interface CaseFrameSvcClientService {
    * @param uprn identifies the Address to fetch
    * @return the Address we fetched
    */
-  AddressDTO getAddress(final Integer uprn);
+  AddressDTO getAddress(final Long uprn);
 
   /**
    * Call CaseFrameSvc using REST to get the Questionnaire MAY throw a

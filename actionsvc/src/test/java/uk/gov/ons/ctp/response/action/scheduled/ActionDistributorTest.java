@@ -117,7 +117,7 @@ public class ActionDistributorTest {
     verify(caseFrameSvcClientService, times(0)).getCase(eq(3));
     verify(caseFrameSvcClientService, times(0)).getCase(eq(4));
 
-    verify(caseFrameSvcClientService, times(0)).getAddress(eq(1234));
+    verify(caseFrameSvcClientService, times(0)).getAddress(eq(1234L));
 
     verify(caseFrameSvcClientService, times(0)).getCaseEvents(eq(3));
     verify(caseFrameSvcClientService, times(0)).getCaseEvents(eq(4));
@@ -177,7 +177,7 @@ public class ActionDistributorTest {
     Mockito.when(caseFrameSvcClientService.getQuestionnaire(eq(3))).thenReturn(questionnaireDTOs.get(2));
     Mockito.when(caseFrameSvcClientService.getQuestionnaire(eq(4))).thenReturn(questionnaireDTOs.get(3));
 
-    Mockito.when(caseFrameSvcClientService.getAddress(eq(1234)))
+    Mockito.when(caseFrameSvcClientService.getAddress(eq(1234L)))
         .thenReturn(addressDTOsUprn1234.get(0));
 
     Mockito.when(caseFrameSvcClientService.getCaseEvents(eq(3)))
@@ -205,7 +205,7 @@ public class ActionDistributorTest {
     verify(caseFrameSvcClientService).getCase(eq(3));
     verify(caseFrameSvcClientService).getCase(eq(4));
 
-    verify(caseFrameSvcClientService, times(2)).getAddress(eq(1234));
+    verify(caseFrameSvcClientService, times(2)).getAddress(eq(1234L));
 
     verify(caseFrameSvcClientService).getCaseEvents(eq(3));
     verify(caseFrameSvcClientService).getCaseEvents(eq(4));
@@ -268,7 +268,7 @@ public class ActionDistributorTest {
     Mockito.when(caseFrameSvcClientService.getCase(eq(3))).thenReturn(caseDTOs.get(2));
     Mockito.when(caseFrameSvcClientService.getCase(eq(4))).thenReturn(caseDTOs.get(3));
 
-    Mockito.when(caseFrameSvcClientService.getAddress(eq(1234)))
+    Mockito.when(caseFrameSvcClientService.getAddress(eq(1234L)))
         .thenReturn(addressDTOsUprn1234.get(0));
 
     Mockito.when(caseFrameSvcClientService.getCaseEvents(eq(1)))
@@ -304,7 +304,7 @@ public class ActionDistributorTest {
     verify(caseFrameSvcClientService).getCase(eq(3));
     verify(caseFrameSvcClientService).getCase(eq(4));
 
-    verify(caseFrameSvcClientService, times(4)).getAddress(eq(1234));
+    verify(caseFrameSvcClientService, times(4)).getAddress(eq(1234L));
 
     verify(caseFrameSvcClientService).getCaseEvents(eq(1));
     verify(caseFrameSvcClientService).getCaseEvents(eq(2));
