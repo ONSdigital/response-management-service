@@ -1,6 +1,5 @@
 databaseChangeLog:
 
-
   - changeSet:
       id: 8.16.0-1
       author: whilep1
@@ -11,7 +10,33 @@ databaseChangeLog:
             splitStatements: false
             relativeToChangelogFile: true
 
+  - changeSet:
+      id: 8.16.0-2
+      author: Chris Parker
+      changes:
+        - sqlFile:
+            comment: action-state-increase-size.sql
+            path: action-state-increase-size.sql
+            splitStatements: false
+            relativeToChangelogFile: true
 
+  - changeSet:
+      id: 8.16.0-3
+      author: Chris Parker
+      changes:
+        - sqlFile:
+            comment: seed action state
+            path: NEW-SEED-data-actionstate.sql
+            relativeToChangelogFile: true
+
+  - changeSet:
+      id: 8.16.0-4
+      author: PhilW
+      changes:
+        - sqlFile:
+            comment: modified can cancels
+            path: action_type_can_cancel.sql
+            relativeToChangelogFile: true
 
 
 

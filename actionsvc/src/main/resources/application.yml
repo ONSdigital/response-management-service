@@ -91,6 +91,9 @@ spring:
         hibernate:
           ddl-auto: update
 
+action-distribution:
+  instructionMax: 1000
+   
 case-frame-svc:
   scheme: http
   host: localhost

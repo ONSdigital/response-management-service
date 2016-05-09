@@ -2,7 +2,6 @@ package uk.gov.ons.ctp.response.action.scheduled;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyListOf;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -18,14 +17,15 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.support.TransactionTemplate;
 import org.springframework.web.client.RestClientException;
 
 import ma.glasnost.orika.MapperFacade;
 import uk.gov.ons.ctp.common.FixtureHelper;
-import uk.gov.ons.ctp.common.rest.RestClient;
 import uk.gov.ons.ctp.common.state.StateTransitionManager;
+import uk.gov.ons.ctp.response.action.config.ActionDistribution;
 import uk.gov.ons.ctp.response.action.config.AppConfig;
 import uk.gov.ons.ctp.response.action.config.CaseFrameSvc;
 import uk.gov.ons.ctp.response.action.domain.model.Action;
@@ -33,6 +33,7 @@ import uk.gov.ons.ctp.response.action.domain.model.ActionType;
 import uk.gov.ons.ctp.response.action.domain.repository.ActionRepository;
 import uk.gov.ons.ctp.response.action.domain.repository.ActionTypeRepository;
 import uk.gov.ons.ctp.response.action.message.InstructionPublisher;
+import uk.gov.ons.ctp.response.action.message.instruction.ActionCancel;
 import uk.gov.ons.ctp.response.action.message.instruction.ActionRequest;
 import uk.gov.ons.ctp.response.action.representation.ActionDTO;
 import uk.gov.ons.ctp.response.action.representation.ActionDTO.ActionState;
@@ -103,11 +104,10 @@ public class ActionDistributorTest {
 
     // assert the right calls were made
     verify(actionTypeRepo).findAll();
-    verify(actionRepo, times(0)).findFirst100ByActionTypeNameAndStateOrderByCreatedDateTimeAsc("HH_IC",
-        ActionState.SUBMITTED);
-    verify(actionRepo, times(0)).findFirst100ByActionTypeNameAndStateOrderByCreatedDateTimeAsc("HH_IAC_LOAD",
-        ActionState.SUBMITTED);
-
+    verify(actionRepo, times(0)).findByActionTypeNameAndStateIn(eq("HouseholdInitialContact"),
+        anyListOf(ActionState.class), any(Pageable.class));
+    verify(actionRepo, times(0)).findByActionTypeNameAndStateIn(eq("HouseholdUploadIAC"),
+        anyListOf(ActionState.class), any(Pageable.class));
 
     verify(caseFrameSvcClientService, times(0)).getQuestionnaire(eq(1));
     verify(caseFrameSvcClientService, times(0)).getQuestionnaire(eq(2));
@@ -124,8 +124,8 @@ public class ActionDistributorTest {
 
     verify(caseFrameSvcClientService, times(0)).createNewCaseEvent(any(Action.class), eq(CategoryDTO.CategoryName.ACTION_CREATED));
 
-    verify(instructionPublisher, times(0)).sendRequests(eq("Printer"), anyListOf(ActionRequest.class));
-    verify(instructionPublisher, times(0)).sendRequests(eq("HHSurvey"), anyListOf(ActionRequest.class));
+    verify(instructionPublisher, times(0)).sendInstructions(eq("Printer"), anyListOf(ActionRequest.class), anyListOf(ActionCancel.class));
+    verify(instructionPublisher, times(0)).sendInstructions(eq("HHSurvey"), anyListOf(ActionRequest.class), anyListOf(ActionCancel.class));
   }
 
   /**
@@ -138,6 +138,7 @@ public class ActionDistributorTest {
   public void testFailCaseGet() throws Exception {
     // set up dummy data
     CaseFrameSvc caseFrameSvcConfig = new CaseFrameSvc();
+    ActionDistribution actionDistribution = new ActionDistribution();
 
     List<ActionType> actionTypes = FixtureHelper.loadClassFixtures(ActionType[].class);
 
@@ -157,12 +158,13 @@ public class ActionDistributorTest {
     // wire up mock responses
     Mockito.when(actionSvcStateTransitionManager.transition(ActionState.SUBMITTED, ActionDTO.ActionEvent.REQUEST_DISTRIBUTED)).thenReturn(ActionState.PENDING);
     Mockito.when(appConfig.getCaseFrameSvc()).thenReturn(caseFrameSvcConfig);
+    Mockito.when(appConfig.getActionDistribution()).thenReturn(actionDistribution);
     Mockito.when(actionTypeRepo.findAll()).thenReturn(actionTypes);
     Mockito
-        .when(actionRepo.findFirst100ByActionTypeNameAndStateOrderByCreatedDateTimeAsc("HouseholdInitialContact", ActionState.SUBMITTED))
+        .when(actionRepo.findByActionTypeNameAndStateIn(eq("HouseholdInitialContact"), anyListOf(ActionState.class), any(Pageable.class)))
         .thenReturn(actionsHHIC);
     Mockito.when(
-        actionRepo.findFirst100ByActionTypeNameAndStateOrderByCreatedDateTimeAsc("HouseholdUploadIAC", ActionState.SUBMITTED))
+        actionRepo.findByActionTypeNameAndStateIn(eq("HouseholdUploadIAC"), anyListOf(ActionState.class), any(Pageable.class)))
         .thenReturn(actionsHHIACLOAD);
 
     Mockito.when(caseFrameSvcClientService.getQuestionnaire(eq(1)))
@@ -190,11 +192,11 @@ public class ActionDistributorTest {
     actionDistributor.wakeUp();
 
     // assert the right calls were made
-    verify(actionTypeRepo).findAll();
-    verify(actionRepo).findFirst100ByActionTypeNameAndStateOrderByCreatedDateTimeAsc("HouseholdInitialContact", ActionState.SUBMITTED);
-    verify(actionRepo).findFirst100ByActionTypeNameAndStateOrderByCreatedDateTimeAsc("HouseholdUploadIAC",
-        ActionState.SUBMITTED);
-
+    verify(actionTypeRepo).findAll();  
+    verify(actionRepo).findByActionTypeNameAndStateIn(eq("HouseholdInitialContact"),
+        anyListOf(ActionState.class), any(Pageable.class));
+    verify(actionRepo).findByActionTypeNameAndStateIn(eq("HouseholdUploadIAC"),
+        anyListOf(ActionState.class), any(Pageable.class));
     verify(caseFrameSvcClientService).getQuestionnaire(eq(1));
     verify(caseFrameSvcClientService).getQuestionnaire(eq(2));
     verify(caseFrameSvcClientService).getQuestionnaire(eq(3));
@@ -210,8 +212,8 @@ public class ActionDistributorTest {
 
     verify(caseFrameSvcClientService, times(2)).createNewCaseEvent(any(Action.class), eq(CategoryDTO.CategoryName.ACTION_CREATED));
 
-    verify(instructionPublisher, times(0)).sendRequests(eq("Printer"), anyListOf(ActionRequest.class));
-    verify(instructionPublisher, times(1)).sendRequests(eq("HHSurvey"), anyListOf(ActionRequest.class));
+    verify(instructionPublisher, times(0)).sendInstructions(eq("Printer"), anyListOf(ActionRequest.class), anyListOf(ActionCancel.class));
+    verify(instructionPublisher, times(1)).sendInstructions(eq("HHSurvey"), anyListOf(ActionRequest.class), anyListOf(ActionCancel.class));
   }
 
   /**
@@ -222,6 +224,7 @@ public class ActionDistributorTest {
   public void testBlueSky() throws Exception {
     // set up dummy data
     CaseFrameSvc caseFrameSvcConfig = new CaseFrameSvc();
+    ActionDistribution actionDistribution = new ActionDistribution();
 
     List<ActionType> actionTypes = FixtureHelper.loadClassFixtures(ActionType[].class);
 
@@ -242,12 +245,13 @@ public class ActionDistributorTest {
     Mockito.when(actionSvcStateTransitionManager.transition(ActionState.SUBMITTED, ActionDTO.ActionEvent.REQUEST_DISTRIBUTED)).thenReturn(ActionState.PENDING);
 
     Mockito.when(appConfig.getCaseFrameSvc()).thenReturn(caseFrameSvcConfig);
+    Mockito.when(appConfig.getActionDistribution()).thenReturn(actionDistribution);
     Mockito.when(actionTypeRepo.findAll()).thenReturn(actionTypes);
     Mockito
-        .when(actionRepo.findFirst100ByActionTypeNameAndStateOrderByCreatedDateTimeAsc("HouseholdInitialContact", ActionState.SUBMITTED))
+        .when(actionRepo.findByActionTypeNameAndStateIn(eq("HouseholdInitialContact"), anyListOf(ActionState.class), any(Pageable.class)))
         .thenReturn(actionsHHIC);
     Mockito.when(
-        actionRepo.findFirst100ByActionTypeNameAndStateOrderByCreatedDateTimeAsc("HouseholdUploadIAC", ActionState.SUBMITTED))
+        actionRepo.findByActionTypeNameAndStateIn(eq("HouseholdUploadIAC"), anyListOf(ActionState.class), any(Pageable.class)))
         .thenReturn(actionsHHIACLOAD);
 
     Mockito.when(caseFrameSvcClientService.getQuestionnaire(eq(1)))
@@ -285,9 +289,10 @@ public class ActionDistributorTest {
 
     // assert the right calls were made
     verify(actionTypeRepo).findAll();
-    verify(actionRepo).findFirst100ByActionTypeNameAndStateOrderByCreatedDateTimeAsc("HouseholdInitialContact", ActionState.SUBMITTED);
-    verify(actionRepo).findFirst100ByActionTypeNameAndStateOrderByCreatedDateTimeAsc("HouseholdUploadIAC",
-        ActionState.SUBMITTED);
+    verify(actionRepo).findByActionTypeNameAndStateIn(eq("HouseholdInitialContact"),
+        anyListOf(ActionState.class), any(Pageable.class));
+    verify(actionRepo).findByActionTypeNameAndStateIn(eq("HouseholdUploadIAC"),
+        anyListOf(ActionState.class), any(Pageable.class));
 
     verify(caseFrameSvcClientService).getQuestionnaire(eq(1));
     verify(caseFrameSvcClientService).getQuestionnaire(eq(2));
@@ -308,7 +313,7 @@ public class ActionDistributorTest {
 
     verify(caseFrameSvcClientService, times(4)).createNewCaseEvent(any(Action.class), eq(CategoryDTO.CategoryName.ACTION_CREATED));
 
-    verify(instructionPublisher, times(1)).sendRequests(eq("Printer"), anyListOf(ActionRequest.class));
-    verify(instructionPublisher, times(1)).sendRequests(eq("HHSurvey"), anyListOf(ActionRequest.class));
+    verify(instructionPublisher, times(1)).sendInstructions(eq("Printer"), anyListOf(ActionRequest.class), anyListOf(ActionCancel.class));
+    verify(instructionPublisher, times(1)).sendInstructions(eq("HHSurvey"), anyListOf(ActionRequest.class), anyListOf(ActionCancel.class));
   }
 }

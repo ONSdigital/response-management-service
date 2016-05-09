@@ -9,3 +9,5 @@ INSERT INTO action.actionstate (state) VALUES ('COMPLETED');
 INSERT INTO action.actionstate (state) VALUES ('CANCEL_SUBMITTED');
 INSERT INTO action.actionstate (state) VALUES ('CANCELLED');
 INSERT INTO action.actionstate (state) VALUES ('CANCEL_PENDING');
+INSERT INTO action.actionstate (state) VALUES ('CANCELLING');
+INSERT INTO action.actionstate (state) VALUES ('ABORTED');

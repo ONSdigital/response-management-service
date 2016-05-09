@@ -61,8 +61,9 @@ public interface ActionService extends CTPService {
 	 *
 	 * @param caseId
 	 *            Integer caseId for all the Actions to be cancelled
+	 * @param categoryName the case event category name that lead to the case closure
 	 *
-	 * @return List<Action> Returns list of cancelled Actions.
+	 * @return List<Action> Returns list of all actions for the case that were cancelled. Not all actions are cancellable!
 	 */
 	List<Action> cancelActions(Integer caseId);
 	

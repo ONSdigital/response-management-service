@@ -33,7 +33,6 @@ public final class ActionServiceImpl implements ActionService {
 
   private static final int TRANSACTION_TIMEOUT = 30;
 
-  
   @Inject
   private ActionRepository actionRepo;
 
@@ -42,7 +41,6 @@ public final class ActionServiceImpl implements ActionService {
 
   @Inject
   private StateTransitionManager<ActionState, uk.gov.ons.ctp.response.action.representation.ActionDTO.ActionEvent> actionSvcStateTransitionManager;
-
 
   @Override
   public List<Action> findActionsByTypeAndStateOrderedByCreatedDateTimeDescending(final String actionTypeName,
@@ -84,12 +82,15 @@ public final class ActionServiceImpl implements ActionService {
     try {
       List<Action> actions = actionRepo.findByCaseId(caseId);
       for (Action action : actions) {
-        ActionDTO.ActionState nextState = actionSvcStateTransitionManager.transition(action.getState(),
-            ActionEvent.REQUEST_CANCELLED);
-        action.setState(nextState);
-        action.setUpdatedDateTime(new Timestamp(System.currentTimeMillis()));
-        actionRepo.saveAndFlush(action);
-        flushedActions.add(action);
+        if (action.getActionType().getCanCancel()) {
+          log.debug("Cancelling action {} of type {}", action.getActionId(), action.getActionType().getName());
+          ActionDTO.ActionState nextState = actionSvcStateTransitionManager.transition(action.getState(),
+              ActionEvent.REQUEST_CANCELLED);
+          action.setState(nextState);
+          action.setUpdatedDateTime(new Timestamp(System.currentTimeMillis()));
+          actionRepo.saveAndFlush(action);
+          flushedActions.add(action);
+        }
       }
     } catch (StateTransitionException ste) {
       throw new RuntimeException(ste);

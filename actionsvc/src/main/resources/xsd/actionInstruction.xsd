@@ -8,11 +8,11 @@
 
   <!--  the instruction can have either request(s), update(s) or cancel(s), but never mixed instruction types -->
   <xs:complexType name="ActionInstruction">
-    <xs:choice>
+    <xs:sequence>
       <xs:element name="actionRequests" type="ActionRequests"/>
       <xs:element name="actionUpdates" type="ActionUpdates"/>
       <xs:element name="actionCancels" type="ActionCancels"/>
-    </xs:choice>
+    </xs:sequence>
   </xs:complexType>
   
   <!-- the outer element containing requests -->

@@ -8,6 +8,8 @@ import org.springframework.integration.annotation.Publisher;
 import org.springframework.messaging.handler.annotation.Header;
 
 import uk.gov.ons.ctp.response.action.message.InstructionPublisher;
+import uk.gov.ons.ctp.response.action.message.instruction.ActionCancel;
+import uk.gov.ons.ctp.response.action.message.instruction.ActionCancels;
 import uk.gov.ons.ctp.response.action.message.instruction.ActionInstruction;
 import uk.gov.ons.ctp.response.action.message.instruction.ActionRequest;
 import uk.gov.ons.ctp.response.action.message.instruction.ActionRequests;
@@ -26,12 +28,17 @@ public class InstructionPublisherImpl implements InstructionPublisher {
 
   @Override
   @Publisher(channel = "instructionOutbound")
-  public ActionInstruction sendRequests(@Header("HANDLER") String handler, List<ActionRequest> actionRequests) {
+  public ActionInstruction sendInstructions(@Header("HANDLER") String handler, List<ActionRequest> actionRequests, List<ActionCancel> actionCancels) {
     ActionInstruction instruction = new ActionInstruction();
 
     ActionRequests requests = new ActionRequests();
     requests.getActionRequests().addAll(actionRequests);
     instruction.setActionRequests(requests);
+
+    ActionCancels cancels = new ActionCancels();
+    cancels.getActionCancels().addAll(actionCancels);
+    instruction.setActionCancels(cancels);
+
     return instruction;
   }
 

@@ -1,5 +1,9 @@
 package uk.gov.ons.ctp.response.action.message;
 
+import static org.junit.Assert.assertTrue;
+import static uk.gov.ons.ctp.response.action.utility.CommonValues.ACTION_INSTRUCTION_XML_BITS;
+
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
@@ -10,11 +14,9 @@ import org.springframework.jms.listener.DefaultMessageListenerContainer;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import uk.gov.ons.ctp.response.action.message.instruction.ActionCancel;
 import uk.gov.ons.ctp.response.action.message.instruction.ActionRequest;
 import uk.gov.ons.ctp.response.action.utility.ActionMessageListener;
-
-import static org.junit.Assert.assertTrue;
-import static uk.gov.ons.ctp.response.action.utility.CommonValues.ACTION_INSTRUCTION_XML_BITS;
 
 @ContextConfiguration(locations = { "/InstructionServiceTest-context.xml" })
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -33,10 +35,16 @@ public class InstructionPublisherTest {
 	@Test
 	public void testSendActionInstructionWithInstructionPublisher() throws InterruptedException {
 		ActionRequest actionRequest = new ActionRequest();
+		actionRequest.setActionId(BigInteger.valueOf(1));
 		actionRequest.setActionType(TEST_ACTION_TYPE);
 		ArrayList<ActionRequest> actionRequests = new ArrayList<>();
 		actionRequests.add(actionRequest);
-		instructionPublisher.sendRequests(FIELD_HANDLER, actionRequests);
+
+		ActionCancel actionCancel = new ActionCancel();
+		actionCancel.setActionId(BigInteger.valueOf(2));
+		ArrayList<ActionCancel> actionCancels = new ArrayList<>();
+		actionCancels.add(actionCancel);
+		instructionPublisher.sendInstructions(FIELD_HANDLER, actionRequests, actionCancels);
 
 		ActionMessageListener listener = (ActionMessageListener)actionInstructionMessageListenerContainer.
             getMessageListener();

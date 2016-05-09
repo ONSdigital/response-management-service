@@ -10,4 +10,5 @@ import lombok.Data;
 @Data
 public class AppConfig {
   private CaseFrameSvc caseFrameSvc;
+  private ActionDistribution actionDistribution;
 }

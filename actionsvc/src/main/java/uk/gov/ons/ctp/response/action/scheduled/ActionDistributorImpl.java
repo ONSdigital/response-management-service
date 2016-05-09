@@ -3,11 +3,16 @@ package uk.gov.ons.ctp.response.action.scheduled;
 import java.math.BigInteger;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionStatus;
@@ -18,6 +23,7 @@ import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import uk.gov.ons.ctp.common.state.StateTransitionException;
 import uk.gov.ons.ctp.common.state.StateTransitionManager;
+import uk.gov.ons.ctp.response.action.config.AppConfig;
 import uk.gov.ons.ctp.response.action.domain.model.Action;
 import uk.gov.ons.ctp.response.action.domain.model.Action.ActionPriority;
 import uk.gov.ons.ctp.response.action.domain.model.ActionType;
@@ -25,6 +31,7 @@ import uk.gov.ons.ctp.response.action.domain.repository.ActionRepository;
 import uk.gov.ons.ctp.response.action.domain.repository.ActionTypeRepository;
 import uk.gov.ons.ctp.response.action.message.InstructionPublisher;
 import uk.gov.ons.ctp.response.action.message.instruction.ActionAddress;
+import uk.gov.ons.ctp.response.action.message.instruction.ActionCancel;
 import uk.gov.ons.ctp.response.action.message.instruction.ActionEvent;
 import uk.gov.ons.ctp.response.action.message.instruction.ActionRequest;
 import uk.gov.ons.ctp.response.action.message.instruction.Priority;
@@ -49,10 +56,11 @@ import uk.gov.ons.ctp.response.caseframe.representation.QuestionnaireDTO;
  * allows both rollback and for us to catch the runtime exception and handle it.
  *
  * This class has a scheduled task wakeUp(), which looks for Actions in
- * SUBMITTED state to send to downstream handlers. On each wake cycle, it fetches
- * the first n actions of each type, by createddatatime, and attempts to enrich
- * them with case, questionnaire, address and caseevent details all fetched in
- * individual calls to the caseframe service through its RESTful endpoints.
+ * SUBMITTED state to send to downstream handlers. On each wake cycle, it
+ * fetches the first n actions of each type, by createddatatime, and attempts to
+ * enrich them with case, questionnaire, address and caseevent details all
+ * fetched in individual calls to the caseframe service through its RESTful
+ * endpoints.
  *
  * It then updates its own action table to change the action state to PENDING,
  * posts a new CaseEvent to the CaseFrameService, and constructs an outbound
@@ -66,14 +74,16 @@ import uk.gov.ons.ctp.response.caseframe.representation.QuestionnaireDTO;
 @Slf4j
 public class ActionDistributorImpl {
   // TODO - parameterize from external config
-  public static final long DEV_DELAY_INITIAL = 10L * 1000L;
-  public static final long DEV_DELAY_INTER = 10L * 1000L;
-  public static final long PROD_DELAY_INITIAL = 10L * 1000L;
-  public static final long PROD_DELAY_INTER = 30L * 60L * 1000L;
+  public static final long DELAY_INITIAL = 10L * 1000L;
+  public static final long DELAY_INTER = 10L * 1000L;
+
+  private static final long PUBLISH_RETRY_SLEEP = 30L * 1000L;
 
   @Inject
-  private StateTransitionManager<ActionState, ActionDTO.ActionEvent>
-    actionSvcStateTransitionManager;
+  private AppConfig appConfig;
+
+  @Inject
+  private StateTransitionManager<ActionState, ActionDTO.ActionEvent> actionSvcStateTransitionManager;
 
   @Inject
   private InstructionPublisher instructionPublisher;
@@ -104,9 +114,10 @@ public class ActionDistributorImpl {
   }
 
   /**
-   * wake up on schedule and check for submitted actions, enrich and distribute them to spring integration channels
+   * wake up on schedule and check for submitted actions, enrich and distribute
+   * them to spring integration channels
    */
-  @Scheduled(initialDelay = DEV_DELAY_INITIAL, fixedDelay = DEV_DELAY_INTER)
+  @Scheduled(initialDelay = DELAY_INITIAL, fixedDelay = DELAY_INTER)
   public final void wakeUp() {
     log.debug("ActionDistributor awoken from slumber");
 
@@ -114,21 +125,29 @@ public class ActionDistributorImpl {
       List<ActionType> actionTypes = actionTypeRepo.findAll();
 
       for (ActionType actionType : actionTypes) {
+
+        Pageable pageable = new PageRequest(0, appConfig.getActionDistribution().getInstructionMax(), new Sort(
+            new Sort.Order(Direction.ASC, "createdDateTime")));
+
         List<Action> actions = actionRepo
-            .findFirst100ByActionTypeNameAndStateOrderByCreatedDateTimeAsc(actionType.getName(), ActionState.SUBMITTED);
+            .findByActionTypeNameAndStateIn(actionType.getName(),
+                Arrays.asList(ActionState.SUBMITTED, ActionState.CANCEL_SUBMITTED), pageable);
 
         // container for outbound requests for this action type
         List<ActionRequest> actionRequests = new ArrayList<ActionRequest>();
+        List<ActionCancel> actionCancels = new ArrayList<ActionCancel>();
 
         log.debug("Dealing with actionType {}", actionType.getName());
+        StringBuilder sbRequests = new StringBuilder("Action ids for Requests : ");
+        StringBuilder sbCancels = new StringBuilder("Action ids for Cancels : ");
         for (Action action : actions) {
           try {
-            ActionRequest actionRequest = processAction(action);
-
-            // add the request to the list to be published to downstream handler
-            if (actionRequest != null) {
-              log.debug("Adding actionRequest to outbound list");
-              actionRequests.add(actionRequest);
+            if (action.getState().equals(ActionDTO.ActionState.SUBMITTED)) {
+              actionRequests.add(processActionRequest(action));
+              sbRequests.append(action.getActionId()).append(",");
+            } else if (action.getState().equals(ActionDTO.ActionState.CANCEL_SUBMITTED)) {
+              actionCancels.add(processActionCancel(action));
+              sbCancels.append(action.getActionId()).append(",");
             }
           } catch (Exception e) {
             // db changes rolled back
@@ -138,11 +157,25 @@ public class ActionDistributorImpl {
           }
         }
 
-        log.debug("Done with actionType {}", actionType.getName());
-        if (actionRequests.size() > 0) {
-          // send the list of requests for this action type to the handler
-          instructionPublisher.sendRequests(actionType.getHandler(), actionRequests);
+        boolean published = false;
+        if (actionRequests.size() > 0 || actionCancels.size() > 0) {
+          do {
+            try {
+              // send the list of requests for this action type to the handler
+              log.debug("Publishing instruction");
+              instructionPublisher.sendInstructions(actionType.getHandler(), actionRequests, actionCancels);
+              published = true;
+            } catch (Exception e) {
+              // broker not there ? sleep then retry
+              log.error(sbRequests.toString());
+              log.error(sbCancels.toString());
+              log.error("Problem sending action instruction for preceeding ids to handler {} due to {}", actionType, e);
+              Thread.sleep(PUBLISH_RETRY_SLEEP);
+            }
+          } while (!published);
         }
+
+        log.debug("Actions processed for actionType {}", actionType.getName());
       }
     } catch (Exception e) {
       // something went wrong retrieving action types or actions
@@ -163,7 +196,7 @@ public class ActionDistributorImpl {
    * @return The resulting ActionRequest that will be added to the outbound
    *         ActionInstruction
    */
-  private ActionRequest processAction(final Action action) {
+  private ActionRequest processActionRequest(final Action action) {
     return transactionTemplate.execute(new TransactionCallback<ActionRequest>() {
       // the code in this method executes in a transactional context
       public ActionRequest doInTransaction(final TransactionStatus status) {
@@ -171,14 +204,39 @@ public class ActionDistributorImpl {
         log.debug("Preparing action {} for distribution", action.getActionId());
 
         // update our actions state in db
-        updateActionStatus(action);
+        updateActionState(action, ActionDTO.ActionEvent.REQUEST_DISTRIBUTED);
         // create the request, filling in details by GETs from caseframesvc
         actionRequest = prepareActionRequest(action);
-
-        // advise caseframesvc to create a corresponding caseevent for our action
+        // advise caseframesvc to create a corresponding caseevent for our
+        // action
         caseFrameSvcClientService.createNewCaseEvent(action, CategoryDTO.CategoryName.ACTION_CREATED);
-
         return actionRequest;
+      }
+    });
+  }
+
+  /**
+   * Deal with a single action cancel- the transaction boundary is here
+   *
+   * @param action the action to deal with
+   * @return The resulting ActionCancel that will be added to the outbound
+   *         ActionInstruction
+   */
+  private ActionCancel processActionCancel(final Action action) {
+    return transactionTemplate.execute(new TransactionCallback<ActionCancel>() {
+      // the code in this method executes in a transactional context
+      public ActionCancel doInTransaction(final TransactionStatus status) {
+        ActionCancel actionCancel = null;
+        log.debug("Preparing action {} for distribution", action.getActionId());
+
+        // update our actions state in db
+        updateActionState(action, ActionDTO.ActionEvent.CANCELLATION_DISTRIBUTED);
+        // create the request, filling in details by GETs from caseframesvc
+        actionCancel = prepareActionCancel(action);
+        // advise caseframesvc to create a corresponding caseevent for our
+        // action
+        caseFrameSvcClientService.createNewCaseEvent(action, CategoryDTO.CategoryName.ACTION_CANCELLATION_CREATED);
+        return actionCancel;
       }
     });
   }
@@ -189,19 +247,19 @@ public class ActionDistributorImpl {
    *
    * @param action the action to change and persist
    */
-  private void updateActionStatus(final Action action) {
+  private Action updateActionState(final Action action, ActionDTO.ActionEvent event) {
+    Action updatedAction = null;
     try {
       ActionDTO.ActionState nextState = actionSvcStateTransitionManager.transition(
-          action.getState(),
-          ActionDTO.ActionEvent.REQUEST_DISTRIBUTED);
+          action.getState(), event);
       action.setState(nextState);
       action.setUpdatedDateTime(new Timestamp(System.currentTimeMillis()));
-      actionRepo.saveAndFlush(action);
+      updatedAction = actionRepo.saveAndFlush(action);
     } catch (StateTransitionException ste) {
       throw new RuntimeException(ste);
     }
+    return updatedAction;
   }
-
 
   /**
    * Take an action and using it, fetch further info from caseframe service in a
@@ -221,6 +279,23 @@ public class ActionDistributorImpl {
     List<CaseEventDTO> caseEventDTOs = caseFrameSvcClientService.getCaseEvents(action.getCaseId());
 
     return createActionRequest(action, caseDTO, questionnaireDTO, addressDTO, caseEventDTOs);
+  }
+
+  /**
+   * Take an action and using it, fetch further info from caseframe service in a
+   * number of rest calls, in order to create the ActionRequest
+   *
+   * @param action It all starts wih the Action
+   * @return The ActionRequest created from the Action and the other info from
+   *         CaseFrameSvc
+   */
+  private ActionCancel prepareActionCancel(final Action action) {
+    log.debug("constructing ActionCancel to publish to downstream handler for action id {} and case id {}",
+        action.getActionId(), action.getCaseId());
+    ActionCancel actionCancel = new ActionCancel();
+    actionCancel.setActionId(BigInteger.valueOf(action.getActionId()));
+    actionCancel.setReason("We changed our minds"); // TODO
+    return actionCancel;
   }
 
   /**
@@ -259,8 +334,6 @@ public class ActionDistributorImpl {
     actionRequest.setAddress(actionAddress);
     return actionRequest;
   }
-
-
 
   /**
    * Formats a CaseEvent as a string that can added to the ActionRequest

@@ -2,6 +2,7 @@ package uk.gov.ons.ctp.response.action.domain.repository;
 
 import java.util.List;
 
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -41,15 +42,14 @@ public interface ActionRepository extends JpaRepository<Action, Integer> {
       ActionDTO.ActionState state);
 
   /**
-   * Return all actions for the specified actionTypeName and state.in created date time order ascending.
+   * Return all actions for the specified actionTypeName and states according to the page specification
    *
    * @param actionTypeName ActionTypeName filter criteria
-   * @param state State of Action
-   * @return List<Action> returns all actions for actionTypeName and state
+   * @param states States of Action
+   * @return List<Action> returns all actions for actionTypeName and states, for the given page
    */
-  List<Action> findFirst100ByActionTypeNameAndStateOrderByCreatedDateTimeAsc(String actionTypeName,
-      ActionDTO.ActionState state);
-
+  List<Action> findByActionTypeNameAndStateIn(String actionTypeName,
+      List<ActionDTO.ActionState> states, Pageable pageable);
   /**
    * Return all actions for the specified actionTypeName.
    *
