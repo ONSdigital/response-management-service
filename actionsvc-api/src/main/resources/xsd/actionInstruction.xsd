@@ -43,6 +43,7 @@
       <xs:element name="estabType" type="xs:string"/>
       <xs:element name="locality" type="xs:string"/>
       <xs:element name="organisationName" type="xs:string"/>
+      <xs:element name="category" type="xs:string"/>
       <xs:element name="line1" type="xs:string"/>
       <xs:element name="line2" type="xs:string"/>
       <xs:element name="townName" type="xs:string"/>
