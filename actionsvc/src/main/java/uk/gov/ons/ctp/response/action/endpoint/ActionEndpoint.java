@@ -1,5 +1,6 @@
 package uk.gov.ons.ctp.response.action.endpoint;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,6 +23,7 @@ import ma.glasnost.orika.MapperFacade;
 import uk.gov.ons.ctp.common.endpoint.CTPEndpoint;
 import uk.gov.ons.ctp.common.error.CTPException;
 import uk.gov.ons.ctp.response.action.domain.model.Action;
+import uk.gov.ons.ctp.response.action.message.feedback.ActionFeedback;
 import uk.gov.ons.ctp.response.action.representation.ActionDTO;
 import uk.gov.ons.ctp.response.action.service.ActionService;
 
@@ -166,5 +168,17 @@ public final class ActionEndpoint implements CTPEndpoint {
     List<Action> actions = actionService.findActionsByCaseId(caseId);
     List<ActionDTO> actionDTOs = mapperFacade.mapAsList(actions, ActionDTO.class);
     return CollectionUtils.isEmpty(actionDTOs) ? null : actionDTOs;
+  }
+  
+  @Consumes({ MediaType.APPLICATION_XML })
+  @PUT
+  @Path("/{actionid}/feedback") 
+  public ActionDTO feedbackAction(@PathParam("actionid") final int actionId, final ActionFeedback actionFeedback)
+      throws CTPException {
+    log.debug("Feedback for Action {}", actionId);
+    actionFeedback.setActionId(BigInteger.valueOf(actionId));
+    Action action = actionService.feedBackAction(actionFeedback);
+    ActionDTO result = mapperFacade.map(action, ActionDTO.class);
+    return result;
   }
 }

@@ -17,6 +17,7 @@ import uk.gov.ons.ctp.response.action.domain.model.Action;
 import uk.gov.ons.ctp.response.action.domain.model.ActionType;
 import uk.gov.ons.ctp.response.action.domain.repository.ActionRepository;
 import uk.gov.ons.ctp.response.action.domain.repository.ActionTypeRepository;
+import uk.gov.ons.ctp.response.action.message.feedback.ActionFeedback;
 import uk.gov.ons.ctp.response.action.representation.ActionDTO;
 import uk.gov.ons.ctp.response.action.representation.ActionDTO.ActionEvent;
 import uk.gov.ons.ctp.response.action.representation.ActionDTO.ActionState;
@@ -96,6 +97,26 @@ public final class ActionServiceImpl implements ActionService {
       throw new RuntimeException(ste);
     }
     return flushedActions;
+  }
+
+  @Transactional(propagation = Propagation.REQUIRED, readOnly = false, timeout = TRANSACTION_TIMEOUT)
+  @Override
+  public Action feedBackAction(ActionFeedback actionFeedback) {
+    log.debug("Entering feedBackAction with {}", actionFeedback.getActionId());
+    Action action = null;
+
+    try {
+      action = actionRepo.findOne(actionFeedback.getActionId().intValue());
+      ActionDTO.ActionEvent event = ActionDTO.ActionEvent.valueOf(actionFeedback.getOutcome().name());
+      ActionDTO.ActionState nextState = actionSvcStateTransitionManager.transition(action.getState(), event);
+      action.setState(nextState);
+      action.setSituation(actionFeedback.getSituation());
+      action.setUpdatedDateTime(new Timestamp(System.currentTimeMillis()));
+      action = actionRepo.saveAndFlush(action);
+    } catch (StateTransitionException ste) {
+      throw new RuntimeException(ste);
+    }
+    return action;
   }
 
   @Transactional(propagation = Propagation.REQUIRED, readOnly = false, timeout = TRANSACTION_TIMEOUT)

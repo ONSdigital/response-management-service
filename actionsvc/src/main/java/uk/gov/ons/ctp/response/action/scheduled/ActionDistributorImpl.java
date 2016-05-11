@@ -75,7 +75,7 @@ import uk.gov.ons.ctp.response.caseframe.representation.QuestionnaireDTO;
 public class ActionDistributorImpl {
   // TODO - parameterize from external config
   public static final long DELAY_INITIAL = 10L * 1000L;
-  public static final long DELAY_INTER = 10L * 60L * 1000L;
+  public static final long DELAY_INTER = 1L * 60L * 1000L;
 
   private static final long PUBLISH_RETRY_SLEEP = 30L * 1000L;
 

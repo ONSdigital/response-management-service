@@ -9,6 +9,7 @@ import javax.inject.Named;
 
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
+import org.springframework.util.StringUtils;
 
 import lombok.extern.slf4j.Slf4j;
 import uk.gov.ons.ctp.common.rest.RestClient;
@@ -72,8 +73,13 @@ public class CaseFrameSvcClientServiceImpl implements CaseFrameSvcClientService 
     caseEventDTO.setCategory(actionCategory.getLabel());
     caseEventDTO.setCreatedBy(action.getCreatedBy());
     caseEventDTO.setCreatedDateTime(new Date());
-    caseEventDTO.setDescription(action.getActionType().getDescription());
     caseEventDTO.setSubCategory(action.getActionType().getName());
+
+    if (!StringUtils.isEmpty(action.getSituation())) {
+      caseEventDTO.setDescription(String.format("%s (%s)",action.getActionType().getDescription(), action.getSituation()));
+    } else {
+      caseEventDTO.setDescription(action.getActionType().getDescription());
+    }
 
     CaseEventDTO returnedCaseEventDTO = caseFrameClient.postResource(
         appConfig.getCaseFrameSvc().getCaseEventsByCasePostPath(), caseEventDTO,

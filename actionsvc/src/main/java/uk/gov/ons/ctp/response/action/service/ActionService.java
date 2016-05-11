@@ -4,6 +4,7 @@ import java.util.List;
 
 import uk.gov.ons.ctp.common.service.CTPService;
 import uk.gov.ons.ctp.response.action.domain.model.Action;
+import uk.gov.ons.ctp.response.action.message.feedback.ActionFeedback;
 import uk.gov.ons.ctp.response.action.representation.ActionDTO;
 
 /**
@@ -85,4 +86,11 @@ public interface ActionService extends CTPService {
    */
   Action updateAction(Action action);
 
+  
+  /**
+   * Accept the feedback for an action  
+   * @param actionFeedback the feedback
+   * @return the updated action
+   */
+  Action feedBackAction(ActionFeedback actionFeedback);
 }

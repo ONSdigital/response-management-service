@@ -6,12 +6,11 @@
   <!-- The root element for an outbound action instruction to an action consumer -->
   <xs:element name="actionInstruction" type="ActionInstruction"/>
 
-  <!--  the instruction can have either request(s), update(s) or cancel(s), but never mixed instruction types -->
   <xs:complexType name="ActionInstruction">
     <xs:sequence>
-      <xs:element name="actionRequests" type="ActionRequests"/>
-      <xs:element name="actionUpdates" type="ActionUpdates"/>
-      <xs:element name="actionCancels" type="ActionCancels"/>
+      <xs:element name="actionRequests" type="ActionRequests" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="actionUpdates" type="ActionUpdates" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="actionCancels" type="ActionCancels" minOccurs="0" maxOccurs="1"/>
     </xs:sequence>
   </xs:complexType>
   
