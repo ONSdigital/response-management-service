@@ -38,17 +38,17 @@
   <!-- a complex type for addresses - no statistical geography info  -->
   <xs:complexType name="ActionAddress">
     <xs:sequence>
-      <xs:element name="type" type="xs:string"/>
-      <xs:element name="estabType" type="xs:string"/>
-      <xs:element name="locality" type="xs:string"/>
-      <xs:element name="organisationName" type="xs:string"/>
-      <xs:element name="category" type="xs:string"/>
-      <xs:element name="line1" type="xs:string"/>
-      <xs:element name="line2" type="xs:string"/>
-      <xs:element name="townName" type="xs:string"/>
-      <xs:element name="postcode" type="xs:string"/>
-      <xs:element name="latitude" type="xs:decimal"/>
-      <xs:element name="longitude" type="xs:decimal"/>
+      <xs:element name="type" type="xs:string" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="estabType" type="xs:string" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="locality" type="xs:string" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="organisationName" type="xs:string" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="category" type="xs:string" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="line1" type="xs:string" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="line2" type="xs:string" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="townName" type="xs:string" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="postcode" type="xs:string" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="latitude" type="xs:decimal" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="longitude" type="xs:decimal" minOccurs="0" maxOccurs="1"/>
     </xs:sequence>
   </xs:complexType>
 
@@ -59,9 +59,9 @@
       <xs:element name="actionType" type="xs:string"/>
       <xs:element name="address" type="ActionAddress"/>
       <xs:element name="uprn" type="xs:positiveInteger"/>
-      <xs:element name="contactName" type="xs:string"/>
+      <xs:element name="contactName" type="xs:string" minOccurs="0" maxOccurs="1"/>
       <xs:element name="caseId" type="xs:positiveInteger"/>
-      <xs:element name="priority" type="Priority" />
+      <xs:element name="priority" type="Priority" minOccurs="0" maxOccurs="1" />
       <xs:element name="questionnaireId" type="xs:positiveInteger"/>
       <xs:element name="iac" type="xs:string"/>
       <xs:element name="events" type="ActionEvent"/>
