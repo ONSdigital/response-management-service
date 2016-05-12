@@ -92,7 +92,7 @@ spring:
           ddl-auto: update
 
 action-distribution:
-  instructionMax: 1000
+  instructionMax: 100
    
 case-frame-svc:
   scheme: http
