@@ -17,21 +17,21 @@
   <!-- the outer element containing requests -->
   <xs:complexType name="ActionRequests">
     <xs:sequence>
-      <xs:element name="actionRequest" type="ActionRequest" minOccurs="1" maxOccurs="unbounded"/>
+      <xs:element name="actionRequest" type="ActionRequest" minOccurs="0" maxOccurs="unbounded"/>
     </xs:sequence>
   </xs:complexType>
 
   <!-- the outer element containing updates -->
   <xs:complexType name="ActionUpdates">
     <xs:sequence>
-      <xs:element name="actionUpdate" type="ActionUpdate" minOccurs="1" maxOccurs="unbounded"/>
+      <xs:element name="actionUpdate" type="ActionUpdate" minOccurs="0" maxOccurs="unbounded"/>
     </xs:sequence>
   </xs:complexType>
 
   <!-- the outer element containing cancels -->
   <xs:complexType name="ActionCancels">
     <xs:sequence>
-      <xs:element name="actionCancel" type="ActionCancel" minOccurs="1" maxOccurs="unbounded"/>
+      <xs:element name="actionCancel" type="ActionCancel" minOccurs="0" maxOccurs="unbounded"/>
     </xs:sequence>
   </xs:complexType>
 
