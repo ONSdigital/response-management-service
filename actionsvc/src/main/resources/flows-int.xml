@@ -89,7 +89,6 @@
    <!--  the instructionMarshaller turns java objs into xml dom -->
   <bean id="instructionMarshaller" class="org.springframework.oxm.jaxb.Jaxb2Marshaller">
     <property name="contextPath" value="uk.gov.ons.ctp.response.action.message.instruction" />
-    <property name="schema" value="classpath:xsd/actionFeedback.xsd" />
   </bean>
   <!--  the instructionTransformer turns the xml dom into a string -->
   <bean id="instructionTransformer" class="org.springframework.integration.xml.transformer.ResultToStringTransformer" />
