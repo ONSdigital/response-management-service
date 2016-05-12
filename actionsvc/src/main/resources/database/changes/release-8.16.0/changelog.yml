@@ -38,6 +38,14 @@ databaseChangeLog:
             path: action_type_can_cancel.sql
             relativeToChangelogFile: true
 
+  - changeSet:
+      id: 8.16.0-5
+      author: SaraR
+      changes:
+        - sqlFile:
+            comment: action plan seed data reboot
+            path: action_plan_seed_data.sql
+            relativeToChangelogFile: true
 
 
 

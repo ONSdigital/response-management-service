@@ -21,7 +21,7 @@
   <bean id="feedbackMessageListenerContainer"
     class="org.springframework.jms.listener.DefaultMessageListenerContainer">
     <property name="connectionFactory" ref="connectionFactory" />
-    <property name="destinationName" value="feedbackQueue" />
+    <property name="destinationName" value="Action.Notifications" />
     <property name="maxConcurrentConsumers" value="1" />
     <property name="concurrentConsumers" value="1" />
     <property name="receiveTimeout" value="5000" />
