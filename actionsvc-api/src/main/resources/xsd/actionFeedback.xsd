@@ -17,7 +17,7 @@
         </xs:simpleType>
       </xs:element>
       <xs:element name="outcome" type="Outcome"/>
-      <xs:element name="notes" type="xs:string"/>
+      <xs:element name="notes" type="xs:string" minOccurs="0" maxOccurs="1"/>
     </xs:sequence>
   </xs:complexType>
 

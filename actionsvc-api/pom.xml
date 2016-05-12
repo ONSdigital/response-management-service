@@ -5,7 +5,7 @@
 
   <groupId>uk.gov.ons.ctp.product</groupId>
   <artifactId>actionsvc-api</artifactId>
-  <version>8.17.3-SNAPSHOT</version>
+  <version>8.17.4-SNAPSHOT</version>
   <packaging>jar</packaging>
 
   <name>CTP : ResponseManagement : ActionSvcApi</name>
