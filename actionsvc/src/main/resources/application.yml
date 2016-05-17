@@ -92,7 +92,10 @@ spring:
           ddl-auto: update
 
 action-distribution:
-  instructionMax: 100
+  instruction-max: 100
+  retry-sleep-seconds: 30
+  initial-delay-seconds: 10
+  subsequent-delay-seconds: 600
    
 case-frame-svc:
   scheme: http

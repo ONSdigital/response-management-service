@@ -16,6 +16,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+import org.mockito.Spy;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -47,8 +48,8 @@ import uk.gov.ons.ctp.response.caseframe.representation.QuestionnaireDTO;
 @RunWith(MockitoJUnitRunner.class)
 public class ActionDistributorTest {
 
-  @Mock
-  AppConfig appConfig;
+  @Spy
+  AppConfig appConfig = new AppConfig();
 
   @Mock
   InstructionPublisher instructionPublisher;
@@ -79,6 +80,16 @@ public class ActionDistributorTest {
 
   @Before
   public void setup() {
+    CaseFrameSvc caseFrameSvcConfig = new CaseFrameSvc();
+    ActionDistribution actionDistributionConfig = new ActionDistribution();
+    actionDistributionConfig.setInitialDelaySeconds(10);
+    actionDistributionConfig.setSubsequentDelaySeconds(10);
+    actionDistributionConfig.setInstructionMax(10);
+    actionDistributionConfig.setRetrySleepSeconds(10);
+
+    appConfig.setCaseFrameSvc(caseFrameSvcConfig);
+    appConfig.setActionDistribution(actionDistributionConfig);
+
     MockitoAnnotations.initMocks(this);
   }
 
@@ -91,11 +102,6 @@ public class ActionDistributorTest {
    */
   @Test
   public void testFailGetActionType() throws Exception {
-    // set up dummy data
-    CaseFrameSvc caseFrameSvcConfig = new CaseFrameSvc();
-
-    // wire up mock responses
-    Mockito.when(appConfig.getCaseFrameSvc()).thenReturn(caseFrameSvcConfig);
 
     Mockito.when(actionTypeRepo.findAll()).thenThrow(new RuntimeException("Database access failed"));
 
@@ -136,10 +142,6 @@ public class ActionDistributorTest {
    */
   @Test
   public void testFailCaseGet() throws Exception {
-    // set up dummy data
-    CaseFrameSvc caseFrameSvcConfig = new CaseFrameSvc();
-    ActionDistribution actionDistribution = new ActionDistribution();
-    actionDistribution.setInstructionMax(100);
 
     List<ActionType> actionTypes = FixtureHelper.loadClassFixtures(ActionType[].class);
 
@@ -158,8 +160,6 @@ public class ActionDistributorTest {
 
     // wire up mock responses
     Mockito.when(actionSvcStateTransitionManager.transition(ActionState.SUBMITTED, ActionDTO.ActionEvent.REQUEST_DISTRIBUTED)).thenReturn(ActionState.PENDING);
-    Mockito.when(appConfig.getCaseFrameSvc()).thenReturn(caseFrameSvcConfig);
-    Mockito.when(appConfig.getActionDistribution()).thenReturn(actionDistribution);
     Mockito.when(actionTypeRepo.findAll()).thenReturn(actionTypes);
     Mockito
         .when(actionRepo.findByActionTypeNameAndStateIn(eq("HouseholdInitialContact"), anyListOf(ActionState.class), any(Pageable.class)))
@@ -223,10 +223,6 @@ public class ActionDistributorTest {
    */
   @Test
   public void testBlueSky() throws Exception {
-    // set up dummy data
-    CaseFrameSvc caseFrameSvcConfig = new CaseFrameSvc();
-    ActionDistribution actionDistribution = new ActionDistribution();
-    actionDistribution.setInstructionMax(100);
 
     List<ActionType> actionTypes = FixtureHelper.loadClassFixtures(ActionType[].class);
 
@@ -246,8 +242,6 @@ public class ActionDistributorTest {
     // wire up mock responses
     Mockito.when(actionSvcStateTransitionManager.transition(ActionState.SUBMITTED, ActionDTO.ActionEvent.REQUEST_DISTRIBUTED)).thenReturn(ActionState.PENDING);
 
-    Mockito.when(appConfig.getCaseFrameSvc()).thenReturn(caseFrameSvcConfig);
-    Mockito.when(appConfig.getActionDistribution()).thenReturn(actionDistribution);
     Mockito.when(actionTypeRepo.findAll()).thenReturn(actionTypes);
     Mockito
         .when(actionRepo.findByActionTypeNameAndStateIn(eq("HouseholdInitialContact"), anyListOf(ActionState.class), any(Pageable.class)))

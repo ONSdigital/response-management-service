@@ -91,7 +91,7 @@ public class CaseFrameSvcClientServiceImpl implements CaseFrameSvcClientService 
   @Override
   public List<Integer> getOpenCasesForActionPlan(Integer actionPlanId) {
     MultiValueMap<String, String> queryParamMap = new LinkedMultiValueMap<>();
-    queryParamMap.put("status", Arrays.asList(CaseDTO.CaseState.INIT.name(), CaseDTO.CaseState.RESPONDED.name()));
+    queryParamMap.put("state", Arrays.asList(CaseDTO.CaseState.INIT.name(), CaseDTO.CaseState.RESPONDED.name()));
     List<Integer> openCasesForPlan = caseFrameClient.getResources(
         appConfig.getCaseFrameSvc().getCaseByStatusAndActionPlanPath(), Integer[].class, null, queryParamMap,
         actionPlanId);

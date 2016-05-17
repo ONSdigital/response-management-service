@@ -1,10 +1,14 @@
 package uk.gov.ons.ctp.response.action.scheduled;
 
+import static java.util.concurrent.TimeUnit.SECONDS;
+
 import java.math.BigInteger;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -13,7 +17,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.TransactionCallback;
@@ -55,7 +58,7 @@ import uk.gov.ons.ctp.response.caseframe.representation.QuestionnaireDTO;
  * rollback does not happen. So - see the TransactionTemplate usage - that
  * allows both rollback and for us to catch the runtime exception and handle it.
  *
- * This class has a scheduled task wakeUp(), which looks for Actions in
+ * This class has a self scheduled method wakeUp(), which looks for Actions in
  * SUBMITTED state to send to downstream handlers. On each wake cycle, it
  * fetches the first n actions of each type, by createddatatime, and attempts to
  * enrich them with case, questionnaire, address and caseevent details all
@@ -73,11 +76,6 @@ import uk.gov.ons.ctp.response.caseframe.representation.QuestionnaireDTO;
 @Named
 @Slf4j
 public class ActionDistributorImpl {
-  // TODO - parameterize from external config
-  public static final long DELAY_INITIAL = 10L * 1000L;
-  public static final long DELAY_INTER = 1L * 60L * 1000L;
-
-  private static final long PUBLISH_RETRY_SLEEP = 30L * 1000L;
 
   @Inject
   private AppConfig appConfig;
@@ -103,6 +101,7 @@ public class ActionDistributorImpl {
   // single TransactionTemplate shared amongst all methods in this instance
   private final TransactionTemplate transactionTemplate;
 
+
   /**
    * Constructor into which the Spring PlatformTransactionManager is injected
    *
@@ -117,7 +116,6 @@ public class ActionDistributorImpl {
    * wake up on schedule and check for submitted actions, enrich and distribute
    * them to spring integration channels
    */
-  @Scheduled(initialDelay = DELAY_INITIAL, fixedDelay = DELAY_INTER)
   public final void wakeUp() {
     log.debug("ActionDistributor awoken from slumber");
 
@@ -170,7 +168,7 @@ public class ActionDistributorImpl {
               log.error(sbRequests.toString());
               log.error(sbCancels.toString());
               log.error("Problem sending action instruction for preceeding ids to handler {} due to {}", actionType, e);
-              Thread.sleep(PUBLISH_RETRY_SLEEP);
+              Thread.sleep(appConfig.getActionDistribution().getRetrySleepSeconds() * 1000L);
             }
           } while (!published);
         }
@@ -201,8 +199,6 @@ public class ActionDistributorImpl {
       // the code in this method executes in a transactional context
       public ActionRequest doInTransaction(final TransactionStatus status) {
         ActionRequest actionRequest = null;
-        log.debug("Preparing action {} for distribution", action.getActionId());
-
         // update our actions state in db
         updateActionState(action, ActionDTO.ActionEvent.REQUEST_DISTRIBUTED);
         // create the request, filling in details by GETs from caseframesvc
