@@ -101,7 +101,6 @@ public class ActionDistributorImpl {
   // single TransactionTemplate shared amongst all methods in this instance
   private final TransactionTemplate transactionTemplate;
 
-
   /**
    * Constructor into which the Spring PlatformTransactionManager is injected
    *
@@ -200,7 +199,7 @@ public class ActionDistributorImpl {
       public ActionRequest doInTransaction(final TransactionStatus status) {
         ActionRequest actionRequest = null;
         // update our actions state in db
-        updateActionState(action, ActionDTO.ActionEvent.REQUEST_DISTRIBUTED);
+        transitionAction(action, ActionDTO.ActionEvent.REQUEST_DISTRIBUTED);
         // create the request, filling in details by GETs from caseframesvc
         actionRequest = prepareActionRequest(action);
         // advise caseframesvc to create a corresponding caseevent for our
@@ -226,7 +225,7 @@ public class ActionDistributorImpl {
         log.debug("Preparing action {} for distribution", action.getActionId());
 
         // update our actions state in db
-        updateActionState(action, ActionDTO.ActionEvent.CANCELLATION_DISTRIBUTED);
+        transitionAction(action, ActionDTO.ActionEvent.CANCELLATION_DISTRIBUTED);
         // create the request, filling in details by GETs from caseframesvc
         actionCancel = prepareActionCancel(action);
         // advise caseframesvc to create a corresponding caseevent for our
@@ -239,16 +238,16 @@ public class ActionDistributorImpl {
 
   /**
    * Change the action status in db to indicate we have sent this action
-   * downstream
+   * downstream, and clear previous situation (in the scenario where the action has prev. failed)
    *
    * @param action the action to change and persist
    */
-  private Action updateActionState(final Action action, ActionDTO.ActionEvent event) {
+  private Action transitionAction(final Action action, ActionDTO.ActionEvent event) {
     Action updatedAction = null;
     try {
-      ActionDTO.ActionState nextState = actionSvcStateTransitionManager.transition(
-          action.getState(), event);
+      ActionDTO.ActionState nextState = actionSvcStateTransitionManager.transition(action.getState(), event);
       action.setState(nextState);
+      action.setSituation(null);
       action.setUpdatedDateTime(new Timestamp(System.currentTimeMillis()));
       updatedAction = actionRepo.saveAndFlush(action);
     } catch (StateTransitionException ste) {
