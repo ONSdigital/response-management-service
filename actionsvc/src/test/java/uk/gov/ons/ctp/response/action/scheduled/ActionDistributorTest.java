@@ -106,7 +106,7 @@ public class ActionDistributorTest {
     Mockito.when(actionTypeRepo.findAll()).thenThrow(new RuntimeException("Database access failed"));
 
     // let it roll
-    actionDistributor.wakeUp();
+    actionDistributor.distribute();
 
     // assert the right calls were made
     verify(actionTypeRepo).findAll();
@@ -190,7 +190,7 @@ public class ActionDistributorTest {
         .thenReturn(caseEventDTOsPost.get(2));
 
     // let it roll
-    actionDistributor.wakeUp();
+    actionDistributor.distribute();
 
     // assert the right calls were made
     verify(actionTypeRepo).findAll();  
@@ -281,7 +281,7 @@ public class ActionDistributorTest {
 
 
     // let it roll
-    actionDistributor.wakeUp();
+    actionDistributor.distribute();
 
     // assert the right calls were made
     verify(actionTypeRepo).findAll();

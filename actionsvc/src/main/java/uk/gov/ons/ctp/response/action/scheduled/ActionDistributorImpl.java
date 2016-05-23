@@ -1,14 +1,14 @@
 package uk.gov.ons.ctp.response.action.scheduled;
 
-import static java.util.concurrent.TimeUnit.SECONDS;
-
 import java.math.BigInteger;
 import java.sql.Timestamp;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -115,9 +115,12 @@ public class ActionDistributorImpl {
    * wake up on schedule and check for submitted actions, enrich and distribute
    * them to spring integration channels
    */
-  public final void wakeUp() {
+  public final DistributionInfo distribute() {
     log.debug("ActionDistributor awoken from slumber");
-
+    DistributionInfo distInfo = new DistributionInfo();
+    DateFormat dateTimeInstance = SimpleDateFormat.getDateTimeInstance();
+    distInfo.setLastRunTime(dateTimeInstance.format(Calendar.getInstance().getTime()));
+    
     try {
       List<ActionType> actionTypes = actionTypeRepo.findAll();
 
@@ -153,6 +156,8 @@ public class ActionDistributorImpl {
                 action.getActionId());
           }
         }
+        distInfo.addInstructionCount(new InstructionCount(actionType.getName(), DistributionInfo.Instruction.REQUEST, actionRequests.size()));
+        distInfo.addInstructionCount(new InstructionCount(actionType.getName(), DistributionInfo.Instruction.CANCEL_REQUEST, actionCancels.size()));
 
         boolean published = false;
         if (actionRequests.size() > 0 || actionCancels.size() > 0) {
@@ -180,6 +185,7 @@ public class ActionDistributorImpl {
       // we will be back after a short snooze
     }
     log.debug("ActionDistributor going back to sleep");
+    return distInfo;
   }
 
   /**
