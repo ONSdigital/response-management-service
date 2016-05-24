@@ -181,7 +181,7 @@ public class ActionDistributorImpl {
       }
     } catch (Exception e) {
       // something went wrong retrieving action types or actions
-      log.error("Failed to access local database for action types or actions");
+      log.error("Failed to process actions because {}", e);
       // we will be back after a short snooze
     }
     log.debug("ActionDistributor going back to sleep");
@@ -322,9 +322,9 @@ public class ActionDistributorImpl {
     actionRequest.setCaseId(BigInteger.valueOf(action.getCaseId()));
     actionRequest.setContactName(null); // TODO - will be avail in data 2017+
     ActionEvent actionEvent = new ActionEvent();
-    for (CaseEventDTO caseEventDTO : caseEventDTOs) {
-      actionEvent.getEvents().add(formatCaseEvent(caseEventDTO));
-    }
+    caseEventDTOs.forEach((caseEventDTO) ->
+      actionEvent.getEvents().add(formatCaseEvent(caseEventDTO))
+    );
     actionRequest.setEvents(actionEvent);
     actionRequest.setIac(questionnaireDTO.getIac());
     actionRequest.setPriority(Priority.fromValue(ActionPriority.valueOf(action.getPriority()).getName()));
