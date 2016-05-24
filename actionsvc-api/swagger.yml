@@ -88,6 +88,45 @@ paths:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'
+            
+            
+            
+  /actions/{actionId}/feedback:
+    put:
+      summary: Update Action Feedback
+      description: Updates the specified action by accepting feedback which will transition the actions state
+      consumes:
+        - application/xml
+      parameters:
+        - name: Accept
+          in: header
+          description: Response type, application/xml
+          required: false
+          type: string
+        - in: path
+          name: actionId
+          description: Unique action ID of the action to update
+          required: true
+          type: integer
+        - in: body
+          name: feedback
+          description: Action feedback details
+          required: true
+          schema:
+            $ref: '#/definitions/ActionFeedback'
+      tags:
+        - Action
+      responses:
+        200:
+          description: Action updated
+          schema:
+            $ref: '#/definitions/Action'
+        400:
+          description: Invalid input
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
   /actions/{actionId}:
     get:
       summary: Get Action
@@ -595,6 +634,32 @@ definitions:
         description: Action plan last successful run date/time
         type: string
         format: date-time
+  ActionFeedback:
+    type: object
+    required:
+      - actionId
+      - situation
+      - outcome
+    properties:
+      actionId:
+        description: Unique action ID
+        type: integer
+      situation:
+        description: The sub state of the action with respect to the handler
+        type: string
+      outcome:
+        description: The outcome of the action within the context of the handler
+        type: string
+        enum:
+          - REQUEST_FAILED
+          - REQUEST_ACCEPTED
+          - REQUEST_COMPLETED
+          - CANCELLATION_FAILED
+          - CANCELLATION_ACCEPTED
+          - CANCELLATION_COMPLETED
+      notes:
+        description: Textual description of feedback
+        type: string
   ActionPlanCreationRequest:
     type: object
     required:

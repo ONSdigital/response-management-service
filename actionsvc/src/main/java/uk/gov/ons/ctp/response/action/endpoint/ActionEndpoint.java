@@ -175,6 +175,7 @@ public final class ActionEndpoint implements CTPEndpoint {
   @Path("/{actionid}/feedback") 
   public ActionDTO feedbackAction(@PathParam("actionid") final int actionId, final ActionFeedback actionFeedback)
       throws CTPException {
+    //TODO make endpoint accept JSON instead of XML
     log.debug("Feedback for Action {}", actionId);
     actionFeedback.setActionId(BigInteger.valueOf(actionId));
     Action action = actionService.feedBackAction(actionFeedback);
