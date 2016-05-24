@@ -94,7 +94,7 @@ paths:
   /actions/{actionId}/feedback:
     put:
       summary: Update Action Feedback
-      description: Updates the specified action by accepting feedback which will transition the actions state
+      description: Updates the specified action by accepting feedback which will transition the action's state.
       consumes:
         - application/xml
       parameters:
