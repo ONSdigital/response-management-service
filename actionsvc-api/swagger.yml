@@ -11,7 +11,7 @@ info:
     a day, when a certain action should be taken. action plans are applied to open cases to create
     actions. Once an action is created it is forwarded to an appropriate remote handler service to be
     completed.
-  version: 8.16.0
+  version: 8.18.0
 schemes:
   - http
 basePath: /
@@ -88,9 +88,9 @@ paths:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'
-            
-            
-            
+
+
+
   /actions/{actionId}/feedback:
     put:
       summary: Update Action Feedback
