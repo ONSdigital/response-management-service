@@ -1,5 +1,6 @@
 package uk.gov.ons.ctp.response.action.state;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -88,21 +89,24 @@ public class TestActionStateTransitionManager {
    * @throws StateTransitionException shouldn't!
    */
   @Test(threadPoolSize = 10, invocationCount = 50,  timeOut = 10000)
-  public void testActionTransitions() throws StateTransitionException {
+  public void testActionTransitions() {
     StateTransitionManagerFactory stmFactory = new ActionSvcStateTransitionManagerFactory();
     StateTransitionManager<ActionState, ActionEvent> stm = stmFactory
         .getStateTransitionManager(ActionSvcStateTransitionManagerFactory.ACTION_ENTITY);
+    
+    validTransitions.forEach((sourceState,transitions)-> {
+      transitions.forEach((actionEvent, actionState) -> {
+        log.debug("{} asserting valid transition {}({}) -> {}", Thread.currentThread().getName(), sourceState, actionEvent,
+            actionState);
+        try {
+          Assert.assertEquals(actionState, stm.transition(sourceState, actionEvent));
+        } catch (StateTransitionException ste) {
+          Assert.fail("bad transition!", ste);
+        }
+      });
 
-    for (Map.Entry<ActionState, Map<ActionEvent, ActionState>> me : validTransitions.entrySet()) {
-      ActionState sourceState = me.getKey();
-      for (Map.Entry<ActionEvent, ActionState> statesTransition : me.getValue().entrySet()) {
-        log.debug("{} asserting valid transition {}({}) -> {}", Thread.currentThread().getName(), sourceState, statesTransition.getKey(),
-            statesTransition.getValue());
-        Assert.assertEquals(statesTransition.getValue(), stm.transition(sourceState, statesTransition.getKey()));
-      }
-      ActionEvent[] allEvents = ActionEvent.values();
-      for (ActionEvent event : allEvents) {
-        if (!me.getValue().keySet().contains(event)) {
+      Arrays.asList(ActionEvent.values()).forEach(event-> {
+        if (!transitions.keySet().contains(event)) {
           boolean caught = false;
           try {
             log.debug("{} asserting invalid transition {}({})", Thread.currentThread().getName(), sourceState, event);
@@ -112,31 +116,7 @@ public class TestActionStateTransitionManager {
           }
           Assert.assertTrue(caught, "Transition " + sourceState + "(" + event + ") should be invalid");
         }
-      }
-    }
+      });
+    });
   }
-
-//  @Test
-//  public void testMultipleThreadsActionTransitions() throws StateTransitionException {
-//    for (int i = 0; i < 500; i++) {
-//      try {
-//        Thread.sleep(Math.round(Math.random() * 100L));
-//      } catch (InterruptedException ie) {
-//
-//      }
-//      final Thread testRunner = new Thread(new Runnable() {
-//        public void run() {
-//          try {
-//            log.debug("begin thread {}", Thread.currentThread().getName());
-//            testActionTransitions();
-//            log.debug("end thread {}", Thread.currentThread().getName());
-//          } catch (Exception e) {
-//            Assert.assertTrue(false);
-//          }
-//        }
-//      });
-//      testRunner.start();
-//    }
-//  }
-
 }
