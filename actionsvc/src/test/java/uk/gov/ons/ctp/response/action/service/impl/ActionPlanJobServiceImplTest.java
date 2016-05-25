@@ -61,7 +61,6 @@ public class ActionPlanJobServiceImplTest {
    * 
    * @throws Exception
    */
-  @SuppressWarnings("unchecked")
   @Test
   public void testCreateAndExecuteActionPlanJob() throws Exception {
     // set up dummy data

@@ -12,6 +12,7 @@ import static uk.gov.ons.ctp.response.action.utility.MockActionServiceFactory.AC
 import static uk.gov.ons.ctp.response.action.utility.MockActionServiceFactory.ACTION2_PRIORITY;
 import static uk.gov.ons.ctp.response.action.utility.MockActionServiceFactory.ACTION2_RULEID;
 import static uk.gov.ons.ctp.response.action.utility.MockActionServiceFactory.ACTION2_SITUATION;
+import static uk.gov.ons.ctp.response.action.utility.MockActionServiceFactory.ACTION3_ACTIONSTATE;
 import static uk.gov.ons.ctp.response.action.utility.MockActionServiceFactory.ACTIONID;
 import static uk.gov.ons.ctp.response.action.utility.MockActionServiceFactory.ACTION_CASEID;
 import static uk.gov.ons.ctp.response.action.utility.MockActionServiceFactory.ACTION_CREATEDBY;
@@ -20,9 +21,9 @@ import static uk.gov.ons.ctp.response.action.utility.MockActionServiceFactory.AC
 import static uk.gov.ons.ctp.response.action.utility.MockActionServiceFactory.NON_EXISTING_ID;
 import static uk.gov.ons.ctp.response.action.utility.MockActionServiceFactory.OUR_EXCEPTION_MESSAGE;
 import static uk.gov.ons.ctp.response.action.utility.MockActionServiceFactory.UNCHECKED_EXCEPTION;
-import static uk.gov.ons.ctp.response.action.utility.MockActionServiceFactory.ACTION3_ACTIONSTATE;
 
 import javax.ws.rs.core.Application;
+import javax.ws.rs.core.MediaType;
 
 import org.junit.Test;
 import org.springframework.http.HttpStatus;
@@ -62,13 +63,6 @@ public final class ActionEndpointUnitTest extends CTPJerseyTest {
       + "\"priority\": " + ACTION2_PRIORITY + ","
       + "\"state\": \"" + ACTION2_ACTIONSTATE + "\"}";
 
-  private static final String ACTION_VALIDJSON_CANCEL = "{\"caseId\": " + ACTION_CASEID + ","
-	      + "\"actionPlanId\": " + ACTION2_PLANID + ","
-	      + "\"actionRuleId\": " + ACTION2_RULEID + ","
-	      + "\"actionTypeName\": \"" + ACTION2_ACTIONTYPENAME + "\","
-	      + "\"createdBy\": \"" + ACTION_CREATEDBY + "\","
-	      + "\"priority\": " + ACTION2_PRIORITY + ","
-	      + "\"state\": \"" + ACTION3_ACTIONSTATE + "\"}";
   
   @Override
   public Application configure() {
@@ -159,18 +153,6 @@ public final class ActionEndpointUnitTest extends CTPJerseyTest {
   }
 
   /**
-   * Test requesting Actions filtered by action state not found.
-   */
-/*  @Test
-  public void findActionsByStateNotFound() {
-    with("http://localhost:9998/actions?state=%s", ACTION_NOTFOUND)
-        .assertResponseCodeIs(HttpStatus.BAD_REQUEST)
-        .assertFaultIs(CTPException.Fault.VALIDATION_FAILED)
-        .assertTimestampExists()
-        .andClose();
-  } */
-
-  /**
    * Test requesting an Action by action Id found.
    */
   @Test
@@ -252,7 +234,7 @@ public final class ActionEndpointUnitTest extends CTPJerseyTest {
    */
   @Test
   public void createActionGoodJsonProvided() {
-    with("http://localhost:9998/actions").post(ACTION_VALIDJSON)
+    with("http://localhost:9998/actions").post(MediaType.APPLICATION_JSON_TYPE, ACTION_VALIDJSON)
         .assertResponseCodeIs(HttpStatus.OK)
         .assertIntegerInBody("$.actionId", ACTIONID)
         .assertIntegerInBody("$.caseId", ACTION_CASEID)
@@ -272,7 +254,7 @@ public final class ActionEndpointUnitTest extends CTPJerseyTest {
    */
   @Test
   public void createActionInvalidPropJsonProvided() {
-    with("http://localhost:9998/actions").post(ACTION_INVALIDJSON_PROP)
+    with("http://localhost:9998/actions").post(MediaType.APPLICATION_JSON_TYPE, ACTION_INVALIDJSON_PROP)
         .assertResponseCodeIs(HttpStatus.BAD_REQUEST)
         .assertFaultIs(CTPException.Fault.VALIDATION_FAILED)
         .assertTimestampExists()
@@ -285,7 +267,7 @@ public final class ActionEndpointUnitTest extends CTPJerseyTest {
    */
   @Test
   public void createActionMissingPropJsonProvided() {
-    with("http://localhost:9998/actions").post(ACTION_INVALIDJSON_MISSING_PROP)
+    with("http://localhost:9998/actions").post(MediaType.APPLICATION_JSON_TYPE, ACTION_INVALIDJSON_MISSING_PROP)
         .assertResponseCodeIs(HttpStatus.BAD_REQUEST)
         .assertFaultIs(CTPException.Fault.VALIDATION_FAILED)
         .assertTimestampExists()
@@ -298,7 +280,7 @@ public final class ActionEndpointUnitTest extends CTPJerseyTest {
    */
   @Test
   public void cancelActions() {
-    with("http://localhost:9998/actions/case/%s/cancel", ACTION_CASEID).put("")
+    with("http://localhost:9998/actions/case/%s/cancel", ACTION_CASEID).put(MediaType.APPLICATION_JSON_TYPE, "")
         .assertResponseCodeIs(HttpStatus.OK)
         .assertIntegerListInBody("$..actionId", ACTIONID)
         .assertIntegerListInBody("$..caseId", ACTION_CASEID)

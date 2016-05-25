@@ -1,6 +1,27 @@
 package uk.gov.ons.ctp.response.action.endpoint;
 
+import static uk.gov.ons.ctp.response.action.utility.MockActionPlanServiceFactory.ACTIONPLAN1_DESC;
+import static uk.gov.ons.ctp.response.action.utility.MockActionPlanServiceFactory.ACTIONPLAN1_NAME;
+import static uk.gov.ons.ctp.response.action.utility.MockActionPlanServiceFactory.ACTIONPLAN2_DESC;
+import static uk.gov.ons.ctp.response.action.utility.MockActionPlanServiceFactory.ACTIONPLAN2_NAME;
+import static uk.gov.ons.ctp.response.action.utility.MockActionPlanServiceFactory.ACTIONPLAN3_DESC;
+import static uk.gov.ons.ctp.response.action.utility.MockActionPlanServiceFactory.ACTIONPLAN3_NAME;
+import static uk.gov.ons.ctp.response.action.utility.MockActionPlanServiceFactory.ACTIONPLANID;
+import static uk.gov.ons.ctp.response.action.utility.MockActionPlanServiceFactory.ACTIONPLANID_WITHNOACTIONRULE;
+import static uk.gov.ons.ctp.response.action.utility.MockActionPlanServiceFactory.ACTIONPLAN_SURVEYID;
+import static uk.gov.ons.ctp.response.action.utility.MockActionPlanServiceFactory.ACTIONRULE_ACTIONTYPENAME;
+import static uk.gov.ons.ctp.response.action.utility.MockActionPlanServiceFactory.ACTIONRULE_DESCRIPTION;
+import static uk.gov.ons.ctp.response.action.utility.MockActionPlanServiceFactory.ACTIONRULE_NAME;
+import static uk.gov.ons.ctp.response.action.utility.MockActionPlanServiceFactory.ACTIONRULE_PRIORITY;
+import static uk.gov.ons.ctp.response.action.utility.MockActionPlanServiceFactory.ACTIONRULE_SURVEYDATEDAYSOFFSET;
+import static uk.gov.ons.ctp.response.action.utility.MockActionPlanServiceFactory.CREATED_BY;
+import static uk.gov.ons.ctp.response.action.utility.MockActionPlanServiceFactory.NON_EXISTING_ACTIONPLANID;
+import static uk.gov.ons.ctp.response.action.utility.MockActionPlanServiceFactory.OUR_EXCEPTION_MESSAGE;
+import static uk.gov.ons.ctp.response.action.utility.MockActionPlanServiceFactory.PROVIDED_JSON_INCORRECT;
+import static uk.gov.ons.ctp.response.action.utility.MockActionPlanServiceFactory.UNCHECKED_EXCEPTION;
+
 import javax.ws.rs.core.Application;
+import javax.ws.rs.core.MediaType;
 
 import org.junit.Test;
 import org.springframework.http.HttpStatus;
@@ -12,8 +33,6 @@ import uk.gov.ons.ctp.response.action.ActionBeanMapper;
 import uk.gov.ons.ctp.response.action.representation.ActionPlanDTO;
 import uk.gov.ons.ctp.response.action.service.ActionPlanService;
 import uk.gov.ons.ctp.response.action.utility.MockActionPlanServiceFactory;
-
-import static uk.gov.ons.ctp.response.action.utility.MockActionPlanServiceFactory.*;
 
 /**
  * Unit tests for ActionPlan endpoint
@@ -117,21 +136,21 @@ public class ActionPlanEndpointUnitTest extends CTPJerseyTest {
 
   @Test
   public void createActionPlanPositiveScenario() {
-    with("http://localhost:9998/actionplans").post(ACTIONPLAN_JSON)
+    with("http://localhost:9998/actionplans").post(MediaType.APPLICATION_JSON_TYPE, ACTIONPLAN_JSON)
         .assertResponseCodeIs(HttpStatus.NOT_IMPLEMENTED)
         .andClose();
   }
 
   @Test
   public void createActionPlanUnimplementedPostScenario() {
-    with("http://localhost:9998/actionplans").post(ACTIONPLAN_JSON)
+    with("http://localhost:9998/actionplans").post(MediaType.APPLICATION_JSON_TYPE, ACTIONPLAN_JSON)
         .assertResponseCodeIs(HttpStatus.NOT_IMPLEMENTED)
         .andClose();
   }
 
   @Test
   public void updateActionPlanNegativeScenarioInvalidJsonProvided() {
-    with("http://localhost:9998/actionplans/%s", ACTIONPLANID).put(ACTIONPLAN_INVALIDJSON)
+    with("http://localhost:9998/actionplans/%s", ACTIONPLANID).put(MediaType.APPLICATION_JSON_TYPE, ACTIONPLAN_INVALIDJSON)
         .assertResponseCodeIs(HttpStatus.BAD_REQUEST)
         .assertFaultIs(CTPException.Fault.VALIDATION_FAILED)
         .assertTimestampExists()
@@ -141,7 +160,7 @@ public class ActionPlanEndpointUnitTest extends CTPJerseyTest {
 
   @Test
   public void updateActionPlanHappyScenario() {
-    with("http://localhost:9998/actionplans/%s", ACTIONPLANID).put(ACTIONPLAN_JSON)
+    with("http://localhost:9998/actionplans/%s", ACTIONPLANID).put(MediaType.APPLICATION_JSON_TYPE, ACTIONPLAN_JSON)
         .assertResponseCodeIs(HttpStatus.OK)
         .assertIntegerInBody("$.actionPlanId", ACTIONPLANID)
         .assertIntegerInBody("$.surveyId", ACTIONPLAN_SURVEYID)

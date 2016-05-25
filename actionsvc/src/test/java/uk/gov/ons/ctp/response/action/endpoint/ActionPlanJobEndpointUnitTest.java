@@ -1,7 +1,22 @@
 package uk.gov.ons.ctp.response.action.endpoint;
 
+import static uk.gov.ons.ctp.response.action.utility.MockActionPlanJobServiceFactory.ACTIONPLANID;
+import static uk.gov.ons.ctp.response.action.utility.MockActionPlanJobServiceFactory.ACTIONPLANID_WITHNOACTIONPLANJOB;
+import static uk.gov.ons.ctp.response.action.utility.MockActionPlanJobServiceFactory.ACTIONPLANJOBID;
+import static uk.gov.ons.ctp.response.action.utility.MockActionPlanJobServiceFactory.ACTIONPLANJOBID_ACTIONPLANID;
+import static uk.gov.ons.ctp.response.action.utility.MockActionPlanJobServiceFactory.ACTIONPLANJOBID_CREATED_BY;
+import static uk.gov.ons.ctp.response.action.utility.MockActionPlanJobServiceFactory.ACTIONPLANJOBID_STATE;
+import static uk.gov.ons.ctp.response.action.utility.MockActionPlanJobServiceFactory.NON_EXISTING_ACTIONPLANJOBID;
+import static uk.gov.ons.ctp.response.action.utility.MockActionPlanJobServiceFactory.OUR_EXCEPTION_MESSAGE;
+import static uk.gov.ons.ctp.response.action.utility.MockActionPlanJobServiceFactory.PROVIDED_JSON_INVALID;
+import static uk.gov.ons.ctp.response.action.utility.MockActionPlanJobServiceFactory.UNCHECKED_EXCEPTION_ACTIONPLANJOBID;
+
+import javax.ws.rs.core.Application;
+import javax.ws.rs.core.MediaType;
+
 import org.junit.Test;
 import org.springframework.http.HttpStatus;
+
 import uk.gov.ons.ctp.common.error.CTPException;
 import uk.gov.ons.ctp.common.jaxrs.CTPMessageBodyReader;
 import uk.gov.ons.ctp.common.jersey.CTPJerseyTest;
@@ -9,11 +24,6 @@ import uk.gov.ons.ctp.response.action.ActionBeanMapper;
 import uk.gov.ons.ctp.response.action.representation.ActionPlanJobDTO;
 import uk.gov.ons.ctp.response.action.service.ActionPlanJobService;
 import uk.gov.ons.ctp.response.action.utility.MockActionPlanJobServiceFactory;
-
-import javax.ws.rs.core.Application;
-
-
-import static uk.gov.ons.ctp.response.action.utility.MockActionPlanJobServiceFactory.*;
 
 /**
  * Created by philippe.brossier on 3/15/16.
@@ -86,7 +96,7 @@ public class ActionPlanJobEndpointUnitTest extends CTPJerseyTest {
 
   @Test
   public void executeActionPlanBadJsonProvided() {
-    with("http://localhost:9998/actionplans/%s/jobs", ACTIONPLANID).post(ACTIONPLANJOB_INVALIDJSON)
+    with("http://localhost:9998/actionplans/%s/jobs", ACTIONPLANID).post(MediaType.APPLICATION_JSON_TYPE, ACTIONPLANJOB_INVALIDJSON)
         .assertResponseCodeIs(HttpStatus.BAD_REQUEST)
         .assertFaultIs(CTPException.Fault.VALIDATION_FAILED)
         .assertTimestampExists()
@@ -96,7 +106,7 @@ public class ActionPlanJobEndpointUnitTest extends CTPJerseyTest {
 
   @Test
   public void executeActionPlanGoodJsonProvided() {
-    with("http://localhost:9998/actionplans/%s/jobs", ACTIONPLANID).post(ACTIONPLANJOB_VALIDJSON)
+    with("http://localhost:9998/actionplans/%s/jobs", ACTIONPLANID).post(MediaType.APPLICATION_JSON_TYPE, ACTIONPLANJOB_VALIDJSON)
         .assertResponseCodeIs(HttpStatus.OK)
         .assertIntegerInBody("$.actionPlanJobId", ACTIONPLANJOBID)
         .assertIntegerInBody("$.actionPlanId", ACTIONPLANJOBID_ACTIONPLANID)

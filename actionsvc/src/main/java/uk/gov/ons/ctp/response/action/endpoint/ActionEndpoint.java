@@ -170,7 +170,7 @@ public final class ActionEndpoint implements CTPEndpoint {
     return CollectionUtils.isEmpty(actionDTOs) ? null : actionDTOs;
   }
   
-  @Consumes({ MediaType.APPLICATION_XML })
+  @Consumes({ MediaType.APPLICATION_XML,MediaType.APPLICATION_JSON })
   @PUT
   @Path("/{actionid}/feedback") 
   public ActionDTO feedbackAction(@PathParam("actionid") final int actionId, final ActionFeedback actionFeedback)

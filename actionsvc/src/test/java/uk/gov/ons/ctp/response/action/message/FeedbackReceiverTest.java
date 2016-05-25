@@ -2,29 +2,21 @@ package uk.gov.ons.ctp.response.action.message;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.io.FileUtils;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.integration.channel.QueueChannel;
 import org.springframework.integration.support.MessageBuilder;
-import org.springframework.jms.listener.DefaultMessageListenerContainer;
 import org.springframework.messaging.MessageChannel;
 import org.springframework.oxm.jaxb.Jaxb2Marshaller;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-
-import uk.gov.ons.ctp.response.action.message.impl.FeedbackReceiverImpl;
-import uk.gov.ons.ctp.response.action.utility.ActionMessageListener;
 
 @ContextConfiguration(locations = { "/FeedbackServiceTest-context.xml" })
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -36,9 +28,6 @@ public class FeedbackReceiverTest {
 	@Autowired
 	@Qualifier("feedbackUnmarshaller")
 	Jaxb2Marshaller feedbackUnmarshaller;
-
-//	@Autowired
-//	FeedbackReceiver feedbackService;
 
 	private static final String INVALID_ACTION_FEEDBACK_LOG_DIRECTORY_NAME = "/var/log/ctp/responsemanagement/actionsvc/feedback";
 	private static final String PACKAGE_ACTION_FEEDBACK = "uk.gov.ons.ctp.response.action.message.feedback.ActionFeedback";
