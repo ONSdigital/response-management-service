@@ -1,12 +1,24 @@
 databaseChangeLog:
 
   - changeSet:
-      id: 8.18.0
+      id: 8.18.0-1
       author: Sarah Radford
       changes:
         - sqlFile:
-            comment: Additional ActionType
-            path: Insert_Actiontype_AddressCheck.sql
-            splitStatements: false
+            comment: BIRT Dashboard view code
+            path: Birt_Dashboard_views.sql
+            splitStatements: true
             relativeToChangelogFile: true
+
+  - changeSet:
+      id: 8.18.0-2
+      author: Sarah Radford
+      changes:
+        - sqlFile:
+            comment: BIRT Dashboard refresh view function
+            path: Birt_Dashboard_Refreshviews_function.sql
+            splitStatements: true
+            relativeToChangelogFile: true
+
+
 
