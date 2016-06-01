@@ -46,7 +46,7 @@
 		<dependency>
 			<groupId>uk.gov.ons.ctp.common</groupId>
 			<artifactId>framework</artifactId>
-			<version>8.17.2-SNAPSHOT</version>
+			<version>8.17.3-SNAPSHOT</version>
 		</dependency>
 
 		<dependency>
@@ -59,7 +59,7 @@
 		<dependency>
 			<groupId>uk.gov.ons.ctp.common</groupId>
 			<artifactId>test-framework</artifactId>
-			<version>8.17.2-SNAPSHOT</version>
+			<version>8.17.3-SNAPSHOT</version>
 			<scope>test</scope>
 		</dependency>
 
