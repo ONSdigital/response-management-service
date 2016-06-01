@@ -1,0 +1,14 @@
+databaseChangeLog:
+
+  - changeSet:
+      id: 8.18.0
+      author: Sarah Radford
+      changes:
+        - sqlFile:
+            comment: Insert new action type
+            path: Insert_Actiontype_AddressCheck.sql
+            splitStatements: true
+            relativeToChangelogFile: true
+
+
+
