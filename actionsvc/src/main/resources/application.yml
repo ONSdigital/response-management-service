@@ -7,7 +7,7 @@ info:
 # ie -Dlogging.level.org.springframework=DEBUG
 logging:
   level:
-    org.springframework: INFO
+    org.springframework: DEBUG
     uk.gov.ons.ctp: DEBUG
 
 liquibase:
@@ -107,4 +107,10 @@ case-frame-svc:
   case-events-by-case-post-path: /cases/{caseid}/events
   address-by-uprn-get-path: /addresses/{uprn}
   case-by-status-and-action-plan-path: /cases/actionplan/{actionplanid}
+
+csv-ingest:
+  directory: /tmp/csv
+  file-pattern: '*.csv'
+  poll-milliseconds: 10000
+  
   

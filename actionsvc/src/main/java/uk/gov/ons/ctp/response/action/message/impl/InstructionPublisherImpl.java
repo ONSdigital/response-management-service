@@ -25,19 +25,23 @@ import uk.gov.ons.ctp.response.action.message.instruction.ActionRequests;
 @Named
 public class InstructionPublisherImpl implements InstructionPublisher {
 
-
   @Override
   @Publisher(channel = "instructionOutbound")
-  public ActionInstruction sendInstructions(@Header("HANDLER") String handler, List<ActionRequest> actionRequests, List<ActionCancel> actionCancels) {
+  public ActionInstruction sendInstructions(@Header("HANDLER") String handler, List<ActionRequest> actionRequests,
+      List<ActionCancel> actionCancels) {
     ActionInstruction instruction = new ActionInstruction();
 
-    ActionRequests requests = new ActionRequests();
-    requests.getActionRequests().addAll(actionRequests);
-    instruction.setActionRequests(requests);
+    if (actionRequests != null) {
+      ActionRequests requests = new ActionRequests();
+      requests.getActionRequests().addAll(actionRequests);
+      instruction.setActionRequests(requests);
+    }
 
-    ActionCancels cancels = new ActionCancels();
-    cancels.getActionCancels().addAll(actionCancels);
-    instruction.setActionCancels(cancels);
+    if (actionCancels != null) {
+      ActionCancels cancels = new ActionCancels();
+      cancels.getActionCancels().addAll(actionCancels);
+      instruction.setActionCancels(cancels);
+    }
 
     return instruction;
   }

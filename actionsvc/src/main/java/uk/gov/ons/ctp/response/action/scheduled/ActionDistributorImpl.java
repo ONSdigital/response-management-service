@@ -133,8 +133,8 @@ public class ActionDistributorImpl {
                 Arrays.asList(ActionState.SUBMITTED, ActionState.CANCEL_SUBMITTED), pageable);
 
         // container for outbound requests for this action type
-        List<ActionRequest> actionRequests = new ArrayList<ActionRequest>();
-        List<ActionCancel> actionCancels = new ArrayList<ActionCancel>();
+        List<ActionRequest> actionRequests = new ArrayList<>();
+        List<ActionCancel> actionCancels = new ArrayList<>();
 
         log.debug("Dealing with actionType {}", actionType.getName());
         StringBuilder sbRequests = new StringBuilder("Action ids for Requests : ");

@@ -11,4 +11,5 @@ import lombok.Data;
 public class AppConfig {
   private CaseFrameSvc caseFrameSvc;
   private ActionDistribution actionDistribution;
+  private CsvIngest csvIngest;
 }

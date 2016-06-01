@@ -23,6 +23,13 @@
   http://www.springframework.org/schema/integration/xml
   http://www.springframework.org/schema/integration/xml/spring-integration-xml.xsd">
 
+
+  <int-file:inbound-channel-adapter id="csvIngest"
+    directory="file:${csv-ingest.directory}" prevent-duplicates="false"
+    filename-pattern="${csv-ingest.file-pattern}">
+    <int:poller fixed-delay="${csv-ingest.poll-milliseconds:30000}"/>
+  </int-file:inbound-channel-adapter>
+    
   <!--  First the inbound flow -->
 
   <!-- need an input channel defined for MQ adapter to input to -->

@@ -46,9 +46,9 @@
       <xs:element name="line1" type="xs:string" minOccurs="0" maxOccurs="1"/>
       <xs:element name="line2" type="xs:string" minOccurs="0" maxOccurs="1"/>
       <xs:element name="townName" type="xs:string" minOccurs="0" maxOccurs="1"/>
-      <xs:element name="postcode" type="xs:string" minOccurs="0" maxOccurs="1"/>
-      <xs:element name="latitude" type="xs:decimal" minOccurs="0" maxOccurs="1"/>
-      <xs:element name="longitude" type="xs:decimal" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="postcode" type="xs:string" minOccurs="1" maxOccurs="1"/>
+      <xs:element name="latitude" type="xs:decimal" minOccurs="1" maxOccurs="1"/>
+      <xs:element name="longitude" type="xs:decimal" minOccurs="1" maxOccurs="1"/>
     </xs:sequence>
   </xs:complexType>
 
