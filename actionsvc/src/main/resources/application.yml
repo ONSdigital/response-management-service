@@ -111,6 +111,7 @@ case-frame-svc:
 csv-ingest:
   directory: /tmp/csv
   file-pattern: '*.csv'
+  #the poll-milliseconds property is not used at the moment due to a bug in spring context loading in integration tests
   poll-milliseconds: 10000
   
   

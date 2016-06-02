@@ -51,7 +51,7 @@ import uk.gov.ons.ctp.response.caseframe.representation.QuestionnaireDTO;
 @RunWith(MockitoJUnitRunner.class)
 public class ActionDistributorTest {
 
-  private static final int I_HATE_CHECKSTYLE = 10;
+  private static final int I_HATE_CHECKSTYLE_TEN = 10;
 
   private static final long FAKE_UPRN = 1234L;
 
@@ -93,10 +93,10 @@ public class ActionDistributorTest {
   public void setup() {
     CaseFrameSvc caseFrameSvcConfig = new CaseFrameSvc();
     ActionDistribution actionDistributionConfig = new ActionDistribution();
-    actionDistributionConfig.setInitialDelaySeconds(I_HATE_CHECKSTYLE);
-    actionDistributionConfig.setSubsequentDelaySeconds(I_HATE_CHECKSTYLE);
-    actionDistributionConfig.setInstructionMax(I_HATE_CHECKSTYLE);
-    actionDistributionConfig.setRetrySleepSeconds(I_HATE_CHECKSTYLE);
+    actionDistributionConfig.setInitialDelaySeconds(I_HATE_CHECKSTYLE_TEN);
+    actionDistributionConfig.setSubsequentDelaySeconds(I_HATE_CHECKSTYLE_TEN);
+    actionDistributionConfig.setInstructionMax(I_HATE_CHECKSTYLE_TEN);
+    actionDistributionConfig.setRetrySleepSeconds(I_HATE_CHECKSTYLE_TEN);
 
     appConfig.setCaseFrameSvc(caseFrameSvcConfig);
     appConfig.setActionDistribution(actionDistributionConfig);
