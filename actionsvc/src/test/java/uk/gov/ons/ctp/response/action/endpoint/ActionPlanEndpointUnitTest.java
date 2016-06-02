@@ -41,15 +41,21 @@ public class ActionPlanEndpointUnitTest extends CTPJerseyTest {
 
   private static final String CREATED_DATE_TIME = "2016-03-09T11:15:48.023+0000";
   private static final String LAST_GOOD_RUN_DATE_TIME = "2016-03-09T11:15:48.023+0000";
-  private static final String ACTIONPLAN_JSON = "{\"actionPlanId\":21,\"surveyId\":1,\"name\":\"HH\",\"description\":\"philippetesting\",\"createdBy\":\"SYSTEM\",\"createdDateTime\":\"2016-03-10T15:10:39.494+0000\",\"lastGoodRunDateTime\":null}";
+  private static final String ACTIONPLAN_JSON = "{\"actionPlanId\":21,\"surveyId\":1,\"name\":\"HH\","
+      + "\"description\":\"philippetesting\",\"createdBy\":\"SYSTEM\","
+      + "\"createdDateTime\":\"2016-03-10T15:10:39.494+0000\",\"lastGoodRunDateTime\":null}";
   private static final String ACTIONPLAN_INVALIDJSON = "{\"some\":\"joke\"}";
-
 
   @Override
   public Application configure() {
-    return super.init(ActionPlanEndpoint.class, ActionPlanService.class, MockActionPlanServiceFactory.class, new ActionBeanMapper(), new CTPMessageBodyReader<ActionPlanDTO>(ActionPlanDTO.class) {});
+    return super.init(ActionPlanEndpoint.class, ActionPlanService.class, MockActionPlanServiceFactory.class,
+        new ActionBeanMapper(), new CTPMessageBodyReader<ActionPlanDTO>(ActionPlanDTO.class) {
+        });
   }
 
+  /**
+   * A Test
+   */
   @Test
   public void findActionPlansFound() {
     with("http://localhost:9998/actionplans")
@@ -66,6 +72,9 @@ public class ActionPlanEndpointUnitTest extends CTPJerseyTest {
         .andClose();
   }
 
+  /**
+   * A Test
+   */
   @Test
   public void findActionPlanFound() {
     with("http://localhost:9998/actionplans/%s", ACTIONPLANID)
@@ -80,25 +89,34 @@ public class ActionPlanEndpointUnitTest extends CTPJerseyTest {
         .andClose();
   }
 
+  /**
+   * A Test
+   */
   @Test
   public void findActionPlanNotFound() {
     with("http://localhost:9998/actionplans/%s", NON_EXISTING_ACTIONPLANID)
-      .assertResponseCodeIs(HttpStatus.NOT_FOUND)
-      .assertFaultIs(CTPException.Fault.RESOURCE_NOT_FOUND)
-      .assertTimestampExists()
-      .andClose();
+        .assertResponseCodeIs(HttpStatus.NOT_FOUND)
+        .assertFaultIs(CTPException.Fault.RESOURCE_NOT_FOUND)
+        .assertTimestampExists()
+        .andClose();
   }
 
+  /**
+   * A Test
+   */
   @Test
   public void findActionPlanUnCheckedException() {
     with("http://localhost:9998/actionplans/%s", UNCHECKED_EXCEPTION)
-      .assertResponseCodeIs(HttpStatus.INTERNAL_SERVER_ERROR)
-      .assertFaultIs(CTPException.Fault.SYSTEM_ERROR)
-      .assertTimestampExists()
-      .assertMessageEquals(OUR_EXCEPTION_MESSAGE)
-      .andClose();
+        .assertResponseCodeIs(HttpStatus.INTERNAL_SERVER_ERROR)
+        .assertFaultIs(CTPException.Fault.SYSTEM_ERROR)
+        .assertTimestampExists()
+        .assertMessageEquals(OUR_EXCEPTION_MESSAGE)
+        .andClose();
   }
 
+  /**
+   * A Test
+   */
   @Test
   public void findActionRulesForActionPlanFound() {
     with("http://localhost:9998/actionplans/%s/rules", ACTIONPLANID)
@@ -117,7 +135,9 @@ public class ActionPlanEndpointUnitTest extends CTPJerseyTest {
         .andClose();
   }
 
-
+  /**
+   * A Test
+   */
   @Test
   public void findNoActionRulesForActionPlan() {
     with("http://localhost:9998/actionplans/%s/rules", ACTIONPLANID_WITHNOACTIONRULE)
@@ -125,6 +145,9 @@ public class ActionPlanEndpointUnitTest extends CTPJerseyTest {
         .andClose();
   }
 
+  /**
+   * A Test
+   */
   @Test
   public void findActionRulesForNonExistingActionPlan() {
     with("http://localhost:9998/actionplans/%s/rules", NON_EXISTING_ACTIONPLANID)
@@ -134,6 +157,9 @@ public class ActionPlanEndpointUnitTest extends CTPJerseyTest {
         .andClose();
   }
 
+  /**
+   * A Test
+   */
   @Test
   public void createActionPlanPositiveScenario() {
     with("http://localhost:9998/actionplans").post(MediaType.APPLICATION_JSON_TYPE, ACTIONPLAN_JSON)
@@ -141,6 +167,9 @@ public class ActionPlanEndpointUnitTest extends CTPJerseyTest {
         .andClose();
   }
 
+  /**
+   * A Test
+   */
   @Test
   public void createActionPlanUnimplementedPostScenario() {
     with("http://localhost:9998/actionplans").post(MediaType.APPLICATION_JSON_TYPE, ACTIONPLAN_JSON)
@@ -148,9 +177,13 @@ public class ActionPlanEndpointUnitTest extends CTPJerseyTest {
         .andClose();
   }
 
+  /**
+   * A Test
+   */
   @Test
   public void updateActionPlanNegativeScenarioInvalidJsonProvided() {
-    with("http://localhost:9998/actionplans/%s", ACTIONPLANID).put(MediaType.APPLICATION_JSON_TYPE, ACTIONPLAN_INVALIDJSON)
+    with("http://localhost:9998/actionplans/%s", ACTIONPLANID)
+        .put(MediaType.APPLICATION_JSON_TYPE, ACTIONPLAN_INVALIDJSON)
         .assertResponseCodeIs(HttpStatus.BAD_REQUEST)
         .assertFaultIs(CTPException.Fault.VALIDATION_FAILED)
         .assertTimestampExists()
@@ -158,6 +191,9 @@ public class ActionPlanEndpointUnitTest extends CTPJerseyTest {
         .andClose();
   }
 
+  /**
+   * A Test
+   */
   @Test
   public void updateActionPlanHappyScenario() {
     with("http://localhost:9998/actionplans/%s", ACTIONPLANID).put(MediaType.APPLICATION_JSON_TYPE, ACTIONPLAN_JSON)

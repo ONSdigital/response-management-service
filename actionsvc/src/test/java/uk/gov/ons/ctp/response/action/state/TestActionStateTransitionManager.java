@@ -25,6 +25,9 @@ import uk.gov.ons.ctp.response.action.representation.ActionDTO.ActionState;
 @Slf4j
 public class TestActionStateTransitionManager {
 
+  private static final int TIMEOUT = 10000;
+  private static final int INVOCATIONS = 50;
+  private static final int THREAD_POOL_SIZE = 10;
   private Map<ActionState, Map<ActionEvent, ActionState>> validTransitions = new HashMap<>();
 
   /**
@@ -85,18 +88,19 @@ public class TestActionStateTransitionManager {
 
   /**
    * test a valid transition
-   * 
+   *
    * @throws StateTransitionException shouldn't!
    */
-  @Test(threadPoolSize = 10, invocationCount = 50,  timeOut = 10000)
+  @Test(threadPoolSize = THREAD_POOL_SIZE, invocationCount = INVOCATIONS, timeOut = TIMEOUT)
   public void testActionTransitions() {
     StateTransitionManagerFactory stmFactory = new ActionSvcStateTransitionManagerFactory();
     StateTransitionManager<ActionState, ActionEvent> stm = stmFactory
         .getStateTransitionManager(ActionSvcStateTransitionManagerFactory.ACTION_ENTITY);
-    
-    validTransitions.forEach((sourceState,transitions)-> {
+
+    validTransitions.forEach((sourceState, transitions) -> {
       transitions.forEach((actionEvent, actionState) -> {
-        log.debug("{} asserting valid transition {}({}) -> {}", Thread.currentThread().getName(), sourceState, actionEvent,
+        log.debug("{} asserting valid transition {}({}) -> {}", Thread.currentThread().getName(), sourceState,
+            actionEvent,
             actionState);
         try {
           Assert.assertEquals(actionState, stm.transition(sourceState, actionEvent));
@@ -105,7 +109,7 @@ public class TestActionStateTransitionManager {
         }
       });
 
-      Arrays.asList(ActionEvent.values()).forEach(event-> {
+      Arrays.asList(ActionEvent.values()).forEach(event -> {
         if (!transitions.keySet().contains(event)) {
           boolean caught = false;
           try {

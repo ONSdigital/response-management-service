@@ -28,27 +28,33 @@ import uk.gov.ons.ctp.response.action.domain.repository.ActionPlanJobRepository;
 import uk.gov.ons.ctp.response.action.domain.repository.ActionPlanRepository;
 import uk.gov.ons.ctp.response.action.service.CaseFrameSvcClientService;
 
+/**
+ * Tests for the ActionPlanJobServiceImpl
+ */
 @RunWith(MockitoJUnitRunner.class)
 public class ActionPlanJobServiceImplTest {
 
   @Mock
-  AppConfig appConfig;
+  private AppConfig appConfig;
 
   @Mock
-  ActionPlanRepository actionPlanRepo;
+  private ActionPlanRepository actionPlanRepo;
 
   @Mock
-  ActionCaseRepository actionCaseRepo;
+  private ActionCaseRepository actionCaseRepo;
 
   @Mock
-  ActionPlanJobRepository actionPlanJobRepo;
-  
+  private ActionPlanJobRepository actionPlanJobRepo;
+
   @Mock
-  CaseFrameSvcClientService caseFrameSvcClientService;
+  private CaseFrameSvcClientService caseFrameSvcClientService;
 
   @InjectMocks
-  ActionPlanJobServiceImpl actionPlanJobServiceImpl;
+  private ActionPlanJobServiceImpl actionPlanJobServiceImpl;
 
+  /**
+   * Before the test
+   */
   @Before
   public void setup() {
     MockitoAnnotations.initMocks(this);
@@ -58,8 +64,8 @@ public class ActionPlanJobServiceImplTest {
    * Test that when we fail at first hurdle to load ActionTypes we do not go on
    * to call anything else In reality the wakeup mathod would then be called
    * again after a sleep interval by spring but we cannot test that here
-   * 
-   * @throws Exception
+   *
+   * @throws Exception oops
    */
   @Test
   public void testCreateAndExecuteActionPlanJob() throws Exception {
@@ -73,7 +79,7 @@ public class ActionPlanJobServiceImplTest {
     Mockito.when(appConfig.getCaseFrameSvc()).thenReturn(caseFrameSvcConfig);
 
     Mockito.when(caseFrameSvcClientService.getOpenCasesForActionPlan(eq(1)))
-    .thenReturn(Arrays.asList(1,2,3,4,5,6));
+        .thenReturn(Arrays.asList(1, 2, 3, 4, 5, 6));
 
     Mockito.when(actionPlanRepo.findOne(1)).thenReturn(actionPlans.get(0));
     Mockito.when(actionPlanJobRepo.save(actionPlanJobs.get(0))).thenReturn(actionPlanJobs.get(0));
@@ -85,7 +91,7 @@ public class ActionPlanJobServiceImplTest {
     // assert the right calls were made
     verify(actionPlanRepo).findOne(1);
     verify(actionCaseRepo).createActions(1);
-    verify(actionPlanJobRepo).save(actionPlanJobs.get(0)); 
+    verify(actionPlanJobRepo).save(actionPlanJobs.get(0));
     verify(caseFrameSvcClientService).getOpenCasesForActionPlan(eq(1));
     verify(actionCaseRepo, times(6)).saveAndFlush(any(ActionCase.class));
   }

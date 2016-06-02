@@ -22,11 +22,12 @@ public class MockActionPlanJobServiceFactory implements Factory<ActionPlanJobSer
   public static final Integer ACTIONPLANJOBID = 1;
   public static final Integer ACTIONPLANJOBID_ACTIONPLANID = 1;
   public static final String ACTIONPLANJOBID_CREATED_BY = "theTester";
-  public static final ActionPlanJobDTO.ActionPlanJobState ACTIONPLANJOBID_STATE = ActionPlanJobDTO.ActionPlanJobState.SUBMITTED;
-  private static final Timestamp ACTIONPLANJOBID_CREATEDDATE_TIMESTAMP =
-      Timestamp.valueOf("2016-03-09 11:15:48.023286");
-  private static final Timestamp ACTIONPLANJOBID_UPDATED_DATE_TIMESTAMP =
-      Timestamp.valueOf("2016-04-09 11:15:48.023286");
+  public static final ActionPlanJobDTO.ActionPlanJobState
+    ACTIONPLANJOBID_STATE = ActionPlanJobDTO.ActionPlanJobState.SUBMITTED;
+  public static final Timestamp ACTIONPLANJOBID_CREATEDDATE_TIMESTAMP = Timestamp
+      .valueOf("2016-03-09 11:15:48.023286");
+  public static final Timestamp ACTIONPLANJOBID_UPDATED_DATE_TIMESTAMP = Timestamp
+      .valueOf("2016-04-09 11:15:48.023286");
 
   public static final Integer NON_EXISTING_ACTIONPLANJOBID = 998;
   public static final Integer UNCHECKED_EXCEPTION_ACTIONPLANJOBID = 999;
@@ -37,6 +38,10 @@ public class MockActionPlanJobServiceFactory implements Factory<ActionPlanJobSer
   public static final String OUR_EXCEPTION_MESSAGE = "this is what we throw";
   public static final String PROVIDED_JSON_INVALID = "Provided json fails validation.";
 
+  /**
+   * mock up the action plan job service
+   * @return the mock service created
+   */
   public ActionPlanJobService provide() {
     final ActionPlanJobService mockedService = Mockito.mock(ActionPlanJobService.class);
 
@@ -64,34 +69,39 @@ public class MockActionPlanJobServiceFactory implements Factory<ActionPlanJobSer
               throws Throwable {
             List<ActionPlanJob> result = new ArrayList<>();
             return result;
-        }
-    });
+          }
+        });
 
-    Mockito.when(mockedService.findActionPlanJobsForActionPlan(ACTIONPLANID)).thenAnswer(new Answer<List<ActionPlanJob>>() {
-      public List<ActionPlanJob> answer(InvocationOnMock invocation)
-          throws Throwable {
-        List<ActionPlanJob> result = new ArrayList<>();
-        result.add(new ActionPlanJob(1, ACTIONPLANJOBID_ACTIONPLANID, ACTIONPLANJOBID_CREATED_BY,
-            ACTIONPLANJOBID_STATE, ACTIONPLANJOBID_CREATEDDATE_TIMESTAMP, ACTIONPLANJOBID_UPDATED_DATE_TIMESTAMP));
-        result.add(new ActionPlanJob(2, ACTIONPLANJOBID_ACTIONPLANID, ACTIONPLANJOBID_CREATED_BY,
-            ACTIONPLANJOBID_STATE, ACTIONPLANJOBID_CREATEDDATE_TIMESTAMP, ACTIONPLANJOBID_UPDATED_DATE_TIMESTAMP));
-        result.add(new ActionPlanJob(3, ACTIONPLANJOBID_ACTIONPLANID, ACTIONPLANJOBID_CREATED_BY,
-            ACTIONPLANJOBID_STATE, ACTIONPLANJOBID_CREATEDDATE_TIMESTAMP, ACTIONPLANJOBID_UPDATED_DATE_TIMESTAMP));
-        return result;
-      }
-    });
+    Mockito.when(mockedService.findActionPlanJobsForActionPlan(ACTIONPLANID))
+        .thenAnswer(new Answer<List<ActionPlanJob>>() {
+          public List<ActionPlanJob> answer(InvocationOnMock invocation)
+              throws Throwable {
+            List<ActionPlanJob> result = new ArrayList<>();
+            result.add(new ActionPlanJob(1, ACTIONPLANJOBID_ACTIONPLANID, ACTIONPLANJOBID_CREATED_BY,
+                ACTIONPLANJOBID_STATE, ACTIONPLANJOBID_CREATEDDATE_TIMESTAMP, ACTIONPLANJOBID_UPDATED_DATE_TIMESTAMP));
+            result.add(new ActionPlanJob(2, ACTIONPLANJOBID_ACTIONPLANID, ACTIONPLANJOBID_CREATED_BY,
+                ACTIONPLANJOBID_STATE, ACTIONPLANJOBID_CREATEDDATE_TIMESTAMP, ACTIONPLANJOBID_UPDATED_DATE_TIMESTAMP));
+            result.add(new ActionPlanJob(3, ACTIONPLANJOBID_ACTIONPLANID, ACTIONPLANJOBID_CREATED_BY,
+                ACTIONPLANJOBID_STATE, ACTIONPLANJOBID_CREATEDDATE_TIMESTAMP, ACTIONPLANJOBID_UPDATED_DATE_TIMESTAMP));
+            return result;
+          }
+        });
 
     Mockito.when(mockedService.createAndExecuteActionPlanJob(any(ActionPlanJob.class))).thenAnswer(
         new Answer<ActionPlanJob>() {
           public ActionPlanJob answer(InvocationOnMock invocation) throws Throwable {
             return new ActionPlanJob(ACTIONPLANJOBID, ACTIONPLANJOBID_ACTIONPLANID, ACTIONPLANJOBID_CREATED_BY,
-            ACTIONPLANJOBID_STATE, ACTIONPLANJOBID_CREATEDDATE_TIMESTAMP, ACTIONPLANJOBID_UPDATED_DATE_TIMESTAMP);
-      }
-    });
+                ACTIONPLANJOBID_STATE, ACTIONPLANJOBID_CREATEDDATE_TIMESTAMP, ACTIONPLANJOBID_UPDATED_DATE_TIMESTAMP);
+          }
+        });
 
     return mockedService;
   }
 
+  /**
+   * clean up
+   * @param t service to dispose of
+   */
   public void dispose(ActionPlanJobService t) {
   }
 }

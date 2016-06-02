@@ -80,8 +80,8 @@ public final class ActionEndpoint implements CTPEndpoint {
   /**
    * POST Create an Action.
    *
-   * @param actionDTO Incoming ActionDTO with details to validate and from
-   *          which to create Action
+   * @param actionDTO Incoming ActionDTO with details to validate and from which
+   *          to create Action
    * @return ActionDTO Created Action
    * @throws CTPException on failure to create Action
    */
@@ -144,16 +144,16 @@ public final class ActionEndpoint implements CTPEndpoint {
    * @throws CTPException if update operation fails
    */
   @PUT
-  @Path("/case/{caseid}/cancel") 
+  @Path("/case/{caseid}/cancel")
   public List<ActionDTO> cancelActions(@PathParam("caseid") final int caseId)
       throws CTPException {
     log.debug("Cancelling Actions for {}", caseId);
     List<Action> actions = actionService.cancelActions(caseId);
-    
+
     List<ActionDTO> results = mapperFacade.mapAsList(actions, ActionDTO.class);
     return CollectionUtils.isEmpty(results) ? null : results;
   }
-  
+
   /**
    * GET Actions for the specified case Id.
    *
@@ -169,13 +169,20 @@ public final class ActionEndpoint implements CTPEndpoint {
     List<ActionDTO> actionDTOs = mapperFacade.mapAsList(actions, ActionDTO.class);
     return CollectionUtils.isEmpty(actionDTOs) ? null : actionDTOs;
   }
-  
-  @Consumes({ MediaType.APPLICATION_XML,MediaType.APPLICATION_JSON })
+
+  /**
+   * Allow feedback otherwise sent via JMS to be sent via endpoint
+   * @param actionId the action
+   * @param actionFeedback the feedback
+   * @return the modified action
+   * @throws CTPException oops
+   */
+  @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
   @PUT
-  @Path("/{actionid}/feedback") 
+  @Path("/{actionid}/feedback")
   public ActionDTO feedbackAction(@PathParam("actionid") final int actionId, final ActionFeedback actionFeedback)
       throws CTPException {
-    //TODO make endpoint accept JSON instead of XML
+    // TODO make endpoint accept JSON instead of XML
     log.debug("Feedback for Action {}", actionId);
     actionFeedback.setActionId(BigInteger.valueOf(actionId));
     Action action = actionService.feedBackAction(actionFeedback);

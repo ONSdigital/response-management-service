@@ -44,12 +44,6 @@
 		</dependency>
 
 		<dependency>
-			<groupId>org.springframework.integration</groupId>
-			<artifactId>spring-integration-java-dsl</artifactId>
-			<version>1.1.2.RELEASE</version>
-		</dependency>
-
-		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-actuator</artifactId>
 		</dependency>

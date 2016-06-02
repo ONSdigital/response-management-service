@@ -48,11 +48,13 @@ import uk.gov.ons.ctp.response.action.message.instruction.Priority;
  * handler will be sent. The CSV file may contain actions for multiple handlers,
  * and even multiple action types for each handler. The generation of the CSV
  * file is outside the remit of the action service.
- * 
+ *
  */
 @MessageEndpoint
 @Slf4j
 public class CsvIngesterImpl extends CsvToBean implements CsvIngester {
+
+  private static final int LINE_NUM_MODULO = 100;
 
   private static final String CHANNEL = "csvIngest";
 
@@ -85,6 +87,13 @@ public class CsvIngesterImpl extends CsvToBean implements CsvIngester {
   private static final String IAC = "iac";
   private static final String EVENTS = "events";
 
+  /**
+   * Inner class to encapsulate the request and cancel data as they do not have
+   * common parentage
+   *
+   * @author centos
+   *
+   */
   @Data
   private class InstructionBucket {
     private List<ActionRequest> actionRequests = new ArrayList<>();
@@ -97,6 +106,11 @@ public class CsvIngesterImpl extends CsvToBean implements CsvIngester {
   @Inject
   private InstructionPublisher instructionPublisher;
 
+  /**
+   * Lazy create a resusable validator
+   *
+   * @return the cached validator
+   */
   @Cacheable(cacheNames = "csvIngestValidator")
   private Validator getValidator() {
     ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
@@ -105,7 +119,7 @@ public class CsvIngesterImpl extends CsvToBean implements CsvIngester {
 
   /*
    * (non-Javadoc)
-   * 
+   *
    * @see
    * uk.gov.ons.ctp.response.action.message.impl.CsvIngester#ingest(java.io.
    * File)
@@ -123,7 +137,7 @@ public class CsvIngesterImpl extends CsvToBean implements CsvIngester {
     try {
       ColumnPositionMappingStrategy strat = new ColumnPositionMappingStrategy();
       strat.setType(CsvLine.class);
-      String[] columns = new String[] { HANDLER, ACTION_TYPE, INSTRUCTION_TYPE, ADDRESS_TYPE, ESTAB_TYPE, LOCALITY,
+      String[] columns = new String[] {HANDLER, ACTION_TYPE, INSTRUCTION_TYPE, ADDRESS_TYPE, ESTAB_TYPE, LOCALITY,
           ORGANISATION_NAME, CATEGORY, LINE1, LINE2, TOWN_NAME, POSTCODE, LATITUDE, LONGITUDE, UPRN, CONTACT_NAME,
           CASE_ID, QUESTIONNAIRE_ID, PRIORITY, IAC, EVENTS };
       strat.setColumnMapping(columns);
@@ -137,9 +151,10 @@ public class CsvIngesterImpl extends CsvToBean implements CsvIngester {
             CsvLine csvLine = (CsvLine) processLine(strat, nextLine);
             Set<ConstraintViolation<CsvLine>> violations = getValidator().validate(csvLine);
             if (violations.size() > 0) {
-              log.error("Problem parsing {} - entire ingest aborted", Arrays.toString(nextLine));
               reader.close();
-              String fieldNames = violations.stream().map(v->v.getPropertyPath().toString()).collect(Collectors.joining("_"));
+              String fieldNames = violations.stream().map(v -> v.getPropertyPath().toString())
+                  .collect(Collectors.joining("_"));
+              log.error("Problem parsing {} due to {} - entire ingest aborted", Arrays.toString(nextLine), fieldNames);
               csvFile.renameTo(new File(csvFile.getPath() + ".error_LINE_" + lineNum + "_COLUMN_" + fieldNames));
               return;
             }
@@ -156,7 +171,7 @@ public class CsvIngesterImpl extends CsvToBean implements CsvIngester {
             // parse the line
             if (csvLine.getInstructionType().equals(REQUEST_INSTRUCTION)) {
               ActionRequest request = ActionRequest.builder()
-                  .withActionId(new BigInteger(nowStr + String.format("%03d", lineNum % 100)))
+                  .withActionId(new BigInteger(nowStr + String.format("%03d", lineNum % LINE_NUM_MODULO)))
                   .withActionType(csvLine.getActionType())
                   .withAddress()
                   .withCategory(csvLine.getCategory())
@@ -174,7 +189,8 @@ public class CsvIngesterImpl extends CsvToBean implements CsvIngester {
                   .withCaseId(new BigInteger(csvLine.getCaseId()))
                   .withContactName(csvLine.getContactName())
                   .withIac(csvLine.getIac())
-                  .withPriority(Priority.fromValue(ActionPriority.valueOf(Integer.parseInt(csvLine.getPriority())).getName()))
+                  .withPriority(
+                      Priority.fromValue(ActionPriority.valueOf(Integer.parseInt(csvLine.getPriority())).getName()))
                   .withQuestionnaireId(new BigInteger(csvLine.getQuestionnaireId()))
                   .withUprn(new BigInteger(csvLine.getUprn()))
                   .withEvents()
@@ -202,11 +218,12 @@ public class CsvIngesterImpl extends CsvToBean implements CsvIngester {
         return;
       }
 
+      reader.close();
+      csvFile.delete();
+
       // all lines parsed successfully - now send out bucket contents
       publishBuckets(handlerInstructionBuckets);
 
-      reader.close();
-      csvFile.delete();
     } catch (Exception e) {
       log.error("Problem reading ingest file {} because : ", csvFile.getPath(), e);
     }
@@ -215,7 +232,7 @@ public class CsvIngesterImpl extends CsvToBean implements CsvIngester {
   /**
    * takes the map of buckets for all handlers, and splits the diff action
    * instructions into messages of the configured max size
-   * 
+   *
    * @param buckets the map of buckets keyed by handler
    */
   private void publishBuckets(Map<String, InstructionBucket> buckets) {
@@ -230,5 +247,4 @@ public class CsvIngesterImpl extends CsvToBean implements CsvIngester {
       }
     });
   }
-
 }

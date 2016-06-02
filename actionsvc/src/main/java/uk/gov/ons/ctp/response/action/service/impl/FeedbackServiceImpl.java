@@ -48,7 +48,7 @@ public class FeedbackServiceImpl implements FeedbackService {
 
     // TODO won't need this check when instruction xsd has responseRequired bool
     // here now so that for 2016 we could use CSV ingest for all handlers if necessary
-    if (actionId.compareTo(CSV_GENERATED_ID_BOUNDARY) == -1 ) {
+    if (actionId.compareTo(CSV_GENERATED_ID_BOUNDARY) == -1) {
       Action action = actionRepo.getOne(actionId.intValue());
       ActionDTO.ActionEvent outcomeEvent = ActionDTO.ActionEvent.valueOf(feedback.getOutcome().name());
 

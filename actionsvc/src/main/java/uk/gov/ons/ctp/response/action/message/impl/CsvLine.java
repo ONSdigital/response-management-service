@@ -16,14 +16,20 @@ import lombok.Getter;
 @Data
 @Getter
 public class CsvLine {
-  private final static String POSTCODE_RE = "^[A-Z]{1,2}[0-9R][0-9A-Z]? [0-9][ABD-HJLNP-UW-Z]{2}$";
-  private final static String NON_BLANK_INTEGER_NUMERIC_RE = "[\\d]+";
-  private final static String NON_BLANK_FLOAT_NUMERIC_RE = "[\\d]+\\.[\\d]+";
-  private final static String ACTION_TYPE_RE = "\\D*";
-  private final static String PRIORITY_RE = "[1-5]";
-  private final static String ADDRESS_TYPE_RE = "|HH|CE";
-  private final static String INSTRUCTION_TYPE_RE = "Request|Cancel";
-  private final static String HANDLER_TYPE_RE = "HotelSurvey|HHSurvey|Printer|Field|CensusSupport";
+  private static final int TOWN_MAX_LEN = 30;
+  private static final int LINE2_MAX_LEN = 60;
+  private static final int LINE1_MAX_LEN = 60;
+  private static final int CAT_MAX_LEN = 20;
+  private static final int ORG_MAX_LEN = 60;
+  private static final int LOCALITY_MAX_LEN = 35;
+  private static final String POSTCODE_RE = "^[A-Z]{1,2}[0-9R][0-9A-Z]? [0-9][ABD-HJLNP-UW-Z]{2}$";
+  private static final String NON_BLANK_INTEGER_NUMERIC_RE = "[\\d]+";
+  private static final String NON_BLANK_FLOAT_NUMERIC_RE = "[\\d]+\\.[\\d]+";
+  private static final String ACTION_TYPE_RE = "\\D*";
+  private static final String PRIORITY_RE = "[1-5]";
+  private static final String ADDRESS_TYPE_RE = "|HH|CE";
+  private static final String INSTRUCTION_TYPE_RE = "Request|Cancel";
+  private static final String HANDLER_TYPE_RE = "HotelSurvey|HHSurvey|Printer|Field|CensusSupport";
 
   @Pattern(regexp = HANDLER_TYPE_RE)
   private String handler;
@@ -40,22 +46,22 @@ public class CsvLine {
   @Size(min = 0, max = 6)
   private String estabType;
 
-  @Size(min = 0, max = 35)
+  @Size(min = 0, max = LOCALITY_MAX_LEN)
   private String locality;
 
-  @Size(min = 0, max = 60)
+  @Size(min = 0, max = ORG_MAX_LEN)
   private String organisationName;
 
-  @Size(min = 0, max = 20)
+  @Size(min = 0, max = CAT_MAX_LEN)
   private String category;
 
-  @Size(min = 0, max = 60)
+  @Size(min = 0, max = LINE1_MAX_LEN)
   private String line1;
 
-  @Size(min = 0, max = 60)
+  @Size(min = 0, max = LINE2_MAX_LEN)
   private String line2;
 
-  @Size(min = 0, max = 30)
+  @Size(min = 0, max = TOWN_MAX_LEN)
   private String townName;
 
   @Pattern(regexp = POSTCODE_RE)

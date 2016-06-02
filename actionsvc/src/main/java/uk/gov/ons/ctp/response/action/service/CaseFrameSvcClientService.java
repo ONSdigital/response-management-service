@@ -2,8 +2,6 @@ package uk.gov.ons.ctp.response.action.service;
 
 import java.util.List;
 
-import org.springframework.web.client.RestClientException;
-
 import uk.gov.ons.ctp.response.action.domain.model.Action;
 import uk.gov.ons.ctp.response.caseframe.representation.AddressDTO;
 import uk.gov.ons.ctp.response.caseframe.representation.CaseDTO;
@@ -21,6 +19,7 @@ public interface CaseFrameSvcClientService {
    *
    * @param action the action for which we need the event
    * @param actionCategory the category for the event
+   * @return the newly created caseeventdto
    */
   CaseEventDTO createNewCaseEvent(final Action action, CategoryDTO.CategoryName actionCategory);
 
@@ -67,7 +66,7 @@ public interface CaseFrameSvcClientService {
   /**
    * Get the list of case ids for all cases that are 'open' and associated with the given action plan
    * @param actionPlanId the action plan id
-   * @return the list of case ids 
+   * @return the list of case ids
    */
   List<Integer> getOpenCasesForActionPlan(Integer actionPlanId);
 

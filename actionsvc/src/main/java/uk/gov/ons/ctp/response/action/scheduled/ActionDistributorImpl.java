@@ -76,6 +76,8 @@ import uk.gov.ons.ctp.response.caseframe.representation.QuestionnaireDTO;
 @Slf4j
 public class ActionDistributorImpl {
 
+  private static final long MILLISECONDS = 1000L;
+
   @Inject
   private AppConfig appConfig;
 
@@ -113,13 +115,14 @@ public class ActionDistributorImpl {
   /**
    * wake up on schedule and check for submitted actions, enrich and distribute
    * them to spring integration channels
+   * @return the info for the health endpoint regarding the distribution just performed
    */
   public final DistributionInfo distribute() {
     log.debug("ActionDistributor awoken from slumber");
     DistributionInfo distInfo = new DistributionInfo();
     DateFormat dateTimeInstance = SimpleDateFormat.getDateTimeInstance();
     distInfo.setLastRunTime(dateTimeInstance.format(Calendar.getInstance().getTime()));
-    
+
     try {
       List<ActionType> actionTypes = actionTypeRepo.findAll();
 
@@ -155,8 +158,10 @@ public class ActionDistributorImpl {
                 action.getActionId());
           }
         }
-        distInfo.addInstructionCount(new InstructionCount(actionType.getName(), DistributionInfo.Instruction.REQUEST, actionRequests.size()));
-        distInfo.addInstructionCount(new InstructionCount(actionType.getName(), DistributionInfo.Instruction.CANCEL_REQUEST, actionCancels.size()));
+        distInfo.addInstructionCount(
+            new InstructionCount(actionType.getName(), DistributionInfo.Instruction.REQUEST, actionRequests.size()));
+        distInfo.addInstructionCount(new InstructionCount(actionType.getName(),
+            DistributionInfo.Instruction.CANCEL_REQUEST, actionCancels.size()));
 
         boolean published = false;
         if (actionRequests.size() > 0 || actionCancels.size() > 0) {
@@ -171,7 +176,7 @@ public class ActionDistributorImpl {
               log.error(sbRequests.toString());
               log.error(sbCancels.toString());
               log.error("Problem sending action instruction for preceeding ids to handler {} due to {}", actionType, e);
-              Thread.sleep(appConfig.getActionDistribution().getRetrySleepSeconds() * 1000L);
+              Thread.sleep(appConfig.getActionDistribution().getRetrySleepSeconds() * MILLISECONDS);
             }
           } while (!published);
         }
@@ -243,11 +248,14 @@ public class ActionDistributorImpl {
 
   /**
    * Change the action status in db to indicate we have sent this action
-   * downstream, and clear previous situation (in the scenario where the action has prev. failed)
+   * downstream, and clear previous situation (in the scenario where the action
+   * has prev. failed)
    *
    * @param action the action to change and persist
+   * @param event the event to transition the action with
+   * @return the transitioned action
    */
-  private Action transitionAction(final Action action, ActionDTO.ActionEvent event) {
+  private Action transitionAction(final Action action, final ActionDTO.ActionEvent event) {
     Action updatedAction = null;
     try {
       ActionDTO.ActionState nextState = actionSvcStateTransitionManager.transition(action.getState(), event);
@@ -321,9 +329,7 @@ public class ActionDistributorImpl {
     actionRequest.setCaseId(BigInteger.valueOf(action.getCaseId()));
     actionRequest.setContactName(null); // TODO - will be avail in data 2017+
     ActionEvent actionEvent = new ActionEvent();
-    caseEventDTOs.forEach((caseEventDTO) ->
-      actionEvent.getEvents().add(formatCaseEvent(caseEventDTO))
-    );
+    caseEventDTOs.forEach((caseEventDTO) -> actionEvent.getEvents().add(formatCaseEvent(caseEventDTO)));
     actionRequest.setEvents(actionEvent);
     actionRequest.setIac(questionnaireDTO.getIac());
     actionRequest.setPriority(Priority.fromValue(ActionPriority.valueOf(action.getPriority()).getName()));

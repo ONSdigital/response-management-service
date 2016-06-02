@@ -22,6 +22,10 @@ import uk.gov.ons.ctp.response.caseframe.representation.CaseEventDTO;
 import uk.gov.ons.ctp.response.caseframe.representation.CategoryDTO;
 import uk.gov.ons.ctp.response.caseframe.representation.QuestionnaireDTO;
 
+/**
+ * Impl of the service that centralizes all REST calls to the caseframe service
+ *
+ */
 @Slf4j
 @Named
 public class CaseFrameSvcClientServiceImpl implements CaseFrameSvcClientService {
@@ -76,7 +80,8 @@ public class CaseFrameSvcClientServiceImpl implements CaseFrameSvcClientService 
     caseEventDTO.setSubCategory(action.getActionType().getName());
 
     if (!StringUtils.isEmpty(action.getSituation())) {
-      caseEventDTO.setDescription(String.format("%s (%s)",action.getActionType().getDescription(), action.getSituation()));
+      caseEventDTO.setDescription(String.format("%s (%s)",
+          action.getActionType().getDescription(), action.getSituation()));
     } else {
       caseEventDTO.setDescription(action.getActionType().getDescription());
     }

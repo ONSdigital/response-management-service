@@ -45,47 +45,58 @@ import uk.gov.ons.ctp.response.caseframe.representation.CaseEventDTO;
 import uk.gov.ons.ctp.response.caseframe.representation.CategoryDTO;
 import uk.gov.ons.ctp.response.caseframe.representation.QuestionnaireDTO;
 
+/**
+ * Test the action distributor
+ */
 @RunWith(MockitoJUnitRunner.class)
 public class ActionDistributorTest {
 
+  private static final int I_HATE_CHECKSTYLE = 10;
+
+  private static final long FAKE_UPRN = 1234L;
+
   @Spy
-  AppConfig appConfig = new AppConfig();
+  private AppConfig appConfig = new AppConfig();
 
   @Mock
-  InstructionPublisher instructionPublisher;
+  private InstructionPublisher instructionPublisher;
 
   @Mock
-  StateTransitionManager<ActionState, uk.gov.ons.ctp.response.action.representation.ActionDTO.ActionEvent> actionSvcStateTransitionManager;
+  private StateTransitionManager<ActionState,
+    uk.gov.ons.ctp.response.action.representation.ActionDTO.ActionEvent> actionSvcStateTransitionManager;
 
   @Mock
-  MapperFacade mapperFacade;
+  private MapperFacade mapperFacade;
 
   @Mock
-  CaseFrameSvcClientService caseFrameSvcClientService;
+  private CaseFrameSvcClientService caseFrameSvcClientService;
 
   @Mock
-  ActionRepository actionRepo;
+  private ActionRepository actionRepo;
 
   @Mock
-  ActionTypeRepository actionTypeRepo;
+  private ActionTypeRepository actionTypeRepo;
 
   @Mock
-  TransactionTemplate transactionTemplate;
+  private TransactionTemplate transactionTemplate;
 
   @Mock
-  PlatformTransactionManager platformTransactionManager;
+  private PlatformTransactionManager platformTransactionManager;
 
   @InjectMocks
-  ActionDistributorImpl actionDistributor;
+  private ActionDistributorImpl actionDistributor;
 
+  /**
+   * A Test
+   */
   @Before
   public void setup() {
     CaseFrameSvc caseFrameSvcConfig = new CaseFrameSvc();
     ActionDistribution actionDistributionConfig = new ActionDistribution();
-    actionDistributionConfig.setInitialDelaySeconds(10);
-    actionDistributionConfig.setSubsequentDelaySeconds(10);
-    actionDistributionConfig.setInstructionMax(10);
-    actionDistributionConfig.setRetrySleepSeconds(10);
+    actionDistributionConfig.setInitialDelaySeconds(I_HATE_CHECKSTYLE);
+    actionDistributionConfig.setSubsequentDelaySeconds(I_HATE_CHECKSTYLE);
+    actionDistributionConfig.setInstructionMax(I_HATE_CHECKSTYLE);
+    actionDistributionConfig.setRetrySleepSeconds(I_HATE_CHECKSTYLE);
 
     appConfig.setCaseFrameSvc(caseFrameSvcConfig);
     appConfig.setActionDistribution(actionDistributionConfig);
@@ -97,8 +108,8 @@ public class ActionDistributorTest {
    * Test that when we fail at first hurdle to load ActionTypes we do not go on
    * to call anything else In reality the wakeup mathod would then be called
    * again after a sleep interval by spring but we cannot test that here
-   * 
-   * @throws Exception
+   *
+   * @throws Exception oops
    */
   @Test
   public void testFailGetActionType() throws Exception {
@@ -123,22 +134,24 @@ public class ActionDistributorTest {
     verify(caseFrameSvcClientService, times(0)).getCase(eq(3));
     verify(caseFrameSvcClientService, times(0)).getCase(eq(4));
 
-    verify(caseFrameSvcClientService, times(0)).getAddress(eq(1234L));
+    verify(caseFrameSvcClientService, times(0)).getAddress(eq(FAKE_UPRN));
 
     verify(caseFrameSvcClientService, times(0)).getCaseEvents(eq(3));
     verify(caseFrameSvcClientService, times(0)).getCaseEvents(eq(4));
 
-    verify(caseFrameSvcClientService, times(0)).createNewCaseEvent(any(Action.class), eq(CategoryDTO.CategoryName.ACTION_CREATED));
+    verify(caseFrameSvcClientService, times(0)).createNewCaseEvent(any(Action.class),
+        eq(CategoryDTO.CategoryName.ACTION_CREATED));
 
-    verify(instructionPublisher, times(0)).sendInstructions(eq("Printer"), anyListOf(ActionRequest.class), anyListOf(ActionCancel.class));
-    verify(instructionPublisher, times(0)).sendInstructions(eq("HHSurvey"), anyListOf(ActionRequest.class), anyListOf(ActionCancel.class));
+    verify(instructionPublisher, times(0)).sendInstructions(eq("Printer"), anyListOf(ActionRequest.class),
+        anyListOf(ActionCancel.class));
+    verify(instructionPublisher, times(0)).sendInstructions(eq("HHSurvey"), anyListOf(ActionRequest.class),
+        anyListOf(ActionCancel.class));
   }
 
   /**
    * Test that when we momentarily fail to call caseframesvc to GET two cases we
    * carry on trying and succesfully deal with the actions/cases we can retrieve
-   * 
-   * @throws Exception
+   * @throws Exception oops
    */
   @Test
   public void testFailCaseGet() throws Exception {
@@ -159,13 +172,17 @@ public class ActionDistributorTest {
     List<CaseEventDTO> caseEventDTOsPost = FixtureHelper.loadClassFixtures(CaseEventDTO[].class, "post");
 
     // wire up mock responses
-    Mockito.when(actionSvcStateTransitionManager.transition(ActionState.SUBMITTED, ActionDTO.ActionEvent.REQUEST_DISTRIBUTED)).thenReturn(ActionState.PENDING);
+    Mockito.when(
+        actionSvcStateTransitionManager.transition(ActionState.SUBMITTED, ActionDTO.ActionEvent.REQUEST_DISTRIBUTED))
+        .thenReturn(ActionState.PENDING);
     Mockito.when(actionTypeRepo.findAll()).thenReturn(actionTypes);
     Mockito
-        .when(actionRepo.findByActionTypeNameAndStateIn(eq("HouseholdInitialContact"), anyListOf(ActionState.class), any(Pageable.class)))
+        .when(actionRepo.findByActionTypeNameAndStateIn(eq("HouseholdInitialContact"), anyListOf(ActionState.class),
+            any(Pageable.class)))
         .thenReturn(actionsHHIC);
     Mockito.when(
-        actionRepo.findByActionTypeNameAndStateIn(eq("HouseholdUploadIAC"), anyListOf(ActionState.class), any(Pageable.class)))
+        actionRepo.findByActionTypeNameAndStateIn(eq("HouseholdUploadIAC"), anyListOf(ActionState.class),
+            any(Pageable.class)))
         .thenReturn(actionsHHIACLOAD);
 
     Mockito.when(caseFrameSvcClientService.getQuestionnaire(eq(1)))
@@ -178,7 +195,7 @@ public class ActionDistributorTest {
     Mockito.when(caseFrameSvcClientService.getQuestionnaire(eq(3))).thenReturn(questionnaireDTOs.get(2));
     Mockito.when(caseFrameSvcClientService.getQuestionnaire(eq(4))).thenReturn(questionnaireDTOs.get(3));
 
-    Mockito.when(caseFrameSvcClientService.getAddress(eq(1234L)))
+    Mockito.when(caseFrameSvcClientService.getAddress(eq(FAKE_UPRN)))
         .thenReturn(addressDTOsUprn1234.get(0));
 
     Mockito.when(caseFrameSvcClientService.getCaseEvents(eq(3)))
@@ -186,14 +203,15 @@ public class ActionDistributorTest {
     Mockito.when(caseFrameSvcClientService.getCaseEvents(eq(4)))
         .thenReturn(Arrays.asList(new CaseEventDTO[] {caseEventDTOs.get(3)}));
 
-    Mockito.when(caseFrameSvcClientService.createNewCaseEvent(any(Action.class), eq(CategoryDTO.CategoryName.ACTION_CREATED)))
+    Mockito.when(
+        caseFrameSvcClientService.createNewCaseEvent(any(Action.class), eq(CategoryDTO.CategoryName.ACTION_CREATED)))
         .thenReturn(caseEventDTOsPost.get(2));
 
     // let it roll
     actionDistributor.distribute();
 
     // assert the right calls were made
-    verify(actionTypeRepo).findAll();  
+    verify(actionTypeRepo).findAll();
     verify(actionRepo).findByActionTypeNameAndStateIn(eq("HouseholdInitialContact"),
         anyListOf(ActionState.class), any(Pageable.class));
     verify(actionRepo).findByActionTypeNameAndStateIn(eq("HouseholdUploadIAC"),
@@ -206,20 +224,24 @@ public class ActionDistributorTest {
     verify(caseFrameSvcClientService).getCase(eq(3));
     verify(caseFrameSvcClientService).getCase(eq(4));
 
-    verify(caseFrameSvcClientService, times(2)).getAddress(eq(1234L));
+    verify(caseFrameSvcClientService, times(2)).getAddress(eq(FAKE_UPRN));
 
     verify(caseFrameSvcClientService).getCaseEvents(eq(3));
     verify(caseFrameSvcClientService).getCaseEvents(eq(4));
 
-    verify(caseFrameSvcClientService, times(2)).createNewCaseEvent(any(Action.class), eq(CategoryDTO.CategoryName.ACTION_CREATED));
+    verify(caseFrameSvcClientService, times(2)).createNewCaseEvent(any(Action.class),
+        eq(CategoryDTO.CategoryName.ACTION_CREATED));
 
-    verify(instructionPublisher, times(0)).sendInstructions(eq("Printer"), anyListOf(ActionRequest.class), anyListOf(ActionCancel.class));
-    verify(instructionPublisher, times(1)).sendInstructions(eq("HHSurvey"), anyListOf(ActionRequest.class), anyListOf(ActionCancel.class));
+    verify(instructionPublisher, times(0)).sendInstructions(eq("Printer"), anyListOf(ActionRequest.class),
+        anyListOf(ActionCancel.class));
+    verify(instructionPublisher, times(1)).sendInstructions(eq("HHSurvey"), anyListOf(ActionRequest.class),
+        anyListOf(ActionCancel.class));
   }
 
   /**
-   * Test BlueSky scenario - two action types, four cases etc resulting in two calls to publish
-   * @throws Exception
+   * Test BlueSky scenario - two action types, four cases etc resulting in two
+   * calls to publish
+   * @throws Exception oops
    */
   @Test
   public void testBlueSky() throws Exception {
@@ -240,14 +262,18 @@ public class ActionDistributorTest {
     List<CaseEventDTO> caseEventDTOsPost = FixtureHelper.loadClassFixtures(CaseEventDTO[].class, "post");
 
     // wire up mock responses
-    Mockito.when(actionSvcStateTransitionManager.transition(ActionState.SUBMITTED, ActionDTO.ActionEvent.REQUEST_DISTRIBUTED)).thenReturn(ActionState.PENDING);
+    Mockito.when(
+        actionSvcStateTransitionManager.transition(ActionState.SUBMITTED, ActionDTO.ActionEvent.REQUEST_DISTRIBUTED))
+        .thenReturn(ActionState.PENDING);
 
     Mockito.when(actionTypeRepo.findAll()).thenReturn(actionTypes);
     Mockito
-        .when(actionRepo.findByActionTypeNameAndStateIn(eq("HouseholdInitialContact"), anyListOf(ActionState.class), any(Pageable.class)))
+        .when(actionRepo.findByActionTypeNameAndStateIn(eq("HouseholdInitialContact"), anyListOf(ActionState.class),
+            any(Pageable.class)))
         .thenReturn(actionsHHIC);
     Mockito.when(
-        actionRepo.findByActionTypeNameAndStateIn(eq("HouseholdUploadIAC"), anyListOf(ActionState.class), any(Pageable.class)))
+        actionRepo.findByActionTypeNameAndStateIn(eq("HouseholdUploadIAC"), anyListOf(ActionState.class),
+            any(Pageable.class)))
         .thenReturn(actionsHHIACLOAD);
 
     Mockito.when(caseFrameSvcClientService.getQuestionnaire(eq(1)))
@@ -264,7 +290,7 @@ public class ActionDistributorTest {
     Mockito.when(caseFrameSvcClientService.getCase(eq(3))).thenReturn(caseDTOs.get(2));
     Mockito.when(caseFrameSvcClientService.getCase(eq(4))).thenReturn(caseDTOs.get(3));
 
-    Mockito.when(caseFrameSvcClientService.getAddress(eq(1234L)))
+    Mockito.when(caseFrameSvcClientService.getAddress(eq(FAKE_UPRN)))
         .thenReturn(addressDTOsUprn1234.get(0));
 
     Mockito.when(caseFrameSvcClientService.getCaseEvents(eq(1)))
@@ -276,9 +302,9 @@ public class ActionDistributorTest {
     Mockito.when(caseFrameSvcClientService.getCaseEvents(eq(4)))
         .thenReturn(Arrays.asList(new CaseEventDTO[] {caseEventDTOs.get(3)}));
 
-    Mockito.when(caseFrameSvcClientService.createNewCaseEvent(any(Action.class), eq(CategoryDTO.CategoryName.ACTION_CREATED)))
+    Mockito.when(
+        caseFrameSvcClientService.createNewCaseEvent(any(Action.class), eq(CategoryDTO.CategoryName.ACTION_CREATED)))
         .thenReturn(caseEventDTOsPost.get(2));
-
 
     // let it roll
     actionDistributor.distribute();
@@ -300,16 +326,19 @@ public class ActionDistributorTest {
     verify(caseFrameSvcClientService).getCase(eq(3));
     verify(caseFrameSvcClientService).getCase(eq(4));
 
-    verify(caseFrameSvcClientService, times(4)).getAddress(eq(1234L));
+    verify(caseFrameSvcClientService, times(4)).getAddress(eq(FAKE_UPRN));
 
     verify(caseFrameSvcClientService).getCaseEvents(eq(1));
     verify(caseFrameSvcClientService).getCaseEvents(eq(2));
     verify(caseFrameSvcClientService).getCaseEvents(eq(3));
     verify(caseFrameSvcClientService).getCaseEvents(eq(4));
 
-    verify(caseFrameSvcClientService, times(4)).createNewCaseEvent(any(Action.class), eq(CategoryDTO.CategoryName.ACTION_CREATED));
+    verify(caseFrameSvcClientService, times(4)).createNewCaseEvent(any(Action.class),
+        eq(CategoryDTO.CategoryName.ACTION_CREATED));
 
-    verify(instructionPublisher, times(1)).sendInstructions(eq("Printer"), anyListOf(ActionRequest.class), anyListOf(ActionCancel.class));
-    verify(instructionPublisher, times(1)).sendInstructions(eq("HHSurvey"), anyListOf(ActionRequest.class), anyListOf(ActionCancel.class));
+    verify(instructionPublisher, times(1)).sendInstructions(eq("Printer"), anyListOf(ActionRequest.class),
+        anyListOf(ActionCancel.class));
+    verify(instructionPublisher, times(1)).sendInstructions(eq("HHSurvey"), anyListOf(ActionRequest.class),
+        anyListOf(ActionCancel.class));
   }
 }

@@ -13,7 +13,6 @@ import uk.gov.ons.ctp.response.action.representation.ActionDTO;
  */
 public interface ActionService extends CTPService {
 
-
   /**
    * Find Actions filtered by ActionType and state ordered by created date time
    * descending
@@ -57,26 +56,24 @@ public interface ActionService extends CTPService {
    */
   List<Action> findActionsByCaseId(Integer caseId);
 
-	/**
-	 * Cancel all the actions for a given caseId.
-	 *
-	 * @param caseId
-	 *            Integer caseId for all the Actions to be cancelled
-	 * @param categoryName the case event category name that lead to the case closure
-	 *
-	 * @return List<Action> Returns list of all actions for the case that were cancelled. Not all actions are cancellable!
-	 */
-	List<Action> cancelActions(Integer caseId);
-	
-	/**
-	 * Create an action.
-	 *
-	 * @param action
-	 *            Action to be created
-	 *
-	 * @return Action Returns created Action.
-	 */
-	Action createAction(Action action);
+  /**
+   * Cancel all the actions for a given caseId.
+   *
+   * @param caseId Integer caseId for all the Actions to be cancelled
+   *
+   * @return List<Action> Returns list of all actions for the case that were
+   *         cancelled. Not all actions are cancellable!
+   */
+  List<Action> cancelActions(Integer caseId);
+
+  /**
+   * Create an action.
+   *
+   * @param action Action to be created
+   *
+   * @return Action Returns created Action.
+   */
+  Action createAction(Action action);
 
   /**
    * Update an action.
@@ -86,9 +83,8 @@ public interface ActionService extends CTPService {
    */
   Action updateAction(Action action);
 
-  
   /**
-   * Accept the feedback for an action  
+   * Accept the feedback for an action
    * @param actionFeedback the feedback
    * @return the updated action
    */

@@ -38,9 +38,14 @@ public class ActionPlanJobEndpointUnitTest extends CTPJerseyTest {
 
   @Override
   public Application configure() {
-    return super.init(ActionPlanJobEndpoint.class, ActionPlanJobService.class, MockActionPlanJobServiceFactory.class, new ActionBeanMapper(), new CTPMessageBodyReader<ActionPlanJobDTO>(ActionPlanJobDTO.class) {});
+    return super.init(ActionPlanJobEndpoint.class, ActionPlanJobService.class, MockActionPlanJobServiceFactory.class,
+        new ActionBeanMapper(), new CTPMessageBodyReader<ActionPlanJobDTO>(ActionPlanJobDTO.class) {
+        });
   }
 
+  /**
+   * A Test
+   */
   @Test
   public void findActionPlanJobFound() {
     with("http://localhost:9998/actionplans/jobs/%s", ACTIONPLANJOBID)
@@ -54,6 +59,9 @@ public class ActionPlanJobEndpointUnitTest extends CTPJerseyTest {
         .andClose();
   }
 
+  /**
+   * A Test
+   */
   @Test
   public void findActionPlanJobNotFound() {
     with("http://localhost:9998/actionplans/jobs/%s", NON_EXISTING_ACTIONPLANJOBID)
@@ -63,6 +71,9 @@ public class ActionPlanJobEndpointUnitTest extends CTPJerseyTest {
         .andClose();
   }
 
+  /**
+   * A Test
+   */
   @Test
   public void findActionPlanUnCheckedException() {
     with("http://localhost:9998/actionplans/jobs/%s", UNCHECKED_EXCEPTION_ACTIONPLANJOBID)
@@ -73,6 +84,9 @@ public class ActionPlanJobEndpointUnitTest extends CTPJerseyTest {
         .andClose();
   }
 
+  /**
+   * A Test
+   */
   @Test
   public void findNoActionPlanJobForActionPlan() {
     with("http://localhost:9998/actionplans/%s/jobs", ACTIONPLANID_WITHNOACTIONPLANJOB)
@@ -80,6 +94,9 @@ public class ActionPlanJobEndpointUnitTest extends CTPJerseyTest {
         .andClose();
   }
 
+  /**
+   * A Test
+   */
   @Test
   public void findActionPlanJobsForActionPlan() {
     with("http://localhost:9998/actionplans/%s/jobs", ACTIONPLANID)
@@ -94,9 +111,13 @@ public class ActionPlanJobEndpointUnitTest extends CTPJerseyTest {
         .andClose();
   }
 
+  /**
+   * A Test
+   */
   @Test
   public void executeActionPlanBadJsonProvided() {
-    with("http://localhost:9998/actionplans/%s/jobs", ACTIONPLANID).post(MediaType.APPLICATION_JSON_TYPE, ACTIONPLANJOB_INVALIDJSON)
+    with("http://localhost:9998/actionplans/%s/jobs", ACTIONPLANID)
+        .post(MediaType.APPLICATION_JSON_TYPE, ACTIONPLANJOB_INVALIDJSON)
         .assertResponseCodeIs(HttpStatus.BAD_REQUEST)
         .assertFaultIs(CTPException.Fault.VALIDATION_FAILED)
         .assertTimestampExists()
@@ -104,9 +125,13 @@ public class ActionPlanJobEndpointUnitTest extends CTPJerseyTest {
         .andClose();
   }
 
+  /**
+   * A Test
+   */
   @Test
   public void executeActionPlanGoodJsonProvided() {
-    with("http://localhost:9998/actionplans/%s/jobs", ACTIONPLANID).post(MediaType.APPLICATION_JSON_TYPE, ACTIONPLANJOB_VALIDJSON)
+    with("http://localhost:9998/actionplans/%s/jobs", ACTIONPLANID)
+        .post(MediaType.APPLICATION_JSON_TYPE, ACTIONPLANJOB_VALIDJSON)
         .assertResponseCodeIs(HttpStatus.OK)
         .assertIntegerInBody("$.actionPlanJobId", ACTIONPLANJOBID)
         .assertIntegerInBody("$.actionPlanId", ACTIONPLANJOBID_ACTIONPLANID)

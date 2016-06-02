@@ -11,17 +11,19 @@ import uk.gov.ons.ctp.response.action.message.feedback.ActionFeedback;
 import uk.gov.ons.ctp.response.action.service.FeedbackService;
 
 /**
- * The entry point for inbound feedback messages from SpringIntegration. See the integration-context.xml
- * 
- * This is just an annotated class that acts as the initial receiver - the work is done in the feedbackservice,
- * but having this class in this package keeps spring integration related entry/exit points in one logical location
+ * The entry point for inbound feedback messages from SpringIntegration. See the
+ * integration-context.xml
+ *
+ * This is just an annotated class that acts as the initial receiver - the work
+ * is done in the feedbackservice, but having this class in this package keeps
+ * spring integration related entry/exit points in one logical location
  */
 @MessageEndpoint
 @Slf4j
 public class FeedbackReceiverImpl implements FeedbackReceiver {
   @Inject
   private FeedbackService feedbackService;
-  
+
   @Override
   @ServiceActivator(inputChannel = "feedbackTransformed")
   public void acceptFeedback(ActionFeedback feedback) {

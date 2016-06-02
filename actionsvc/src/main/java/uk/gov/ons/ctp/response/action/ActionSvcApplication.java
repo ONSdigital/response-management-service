@@ -6,6 +6,7 @@ import org.glassfish.jersey.server.ResourceConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ImportResource;
 import org.springframework.integration.annotation.IntegrationComponentScan;
@@ -33,30 +34,38 @@ import uk.gov.ons.ctp.response.action.state.ActionSvcStateTransitionManagerFacto
 @EnableTransactionManagement
 @IntegrationComponentScan
 @EnableAsync
+@EnableCaching
 @EnableScheduling
 @ImportResource("main-int.xml")
 public class ActionSvcApplication {
 
   @Autowired
   private AppConfig appConfig;
-  
+
+  /**
+   * Bean used to access case frame service throught REST calls
+   * @return the service client
+   */
   @Bean
-  public RestClient caseFrameClient () {
-    RestClient restHelper = new RestClient (appConfig.getCaseFrameSvc().getScheme(),
-            appConfig.getCaseFrameSvc().getHost(), appConfig.getCaseFrameSvc().getPort());
+  public RestClient caseFrameClient() {
+    RestClient restHelper = new RestClient(appConfig.getCaseFrameSvc().getScheme(),
+        appConfig.getCaseFrameSvc().getHost(), appConfig.getCaseFrameSvc().getPort());
     return restHelper;
   }
 
   @Autowired
   private StateTransitionManagerFactory actionSvcStateTransitionManagerFactory;
 
-
+  /**
+   * Bean to allow application to make controlled state transitions of Actions
+   * @return the state transition manager specifically for Actions
+   */
   @Bean
-  public StateTransitionManager<ActionDTO.ActionState,ActionDTO.ActionEvent> actionSvcStateTransitionManager() {
+  public StateTransitionManager<ActionDTO.ActionState, ActionDTO.ActionEvent> actionSvcStateTransitionManager() {
     return actionSvcStateTransitionManagerFactory.getStateTransitionManager(
-            ActionSvcStateTransitionManagerFactory.ACTION_ENTITY);
+        ActionSvcStateTransitionManagerFactory.ACTION_ENTITY);
   }
-  
+
   /**
    * To register classes in the JAX-RS world.
    */

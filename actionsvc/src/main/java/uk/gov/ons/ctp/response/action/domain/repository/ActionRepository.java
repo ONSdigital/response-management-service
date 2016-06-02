@@ -22,7 +22,7 @@ public interface ActionRepository extends JpaRepository<Action, Integer> {
    * @return List<Action> This returns all actions for the specified case id.
    */
   List<Action> findByCaseId(Integer caseId);
-  
+
   /**
    * Return all actions for the specified case id, ordered by created DateTime.
    *
@@ -32,7 +32,8 @@ public interface ActionRepository extends JpaRepository<Action, Integer> {
   List<Action> findByCaseIdOrderByCreatedDateTimeDesc(Integer caseId);
 
   /**
-   * Return all actions for the specified actionTypeName and state in created date time order descending.
+   * Return all actions for the specified actionTypeName and state in created
+   * date time order descending.
    *
    * @param actionTypeName ActionTypeName filter criteria
    * @param state State of Action
@@ -42,14 +43,18 @@ public interface ActionRepository extends JpaRepository<Action, Integer> {
       ActionDTO.ActionState state);
 
   /**
-   * Return all actions for the specified actionTypeName and states according to the page specification
+   * Return all actions for the specified actionTypeName and states according to
+   * the page specification
    *
    * @param actionTypeName ActionTypeName filter criteria
    * @param states States of Action
-   * @return List<Action> returns all actions for actionTypeName and states, for the given page
+   * @param pageable the paging info for the query
+   * @return List<Action> returns all actions for actionTypeName and states, for
+   *         the given page
    */
   List<Action> findByActionTypeNameAndStateIn(String actionTypeName,
       List<ActionDTO.ActionState> states, Pageable pageable);
+
   /**
    * Return all actions for the specified actionTypeName.
    *

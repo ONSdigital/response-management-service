@@ -63,7 +63,6 @@ public final class ActionEndpointUnitTest extends CTPJerseyTest {
       + "\"priority\": " + ACTION2_PRIORITY + ","
       + "\"state\": \"" + ACTION2_ACTIONSTATE + "\"}";
 
-  
   @Override
   public Application configure() {
     return super.init(ActionEndpoint.class, ActionService.class, MockActionServiceFactory.class,
@@ -274,7 +273,7 @@ public final class ActionEndpointUnitTest extends CTPJerseyTest {
         .assertMessageEquals("Provided json fails validation.")
         .andClose();
   }
-  
+
   /**
    * Test cancelling an Action.
    */
@@ -294,5 +293,5 @@ public final class ActionEndpointUnitTest extends CTPJerseyTest {
         .assertStringListInBody("$..createdDateTime", ACTION_CREATEDDATE_VALUE)
         .andClose();
   }
-  
+
 }
