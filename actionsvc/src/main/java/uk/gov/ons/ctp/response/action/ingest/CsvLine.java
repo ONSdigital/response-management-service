@@ -1,4 +1,4 @@
-package uk.gov.ons.ctp.response.action.message.impl;
+package uk.gov.ons.ctp.response.action.ingest;
 
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;

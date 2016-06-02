@@ -1,4 +1,4 @@
-package uk.gov.ons.ctp.response.action.message;
+package uk.gov.ons.ctp.response.action.ingest;
 
 import java.io.File;
 

@@ -1,4 +1,4 @@
-package uk.gov.ons.ctp.response.action.message.impl;
+package uk.gov.ons.ctp.response.action.ingest.impl;
 
 import java.io.File;
 import java.io.FileReader;
@@ -33,7 +33,8 @@ import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import uk.gov.ons.ctp.response.action.config.AppConfig;
 import uk.gov.ons.ctp.response.action.domain.model.Action.ActionPriority;
-import uk.gov.ons.ctp.response.action.message.CsvIngester;
+import uk.gov.ons.ctp.response.action.ingest.CsvIngester;
+import uk.gov.ons.ctp.response.action.ingest.CsvLine;
 import uk.gov.ons.ctp.response.action.message.InstructionPublisher;
 import uk.gov.ons.ctp.response.action.message.instruction.ActionCancel;
 import uk.gov.ons.ctp.response.action.message.instruction.ActionRequest;
