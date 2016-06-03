@@ -24,8 +24,9 @@ public class CsvLine {
   private static final int ORG_MAX_LEN = 60;
   private static final int LOCALITY_MAX_LEN = 35;
   private static final String POSTCODE_RE = "^[A-Z]{1,2}[0-9R][0-9A-Z]? [0-9][ABD-HJLNP-UW-Z]{2}$";
-  private static final String NON_BLANK_INTEGER_NUMERIC_RE = "[\\d]+";
-  private static final String NON_BLANK_FLOAT_NUMERIC_RE = "[\\d]+\\.[\\d]+";
+  private static final String NON_BLANK_ALPHANUM_RE = "[\\w]+";
+  private static final String NON_BLANK_INTEGER_RE = "[+-]?[\\d]+";
+  private static final String NON_BLANK_FLOAT_RE = "[+-]?[\\d]+\\.?[\\d]*";
   private static final String ACTION_TYPE_RE = "\\D*";
   private static final String PRIORITY_RE = "[1-5]";
   private static final String ADDRESS_TYPE_RE = "|HH|CE";
@@ -68,27 +69,27 @@ public class CsvLine {
   @Pattern(regexp = POSTCODE_RE)
   private String postcode;
 
-  @Pattern(regexp = NON_BLANK_FLOAT_NUMERIC_RE)
+  @Pattern(regexp = NON_BLANK_FLOAT_RE)
   private String latitude;
 
-  @Pattern(regexp = NON_BLANK_FLOAT_NUMERIC_RE)
+  @Pattern(regexp = NON_BLANK_FLOAT_RE)
   private String longitude;
 
-  @Pattern(regexp = NON_BLANK_INTEGER_NUMERIC_RE)
+  @Pattern(regexp = NON_BLANK_INTEGER_RE)
   private String uprn;
 
   private String contactName;
 
-  @Pattern(regexp = NON_BLANK_INTEGER_NUMERIC_RE)
+  @Pattern(regexp = NON_BLANK_INTEGER_RE)
   private String caseId;
 
-  @Pattern(regexp = NON_BLANK_INTEGER_NUMERIC_RE)
+  @Pattern(regexp = NON_BLANK_INTEGER_RE)
   private String questionnaireId;
 
   @Pattern(regexp = PRIORITY_RE)
   private String priority;
 
-  @Pattern(regexp = NON_BLANK_INTEGER_NUMERIC_RE)
+  @Pattern(regexp = NON_BLANK_ALPHANUM_RE)
   private String iac;
 
   private String events;

@@ -109,6 +109,7 @@ public class CsvIngester extends CsvToBean {
 
   private ColumnPositionMappingStrategy columnPositionMappingStrategy;
 
+
   /**
    * Lazy create a reusable validator
    *
@@ -141,7 +142,6 @@ public class CsvIngester extends CsvToBean {
     SimpleDateFormat fmt = new SimpleDateFormat(DATE_FORMAT);
     String executionStamp = fmt.format(new Date());
     CSVReader reader = null;
-
     Map<String, InstructionBucket> handlerInstructionBuckets = new HashMap<>();
 
     try {
@@ -152,25 +152,20 @@ public class CsvIngester extends CsvToBean {
         while ((nextLine = reader.readNext()) != null) {
           if (lineNum++ > 0) {
             CsvLine csvLine = (CsvLine) processLine(columnPositionMappingStrategy, nextLine);
-            Set<ConstraintViolation<CsvLine>> violations = getValidator().validate(csvLine);
-            if (violations.size() > 0) {
+            String namesOfInvalidColumns = validateLine(csvLine);
+            if (namesOfInvalidColumns != null) {
               reader.close();
-              String fieldNames = violations.stream().map(v -> v.getPropertyPath().toString())
-                  .collect(Collectors.joining("_"));
-
-              log.error("Problem parsing {} due to {} - entire ingest aborted", Arrays.toString(nextLine), fieldNames);
-              csvFile.renameTo(new File(csvFile.getPath() + ".error_LINE_" + lineNum + "_COLUMN_" + fieldNames));
+              log.error("Problem parsing {} due to {} - entire ingest aborted", Arrays.toString(nextLine),
+                  namesOfInvalidColumns);
+              csvFile.renameTo(
+                  new File(csvFile.getPath() + ".error_LINE_" + lineNum + "_COLUMN_" + namesOfInvalidColumns));
               return;
             }
             // first - which handler is it for?
             String handler = csvLine.getHandler();
 
             // get the handlers bucket
-            InstructionBucket handlerInstructionBucket = handlerInstructionBuckets.get(handler);
-            if (handlerInstructionBucket == null) {
-              handlerInstructionBucket = new InstructionBucket();
-              handlerInstructionBuckets.put(handler, handlerInstructionBucket);
-            }
+            InstructionBucket handlerInstructionBucket = getHandlerBucket(handlerInstructionBuckets, handler);
 
             // parse the line
             if (csvLine.getInstructionType().equals(REQUEST_INSTRUCTION)) {
@@ -199,6 +194,41 @@ public class CsvIngester extends CsvToBean {
     } catch (Exception e) {
       log.error("Problem reading ingest file {} because : ", csvFile.getPath(), e);
     }
+  }
+
+  /**
+   * get the bucket of instructions for this handler from the store, create and
+   * store if not already stored
+   *
+   * @param handlerInstructionBuckets the bucket store keyed by handler
+   * @param handler get the bucket for this handler
+   * @return the bucket
+   */
+  private InstructionBucket getHandlerBucket(Map<String, InstructionBucket> handlerInstructionBuckets, String handler) {
+    InstructionBucket handlerInstructionBucket = handlerInstructionBuckets.get(handler);
+    if (handlerInstructionBucket == null) {
+      handlerInstructionBucket = new InstructionBucket();
+      handlerInstructionBuckets.put(handler, handlerInstructionBucket);
+    }
+    return handlerInstructionBucket;
+
+  }
+
+  /**
+   * validate the csv line and return the concatentated list of fields failing
+   * validation or null
+   *
+   * @param csvLine the line
+   * @return the errored column names separated by '_'
+   */
+  private String validateLine(CsvLine csvLine) {
+    Set<ConstraintViolation<CsvLine>> violations = getValidator().validate(csvLine);
+    String namesOfInvalidColumns = null;
+    if (violations.size() > 0) {
+      namesOfInvalidColumns = violations.stream().map(v -> v.getPropertyPath().toString())
+          .collect(Collectors.joining("_"));
+    }
+    return namesOfInvalidColumns;
   }
 
   /**
