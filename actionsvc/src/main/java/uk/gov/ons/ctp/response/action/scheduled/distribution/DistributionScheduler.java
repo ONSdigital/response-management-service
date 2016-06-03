@@ -1,4 +1,4 @@
-package uk.gov.ons.ctp.response.action.scheduled;
+package uk.gov.ons.ctp.response.action.scheduled.distribution;
 
 import static java.util.concurrent.TimeUnit.SECONDS;
 
@@ -33,7 +33,7 @@ public class DistributionScheduler implements HealthIndicator {
   }
 
   @Inject
-  private ActionDistributorImpl actionDistributorImpl;
+  private ActionDistributor actionDistributorImpl;
 
   private DistributionInfo distributionInfo;
 

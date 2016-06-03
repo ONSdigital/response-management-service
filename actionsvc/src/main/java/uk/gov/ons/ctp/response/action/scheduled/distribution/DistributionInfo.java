@@ -1,4 +1,4 @@
-package uk.gov.ons.ctp.response.action.scheduled;
+package uk.gov.ons.ctp.response.action.scheduled.distribution;
 
 import java.util.ArrayList;
 import java.util.List;

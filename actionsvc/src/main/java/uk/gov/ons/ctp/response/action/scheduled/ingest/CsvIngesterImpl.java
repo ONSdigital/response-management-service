@@ -1,4 +1,4 @@
-package uk.gov.ons.ctp.response.action.ingest.impl;
+package uk.gov.ons.ctp.response.action.scheduled.ingest;
 
 import java.io.File;
 import java.io.FileReader;
@@ -33,8 +33,6 @@ import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import uk.gov.ons.ctp.response.action.config.AppConfig;
 import uk.gov.ons.ctp.response.action.domain.model.Action.ActionPriority;
-import uk.gov.ons.ctp.response.action.ingest.CsvIngester;
-import uk.gov.ons.ctp.response.action.ingest.CsvLine;
 import uk.gov.ons.ctp.response.action.message.InstructionPublisher;
 import uk.gov.ons.ctp.response.action.message.instruction.ActionCancel;
 import uk.gov.ons.ctp.response.action.message.instruction.ActionRequest;
@@ -53,7 +51,7 @@ import uk.gov.ons.ctp.response.action.message.instruction.Priority;
  */
 @MessageEndpoint
 @Slf4j
-public class CsvIngesterImpl extends CsvToBean implements CsvIngester {
+public class CsvIngesterImpl extends CsvToBean {
 
   private static final int LINE_NUM_MODULO = 100;
 
@@ -92,8 +90,6 @@ public class CsvIngesterImpl extends CsvToBean implements CsvIngester {
    * Inner class to encapsulate the request and cancel data as they do not have
    * common parentage
    *
-   * @author centos
-   *
    */
   @Data
   private class InstructionBucket {
@@ -118,14 +114,12 @@ public class CsvIngesterImpl extends CsvToBean implements CsvIngester {
     return factory.getValidator();
   }
 
-  /*
-   * (non-Javadoc)
+  /**
+   * take the provided CSV file, found by spring integration and sent to the
+   * inputChannel, and ingest it, creating pseudo actions
    *
-   * @see
-   * uk.gov.ons.ctp.response.action.message.impl.CsvIngester#ingest(java.io.
-   * File)
+   * @param csvFile the file to ingest
    */
-  @Override
   @ServiceActivator(inputChannel = CHANNEL)
   public void ingest(File csvFile) {
     log.debug("INGESTED " + csvFile.toString());
@@ -140,7 +134,7 @@ public class CsvIngesterImpl extends CsvToBean implements CsvIngester {
       strat.setType(CsvLine.class);
       String[] columns = new String[] {HANDLER, ACTION_TYPE, INSTRUCTION_TYPE, ADDRESS_TYPE, ESTAB_TYPE, LOCALITY,
           ORGANISATION_NAME, CATEGORY, LINE1, LINE2, TOWN_NAME, POSTCODE, LATITUDE, LONGITUDE, UPRN, CONTACT_NAME,
-          CASE_ID, QUESTIONNAIRE_ID, PRIORITY, IAC, EVENTS };
+          CASE_ID, QUESTIONNAIRE_ID, PRIORITY, IAC, EVENTS};
       strat.setColumnMapping(columns);
 
       reader = new CSVReader(new FileReader(csvFile));

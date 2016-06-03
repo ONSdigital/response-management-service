@@ -38,6 +38,7 @@ import uk.gov.ons.ctp.response.action.message.instruction.ActionCancel;
 import uk.gov.ons.ctp.response.action.message.instruction.ActionRequest;
 import uk.gov.ons.ctp.response.action.representation.ActionDTO;
 import uk.gov.ons.ctp.response.action.representation.ActionDTO.ActionState;
+import uk.gov.ons.ctp.response.action.scheduled.distribution.ActionDistributor;
 import uk.gov.ons.ctp.response.action.service.CaseFrameSvcClientService;
 import uk.gov.ons.ctp.response.caseframe.representation.AddressDTO;
 import uk.gov.ons.ctp.response.caseframe.representation.CaseDTO;
@@ -84,7 +85,7 @@ public class ActionDistributorTest {
   private PlatformTransactionManager platformTransactionManager;
 
   @InjectMocks
-  private ActionDistributorImpl actionDistributor;
+  private ActionDistributor actionDistributor;
 
   /**
    * A Test

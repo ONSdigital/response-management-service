@@ -1,4 +1,4 @@
-package uk.gov.ons.ctp.response.action.scheduled;
+package uk.gov.ons.ctp.response.action.scheduled.distribution;
 
 import java.math.BigInteger;
 import java.sql.Timestamp;
@@ -74,7 +74,7 @@ import uk.gov.ons.ctp.response.caseframe.representation.QuestionnaireDTO;
  */
 @Named
 @Slf4j
-public class ActionDistributorImpl {
+public class ActionDistributor {
 
   private static final long MILLISECONDS = 1000L;
 
@@ -108,7 +108,7 @@ public class ActionDistributorImpl {
    * @param transactionManager provided by Spring
    */
   @Inject
-  public ActionDistributorImpl(final PlatformTransactionManager transactionManager) {
+  public ActionDistributor(final PlatformTransactionManager transactionManager) {
     this.transactionTemplate = new TransactionTemplate(transactionManager);
   }
 

@@ -1,8 +1,8 @@
-package uk.gov.ons.ctp.response.action.scheduled;
+package uk.gov.ons.ctp.response.action.scheduled.distribution;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import uk.gov.ons.ctp.response.action.scheduled.DistributionInfo.Instruction;
+import uk.gov.ons.ctp.response.action.scheduled.distribution.DistributionInfo.Instruction;
 
 /**
  * Simple pojo for health info re instructions of a type sent

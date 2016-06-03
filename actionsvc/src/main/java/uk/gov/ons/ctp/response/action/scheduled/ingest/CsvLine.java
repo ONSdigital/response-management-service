@@ -1,4 +1,4 @@
-package uk.gov.ons.ctp.response.action.ingest;
+package uk.gov.ons.ctp.response.action.scheduled.ingest;
 
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
@@ -16,6 +16,7 @@ import lombok.Getter;
 @Data
 @Getter
 public class CsvLine {
+  private static final int ESTAB_TYPE_MAX_LEN = 6;
   private static final int TOWN_MAX_LEN = 30;
   private static final int LINE2_MAX_LEN = 60;
   private static final int LINE1_MAX_LEN = 60;
@@ -43,7 +44,7 @@ public class CsvLine {
   @Pattern(regexp = ADDRESS_TYPE_RE)
   private String addressType;
 
-  @Size(min = 0, max = 6)
+  @Size(min = 0, max = ESTAB_TYPE_MAX_LEN)
   private String estabType;
 
   @Size(min = 0, max = LOCALITY_MAX_LEN)
