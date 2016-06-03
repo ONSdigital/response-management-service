@@ -51,7 +51,7 @@ import uk.gov.ons.ctp.response.action.message.instruction.Priority;
  */
 @MessageEndpoint
 @Slf4j
-public class CsvIngesterImpl extends CsvToBean {
+public class CsvIngester extends CsvToBean {
 
   private static final int LINE_NUM_MODULO = 100;
 
@@ -123,7 +123,7 @@ public class CsvIngesterImpl extends CsvToBean {
   /**
    * Create this ingester
    */
-  public CsvIngesterImpl() {
+  public CsvIngester() {
     columnPositionMappingStrategy = new ColumnPositionMappingStrategy();
     columnPositionMappingStrategy.setType(CsvLine.class);
     columnPositionMappingStrategy.setColumnMapping(COLUMNS);
