@@ -62,9 +62,9 @@ public class CsvIngesterImpl extends CsvToBean {
 
   private static final String DATE_FORMAT = "yyMMddHHmmssSSS";
 
-  private static final String HANDLER = "handler";
   private static final String REASON = "Cancelled by Response Management CSV Ingest";
 
+  private static final String HANDLER = "handler";
   private static final String ACTION_TYPE = "actionType";
   private static final String INSTRUCTION_TYPE = "instructionType";
   private static final String ADDRESS_TYPE = "addressType";
@@ -86,6 +86,10 @@ public class CsvIngesterImpl extends CsvToBean {
   private static final String IAC = "iac";
   private static final String EVENTS = "events";
 
+  private static final String[] COLUMNS = new String[] {HANDLER, ACTION_TYPE, INSTRUCTION_TYPE, ADDRESS_TYPE,
+      ESTAB_TYPE, LOCALITY, ORGANISATION_NAME, CATEGORY, LINE1, LINE2, TOWN_NAME, POSTCODE,
+      LATITUDE, LONGITUDE, UPRN, CONTACT_NAME, CASE_ID, QUESTIONNAIRE_ID, PRIORITY, IAC, EVENTS};
+
   /**
    * Inner class to encapsulate the request and cancel data as they do not have
    * common parentage
@@ -103,8 +107,10 @@ public class CsvIngesterImpl extends CsvToBean {
   @Inject
   private InstructionPublisher instructionPublisher;
 
+  private ColumnPositionMappingStrategy columnPositionMappingStrategy;
+
   /**
-   * Lazy create a resusable validator
+   * Lazy create a reusable validator
    *
    * @return the cached validator
    */
@@ -112,6 +118,15 @@ public class CsvIngesterImpl extends CsvToBean {
   private Validator getValidator() {
     ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
     return factory.getValidator();
+  }
+
+  /**
+   * Create this ingester
+   */
+  public CsvIngesterImpl() {
+    columnPositionMappingStrategy = new ColumnPositionMappingStrategy();
+    columnPositionMappingStrategy.setType(CsvLine.class);
+    columnPositionMappingStrategy.setColumnMapping(COLUMNS);
   }
 
   /**
@@ -124,31 +139,25 @@ public class CsvIngesterImpl extends CsvToBean {
   public void ingest(File csvFile) {
     log.debug("INGESTED " + csvFile.toString());
     SimpleDateFormat fmt = new SimpleDateFormat(DATE_FORMAT);
-    String nowStr = fmt.format(new Date());
+    String executionStamp = fmt.format(new Date());
     CSVReader reader = null;
 
     Map<String, InstructionBucket> handlerInstructionBuckets = new HashMap<>();
 
     try {
-      ColumnPositionMappingStrategy strat = new ColumnPositionMappingStrategy();
-      strat.setType(CsvLine.class);
-      String[] columns = new String[] {HANDLER, ACTION_TYPE, INSTRUCTION_TYPE, ADDRESS_TYPE, ESTAB_TYPE, LOCALITY,
-          ORGANISATION_NAME, CATEGORY, LINE1, LINE2, TOWN_NAME, POSTCODE, LATITUDE, LONGITUDE, UPRN, CONTACT_NAME,
-          CASE_ID, QUESTIONNAIRE_ID, PRIORITY, IAC, EVENTS};
-      strat.setColumnMapping(columns);
-
       reader = new CSVReader(new FileReader(csvFile));
       String[] nextLine = null;
       int lineNum = 0;
       try {
         while ((nextLine = reader.readNext()) != null) {
           if (lineNum++ > 0) {
-            CsvLine csvLine = (CsvLine) processLine(strat, nextLine);
+            CsvLine csvLine = (CsvLine) processLine(columnPositionMappingStrategy, nextLine);
             Set<ConstraintViolation<CsvLine>> violations = getValidator().validate(csvLine);
             if (violations.size() > 0) {
               reader.close();
               String fieldNames = violations.stream().map(v -> v.getPropertyPath().toString())
                   .collect(Collectors.joining("_"));
+
               log.error("Problem parsing {} due to {} - entire ingest aborted", Arrays.toString(nextLine), fieldNames);
               csvFile.renameTo(new File(csvFile.getPath() + ".error_LINE_" + lineNum + "_COLUMN_" + fieldNames));
               return;
@@ -165,44 +174,12 @@ public class CsvIngesterImpl extends CsvToBean {
 
             // parse the line
             if (csvLine.getInstructionType().equals(REQUEST_INSTRUCTION)) {
-              ActionRequest request = ActionRequest.builder()
-                  .withActionId(new BigInteger(nowStr + String.format("%03d", lineNum % LINE_NUM_MODULO)))
-                  .withActionType(csvLine.getActionType())
-                  .withAddress()
-                  .withCategory(csvLine.getCategory())
-                  .withEstabType(csvLine.getEstabType())
-                  .withLatitude(new BigDecimal(csvLine.getLatitude()))
-                  .withLongitude(new BigDecimal(csvLine.getLongitude()))
-                  .withLine1(csvLine.getLine1())
-                  .withLine2(csvLine.getLine2())
-                  .withLocality(csvLine.getLocality())
-                  .withOrganisationName(csvLine.getOrganisationName())
-                  .withPostcode(csvLine.getPostcode())
-                  .withTownName(csvLine.getTownName())
-                  .withType(csvLine.getAddressType())
-                  .end()
-                  .withCaseId(new BigInteger(csvLine.getCaseId()))
-                  .withContactName(csvLine.getContactName())
-                  .withIac(csvLine.getIac())
-                  .withPriority(
-                      Priority.fromValue(ActionPriority.valueOf(Integer.parseInt(csvLine.getPriority())).getName()))
-                  .withQuestionnaireId(new BigInteger(csvLine.getQuestionnaireId()))
-                  .withUprn(new BigInteger(csvLine.getUprn()))
-                  .withEvents()
-                  .withEvents(csvLine.getEvents().split("\\|"))
-                  .end()
-                  .build();
-
               // store the request in the handlers bucket
-              handlerInstructionBucket.getActionRequests().add(request);
+              handlerInstructionBucket.getActionRequests().add(buildRequest(csvLine, executionStamp, lineNum));
 
             } else if (csvLine.getInstructionType().equals(CANCEL_INSTRUCTION)) {
-              ActionCancel cancel = ActionCancel.builder()
-                  .withActionId(new BigInteger(nowStr + lineNum))
-                  .withReason(REASON)
-                  .build();
               // store the cancel in the handlers bucket
-              handlerInstructionBucket.getActionCancels().add(cancel);
+              handlerInstructionBucket.getActionCancels().add(buildCancel(csvLine, executionStamp, lineNum));
             }
           }
         }
@@ -222,6 +199,59 @@ public class CsvIngesterImpl extends CsvToBean {
     } catch (Exception e) {
       log.error("Problem reading ingest file {} because : ", csvFile.getPath(), e);
     }
+  }
+
+  /**
+   * build an ActionCancel from a line in the csv
+   *
+   * @param csvLine the line
+   * @param executionStamp the generated time stamp for the CSV ingest execution
+   * @param lineNum the line number in the CSV
+   * @return the built cancel
+   */
+  private ActionCancel buildCancel(CsvLine csvLine, String executionStamp, int lineNum) {
+    return ActionCancel.builder()
+        .withActionId(new BigInteger(executionStamp + lineNum))
+        .withReason(REASON)
+        .build();
+  }
+
+  /**
+   * build an ActionRequest from a line in the csv
+   *
+   * @param csvLine the line
+   * @param executionStamp the generated time stamp for the CSV ingest execution
+   * @param lineNum the line number in the CSV
+   * @return the built request
+   */
+  private ActionRequest buildRequest(CsvLine csvLine, String executionStamp, int lineNum) {
+    return ActionRequest.builder()
+        .withActionId(new BigInteger(executionStamp + String.format("%03d", lineNum % LINE_NUM_MODULO)))
+        .withActionType(csvLine.getActionType())
+        .withAddress()
+        .withCategory(csvLine.getCategory())
+        .withEstabType(csvLine.getEstabType())
+        .withLatitude(new BigDecimal(csvLine.getLatitude()))
+        .withLongitude(new BigDecimal(csvLine.getLongitude()))
+        .withLine1(csvLine.getLine1())
+        .withLine2(csvLine.getLine2())
+        .withLocality(csvLine.getLocality())
+        .withOrganisationName(csvLine.getOrganisationName())
+        .withPostcode(csvLine.getPostcode())
+        .withTownName(csvLine.getTownName())
+        .withType(csvLine.getAddressType())
+        .end()
+        .withCaseId(new BigInteger(csvLine.getCaseId()))
+        .withContactName(csvLine.getContactName())
+        .withIac(csvLine.getIac())
+        .withPriority(
+            Priority.fromValue(ActionPriority.valueOf(Integer.parseInt(csvLine.getPriority())).getName()))
+        .withQuestionnaireId(new BigInteger(csvLine.getQuestionnaireId()))
+        .withUprn(new BigInteger(csvLine.getUprn()))
+        .withEvents()
+        .withEvents(csvLine.getEvents().split("\\|"))
+        .end()
+        .build();
   }
 
   /**
