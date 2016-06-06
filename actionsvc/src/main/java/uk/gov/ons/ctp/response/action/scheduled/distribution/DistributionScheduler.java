@@ -21,14 +21,10 @@ import uk.gov.ons.ctp.response.action.config.AppConfig;
 @Named
 public class DistributionScheduler implements HealthIndicator {
 
-  @Inject
-  private AppConfig appConfig;
-
   @Override
   public Health health() {
     return Health.up()
         .withDetail("distributionInfo", distributionInfo)
-        .withDetail("distributionConfig", appConfig.getActionDistribution())
         .build();
   }
 
