@@ -16,15 +16,23 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PUBLIC)
-public class ActionPlanJobDTO {  
+public class ActionPlanJobDTO {
 
+  private static final int CREATED_BY_MAX = 20;
+  private static final int CREATED_BY_MIN = 2;
+
+  /**
+   * enum for action plan job state
+   */
   public enum ActionPlanJobState {
     SUBMITTED, STARTED, COMPLETED, FAILED;
   }
 
   private Integer actionPlanJobId;
   private Integer actionPlanId;
-  @NotNull @Size(min=2, max=20)
+
+  @NotNull
+  @Size(min = CREATED_BY_MIN, max = CREATED_BY_MAX)
   private String createdBy;
   private String state;
   private Timestamp createdDateTime;

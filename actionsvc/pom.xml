@@ -192,6 +192,8 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-checkstyle-plugin</artifactId>
+        <configuration>
+        </configuration>
         <version>2.17</version>
         <dependencies>
           <dependency>
@@ -205,7 +207,6 @@
             <id>test</id>
             <phase>test</phase>
             <configuration>
-              <excludes>**/message/**/*</excludes>
               <configLocation>http://192.168.11.11:8001/misc/checkstyle/ons_checks_sun_checks.xml</configLocation>
               <encoding>UTF-8</encoding>
               <consoleOutput>true</consoleOutput>

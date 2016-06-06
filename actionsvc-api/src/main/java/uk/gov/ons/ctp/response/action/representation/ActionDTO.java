@@ -17,9 +17,16 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PUBLIC)
 public class ActionDTO {
 
+  /**
+   * enum for action state
+   */
   public enum ActionState {
     SUBMITTED, PENDING, ACTIVE, COMPLETED, CANCEL_SUBMITTED, CANCEL_PENDING, CANCELLING, CANCELLED, ABORTED;
   }
+
+  /**
+   * enum for action event
+   */
   public enum ActionEvent {
     REQUEST_DISTRIBUTED, REQUEST_FAILED, REQUEST_ACCEPTED, REQUEST_COMPLETED,
     REQUEST_CANCELLED, CANCELLATION_DISTRIBUTED, CANCELLATION_FAILED, CANCELLATION_ACCEPTED, CANCELLATION_COMPLETED
