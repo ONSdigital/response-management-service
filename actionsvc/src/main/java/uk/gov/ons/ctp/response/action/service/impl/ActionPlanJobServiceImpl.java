@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import lombok.extern.slf4j.Slf4j;
+import uk.gov.ons.ctp.common.time.DateTimeUtil;
 import uk.gov.ons.ctp.response.action.domain.model.ActionCase;
 import uk.gov.ons.ctp.response.action.domain.model.ActionPlan;
 import uk.gov.ons.ctp.response.action.domain.model.ActionPlanJob;
@@ -65,7 +66,7 @@ public class ActionPlanJobServiceImpl implements ActionPlanJobService {
     if (actionPlan != null) {
       // enrich and save the job
       actionPlanJob.setState(ActionPlanJobDTO.ActionPlanJobState.SUBMITTED);
-      Timestamp now = new Timestamp(new Date().getTime());
+      Timestamp now = DateTimeUtil.nowUTC();
       actionPlanJob.setCreatedDateTime(now);
       actionPlanJob.setUpdatedDateTime(now);
       createdJob = actionPlanJobRepo.save(actionPlanJob);

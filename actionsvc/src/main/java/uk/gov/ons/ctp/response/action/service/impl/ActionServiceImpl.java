@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import uk.gov.ons.ctp.common.state.StateTransitionException;
 import uk.gov.ons.ctp.common.state.StateTransitionManager;
+import uk.gov.ons.ctp.common.time.DateTimeUtil;
 import uk.gov.ons.ctp.response.action.domain.model.Action;
 import uk.gov.ons.ctp.response.action.domain.model.ActionType;
 import uk.gov.ons.ctp.response.action.domain.repository.ActionRepository;
@@ -89,7 +90,7 @@ public final class ActionServiceImpl implements ActionService {
           ActionDTO.ActionState nextState = actionSvcStateTransitionManager.transition(action.getState(),
               ActionEvent.REQUEST_CANCELLED);
           action.setState(nextState);
-          action.setUpdatedDateTime(new Timestamp(System.currentTimeMillis()));
+          action.setUpdatedDateTime(DateTimeUtil.nowUTC());
           actionRepo.saveAndFlush(action);
           flushedActions.add(action);
         }
@@ -112,7 +113,7 @@ public final class ActionServiceImpl implements ActionService {
       ActionDTO.ActionState nextState = actionSvcStateTransitionManager.transition(action.getState(), event);
       action.setState(nextState);
       action.setSituation(actionFeedback.getSituation());
-      action.setUpdatedDateTime(new Timestamp(System.currentTimeMillis()));
+      action.setUpdatedDateTime(DateTimeUtil.nowUTC());
       action = actionRepo.saveAndFlush(action);
     } catch (StateTransitionException ste) {
       throw new RuntimeException(ste);
@@ -133,7 +134,7 @@ public final class ActionServiceImpl implements ActionService {
     action.setActionId(null);
     action.setActionType(actionType);
     action.setManuallyCreated(true);
-    action.setCreatedDateTime(new Timestamp(System.currentTimeMillis()));
+    action.setCreatedDateTime(DateTimeUtil.nowUTC());
     action.setState(ActionDTO.ActionState.SUBMITTED);
     return actionRepo.saveAndFlush(action);
   }
@@ -161,7 +162,7 @@ public final class ActionServiceImpl implements ActionService {
       }
 
       if (needsUpdate) {
-        existingAction.setUpdatedDateTime(new Timestamp(System.currentTimeMillis()));
+        existingAction.setUpdatedDateTime(DateTimeUtil.nowUTC());
         log.debug("updating action with {}", existingAction);
         existingAction = actionRepo.saveAndFlush(existingAction);
       }

@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -25,6 +26,7 @@ import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import uk.gov.ons.ctp.common.state.StateTransitionException;
 import uk.gov.ons.ctp.common.state.StateTransitionManager;
+import uk.gov.ons.ctp.common.time.DateTimeUtil;
 import uk.gov.ons.ctp.response.action.config.AppConfig;
 import uk.gov.ons.ctp.response.action.domain.model.Action;
 import uk.gov.ons.ctp.response.action.domain.model.Action.ActionPriority;
@@ -115,41 +117,27 @@ public class ActionDistributor {
   /**
    * wake up on schedule and check for submitted actions, enrich and distribute
    * them to spring integration channels
-   * @return the info for the health endpoint regarding the distribution just performed
+   *
+   * @return the info for the health endpoint regarding the distribution just
+   *         performed
    */
   public final DistributionInfo distribute() {
     log.debug("ActionDistributor awoken from slumber");
-    DistributionInfo distInfo = new DistributionInfo();
-    DateFormat dateTimeInstance = SimpleDateFormat.getDateTimeInstance();
-    distInfo.setLastRunTime(dateTimeInstance.format(Calendar.getInstance().getTime()));
+    DistributionInfo distInfo = initDistInfo();
 
     try {
-      List<ActionType> actionTypes = actionTypeRepo.findAll();
-
-      for (ActionType actionType : actionTypes) {
-
-        Pageable pageable = new PageRequest(0, appConfig.getActionDistribution().getInstructionMax(), new Sort(
-            new Sort.Order(Direction.ASC, "createdDateTime")));
-
-        List<Action> actions = actionRepo
-            .findByActionTypeNameAndStateIn(actionType.getName(),
-                Arrays.asList(ActionState.SUBMITTED, ActionState.CANCEL_SUBMITTED), pageable);
-
+      actionTypeRepo.findAll().forEach(actionType -> {
         // container for outbound requests for this action type
         List<ActionRequest> actionRequests = new ArrayList<>();
         List<ActionCancel> actionCancels = new ArrayList<>();
 
         log.debug("Dealing with actionType {}", actionType.getName());
-        StringBuilder sbRequests = new StringBuilder("Action ids for Requests : ");
-        StringBuilder sbCancels = new StringBuilder("Action ids for Cancels : ");
-        for (Action action : actions) {
+        retrieveActions(actionType).forEach(action -> {
           try {
             if (action.getState().equals(ActionDTO.ActionState.SUBMITTED)) {
               actionRequests.add(processActionRequest(action));
-              sbRequests.append(action.getActionId()).append(",");
             } else if (action.getState().equals(ActionDTO.ActionState.CANCEL_SUBMITTED)) {
               actionCancels.add(processActionCancel(action));
-              sbCancels.append(action.getActionId()).append(",");
             }
           } catch (Exception e) {
             // db changes rolled back
@@ -157,32 +145,17 @@ public class ActionDistributor {
                 "Exception thrown processing action {}. Processing will be retried at next scheduled distribution",
                 action.getActionId());
           }
-        }
+        });
+
         distInfo.addInstructionCount(
             new InstructionCount(actionType.getName(), DistributionInfo.Instruction.REQUEST, actionRequests.size()));
         distInfo.addInstructionCount(new InstructionCount(actionType.getName(),
             DistributionInfo.Instruction.CANCEL_REQUEST, actionCancels.size()));
 
-        boolean published = false;
-        if (actionRequests.size() > 0 || actionCancels.size() > 0) {
-          do {
-            try {
-              // send the list of requests for this action type to the handler
-              log.debug("Publishing instruction");
-              instructionPublisher.sendInstructions(actionType.getHandler(), actionRequests, actionCancels);
-              published = true;
-            } catch (Exception e) {
-              // broker not there ? sleep then retry
-              log.error(sbRequests.toString());
-              log.error(sbCancels.toString());
-              log.error("Problem sending action instruction for preceeding ids to handler {} due to {}", actionType, e);
-              Thread.sleep(appConfig.getActionDistribution().getRetrySleepSeconds() * MILLISECONDS);
-            }
-          } while (!published);
-        }
+        publishActions(actionType, actionRequests, actionCancels);
 
         log.debug("Actions processed for actionType {}", actionType.getName());
-      }
+      });
     } catch (Exception e) {
       // something went wrong retrieving action types or actions
       log.error("Failed to process actions because {}", e);
@@ -190,6 +163,69 @@ public class ActionDistributor {
     }
     log.debug("ActionDistributor going back to sleep");
     return distInfo;
+  }
+
+  /**
+   * publish actions using the inject publisher - try and try and try ...
+   *
+   * @param actionType the type
+   * @param actionRequests requests
+   * @param actionCancels cancels
+   * @throws InterruptedException our pause was interrupted
+   */
+  private void publishActions(ActionType actionType, List<ActionRequest> actionRequests,
+      List<ActionCancel> actionCancels) {
+    boolean published = false;
+    if (actionRequests.size() > 0 || actionCancels.size() > 0) {
+      do {
+        try {
+          // send the list of requests for this action type to the handler
+          log.debug("Publishing instruction");
+          instructionPublisher.sendInstructions(actionType.getHandler(), actionRequests, actionCancels);
+          published = true;
+        } catch (Exception e) {
+          // broker not there ? sleep then retry
+          log.error("Failed to send requests {}",
+              actionRequests.stream().map(a -> a.getActionId().toString()).collect(Collectors.joining(",")));
+          log.error("Failed to send requests {}",
+              actionRequests.stream().map(a -> a.getActionId().toString()).collect(Collectors.joining(",")));
+          log.error("Problem sending action instruction for preceeding ids to handler {} due to {}", actionType, e);
+          try {
+            Thread.sleep(appConfig.getActionDistribution().getRetrySleepSeconds() * MILLISECONDS);
+          } catch (InterruptedException ie) {
+            log.warn("Retry sleep was interrupted");
+          }
+        }
+      } while (!published);
+    }
+  }
+
+  /**
+   * construct and init the distribution info
+   *
+   * @return the freshly created and init'd dist info obj
+   */
+  private DistributionInfo initDistInfo() {
+    DistributionInfo distInfo = new DistributionInfo();
+    DateFormat dateTimeInstance = SimpleDateFormat.getDateTimeInstance();
+    distInfo.setLastRunTime(dateTimeInstance.format(Calendar.getInstance().getTime()));
+    return distInfo;
+  }
+
+  /**
+   * Get the oldest page of submitted actions by type
+   *
+   * @param actionType the type
+   * @return the actions
+   */
+  private List<Action> retrieveActions(ActionType actionType) {
+    Pageable pageable = new PageRequest(0, appConfig.getActionDistribution().getInstructionMax(), new Sort(
+        new Sort.Order(Direction.ASC, "createdDateTime")));
+
+    List<Action> actions = actionRepo
+        .findByActionTypeNameAndStateIn(actionType.getName(),
+            Arrays.asList(ActionState.SUBMITTED, ActionState.CANCEL_SUBMITTED), pageable);
+    return actions;
   }
 
   /**
@@ -261,7 +297,7 @@ public class ActionDistributor {
       ActionDTO.ActionState nextState = actionSvcStateTransitionManager.transition(action.getState(), event);
       action.setState(nextState);
       action.setSituation(null);
-      action.setUpdatedDateTime(new Timestamp(System.currentTimeMillis()));
+      action.setUpdatedDateTime(DateTimeUtil.nowUTC());
       updatedAction = actionRepo.saveAndFlush(action);
     } catch (StateTransitionException ste) {
       throw new RuntimeException(ste);

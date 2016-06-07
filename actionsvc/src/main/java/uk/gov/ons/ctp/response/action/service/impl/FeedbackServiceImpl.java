@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import uk.gov.ons.ctp.common.state.StateTransitionException;
 import uk.gov.ons.ctp.common.state.StateTransitionManager;
+import uk.gov.ons.ctp.common.time.DateTimeUtil;
 import uk.gov.ons.ctp.response.action.domain.model.Action;
 import uk.gov.ons.ctp.response.action.domain.repository.ActionRepository;
 import uk.gov.ons.ctp.response.action.message.feedback.ActionFeedback;
@@ -59,7 +60,7 @@ public class FeedbackServiceImpl implements FeedbackService {
               outcomeEvent);
           action.setSituation(feedback.getSituation());
           action.setState(nextState);
-          action.setUpdatedDateTime(new Timestamp(System.currentTimeMillis()));
+          action.setUpdatedDateTime(DateTimeUtil.nowUTC());
           actionRepo.saveAndFlush(action);
 
           if (nextState.equals(ActionDTO.ActionState.COMPLETED)) {
