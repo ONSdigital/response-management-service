@@ -11,6 +11,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -109,7 +110,6 @@ public class CsvIngester extends CsvToBean {
 
   private ColumnPositionMappingStrategy columnPositionMappingStrategy;
 
-
   /**
    * Lazy create a reusable validator
    *
@@ -152,13 +152,13 @@ public class CsvIngester extends CsvToBean {
         while ((nextLine = reader.readNext()) != null) {
           if (lineNum++ > 0) {
             CsvLine csvLine = (CsvLine) processLine(columnPositionMappingStrategy, nextLine);
-            String namesOfInvalidColumns = validateLine(csvLine);
-            if (namesOfInvalidColumns != null) {
+            Optional<String> namesOfInvalidColumns = validateLine(csvLine);
+            if (namesOfInvalidColumns.isPresent()) {
               reader.close();
               log.error("Problem parsing {} due to {} - entire ingest aborted", Arrays.toString(nextLine),
-                  namesOfInvalidColumns);
+                  namesOfInvalidColumns.get());
               csvFile.renameTo(
-                  new File(csvFile.getPath() + ".error_LINE_" + lineNum + "_COLUMN_" + namesOfInvalidColumns));
+                  new File(csvFile.getPath() + ".error_LINE_" + lineNum + "_COLUMN_" + namesOfInvalidColumns.get()));
               return;
             }
             // first - which handler is it for?
@@ -215,20 +215,17 @@ public class CsvIngester extends CsvToBean {
   }
 
   /**
-   * validate the csv line and return the concatentated list of fields failing
-   * validation or null
+   * validate the csv line and return the optional concatentated list of fields
+   * failing validation
    *
    * @param csvLine the line
    * @return the errored column names separated by '_'
    */
-  private String validateLine(CsvLine csvLine) {
+  private Optional<String> validateLine(CsvLine csvLine) {
     Set<ConstraintViolation<CsvLine>> violations = getValidator().validate(csvLine);
-    String namesOfInvalidColumns = null;
-    if (violations.size() > 0) {
-      namesOfInvalidColumns = violations.stream().map(v -> v.getPropertyPath().toString())
-          .collect(Collectors.joining("_"));
-    }
-    return namesOfInvalidColumns;
+    String invalidColumns = violations.stream().map(v -> v.getPropertyPath().toString())
+        .collect(Collectors.joining("_"));
+    return (invalidColumns.length() == 0) ? Optional.empty() : Optional.of(invalidColumns);
   }
 
   /**

@@ -31,7 +31,7 @@ public class DistributionScheduler implements HealthIndicator {
   @Inject
   private ActionDistributor actionDistributorImpl;
 
-  private DistributionInfo distributionInfo;
+  private DistributionInfo distributionInfo = new DistributionInfo();
 
   private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
 
