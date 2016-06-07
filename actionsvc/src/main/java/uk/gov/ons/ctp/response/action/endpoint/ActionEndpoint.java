@@ -182,10 +182,13 @@ public final class ActionEndpoint implements CTPEndpoint {
   @Path("/{actionid}/feedback")
   public ActionDTO feedbackAction(@PathParam("actionid") final int actionId, final ActionFeedback actionFeedback)
       throws CTPException {
-    // TODO make endpoint accept JSON instead of XML
     log.debug("Feedback for Action {}", actionId);
     actionFeedback.setActionId(BigInteger.valueOf(actionId));
     Action action = actionService.feedBackAction(actionFeedback);
+    if (action == null) {
+      throw new CTPException(CTPException.Fault.RESOURCE_NOT_FOUND, "Action not updated for id %s", actionId);
+    }
+
     ActionDTO result = mapperFacade.map(action, ActionDTO.class);
     return result;
   }

@@ -41,8 +41,7 @@ public final class ActionServiceImpl implements ActionService {
   private ActionTypeRepository actionTypeRepo;
 
   @Inject
-  private StateTransitionManager<ActionState,
-    uk.gov.ons.ctp.response.action.representation.ActionDTO.ActionEvent> actionSvcStateTransitionManager;
+  private StateTransitionManager<ActionState, uk.gov.ons.ctp.response.action.representation.ActionDTO.ActionEvent> actionSvcStateTransitionManager;
 
   @Override
   public List<Action> findActionsByTypeAndStateOrderedByCreatedDateTimeDescending(final String actionTypeName,
@@ -106,16 +105,18 @@ public final class ActionServiceImpl implements ActionService {
     log.debug("Entering feedBackAction with {}", actionFeedback.getActionId());
     Action action = null;
 
-    try {
-      action = actionRepo.findOne(actionFeedback.getActionId().intValue());
+    action = actionRepo.findOne(actionFeedback.getActionId().intValue());
+    if (action != null) {
       ActionDTO.ActionEvent event = ActionDTO.ActionEvent.valueOf(actionFeedback.getOutcome().name());
-      ActionDTO.ActionState nextState = actionSvcStateTransitionManager.transition(action.getState(), event);
-      action.setState(nextState);
       action.setSituation(actionFeedback.getSituation());
       action.setUpdatedDateTime(DateTimeUtil.nowUTC());
+      try {
+        ActionDTO.ActionState nextState = actionSvcStateTransitionManager.transition(action.getState(), event);
+        action.setState(nextState);
+      } catch (StateTransitionException ste) {
+        throw new RuntimeException(ste);
+      }
       action = actionRepo.saveAndFlush(action);
-    } catch (StateTransitionException ste) {
-      throw new RuntimeException(ste);
     }
     return action;
   }
