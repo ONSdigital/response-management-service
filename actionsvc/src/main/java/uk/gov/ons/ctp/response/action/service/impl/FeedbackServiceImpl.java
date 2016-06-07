@@ -1,7 +1,6 @@
 package uk.gov.ons.ctp.response.action.service.impl;
 
 import java.math.BigInteger;
-import java.sql.Timestamp;
 
 import javax.inject.Inject;
 import javax.inject.Named;
