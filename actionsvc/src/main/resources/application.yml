@@ -95,8 +95,8 @@ action-distribution:
   instruction-max: 200
   retry-sleep-seconds: 30
   initial-delay-seconds: 10
-  subsequent-delay-seconds: 30
-   
+  subsequent-delay-seconds: 3600
+
 case-frame-svc:
   scheme: http
   host: localhost
@@ -113,5 +113,5 @@ csv-ingest:
   file-pattern: '*.csv'
   #the poll-milliseconds property is not used at the moment due to a bug in spring context loading in integration tests
   poll-milliseconds: 10000
-  
-  
+
+
