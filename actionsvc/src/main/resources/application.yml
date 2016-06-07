@@ -95,7 +95,7 @@ action-distribution:
   instruction-max: 200
   retry-sleep-seconds: 30
   initial-delay-seconds: 10
-  subsequent-delay-seconds: 3600
+  subsequent-delay-seconds: 360
 
 case-frame-svc:
   scheme: http
