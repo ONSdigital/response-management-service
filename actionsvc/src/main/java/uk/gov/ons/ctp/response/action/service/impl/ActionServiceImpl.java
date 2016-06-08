@@ -41,7 +41,9 @@ public final class ActionServiceImpl implements ActionService {
   private ActionTypeRepository actionTypeRepo;
 
   @Inject
-  private StateTransitionManager<ActionState, uk.gov.ons.ctp.response.action.representation.ActionDTO.ActionEvent> actionSvcStateTransitionManager;
+  private StateTransitionManager<ActionState,
+    uk.gov.ons.ctp.response.action.representation.ActionDTO.ActionEvent>
+    actionSvcStateTransitionManager;
 
   @Override
   public List<Action> findActionsByTypeAndStateOrderedByCreatedDateTimeDescending(final String actionTypeName,
