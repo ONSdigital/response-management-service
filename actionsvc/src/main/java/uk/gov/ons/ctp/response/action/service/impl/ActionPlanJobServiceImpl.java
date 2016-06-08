@@ -28,8 +28,6 @@ import uk.gov.ons.ctp.response.action.service.CaseFrameSvcClientService;
 @Slf4j
 public class ActionPlanJobServiceImpl implements ActionPlanJobService {
 
-  // The sql function might take a while
-  private static final int TRANSACTION_TIMEOUT = 300;
 
   @Inject
   private CaseFrameSvcClientService caseFrameSvcClientService;
@@ -55,7 +53,7 @@ public class ActionPlanJobServiceImpl implements ActionPlanJobService {
     return actionPlanJobRepo.findByActionPlanId(actionPlanId);
   }
 
-  @Transactional(propagation = Propagation.REQUIRED, readOnly = false, timeout = TRANSACTION_TIMEOUT)
+  @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
   @Override
   public final ActionPlanJob createAndExecuteActionPlanJob(final ActionPlanJob actionPlanJob) {
     Integer actionPlanId = actionPlanJob.getActionPlanId();
