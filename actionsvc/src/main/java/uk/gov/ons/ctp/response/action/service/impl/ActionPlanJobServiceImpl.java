@@ -74,8 +74,9 @@ public class ActionPlanJobServiceImpl implements ActionPlanJobService {
       for (Integer openCaseId : openCasesForPlan) {
         log.debug("Creating action.case for case {} and actionplanid {}", openCaseId, createdJob.getActionPlanId());
         ActionCase actionCase = new ActionCase(createdJob.getActionPlanJobId(), openCaseId);
-        actionCaseRepo.saveAndFlush(actionCase);
+        actionCaseRepo.save(actionCase);
       }
+      actionCaseRepo.flush();
 
       // get the repo to call sql function to create actions
       actionCaseRepo.createActions(createdJob.getActionPlanJobId());
