@@ -27,7 +27,7 @@ databaseChangeLog:
         - sqlFile:
             comment: Delete from action case table for the job run
             path: createactions_function_rmcases.sql
-            splitStatements: true
+            splitStatements: false
             relativeToChangelogFile: true
 
 
