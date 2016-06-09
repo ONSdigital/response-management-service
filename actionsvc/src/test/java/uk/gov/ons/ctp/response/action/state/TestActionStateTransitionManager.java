@@ -99,9 +99,6 @@ public class TestActionStateTransitionManager {
 
     validTransitions.forEach((sourceState, transitions) -> {
       transitions.forEach((actionEvent, actionState) -> {
-        log.debug("{} asserting valid transition {}({}) -> {}", Thread.currentThread().getName(), sourceState,
-            actionEvent,
-            actionState);
         try {
           Assert.assertEquals(actionState, stm.transition(sourceState, actionEvent));
         } catch (StateTransitionException ste) {
@@ -113,7 +110,6 @@ public class TestActionStateTransitionManager {
         if (!transitions.keySet().contains(event)) {
           boolean caught = false;
           try {
-            log.debug("{} asserting invalid transition {}({})", Thread.currentThread().getName(), sourceState, event);
             stm.transition(sourceState, event);
           } catch (StateTransitionException ste) {
             caught = true;
