@@ -8,7 +8,6 @@ import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-import lombok.extern.slf4j.Slf4j;
 import uk.gov.ons.ctp.common.state.StateTransitionException;
 import uk.gov.ons.ctp.common.state.StateTransitionManager;
 import uk.gov.ons.ctp.common.state.StateTransitionManagerFactory;
@@ -22,7 +21,6 @@ import uk.gov.ons.ctp.response.action.representation.ActionDTO.ActionState;
  * invalid transitions
  *
  */
-@Slf4j
 public class TestActionStateTransitionManager {
 
   private static final int TIMEOUT = 10000;
@@ -99,9 +97,6 @@ public class TestActionStateTransitionManager {
 
     validTransitions.forEach((sourceState, transitions) -> {
       transitions.forEach((actionEvent, actionState) -> {
-        log.debug("{} asserting valid transition {}({}) -> {}", Thread.currentThread().getName(), sourceState,
-            actionEvent,
-            actionState);
         try {
           Assert.assertEquals(actionState, stm.transition(sourceState, actionEvent));
         } catch (StateTransitionException ste) {
@@ -113,7 +108,6 @@ public class TestActionStateTransitionManager {
         if (!transitions.keySet().contains(event)) {
           boolean caught = false;
           try {
-            log.debug("{} asserting invalid transition {}({})", Thread.currentThread().getName(), sourceState, event);
             stm.transition(sourceState, event);
           } catch (StateTransitionException ste) {
             caught = true;

@@ -20,5 +20,15 @@ databaseChangeLog:
             splitStatements: true
             relativeToChangelogFile: true
 
+  - changeSet:
+      id: 8.18.0-3
+      author: Sarah Radford
+      changes:
+        - sqlFile:
+            comment: Delete from action case table for the job run
+            path: createactions_function_rmcases.sql
+            splitStatements: false
+            relativeToChangelogFile: true
+
 
 
