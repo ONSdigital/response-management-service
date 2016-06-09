@@ -8,7 +8,6 @@ import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-import lombok.extern.slf4j.Slf4j;
 import uk.gov.ons.ctp.common.state.StateTransitionException;
 import uk.gov.ons.ctp.common.state.StateTransitionManager;
 import uk.gov.ons.ctp.common.state.StateTransitionManagerFactory;
@@ -22,7 +21,6 @@ import uk.gov.ons.ctp.response.action.representation.ActionDTO.ActionState;
  * invalid transitions
  *
  */
-@Slf4j
 public class TestActionStateTransitionManager {
 
   private static final int TIMEOUT = 10000;
