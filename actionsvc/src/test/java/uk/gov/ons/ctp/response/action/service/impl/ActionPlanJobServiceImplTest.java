@@ -93,7 +93,8 @@ public class ActionPlanJobServiceImplTest {
     verify(actionCaseRepo).createActions(1);
     verify(actionPlanJobRepo).save(actionPlanJobs.get(0));
     verify(caseFrameSvcClientService).getOpenCasesForActionPlan(eq(1));
-    verify(actionCaseRepo, times(6)).saveAndFlush(any(ActionCase.class));
+    verify(actionCaseRepo, times(6)).save(any(ActionCase.class));
+    verify(actionCaseRepo, times(1)).flush();
   }
 
 }
