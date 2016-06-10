@@ -1,12 +1,14 @@
 package uk.gov.ons.ctp.response.action.scheduled.ingest;
 
 import static org.mockito.Matchers.anyListOf;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 import java.io.File;
 
+import static org.junit.Assert.assertTrue;
 import org.apache.commons.io.FileUtils;
 import org.junit.Before;
 import org.junit.Test;
@@ -61,10 +63,30 @@ public class CsvIngesterTest {
    * @throws Exception oops
    */
   private File getTestFile(String fileName) throws Exception {
+    String callerMethodName = new Exception().getStackTrace()[1].getMethodName();
     File srcFile = new File(getClass().getClassLoader().getResource("csv/" + fileName).toURI());
-    File destFile = new File(srcFile.getParent() + TEMP_FILE_PREFIX + fileName);
+    String destFileName = srcFile.getParent() + "/" + callerMethodName + "/" + fileName;
+    File destFile = new File(destFileName);
+    File destDir = new File(destFile.getParent());
+    try {
+      FileUtils.forceDelete(destDir);
+    } catch (Exception e) {
+      // might not already exist
+    }
     FileUtils.copyFile(srcFile, destFile);
     return destFile;
+  }
+
+  /**
+   * assert that the csv file was mutated into an error csv file with the expected
+   * suffix identifying the line and column at fault
+   *
+   * @param testFile
+   * @param errorSuffix
+   */
+  private void verifyErrorFileExists(File testFile, String errorSuffix) {
+    File errorFile = new File(testFile + errorSuffix);
+    assertTrue(errorFile.exists());
   }
 
   /**
@@ -77,16 +99,87 @@ public class CsvIngesterTest {
 
     csvIngester.ingest(getTestFile("bluesky.csv"));
 
-    verify(instructionPublisher, times(1)).sendInstructions(eq("Field"), anyListOf(ActionRequest.class),
+    verify(instructionPublisher, times(1)).sendInstructions(anyString(), anyListOf(ActionRequest.class),
         anyListOf(ActionCancel.class));
   }
 
-//  @Test
-//  public void testInvalidHandler() throws Exception {
-//
-//    csvIngester.ingest(getTestFile("invalid-handler.csv"));
-//
-//    verify(instructionPublisher, times(0)).sendInstructions(eq("Field"), anyListOf(ActionRequest.class),
-//        anyListOf(ActionCancel.class));
-//  }
+  /**
+   * Test ...
+   *
+   * @throws Exception oops
+   */
+  @Test
+  public void testInvalidHandler() throws Exception {
+    File testFile = getTestFile("invalid-handler.csv");
+    csvIngester.ingest(testFile);
+
+    verify(instructionPublisher, times(0)).sendInstructions(anyString(), anyListOf(ActionRequest.class),
+        anyListOf(ActionCancel.class));
+
+    verifyErrorFileExists(testFile, ".error_LINE_2_COLUMN_handler");
+  }
+
+  /**
+   * Test ...
+   *
+   * @throws Exception oops
+   */
+  @Test
+  public void testInvalidActionType() throws Exception {
+    File testFile = getTestFile("invalid-actionType.csv");
+    csvIngester.ingest(testFile);
+
+    verify(instructionPublisher, times(0)).sendInstructions(anyString(), anyListOf(ActionRequest.class),
+        anyListOf(ActionCancel.class));
+
+    verifyErrorFileExists(testFile, ".error_LINE_2_COLUMN_actionType");
+  }
+
+  /**
+   * Test ...
+   *
+   * @throws Exception oops
+   */
+  @Test
+  public void testInvalidInstructionType() throws Exception {
+    File testFile = getTestFile("invalid-instructionType.csv");
+    csvIngester.ingest(testFile);
+
+    verify(instructionPublisher, times(0)).sendInstructions(anyString(), anyListOf(ActionRequest.class),
+        anyListOf(ActionCancel.class));
+
+    verifyErrorFileExists(testFile, ".error_LINE_2_COLUMN_instructionType");
+  }
+
+  /**
+   * Test ...
+   *
+   * @throws Exception oops
+   */
+  @Test
+  public void testAddressType() throws Exception {
+    File testFile = getTestFile("invalid-addressType.csv");
+    csvIngester.ingest(testFile);
+
+    verify(instructionPublisher, times(0)).sendInstructions(anyString(), anyListOf(ActionRequest.class),
+        anyListOf(ActionCancel.class));
+
+    verifyErrorFileExists(testFile, ".error_LINE_2_COLUMN_addressType");
+  }
+
+  /**
+   * Test ...
+   *
+   * @throws Exception oops
+   */
+  @Test
+  public void testEstabType() throws Exception {
+    File testFile = getTestFile("invalid-estabType.csv");
+    csvIngester.ingest(testFile);
+
+    verify(instructionPublisher, times(0)).sendInstructions(anyString(), anyListOf(ActionRequest.class),
+        anyListOf(ActionCancel.class));
+
+    verifyErrorFileExists(testFile, ".error_LINE_2_COLUMN_estabType");
+  }
 }
