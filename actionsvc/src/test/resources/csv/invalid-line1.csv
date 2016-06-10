@@ -1,0 +1,2 @@
+handler,action_type,instruction_type,address_type,estab_type,locality,organisation_name,category,line1,line2,town_name,postcode,latitude,longitude,uprn,contact_name,case_id,questionnaire_id,priority,iac,events
+Field,AddressCheck,Request,CE,CR06,WELLINGTON,,HOTEL,1234567890123456789012345678901234567890123456789012345678901234567890,STATION ROAD,TELFORD,TF1 1BY,52.7008250520575,-2.51623143156324,452073602,,999999999,999999999,3,9999999999,

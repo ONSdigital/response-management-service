@@ -1,14 +1,13 @@
 package uk.gov.ons.ctp.response.action.scheduled.ingest;
 
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.anyListOf;
 import static org.mockito.Matchers.anyString;
-import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 import java.io.File;
 
-import static org.junit.Assert.assertTrue;
 import org.apache.commons.io.FileUtils;
 import org.junit.Before;
 import org.junit.Test;
@@ -30,8 +29,6 @@ import uk.gov.ons.ctp.response.action.message.instruction.ActionRequest;
  */
 @RunWith(MockitoJUnitRunner.class)
 public class CsvIngesterTest {
-
-  private static final String TEMP_FILE_PREFIX = "/tmp_";
 
   @Spy
   private AppConfig appConfig = new AppConfig();
@@ -81,8 +78,8 @@ public class CsvIngesterTest {
    * assert that the csv file was mutated into an error csv file with the expected
    * suffix identifying the line and column at fault
    *
-   * @param testFile
-   * @param errorSuffix
+   * @param testFile the original test file
+   * @param errorSuffix the expected suffix
    */
   private void verifyErrorFileExists(File testFile, String errorSuffix) {
     File errorFile = new File(testFile + errorSuffix);
@@ -125,7 +122,7 @@ public class CsvIngesterTest {
    * @throws Exception oops
    */
   @Test
-  public void testInvalidActionType() throws Exception {
+  public void testActionType() throws Exception {
     File testFile = getTestFile("invalid-actionType.csv");
     csvIngester.ingest(testFile);
 
@@ -141,7 +138,7 @@ public class CsvIngesterTest {
    * @throws Exception oops
    */
   @Test
-  public void testInvalidInstructionType() throws Exception {
+  public void testInstructionType() throws Exception {
     File testFile = getTestFile("invalid-instructionType.csv");
     csvIngester.ingest(testFile);
 
@@ -182,4 +179,265 @@ public class CsvIngesterTest {
 
     verifyErrorFileExists(testFile, ".error_LINE_2_COLUMN_estabType");
   }
+
+  /**
+   * Test ...
+   *
+   * @throws Exception oops
+   */
+  @Test
+  public void testLocality() throws Exception {
+    File testFile = getTestFile("invalid-locality.csv");
+    csvIngester.ingest(testFile);
+
+    verify(instructionPublisher, times(0)).sendInstructions(anyString(), anyListOf(ActionRequest.class),
+        anyListOf(ActionCancel.class));
+
+    verifyErrorFileExists(testFile, ".error_LINE_2_COLUMN_locality");
+  }
+
+  /**
+   * Test ...
+   *
+   * @throws Exception oops
+   */
+  @Test
+  public void testOrganisationName() throws Exception {
+    File testFile = getTestFile("invalid-organisationName.csv");
+    csvIngester.ingest(testFile);
+
+    verify(instructionPublisher, times(0)).sendInstructions(anyString(), anyListOf(ActionRequest.class),
+        anyListOf(ActionCancel.class));
+
+    verifyErrorFileExists(testFile, ".error_LINE_2_COLUMN_organisationName");
+  }
+
+  /**
+   * Test ...
+   *
+   * @throws Exception oops
+   */
+  @Test
+  public void testCategory() throws Exception {
+    File testFile = getTestFile("invalid-category.csv");
+    csvIngester.ingest(testFile);
+
+    verify(instructionPublisher, times(0)).sendInstructions(anyString(), anyListOf(ActionRequest.class),
+        anyListOf(ActionCancel.class));
+
+    verifyErrorFileExists(testFile, ".error_LINE_2_COLUMN_category");
+  }
+
+  /**
+   * Test ...
+   *
+   * @throws Exception oops
+   */
+  @Test
+  public void testLine1() throws Exception {
+    File testFile = getTestFile("invalid-line1.csv");
+    csvIngester.ingest(testFile);
+
+    verify(instructionPublisher, times(0)).sendInstructions(anyString(), anyListOf(ActionRequest.class),
+        anyListOf(ActionCancel.class));
+
+    verifyErrorFileExists(testFile, ".error_LINE_2_COLUMN_line1");
+  }
+
+  /**
+   * Test ...
+   *
+   * @throws Exception oops
+   */
+  @Test
+  public void testLine2() throws Exception {
+    File testFile = getTestFile("invalid-line2.csv");
+    csvIngester.ingest(testFile);
+
+    verify(instructionPublisher, times(0)).sendInstructions(anyString(), anyListOf(ActionRequest.class),
+        anyListOf(ActionCancel.class));
+
+    verifyErrorFileExists(testFile, ".error_LINE_2_COLUMN_line2");
+  }
+
+  /**
+   * Test ...
+   *
+   * @throws Exception oops
+   */
+  @Test
+  public void testTownName() throws Exception {
+    File testFile = getTestFile("invalid-townName.csv");
+    csvIngester.ingest(testFile);
+
+    verify(instructionPublisher, times(0)).sendInstructions(anyString(), anyListOf(ActionRequest.class),
+        anyListOf(ActionCancel.class));
+
+    verifyErrorFileExists(testFile, ".error_LINE_2_COLUMN_townName");
+  }
+
+  /**
+   * Test ...
+   *
+   * @throws Exception oops
+   */
+  @Test
+  public void testPostcodeA() throws Exception {
+    File testFile = getTestFile("invalid-postcode-a.csv");
+    csvIngester.ingest(testFile);
+
+    verify(instructionPublisher, times(0)).sendInstructions(anyString(), anyListOf(ActionRequest.class),
+        anyListOf(ActionCancel.class));
+
+    verifyErrorFileExists(testFile, ".error_LINE_2_COLUMN_postcode");
+  }
+  
+  /**
+   * Test ...
+   *
+   * @throws Exception oops
+   */
+  @Test
+  public void testPostcodeB() throws Exception {
+    File testFile = getTestFile("invalid-postcode-b.csv");
+    csvIngester.ingest(testFile);
+
+    verify(instructionPublisher, times(0)).sendInstructions(anyString(), anyListOf(ActionRequest.class),
+        anyListOf(ActionCancel.class));
+
+    verifyErrorFileExists(testFile, ".error_LINE_2_COLUMN_postcode");
+  }
+  
+  /**
+   * Test ...
+   *
+   * @throws Exception oops
+   */
+  @Test
+  public void testPostcodeC() throws Exception {
+    File testFile = getTestFile("invalid-postcode-c.csv");
+    csvIngester.ingest(testFile);
+
+    verify(instructionPublisher, times(0)).sendInstructions(anyString(), anyListOf(ActionRequest.class),
+        anyListOf(ActionCancel.class));
+
+    verifyErrorFileExists(testFile, ".error_LINE_2_COLUMN_postcode");
+  }
+
+  /**
+   * Test ...
+   *
+   * @throws Exception oops
+   */
+  @Test
+  public void testLatitude() throws Exception {
+    File testFile = getTestFile("invalid-latitude.csv");
+    csvIngester.ingest(testFile);
+
+    verify(instructionPublisher, times(0)).sendInstructions(anyString(), anyListOf(ActionRequest.class),
+        anyListOf(ActionCancel.class));
+
+    verifyErrorFileExists(testFile, ".error_LINE_2_COLUMN_latitude");
+  }
+
+  /**
+   * Test ...
+   *
+   * @throws Exception oops
+   */
+  @Test
+  public void testLongitude() throws Exception {
+    File testFile = getTestFile("invalid-longitude.csv");
+    csvIngester.ingest(testFile);
+
+    verify(instructionPublisher, times(0)).sendInstructions(anyString(), anyListOf(ActionRequest.class),
+        anyListOf(ActionCancel.class));
+
+    verifyErrorFileExists(testFile, ".error_LINE_2_COLUMN_longitude");
+  }
+
+   /**
+   * Test ...
+   *
+   * @throws Exception oops
+   */
+  @Test
+  public void testUprn() throws Exception {
+    File testFile = getTestFile("invalid-uprn.csv");
+    csvIngester.ingest(testFile);
+
+    verify(instructionPublisher, times(0)).sendInstructions(anyString(), anyListOf(ActionRequest.class),
+        anyListOf(ActionCancel.class));
+
+    verifyErrorFileExists(testFile, ".error_LINE_2_COLUMN_uprn");
+  }
+
+  /**
+   * Test ...
+   *
+   * @throws Exception oops
+   */
+  @Test
+  public void testCaseId() throws Exception {
+    File testFile = getTestFile("invalid-caseId.csv");
+    csvIngester.ingest(testFile);
+
+    verify(instructionPublisher, times(0)).sendInstructions(anyString(), anyListOf(ActionRequest.class),
+        anyListOf(ActionCancel.class));
+
+    verifyErrorFileExists(testFile, ".error_LINE_2_COLUMN_caseId");
+  }
+
+
+  /**
+   * Test ...
+   *
+   * @throws Exception oops
+   */
+  @Test
+  public void testQuestionnaireId() throws Exception {
+    File testFile = getTestFile("invalid-questionnaireId.csv");
+    csvIngester.ingest(testFile);
+
+    verify(instructionPublisher, times(0)).sendInstructions(anyString(), anyListOf(ActionRequest.class),
+        anyListOf(ActionCancel.class));
+
+    verifyErrorFileExists(testFile, ".error_LINE_2_COLUMN_questionnaireId");
+  }
+
+
+  /**
+   * Test ...
+   *
+   * @throws Exception oops
+   */
+  @Test
+  public void testIac() throws Exception {
+    File testFile = getTestFile("invalid-iac.csv");
+    csvIngester.ingest(testFile);
+
+    verify(instructionPublisher, times(0)).sendInstructions(anyString(), anyListOf(ActionRequest.class),
+        anyListOf(ActionCancel.class));
+
+    verifyErrorFileExists(testFile, ".error_LINE_2_COLUMN_iac");
+  }
+
+  /**
+   * Test ...
+   *
+   * @throws Exception oops
+   */
+  @Test
+  public void testPriority() throws Exception {
+    File testFile = getTestFile("invalid-priority.csv");
+    csvIngester.ingest(testFile);
+
+    verify(instructionPublisher, times(0)).sendInstructions(anyString(), anyListOf(ActionRequest.class),
+        anyListOf(ActionCancel.class));
+
+    verifyErrorFileExists(testFile, ".error_LINE_2_COLUMN_priority");
+  }
+  
+  
+
 }
