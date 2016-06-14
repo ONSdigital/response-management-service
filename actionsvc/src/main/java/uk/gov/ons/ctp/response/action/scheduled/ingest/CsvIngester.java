@@ -168,9 +168,7 @@ public class CsvIngester extends CsvToBean {
             // parse the line
             if (csvLine.getInstructionType().equals(REQUEST_INSTRUCTION)) {
               // store the request in the handlers bucket
-              ActionRequest tester = buildRequest(csvLine, executionStamp, lineNum);
-              System.out.println(tester.getActionId());
-//              handlerInstructionBucket.getActionRequests().add(buildRequest(csvLine, executionStamp, lineNum));
+              handlerInstructionBucket.getActionRequests().add(buildRequest(csvLine, executionStamp, lineNum));
 
             } else if (csvLine.getInstructionType().equals(CANCEL_INSTRUCTION)) {
               // store the cancel in the handlers bucket
@@ -189,7 +187,7 @@ public class CsvIngester extends CsvToBean {
       csvFile.delete();
 
       // all lines parsed successfully - now send out bucket contents
-      //publishBuckets(handlerInstructionBuckets);
+      publishBuckets(handlerInstructionBuckets);
 
     } catch (Exception e) {
       log.error("Problem reading ingest file {} because : ", csvFile.getPath(), e);
