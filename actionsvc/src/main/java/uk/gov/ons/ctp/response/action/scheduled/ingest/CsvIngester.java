@@ -54,14 +54,12 @@ import uk.gov.ons.ctp.response.action.message.instruction.Priority;
 @Slf4j
 public class CsvIngester extends CsvToBean {
 
-  private static final int LINE_NUM_MODULO = 100;
-
   private static final String CHANNEL = "csvIngest";
 
   private static final String REQUEST_INSTRUCTION = "Request";
   private static final String CANCEL_INSTRUCTION = "Cancel";
 
-  private static final String DATE_FORMAT = "yyMMddHHmmssSSS";
+  private static final String DATE_FORMAT = "yyMMddHHmm";
 
   private static final String REASON = "Cancelled by Response Management CSV Ingest";
 
@@ -170,7 +168,9 @@ public class CsvIngester extends CsvToBean {
             // parse the line
             if (csvLine.getInstructionType().equals(REQUEST_INSTRUCTION)) {
               // store the request in the handlers bucket
-              handlerInstructionBucket.getActionRequests().add(buildRequest(csvLine, executionStamp, lineNum));
+              ActionRequest tester = buildRequest(csvLine, executionStamp, lineNum);
+              System.out.println(tester.getActionId());
+//              handlerInstructionBucket.getActionRequests().add(buildRequest(csvLine, executionStamp, lineNum));
 
             } else if (csvLine.getInstructionType().equals(CANCEL_INSTRUCTION)) {
               // store the cancel in the handlers bucket
@@ -189,7 +189,7 @@ public class CsvIngester extends CsvToBean {
       csvFile.delete();
 
       // all lines parsed successfully - now send out bucket contents
-      publishBuckets(handlerInstructionBuckets);
+      //publishBuckets(handlerInstructionBuckets);
 
     } catch (Exception e) {
       log.error("Problem reading ingest file {} because : ", csvFile.getPath(), e);
@@ -253,7 +253,7 @@ public class CsvIngester extends CsvToBean {
    */
   private ActionRequest buildRequest(CsvLine csvLine, String executionStamp, int lineNum) {
     return ActionRequest.builder()
-        .withActionId(new BigInteger(executionStamp + String.format("%03d", lineNum % LINE_NUM_MODULO)))
+        .withActionId(new BigInteger(executionStamp + String.format("%08d", lineNum)))
         .withActionType(csvLine.getActionType())
         .withAddress()
         .withCategory(csvLine.getCategory())
