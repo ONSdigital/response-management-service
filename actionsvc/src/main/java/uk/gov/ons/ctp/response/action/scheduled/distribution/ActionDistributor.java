@@ -184,11 +184,12 @@ public class ActionDistributor {
           published = true;
         } catch (Exception e) {
           // broker not there ? sleep then retry
-          log.error("Failed to send requests {}",
+          log.warn("Failed to send requests {}",
               actionRequests.stream().map(a -> a.getActionId().toString()).collect(Collectors.joining(",")));
-          log.error("Failed to send requests {}",
-              actionRequests.stream().map(a -> a.getActionId().toString()).collect(Collectors.joining(",")));
-          log.error("Problem sending action instruction for preceeding ids to handler {} due to {}", actionType, e);
+          log.warn("Failed to send cancels {}",
+              actionCancels.stream().map(a -> a.getActionId().toString()).collect(Collectors.joining(",")));
+          log.warn("Problem sending action instruction for preceeding ids to handler {} due to {}", actionType, e);
+          log.warn("ActionDistibution will sleep and retry publish");
           try {
             Thread.sleep(appConfig.getActionDistribution().getRetrySleepSeconds() * MILLISECONDS);
           } catch (InterruptedException ie) {

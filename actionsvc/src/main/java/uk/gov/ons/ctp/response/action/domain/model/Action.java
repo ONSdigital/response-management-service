@@ -18,6 +18,7 @@ import javax.persistence.Table;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import uk.gov.ons.ctp.response.action.representation.ActionDTO;
@@ -28,6 +29,7 @@ import uk.gov.ons.ctp.response.action.representation.ActionDTO;
 @Entity
 @Data
 @AllArgsConstructor
+@Builder
 @NoArgsConstructor(access = AccessLevel.PUBLIC)
 @Table(name = "action", schema = "action")
 public class Action implements Serializable {
