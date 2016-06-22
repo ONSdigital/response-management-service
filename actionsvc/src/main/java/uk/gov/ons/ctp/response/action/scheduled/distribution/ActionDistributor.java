@@ -338,6 +338,7 @@ public class ActionDistributor {
         action.getActionId(), action.getCaseId());
     ActionCancel actionCancel = new ActionCancel();
     actionCancel.setActionId(BigInteger.valueOf(action.getActionId()));
+    actionCancel.setResponseRequired(true);
     actionCancel.setReason("Action cancelled by Response Management");
     return actionCancel;
   }
@@ -362,6 +363,7 @@ public class ActionDistributor {
     // populate the request
     actionRequest.setActionId(BigInteger.valueOf(action.getActionId()));
     actionRequest.setActionType(action.getActionType().getName());
+    actionRequest.setResponseRequired(true);
     actionRequest.setCaseId(BigInteger.valueOf(action.getCaseId()));
     actionRequest.setContactName(null); // TODO - will be avail in data 2017+
     ActionEvent actionEvent = new ActionEvent();
@@ -370,7 +372,6 @@ public class ActionDistributor {
     actionRequest.setIac(questionnaireDTO.getIac());
     actionRequest.setPriority(Priority.fromValue(ActionPriority.valueOf(action.getPriority()).getName()));
     actionRequest.setQuestionnaireId(BigInteger.valueOf(questionnaireDTO.getQuestionnaireId()));
-    actionRequest.setUprn(BigInteger.valueOf(caseDTO.getUprn()));
 
     ActionAddress actionAddress = mapperFacade.map(addressDTO, ActionAddress.class);
     actionRequest.setAddress(actionAddress);

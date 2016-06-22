@@ -253,7 +253,9 @@ public class CsvIngester extends CsvToBean {
     return ActionRequest.builder()
         .withActionId(new BigInteger(executionStamp + String.format("%08d", lineNum)))
         .withActionType(csvLine.getActionType())
+        .withResponseRequired(false)
         .withAddress()
+        .withUprn(new BigInteger(csvLine.getUprn()))
         .withCategory(csvLine.getCategory())
         .withEstabType(csvLine.getEstabType())
         .withLatitude(new BigDecimal(csvLine.getLatitude()))
@@ -272,7 +274,6 @@ public class CsvIngester extends CsvToBean {
         .withPriority(
             Priority.fromValue(ActionPriority.valueOf(Integer.parseInt(csvLine.getPriority())).getName()))
         .withQuestionnaireId(new BigInteger(csvLine.getQuestionnaireId()))
-        .withUprn(new BigInteger(csvLine.getUprn()))
         .withEvents()
         .withEvents(csvLine.getEvents().split("\\|"))
         .end()
