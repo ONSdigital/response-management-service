@@ -1,5 +1,6 @@
 package uk.gov.ons.ctp.response.action.representation;
 
+import java.math.BigInteger;
 import java.util.Date;
 
 import javax.validation.constraints.NotNull;
@@ -32,7 +33,7 @@ public class ActionDTO {
     REQUEST_CANCELLED, CANCELLATION_DISTRIBUTED, CANCELLATION_FAILED, CANCELLATION_ACCEPTED, CANCELLATION_COMPLETED
   }
 
-  private Integer actionId;
+  private BigInteger actionId;
 
   @NotNull
   private Integer caseId;

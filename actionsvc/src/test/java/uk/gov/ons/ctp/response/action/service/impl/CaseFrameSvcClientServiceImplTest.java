@@ -1,12 +1,13 @@
 package uk.gov.ons.ctp.response.action.service.impl;
 
+import static org.hamcrest.Matchers.containsString;
 import static org.junit.Assert.assertTrue;
-import static org.springframework.test.web.client.match.MockRestRequestMatchers.method;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.content;
+import static org.springframework.test.web.client.match.MockRestRequestMatchers.method;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo;
 import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
-import static org.hamcrest.Matchers.containsString;
 
+import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.List;
 
@@ -78,7 +79,7 @@ public class CaseFrameSvcClientServiceImplTest {
     RestTemplate restTemplate = this.restClient.getRestTemplate();
 
     Action action = new Action();
-    action.setActionId(1);
+    action.setActionId(BigInteger.valueOf(1));
     action.setActionPlanId(2);
     action.setActionRuleId(3);
     ;

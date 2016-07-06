@@ -1,5 +1,6 @@
 package uk.gov.ons.ctp.response.action.service;
 
+import java.math.BigInteger;
 import java.util.List;
 
 import uk.gov.ons.ctp.common.service.CTPService;
@@ -46,7 +47,7 @@ public interface ActionService extends CTPService {
    * @param actionId This is the action id
    * @return Action Returns the action for the specified action id.
    */
-  Action findActionByActionId(Integer actionId);
+  Action findActionByActionId(BigInteger actionId);
 
   /**
    * Find all actions for the specified Case Id.

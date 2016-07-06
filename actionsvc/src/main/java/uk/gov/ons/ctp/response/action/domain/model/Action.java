@@ -1,6 +1,7 @@
 package uk.gov.ons.ctp.response.action.domain.model;
 
 import java.io.Serializable;
+import java.math.BigInteger;
 import java.sql.Timestamp;
 import java.util.HashMap;
 import java.util.Map;
@@ -97,7 +98,7 @@ public class Action implements Serializable {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "actionid")
-  private Integer actionId;
+  private BigInteger actionId;
 
   @Column(name = "caseid")
   private Integer caseId;

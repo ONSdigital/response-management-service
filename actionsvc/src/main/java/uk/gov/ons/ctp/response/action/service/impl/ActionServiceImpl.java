@@ -1,5 +1,6 @@
 package uk.gov.ons.ctp.response.action.service.impl;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -65,7 +66,7 @@ public final class ActionServiceImpl implements ActionService {
   }
 
   @Override
-  public Action findActionByActionId(final Integer actionId) {
+  public Action findActionByActionId(final BigInteger actionId) {
     log.debug("Entering findActionByActionId with {}", actionId);
     return actionRepo.findOne(actionId);
   }
@@ -107,7 +108,7 @@ public final class ActionServiceImpl implements ActionService {
     log.debug("Entering feedBackAction with {}", actionFeedback.getActionId());
     Action action = null;
 
-    action = actionRepo.findOne(actionFeedback.getActionId().intValue());
+    action = actionRepo.findOne(actionFeedback.getActionId());
     if (action != null) {
       ActionDTO.ActionEvent event = ActionDTO.ActionEvent.valueOf(actionFeedback.getOutcome().name());
       action.setSituation(actionFeedback.getSituation());

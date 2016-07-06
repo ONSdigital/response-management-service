@@ -1,5 +1,6 @@
 package uk.gov.ons.ctp.response.action.domain.repository;
 
+import java.math.BigInteger;
 import java.util.List;
 
 import org.springframework.data.domain.Pageable;
@@ -13,7 +14,7 @@ import uk.gov.ons.ctp.response.action.representation.ActionDTO;
  * JPA Data Repository.
  */
 @Repository
-public interface ActionRepository extends JpaRepository<Action, Integer> {
+public interface ActionRepository extends JpaRepository<Action, BigInteger> {
 
   /**
    * Return all actions for the specified case id.

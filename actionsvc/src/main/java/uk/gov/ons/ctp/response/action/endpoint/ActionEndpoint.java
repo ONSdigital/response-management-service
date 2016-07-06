@@ -104,7 +104,7 @@ public final class ActionEndpoint implements CTPEndpoint {
    */
   @GET
   @Path("/{actionid}")
-  public ActionDTO findActionByActionId(@PathParam("actionid") final Integer actionId) throws CTPException {
+  public ActionDTO findActionByActionId(@PathParam("actionid") final BigInteger actionId) throws CTPException {
     log.debug("Entering findActionByActionId with {}", actionId);
     Action action = actionService.findActionByActionId(actionId);
     if (action == null) {
@@ -124,7 +124,7 @@ public final class ActionEndpoint implements CTPEndpoint {
    */
   @PUT
   @Path("/{actionid}")
-  public ActionDTO updateAction(@PathParam("actionid") final int actionId, final ActionDTO actionDTO)
+  public ActionDTO updateAction(@PathParam("actionid") final BigInteger actionId, final ActionDTO actionDTO)
       throws CTPException {
     log.debug("Updating Action with {} {}", actionId, actionDTO);
     actionDTO.setActionId(actionId);

@@ -13,7 +13,7 @@ import static uk.gov.ons.ctp.response.action.utility.MockActionServiceFactory.AC
 import static uk.gov.ons.ctp.response.action.utility.MockActionServiceFactory.ACTION2_RULEID;
 import static uk.gov.ons.ctp.response.action.utility.MockActionServiceFactory.ACTION2_SITUATION;
 import static uk.gov.ons.ctp.response.action.utility.MockActionServiceFactory.ACTION3_ACTIONSTATE;
-import static uk.gov.ons.ctp.response.action.utility.MockActionServiceFactory.ACTIONID;
+import static uk.gov.ons.ctp.response.action.utility.MockActionServiceFactory.ACTIONID_2;
 import static uk.gov.ons.ctp.response.action.utility.MockActionServiceFactory.ACTION_CASEID;
 import static uk.gov.ons.ctp.response.action.utility.MockActionServiceFactory.ACTION_CREATEDBY;
 import static uk.gov.ons.ctp.response.action.utility.MockActionServiceFactory.ACTION_CREATEDDATE_VALUE;
@@ -76,7 +76,7 @@ public final class ActionEndpointUnitTest extends CTPJerseyTest {
   public void findActionsByActionTypeAndStateFound() {
     with("http://localhost:9998/actions?actiontype=%s&state=%s", ACTION2_ACTIONTYPENAME, ACTION2_ACTIONSTATE)
         .assertResponseCodeIs(HttpStatus.OK)
-        .assertIntegerListInBody("$..actionId", ACTIONID)
+        .assertIntegerListInBody("$..actionId", ACTIONID_2.intValue())
         .assertIntegerListInBody("$..caseId", ACTION_CASEID)
         .assertIntegerListInBody("$..actionPlanId", ACTION2_PLANID)
         .assertIntegerListInBody("$..actionRuleId", ACTION2_RULEID)
@@ -107,7 +107,7 @@ public final class ActionEndpointUnitTest extends CTPJerseyTest {
   public void findActionsByActionTypeFound() {
     with("http://localhost:9998/actions?actiontype=%s", ACTION2_ACTIONTYPENAME)
         .assertResponseCodeIs(HttpStatus.OK)
-        .assertIntegerListInBody("$..actionId", ACTIONID)
+        .assertIntegerListInBody("$..actionId", ACTIONID_2.intValue())
         .assertIntegerListInBody("$..caseId", ACTION_CASEID)
         .assertIntegerListInBody("$..actionPlanId", ACTION2_PLANID)
         .assertIntegerListInBody("$..actionRuleId", ACTION2_RULEID)
@@ -138,7 +138,7 @@ public final class ActionEndpointUnitTest extends CTPJerseyTest {
   public void findActionsByStateFound() {
     with("http://localhost:9998/actions?state=%s", ACTION2_ACTIONSTATE.toString())
         .assertResponseCodeIs(HttpStatus.OK)
-        .assertIntegerListInBody("$..actionId", ACTIONID)
+        .assertIntegerListInBody("$..actionId", ACTIONID_2.intValue())
         .assertIntegerListInBody("$..caseId", ACTION_CASEID)
         .assertIntegerListInBody("$..actionPlanId", ACTION2_PLANID)
         .assertIntegerListInBody("$..actionRuleId", ACTION2_RULEID)
@@ -156,9 +156,9 @@ public final class ActionEndpointUnitTest extends CTPJerseyTest {
    */
   @Test
   public void findActionByActionIdFound() {
-    with("http://localhost:9998/actions/%s", ACTIONID)
+    with("http://localhost:9998/actions/%s", ACTIONID_2.intValue())
         .assertResponseCodeIs(HttpStatus.OK)
-        .assertIntegerInBody("$.actionId", ACTIONID)
+        .assertIntegerInBody("$.actionId", ACTIONID_2.intValue())
         .assertIntegerInBody("$.caseId", ACTION_CASEID)
         .assertIntegerInBody("$.actionPlanId", ACTION2_PLANID)
         .assertIntegerInBody("$.actionRuleId", ACTION2_RULEID)
@@ -235,7 +235,7 @@ public final class ActionEndpointUnitTest extends CTPJerseyTest {
   public void createActionGoodJsonProvided() {
     with("http://localhost:9998/actions").post(MediaType.APPLICATION_JSON_TYPE, ACTION_VALIDJSON)
         .assertResponseCodeIs(HttpStatus.OK)
-        .assertIntegerInBody("$.actionId", ACTIONID)
+        .assertIntegerInBody("$.actionId", ACTIONID_2.intValue())
         .assertIntegerInBody("$.caseId", ACTION_CASEID)
         .assertIntegerInBody("$.actionPlanId", ACTION2_PLANID)
         .assertIntegerInBody("$.actionRuleId", ACTION2_RULEID)
@@ -281,7 +281,7 @@ public final class ActionEndpointUnitTest extends CTPJerseyTest {
   public void cancelActions() {
     with("http://localhost:9998/actions/case/%s/cancel", ACTION_CASEID).put(MediaType.APPLICATION_JSON_TYPE, "")
         .assertResponseCodeIs(HttpStatus.OK)
-        .assertIntegerListInBody("$..actionId", ACTIONID)
+        .assertIntegerListInBody("$..actionId", ACTIONID_2.intValue())
         .assertIntegerListInBody("$..caseId", ACTION_CASEID)
         .assertIntegerListInBody("$..actionPlanId", ACTION2_PLANID)
         .assertIntegerListInBody("$..actionRuleId", ACTION2_RULEID)

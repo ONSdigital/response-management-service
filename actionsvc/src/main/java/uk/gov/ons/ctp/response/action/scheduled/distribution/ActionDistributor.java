@@ -337,7 +337,7 @@ public class ActionDistributor {
     log.debug("constructing ActionCancel to publish to downstream handler for action id {} and case id {}",
         action.getActionId(), action.getCaseId());
     ActionCancel actionCancel = new ActionCancel();
-    actionCancel.setActionId(BigInteger.valueOf(action.getActionId()));
+    actionCancel.setActionId(action.getActionId());
     actionCancel.setResponseRequired(true);
     actionCancel.setReason("Action cancelled by Response Management");
     return actionCancel;
@@ -361,7 +361,7 @@ public class ActionDistributor {
       final AddressDTO addressDTO, final List<CaseEventDTO> caseEventDTOs) {
     ActionRequest actionRequest = new ActionRequest();
     // populate the request
-    actionRequest.setActionId(BigInteger.valueOf(action.getActionId()));
+    actionRequest.setActionId(action.getActionId());
     actionRequest.setActionType(action.getActionType().getName());
     actionRequest.setResponseRequired(true);
     actionRequest.setCaseId(BigInteger.valueOf(action.getCaseId()));
