@@ -3,7 +3,7 @@ info:
   title: Action Service API
   description: >
     The Action service manages actions and action plans and forms part of the Response Management product.
-    This service communicates with the Case Frame Service to find open cases and create
+    This service communicates with the Case Service to find open cases and create
     case events to record operations.
 
     An action represents an operation that is required for a case; it could be to post out a
@@ -11,7 +11,7 @@ info:
     a day, when a certain action should be taken. action plans are applied to open cases to create
     actions. Once an action is created it is forwarded to an appropriate remote handler service to be
     completed.
-  version: 8.19.1
+  version: 9.21.0
 schemes:
   - http
 basePath: /
