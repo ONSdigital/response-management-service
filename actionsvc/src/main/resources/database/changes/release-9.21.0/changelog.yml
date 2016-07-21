@@ -1,0 +1,14 @@
+databaseChangeLog:
+
+  - changeSet:
+      id: 9.21.0-1
+      author: Phil Whiles
+      changes:
+        - sqlFile:
+            comment: Add new action version column
+            path: AddActionVersionColumn.sql
+            splitStatements: true
+            relativeToChangelogFile: true
+
+
+
