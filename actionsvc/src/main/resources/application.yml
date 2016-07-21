@@ -9,8 +9,8 @@ info:
 # ie -Dlogging.level.org.springframework=DEBUG
 logging:
   level:
-    org.springframework: WARN
-    uk.gov.ons.ctp: DEBUG
+    org.springframework: warn
+    uk.gov.ons.ctp: warn
 
 liquibase:
   user: postgres
@@ -27,14 +27,14 @@ security:
     password: secret
 
 management:
-  port: 8251
+  port: 8252
   context-path: /mgmt
   security:
     role: SUPERUSER
     enabled: false
 
 server:
-  port: 8151
+  port: 8152
   servlet-path: /mgmt
 
 endpoints:
@@ -94,10 +94,10 @@ spring:
           ddl-auto: update
 
 action-distribution:
-  instruction-max: 200
+  instruction-max: 10
   retry-sleep-seconds: 30
-  initial-delay-seconds: 10
-  subsequent-delay-seconds: 360
+  initial-delay-seconds: 2
+  subsequent-delay-seconds: 2
 
 case-frame-svc:
   scheme: http

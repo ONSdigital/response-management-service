@@ -138,6 +138,7 @@ public class ActionDistributor {
             } else if (action.getState().equals(ActionDTO.ActionState.CANCEL_SUBMITTED)) {
               actionCancels.add(processActionCancel(action));
             }
+            log.warn("dealt with action {}", action.getActionId());
           } catch (Exception e) {
             // db changes rolled back
             log.error(
@@ -146,8 +147,8 @@ public class ActionDistributor {
           }
         });
 
-        distInfo.addInstructionCount(
-            new InstructionCount(actionType.getName(), DistributionInfo.Instruction.REQUEST, actionRequests.size()));
+        distInfo.addInstructionCount(new InstructionCount(actionType.getName(),
+            DistributionInfo.Instruction.REQUEST, actionRequests.size()));
         distInfo.addInstructionCount(new InstructionCount(actionType.getName(),
             DistributionInfo.Instruction.CANCEL_REQUEST, actionCancels.size()));
 
@@ -178,17 +179,19 @@ public class ActionDistributor {
     if (actionRequests.size() > 0 || actionCancels.size() > 0) {
       do {
         try {
-          // send the list of requests for this action type to the handler
+          // send the list of requests for this action type to the
+          // handler
           log.debug("Publishing instruction");
           instructionPublisher.sendInstructions(actionType.getHandler(), actionRequests, actionCancels);
           published = true;
         } catch (Exception e) {
           // broker not there ? sleep then retry
-          log.warn("Failed to send requests {}",
-              actionRequests.stream().map(a -> a.getActionId().toString()).collect(Collectors.joining(",")));
-          log.warn("Failed to send cancels {}",
-              actionCancels.stream().map(a -> a.getActionId().toString()).collect(Collectors.joining(",")));
-          log.warn("Problem sending action instruction for preceeding ids to handler {} due to {}", actionType, e);
+          log.warn("Failed to send requests {}", actionRequests.stream().map(a -> a.getActionId().toString())
+              .collect(Collectors.joining(",")));
+          log.warn("Failed to send cancels {}", actionCancels.stream().map(a -> a.getActionId().toString())
+              .collect(Collectors.joining(",")));
+          log.warn("Problem sending action instruction for preceeding ids to handler {} due to {}",
+              actionType, e);
           log.warn("ActionDistibution will sleep and retry publish");
           try {
             Thread.sleep(appConfig.getActionDistribution().getRetrySleepSeconds() * MILLISECONDS);
@@ -225,6 +228,8 @@ public class ActionDistributor {
     List<Action> actions = actionRepo
         .findByActionTypeNameAndStateIn(actionType.getName(),
             Arrays.asList(ActionState.SUBMITTED, ActionState.CANCEL_SUBMITTED), pageable);
+    log.debug("RETRIEVED action ids {}", actions.stream().map(a -> a.getActionId().toString())
+        .collect(Collectors.joining(",")));
     return actions;
   }
 
@@ -246,9 +251,11 @@ public class ActionDistributor {
         ActionRequest actionRequest = null;
         // update our actions state in db
         transitionAction(action, ActionDTO.ActionEvent.REQUEST_DISTRIBUTED);
-        // create the request, filling in details by GETs from caseframesvc
+        // create the request, filling in details by GETs from
+        // caseframesvc
         actionRequest = prepareActionRequest(action);
-        // advise caseframesvc to create a corresponding caseevent for our
+        // advise caseframesvc to create a corresponding caseevent for
+        // our
         // action
         caseFrameSvcClientService.createNewCaseEvent(action, CategoryDTO.CategoryName.ACTION_CREATED);
         return actionRequest;
@@ -272,11 +279,14 @@ public class ActionDistributor {
 
         // update our actions state in db
         transitionAction(action, ActionDTO.ActionEvent.CANCELLATION_DISTRIBUTED);
-        // create the request, filling in details by GETs from caseframesvc
+        // create the request, filling in details by GETs from
+        // caseframesvc
         actionCancel = prepareActionCancel(action);
-        // advise caseframesvc to create a corresponding caseevent for our
+        // advise caseframesvc to create a corresponding caseevent for
+        // our
         // action
-        caseFrameSvcClientService.createNewCaseEvent(action, CategoryDTO.CategoryName.ACTION_CANCELLATION_CREATED);
+        caseFrameSvcClientService.createNewCaseEvent(action,
+            CategoryDTO.CategoryName.ACTION_CANCELLATION_CREATED);
         return actionCancel;
       }
     });
@@ -357,15 +367,16 @@ public class ActionDistributor {
    * @return the shiney new Action Request
    */
   private ActionRequest createActionRequest(final Action action, final CaseDTO caseDTO,
-      final QuestionnaireDTO questionnaireDTO,
-      final AddressDTO addressDTO, final List<CaseEventDTO> caseEventDTOs) {
+      final QuestionnaireDTO questionnaireDTO, final AddressDTO addressDTO,
+      final List<CaseEventDTO> caseEventDTOs) {
     ActionRequest actionRequest = new ActionRequest();
     // populate the request
     actionRequest.setActionId(action.getActionId());
     actionRequest.setActionType(action.getActionType().getName());
     actionRequest.setResponseRequired(true);
     actionRequest.setCaseId(BigInteger.valueOf(action.getCaseId()));
-    actionRequest.setContactName(null); // TODO - will be avail in data 2017+
+    actionRequest.setContactName(null); // TODO - will be avail in data
+    // 2017+
     ActionEvent actionEvent = new ActionEvent();
     caseEventDTOs.forEach((caseEventDTO) -> actionEvent.getEvents().add(formatCaseEvent(caseEventDTO)));
     actionRequest.setEvents(actionEvent);
@@ -385,12 +396,8 @@ public class ActionDistributor {
    * @return the pretty one liner
    */
   private String formatCaseEvent(final CaseEventDTO caseEventDTO) {
-    return String.format(
-        "%s : %s : %s : %s",
-        caseEventDTO.getCategory(),
-        caseEventDTO.getSubCategory(),
-        caseEventDTO.getCreatedBy(),
-        caseEventDTO.getDescription());
+    return String.format("%s : %s : %s : %s", caseEventDTO.getCategory(), caseEventDTO.getSubCategory(),
+        caseEventDTO.getCreatedBy(), caseEventDTO.getDescription());
   }
 
 }

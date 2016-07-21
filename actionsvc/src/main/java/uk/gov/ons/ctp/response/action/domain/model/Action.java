@@ -16,6 +16,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Version;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -132,4 +133,7 @@ public class Action implements Serializable {
   @Column(name = "updateddatetime")
   private Timestamp updatedDateTime;
 
+  @Version
+  @Column(name = "optlockversion")
+  private int optLockVersion;
 }
