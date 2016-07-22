@@ -41,11 +41,11 @@ import uk.gov.ons.ctp.response.action.message.instruction.Priority;
 import uk.gov.ons.ctp.response.action.representation.ActionDTO;
 import uk.gov.ons.ctp.response.action.representation.ActionDTO.ActionState;
 import uk.gov.ons.ctp.response.action.service.CaseFrameSvcClientService;
-import uk.gov.ons.ctp.response.caseframe.representation.AddressDTO;
-import uk.gov.ons.ctp.response.caseframe.representation.CaseDTO;
-import uk.gov.ons.ctp.response.caseframe.representation.CaseEventDTO;
-import uk.gov.ons.ctp.response.caseframe.representation.CategoryDTO;
-import uk.gov.ons.ctp.response.caseframe.representation.QuestionnaireDTO;
+import uk.gov.ons.ctp.response.casesvc.representation.AddressDTO;
+import uk.gov.ons.ctp.response.casesvc.representation.CaseDTO;
+import uk.gov.ons.ctp.response.casesvc.representation.CaseEventDTO;
+import uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO;
+import uk.gov.ons.ctp.response.casesvc.representation.QuestionnaireDTO;
 
 /**
  * This is the 'service' class that distributes actions to downstream services

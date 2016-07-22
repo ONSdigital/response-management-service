@@ -19,7 +19,7 @@ import uk.gov.ons.ctp.response.action.representation.ActionDTO;
 import uk.gov.ons.ctp.response.action.representation.ActionDTO.ActionState;
 import uk.gov.ons.ctp.response.action.service.CaseFrameSvcClientService;
 import uk.gov.ons.ctp.response.action.service.FeedbackService;
-import uk.gov.ons.ctp.response.caseframe.representation.CategoryDTO;
+import uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO;
 
 /**
  * Accept feedback from handlers

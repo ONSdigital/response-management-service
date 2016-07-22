@@ -28,8 +28,8 @@ import uk.gov.ons.ctp.response.action.config.AppConfig;
 import uk.gov.ons.ctp.response.action.config.CaseFrameSvc;
 import uk.gov.ons.ctp.response.action.domain.model.Action;
 import uk.gov.ons.ctp.response.action.domain.model.ActionType;
-import uk.gov.ons.ctp.response.caseframe.representation.CaseEventDTO;
-import uk.gov.ons.ctp.response.caseframe.representation.CategoryDTO;
+import uk.gov.ons.ctp.response.casesvc.representation.CaseEventDTO;
+import uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO;
 
 /**
  * A test of the case frame service client service
