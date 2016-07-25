@@ -209,7 +209,6 @@ $$;
 ALTER FUNCTION action.createactions(p_actionplanjobid integer) OWNER TO postgres;
 
 --
--- TOC entry 371 (class 1255 OID 30043)
 -- Name: logmessage(text, numeric, text, text); Type: FUNCTION; Schema: action; Owner: postgres
 --
 
