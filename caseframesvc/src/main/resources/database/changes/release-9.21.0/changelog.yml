@@ -5,8 +5,8 @@ databaseChangeLog:
       author: Narinder Birk
       changes:
         - sqlFile:
-            comment: action foundation schema for 2017
-            path: action_2017_foundation_schema.sql
+            comment: caseframe foundation schema for 2017
+            path: caseframe_2017_foundation_schema.sql
             relativeToChangelogFile: true
             splitStatements: false
 
@@ -15,14 +15,9 @@ databaseChangeLog:
       author: Narinder Birk
       changes:
         - sqlFile:
-            comment: action foundation data for 2017
-            path: action_2017_foundation_data.sql
+            comment: caseframe foundation data for 2017
+            path: caseframe_2017_foundation_data.sql
             relativeToChangelogFile: true
             splitStatements: false
-
-
-
-
-
 
 
