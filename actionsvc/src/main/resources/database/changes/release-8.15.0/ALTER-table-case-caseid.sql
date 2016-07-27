@@ -1,3 +1,0 @@
-
-ALTER TABLE action.case ALTER COLUMN caseid TYPE BIGINT;
-ALTER TABLE action.action ALTER COLUMN caseid TYPE BIGINT;

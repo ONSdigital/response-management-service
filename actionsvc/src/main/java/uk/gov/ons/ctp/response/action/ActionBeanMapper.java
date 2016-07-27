@@ -15,7 +15,7 @@ import uk.gov.ons.ctp.response.action.representation.ActionDTO;
 import uk.gov.ons.ctp.response.action.representation.ActionPlanDTO;
 import uk.gov.ons.ctp.response.action.representation.ActionPlanJobDTO;
 import uk.gov.ons.ctp.response.action.representation.ActionRuleDTO;
-import uk.gov.ons.ctp.response.caseframe.representation.AddressDTO;
+import uk.gov.ons.ctp.response.casesvc.representation.AddressDTO;
 
 /**
  * The bean mapper to go from Entity objects to Presentation objects.
