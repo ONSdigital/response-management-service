@@ -31,33 +31,19 @@ public class ActionPlanServiceImpl implements ActionPlanService {
   @Inject
   private ActionRuleRepository actionRuleRepository;
 
-  /**
-   * Implementation
-   * @return
-   */
   @Override
   public final List<ActionPlan> findActionPlans() {
     log.debug("Entering findActionPlans");
     return actionPlanRepo.findAll();
   }
 
-  /**
-   * Implementation
-   * @param actionPlanId This is the action plan id
-   * @return
-   */
   @Override
   public final ActionPlan findActionPlan(final Integer actionPlanId) {
     log.debug("Entering findActionPlan with {}", actionPlanId);
     return actionPlanRepo.findOne(actionPlanId);
   }
 
-  /**
-   * Implementation
-   * @param actionPlanId This is the action plan id of the action plan to be updated
-   * @param actionPlan This is the action plan containing the potentially new description and lastGoodRunDatetime
-   * @return
-   */
+
   @Override
   @Transactional(propagation = Propagation.REQUIRED, readOnly = false, timeout = TRANSACTION_TIMEOUT)
   public final ActionPlan updateActionPlan(final Integer actionPlanId, final ActionPlan actionPlan) {
@@ -73,11 +59,11 @@ public class ActionPlanServiceImpl implements ActionPlanService {
         existingActionPlan.setDescription(newDescription);
       }
 
-      Date newLastGoodRunDateTime = actionPlan.getLastGoodRunDateTime();
-      log.debug("newLastGoodRunDatetime = {}", newLastGoodRunDateTime);
-      if (newLastGoodRunDateTime != null) {
+      Date newLastRunDateTime = actionPlan.getLastRunDateTime();
+      log.debug("newLastRunDatetime = {}", newLastRunDateTime);
+      if (newLastRunDateTime != null) {
         needsUpdate = true;
-        existingActionPlan.setLastGoodRunDateTime(new Timestamp(newLastGoodRunDateTime.getTime()));
+        existingActionPlan.setLastRunDateTime(new Timestamp(newLastRunDateTime.getTime()));
       }
 
       if (needsUpdate) {

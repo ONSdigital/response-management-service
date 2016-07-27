@@ -21,11 +21,15 @@ import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.TransactionCallback;
 import org.springframework.transaction.support.TransactionTemplate;
 
+import com.hazelcast.core.HazelcastInstance;
+import com.hazelcast.core.IMap;
+
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import uk.gov.ons.ctp.common.state.StateTransitionException;
 import uk.gov.ons.ctp.common.state.StateTransitionManager;
 import uk.gov.ons.ctp.common.time.DateTimeUtil;
+import uk.gov.ons.ctp.response.action.ActionSvcApplication;
 import uk.gov.ons.ctp.response.action.config.AppConfig;
 import uk.gov.ons.ctp.response.action.domain.model.Action;
 import uk.gov.ons.ctp.response.action.domain.model.Action.ActionPriority;
@@ -77,7 +81,12 @@ import uk.gov.ons.ctp.response.caseframe.representation.QuestionnaireDTO;
 @Slf4j
 public class ActionDistributor {
 
+  private static final long IMPOSSIBLE_ACTION_ID = 999999999999L;
+
   private static final long MILLISECONDS = 1000L;
+
+  @Inject
+  HazelcastInstance hazelcastInstance;
 
   @Inject
   private AppConfig appConfig;
@@ -120,10 +129,12 @@ public class ActionDistributor {
    * @return the info for the health endpoint regarding the distribution just
    *         performed
    */
+  @SuppressWarnings("unchecked")
   public final DistributionInfo distribute() {
     log.debug("ActionDistributor awoken from slumber");
     DistributionInfo distInfo = initDistInfo();
 
+    IMap<Object, Object> actionMap = hazelcastInstance.getMap(ActionSvcApplication.ACTION_DISTRIBUTION_MAP);
     try {
       actionTypeRepo.findAll().forEach(actionType -> {
         // container for outbound requests for this action type
@@ -131,7 +142,19 @@ public class ActionDistributor {
         List<ActionCancel> actionCancels = new ArrayList<>();
 
         log.debug("Dealing with actionType {}", actionType.getName());
-        retrieveActions(actionType).forEach(action -> {
+
+        List<BigInteger> excludedActions = actionMap.values().stream()
+          .flatMap(o -> ((List<BigInteger>) o).stream())
+          .collect(Collectors.toList());
+        log.debug("Excluding actions {}", excludedActions);
+        List<Action> actions = retrieveActions(actionType, excludedActions);
+
+        actionMap.put(hazelcastInstance.getName(), 
+            actions.stream()
+              .map(a->a.getActionId())
+              .collect(Collectors.toList()));
+
+        actions.forEach(action -> {
           try {
             if (action.getState().equals(ActionDTO.ActionState.SUBMITTED)) {
               actionRequests.add(processActionRequest(action));
@@ -154,13 +177,14 @@ public class ActionDistributor {
 
         publishActions(actionType, actionRequests, actionCancels);
 
+        actionMap.remove(hazelcastInstance.getName());
         log.debug("Actions processed for actionType {}", actionType.getName());
       });
     } catch (Exception e) {
       // something went wrong retrieving action types or actions
       log.error("Failed to process actions because {}", e);
       // we will be back after a short snooze
-    }
+    } 
     log.debug("ActionDistributor going back to sleep");
     return distInfo;
   }
@@ -221,13 +245,13 @@ public class ActionDistributor {
    * @param actionType the type
    * @return the actions
    */
-  private List<Action> retrieveActions(ActionType actionType) {
+  private List<Action> retrieveActions(ActionType actionType, List<BigInteger> excludedActionIds) {
     Pageable pageable = new PageRequest(0, appConfig.getActionDistribution().getInstructionMax(), new Sort(
         new Sort.Order(Direction.ASC, "createdDateTime")));
-
+    excludedActionIds.add(BigInteger.valueOf(IMPOSSIBLE_ACTION_ID));
     List<Action> actions = actionRepo
-        .findByActionTypeNameAndStateIn(actionType.getName(),
-            Arrays.asList(ActionState.SUBMITTED, ActionState.CANCEL_SUBMITTED), pageable);
+        .findByActionTypeNameAndStateInAndActionIdNotIn(actionType.getName(),
+            Arrays.asList(ActionState.SUBMITTED, ActionState.CANCEL_SUBMITTED), excludedActionIds, pageable);
     log.debug("RETRIEVED action ids {}", actions.stream().map(a -> a.getActionId().toString())
         .collect(Collectors.joining(",")));
     return actions;

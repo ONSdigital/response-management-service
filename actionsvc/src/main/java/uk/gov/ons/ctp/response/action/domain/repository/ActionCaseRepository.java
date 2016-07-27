@@ -1,5 +1,7 @@
 package uk.gov.ons.ctp.response.action.domain.repository;
 
+import java.util.List;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.query.Procedure;
 import org.springframework.data.repository.query.Param;
@@ -20,4 +22,12 @@ public interface ActionCaseRepository extends JpaRepository<ActionCase, Integer>
    */
   @Procedure(name = "createactions")
   boolean createActions(@Param("p_actionplanjobid") Integer actionplanjobid);
+  
+  /**
+   * find cases (by virtue open) for actionplanid 
+   * @param actionPlanId the action plan
+   * @return the list of (open) cases assoc with that plan
+   */
+  List<ActionCase> findByActionPlanId(Integer actionPlanId);
+  
 }

@@ -1,6 +1,7 @@
 package uk.gov.ons.ctp.response.action.endpoint;
 
 import java.util.List;
+import java.util.Optional;
 
 import javax.inject.Inject;
 import javax.validation.Valid;
@@ -49,11 +50,9 @@ public class ActionPlanJobEndpoint implements CTPEndpoint {
   public final ActionPlanJobDTO findActionPlanJobById(@PathParam("actionplanjobid") final Integer actionPlanJobId)
       throws CTPException {
     log.debug("Entering findActionPlanJobById with {}", actionPlanJobId);
-    ActionPlanJob actionPlanJob = actionPlanJobService.findActionPlanJob(actionPlanJobId);
-    if (actionPlanJob == null) {
-      throw new CTPException(CTPException.Fault.RESOURCE_NOT_FOUND, "ActionPlanJob not found %d", actionPlanJobId);
-    }
-    return mapperFacade.map(actionPlanJob, ActionPlanJobDTO.class);
+    Optional<ActionPlanJob> actionPlanJob = actionPlanJobService.findActionPlanJob(actionPlanJobId);
+    return mapperFacade.map(actionPlanJob.orElseThrow(() -> 
+      new CTPException(CTPException.Fault.RESOURCE_NOT_FOUND, "ActionPlanJob not found for id %d", actionPlanJobId)), ActionPlanJobDTO.class);
   }
 
   /**
@@ -91,10 +90,8 @@ public class ActionPlanJobEndpoint implements CTPEndpoint {
 
     ActionPlanJob job = mapperFacade.map(actionPlanJobDTO, ActionPlanJob.class);
     job.setActionPlanId(actionPlanId);
-    ActionPlanJob actionPlanJob = actionPlanJobService.createAndExecuteActionPlanJob(job);
-    if (actionPlanJob == null) {
-      throw new CTPException(CTPException.Fault.RESOURCE_NOT_FOUND, "ActionPlan not found for id %s", actionPlanId);
-    }
-    return mapperFacade.map(actionPlanJob, ActionPlanJobDTO.class);
+    Optional<ActionPlanJob> actionPlanJob = actionPlanJobService.createAndExecuteActionPlanJob(job);
+    return mapperFacade.map(actionPlanJob.orElseThrow(() -> 
+      new CTPException(CTPException.Fault.RESOURCE_NOT_FOUND, "ActionPlan not found for id %s", actionPlanId)), ActionPlanJobDTO.class);
   }
 }

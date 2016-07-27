@@ -25,7 +25,7 @@
         <!--Optional:-->
         <townName>string</townName>
         <postcode>string</postcode>
-        <latitude>1000.00</latitude>
+        <latitude></latitude>
         <longitude>1000.00</longitude>
       </address>
       <!--Optional:-->

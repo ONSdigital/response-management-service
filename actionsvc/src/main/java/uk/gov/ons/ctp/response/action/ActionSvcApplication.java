@@ -14,6 +14,12 @@ import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
+import com.hazelcast.config.Config;
+import com.hazelcast.config.JoinConfig;
+import com.hazelcast.config.MapConfig;
+import com.hazelcast.config.MulticastConfig;
+import com.hazelcast.config.NetworkConfig;
+
 import uk.gov.ons.ctp.common.jaxrs.CTPMessageBodyReader;
 import uk.gov.ons.ctp.common.rest.RestClient;
 import uk.gov.ons.ctp.common.state.StateTransitionManager;
@@ -39,11 +45,26 @@ import uk.gov.ons.ctp.response.action.state.ActionSvcStateTransitionManagerFacto
 @ImportResource("main-int.xml")
 public class ActionSvcApplication {
 
+  public static final String ACTION_DISTRIBUTION_MAP = "actionsvc.action.distribution";
   @Autowired
   private AppConfig appConfig;
 
+  
+  @Bean
+  public Config hazelcastConfig() {
+    Config hazelcastConfig = new Config();
+    hazelcastConfig.addMapConfig(new MapConfig().setName(ACTION_DISTRIBUTION_MAP));
+    NetworkConfig networkConfig = hazelcastConfig.getNetworkConfig();
+
+    JoinConfig joinConfig = networkConfig.getJoin();
+    MulticastConfig multicastConfig = joinConfig.getMulticastConfig();
+    multicastConfig.setEnabled(true);
+
+    return hazelcastConfig;
+  }
+  
   /**
-   * Bean used to access case frame service throught REST calls
+   * Bean used to access case frame service through REST calls
    * @return the service client
    */
   @Bean

@@ -53,8 +53,8 @@ public interface ActionRepository extends JpaRepository<Action, BigInteger> {
    * @return List<Action> returns all actions for actionTypeName and states, for
    *         the given page
    */
-  List<Action> findByActionTypeNameAndStateIn(String actionTypeName,
-      List<ActionDTO.ActionState> states, Pageable pageable);
+  List<Action> findByActionTypeNameAndStateInAndActionIdNotIn(String actionTypeName,
+      List<ActionDTO.ActionState> states, List<BigInteger> actionIds, Pageable pageable);
 
   /**
    * Return all actions for the specified actionTypeName.

@@ -6,6 +6,7 @@ import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
+import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.List;
 
@@ -121,10 +122,10 @@ public class ActionDistributorTest {
 
     // assert the right calls were made
     verify(actionTypeRepo).findAll();
-    verify(actionRepo, times(0)).findByActionTypeNameAndStateIn(eq("HouseholdInitialContact"),
-        anyListOf(ActionState.class), any(Pageable.class));
-    verify(actionRepo, times(0)).findByActionTypeNameAndStateIn(eq("HouseholdUploadIAC"),
-        anyListOf(ActionState.class), any(Pageable.class));
+    verify(actionRepo, times(0)).findByActionTypeNameAndStateInAndActionIdNotIn(eq("HouseholdInitialContact"),
+        anyListOf(ActionState.class), anyListOf(BigInteger.class), any(Pageable.class));
+    verify(actionRepo, times(0)).findByActionTypeNameAndStateInAndActionIdNotIn(eq("HouseholdUploadIAC"),
+        anyListOf(ActionState.class), anyListOf(BigInteger.class), any(Pageable.class));
 
     verify(caseFrameSvcClientService, times(0)).getQuestionnaire(eq(1));
     verify(caseFrameSvcClientService, times(0)).getQuestionnaire(eq(2));
@@ -177,12 +178,12 @@ public class ActionDistributorTest {
         .thenReturn(ActionState.PENDING);
     Mockito.when(actionTypeRepo.findAll()).thenReturn(actionTypes);
     Mockito
-        .when(actionRepo.findByActionTypeNameAndStateIn(eq("HouseholdInitialContact"), anyListOf(ActionState.class),
-            any(Pageable.class)))
+        .when(actionRepo.findByActionTypeNameAndStateInAndActionIdNotIn(eq("HouseholdInitialContact"), anyListOf(ActionState.class),
+            anyListOf(BigInteger.class), any(Pageable.class)))
         .thenReturn(actionsHHIC);
     Mockito.when(
-        actionRepo.findByActionTypeNameAndStateIn(eq("HouseholdUploadIAC"), anyListOf(ActionState.class),
-            any(Pageable.class)))
+        actionRepo.findByActionTypeNameAndStateInAndActionIdNotIn(eq("HouseholdUploadIAC"), anyListOf(ActionState.class),
+            anyListOf(BigInteger.class), any(Pageable.class)))
         .thenReturn(actionsHHIACLOAD);
 
     Mockito.when(caseFrameSvcClientService.getQuestionnaire(eq(1)))
@@ -212,10 +213,10 @@ public class ActionDistributorTest {
 
     // assert the right calls were made
     verify(actionTypeRepo).findAll();
-    verify(actionRepo).findByActionTypeNameAndStateIn(eq("HouseholdInitialContact"),
-        anyListOf(ActionState.class), any(Pageable.class));
-    verify(actionRepo).findByActionTypeNameAndStateIn(eq("HouseholdUploadIAC"),
-        anyListOf(ActionState.class), any(Pageable.class));
+    verify(actionRepo).findByActionTypeNameAndStateInAndActionIdNotIn(eq("HouseholdInitialContact"),
+        anyListOf(ActionState.class), anyListOf(BigInteger.class), any(Pageable.class));
+    verify(actionRepo).findByActionTypeNameAndStateInAndActionIdNotIn(eq("HouseholdUploadIAC"),
+        anyListOf(ActionState.class), anyListOf(BigInteger.class), any(Pageable.class));
     verify(caseFrameSvcClientService).getQuestionnaire(eq(1));
     verify(caseFrameSvcClientService).getQuestionnaire(eq(2));
     verify(caseFrameSvcClientService).getQuestionnaire(eq(3));
@@ -268,12 +269,12 @@ public class ActionDistributorTest {
 
     Mockito.when(actionTypeRepo.findAll()).thenReturn(actionTypes);
     Mockito
-        .when(actionRepo.findByActionTypeNameAndStateIn(eq("HouseholdInitialContact"), anyListOf(ActionState.class),
-            any(Pageable.class)))
+        .when(actionRepo.findByActionTypeNameAndStateInAndActionIdNotIn(eq("HouseholdInitialContact"), anyListOf(ActionState.class),
+            anyListOf(BigInteger.class), any(Pageable.class)))
         .thenReturn(actionsHHIC);
     Mockito.when(
-        actionRepo.findByActionTypeNameAndStateIn(eq("HouseholdUploadIAC"), anyListOf(ActionState.class),
-            any(Pageable.class)))
+        actionRepo.findByActionTypeNameAndStateInAndActionIdNotIn(eq("HouseholdUploadIAC"), anyListOf(ActionState.class),
+            anyListOf(BigInteger.class), any(Pageable.class)))
         .thenReturn(actionsHHIACLOAD);
 
     Mockito.when(caseFrameSvcClientService.getQuestionnaire(eq(1)))
@@ -311,10 +312,10 @@ public class ActionDistributorTest {
 
     // assert the right calls were made
     verify(actionTypeRepo).findAll();
-    verify(actionRepo).findByActionTypeNameAndStateIn(eq("HouseholdInitialContact"),
-        anyListOf(ActionState.class), any(Pageable.class));
-    verify(actionRepo).findByActionTypeNameAndStateIn(eq("HouseholdUploadIAC"),
-        anyListOf(ActionState.class), any(Pageable.class));
+    verify(actionRepo).findByActionTypeNameAndStateInAndActionIdNotIn(eq("HouseholdInitialContact"),
+        anyListOf(ActionState.class), anyListOf(BigInteger.class), any(Pageable.class));
+    verify(actionRepo).findByActionTypeNameAndStateInAndActionIdNotIn(eq("HouseholdUploadIAC"),
+        anyListOf(ActionState.class), anyListOf(BigInteger.class), any(Pageable.class));
 
     verify(caseFrameSvcClientService).getQuestionnaire(eq(1));
     verify(caseFrameSvcClientService).getQuestionnaire(eq(2));

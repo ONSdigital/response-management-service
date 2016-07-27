@@ -35,8 +35,8 @@ public class ActionCase implements Serializable {
   private static final long serialVersionUID = 7970373271889255844L;
 
   @Id
-  @Column(name = "actionplanjobid")
-  private Integer actionPlanJobId;
+  @Column(name = "actionplanid")
+  private Integer actionPlanId;
 
   @Id
   @Column(name = "caseid")

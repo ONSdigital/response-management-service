@@ -17,6 +17,6 @@ import lombok.Data;
 @Data
 public class ActionCaseCompositeKey implements Serializable {
   private static final long serialVersionUID = -2090516162724563787L;
-  private Integer actionPlanJobId;
+  private Integer actionPlanId;
   private Integer caseId;
 }

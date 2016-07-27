@@ -39,7 +39,6 @@ public class MockActionPlanServiceFactory implements Factory<ActionPlanService> 
   public static final String OUR_EXCEPTION_MESSAGE = "this is what we throw";
   public static final String PROVIDED_JSON_INCORRECT = "Provided json is incorrect.";
   public static final String CREATED_BY = "whilep1";
-  private static final Timestamp ACTIONPLAN_CREATEDDATE_TIMESTAMP = Timestamp.valueOf("2016-03-09 11:15:48.023286");
   private static final Timestamp ACTIONPLAN_LAST_GOOD_RUN_DATE_TIMESTAMP = Timestamp
       .valueOf("2016-03-09 11:15:48.023286");
 
@@ -56,11 +55,11 @@ public class MockActionPlanServiceFactory implements Factory<ActionPlanService> 
           throws Throwable {
         List<ActionPlan> result = new ArrayList<>();
         result.add(new ActionPlan(1, ACTIONPLAN_SURVEYID, ACTIONPLAN1_NAME, ACTIONPLAN1_DESC, CREATED_BY,
-            ACTIONPLAN_CREATEDDATE_TIMESTAMP, ACTIONPLAN_LAST_GOOD_RUN_DATE_TIMESTAMP));
+            ACTIONPLAN_LAST_GOOD_RUN_DATE_TIMESTAMP));
         result.add(new ActionPlan(2, ACTIONPLAN_SURVEYID, ACTIONPLAN2_NAME, ACTIONPLAN2_DESC, CREATED_BY,
-            ACTIONPLAN_CREATEDDATE_TIMESTAMP, ACTIONPLAN_LAST_GOOD_RUN_DATE_TIMESTAMP));
+            ACTIONPLAN_LAST_GOOD_RUN_DATE_TIMESTAMP));
         result.add(new ActionPlan(3, ACTIONPLAN_SURVEYID, ACTIONPLAN3_NAME, ACTIONPLAN3_DESC, CREATED_BY,
-            ACTIONPLAN_CREATEDDATE_TIMESTAMP, ACTIONPLAN_LAST_GOOD_RUN_DATE_TIMESTAMP));
+            ACTIONPLAN_LAST_GOOD_RUN_DATE_TIMESTAMP));
         return result;
       }
     });
@@ -69,7 +68,7 @@ public class MockActionPlanServiceFactory implements Factory<ActionPlanService> 
       public ActionPlan answer(InvocationOnMock invocation)
           throws Throwable {
         return new ActionPlan(ACTIONPLANID, ACTIONPLAN_SURVEYID, ACTIONPLAN3_NAME, ACTIONPLAN3_DESC, CREATED_BY,
-            ACTIONPLAN_CREATEDDATE_TIMESTAMP, ACTIONPLAN_LAST_GOOD_RUN_DATE_TIMESTAMP);
+            ACTIONPLAN_LAST_GOOD_RUN_DATE_TIMESTAMP);
       }
     });
 
@@ -78,7 +77,7 @@ public class MockActionPlanServiceFactory implements Factory<ActionPlanService> 
           throws Throwable {
         return new ActionPlan(ACTIONPLANID_WITHNOACTIONRULE, ACTIONPLAN_SURVEYID, ACTIONPLAN3_NAME, ACTIONPLAN3_DESC,
             CREATED_BY,
-            ACTIONPLAN_CREATEDDATE_TIMESTAMP, ACTIONPLAN_LAST_GOOD_RUN_DATE_TIMESTAMP);
+            ACTIONPLAN_LAST_GOOD_RUN_DATE_TIMESTAMP);
       }
     });
 
@@ -120,7 +119,7 @@ public class MockActionPlanServiceFactory implements Factory<ActionPlanService> 
           public ActionPlan answer(InvocationOnMock invocation)
               throws Throwable {
             return new ActionPlan(ACTIONPLANID, ACTIONPLAN_SURVEYID, ACTIONPLAN3_NAME, ACTIONPLAN3_DESC,
-                CREATED_BY, ACTIONPLAN_CREATEDDATE_TIMESTAMP, ACTIONPLAN_LAST_GOOD_RUN_DATE_TIMESTAMP);
+                CREATED_BY, ACTIONPLAN_LAST_GOOD_RUN_DATE_TIMESTAMP);
           }
         });
 

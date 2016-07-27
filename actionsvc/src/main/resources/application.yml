@@ -10,7 +10,8 @@ info:
 logging:
   level:
     org.springframework: warn
-    uk.gov.ons.ctp: warn
+    com.hazelcast: info
+    uk.gov.ons.ctp: debug
 
 liquibase:
   user: postgres
@@ -94,10 +95,15 @@ spring:
           ddl-auto: update
 
 action-distribution:
-  instruction-max: 10
+  instruction-max: 100
   retry-sleep-seconds: 30
-  initial-delay-seconds: 2
-  subsequent-delay-seconds: 2
+  initial-delay-seconds: 30
+  subsequent-delay-seconds: 120
+
+plan-execution:
+  retry-sleep-seconds: 30
+  initial-delay-seconds: 90
+  subsequent-delay-seconds: 3600
 
 case-frame-svc:
   scheme: http

@@ -95,7 +95,7 @@ public class ActionPlanServiceImplTest {
   public void testUpdateActionPlanChangeLastGoodRunDateTime() throws Exception {
     // set up dummy data
     List<ActionPlan> persistedActionPlans = FixtureHelper.loadClassFixtures(ActionPlan[].class);
-    ActionPlan actionPlanWithLastGoodRunDateTime = ActionPlan.builder().lastGoodRunDateTime(DateTimeUtil.nowUTC()).build();
+    ActionPlan actionPlanWithLastGoodRunDateTime = ActionPlan.builder().lastRunDateTime(DateTimeUtil.nowUTC()).build();
     
     // wire up mock responses
     Mockito.when(actionPlanRepo.findOne(1)).thenReturn(persistedActionPlans.get(0));

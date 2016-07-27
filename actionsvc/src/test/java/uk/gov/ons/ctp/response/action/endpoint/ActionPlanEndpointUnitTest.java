@@ -39,11 +39,10 @@ import uk.gov.ons.ctp.response.action.utility.MockActionPlanServiceFactory;
  */
 public class ActionPlanEndpointUnitTest extends CTPJerseyTest {
 
-  private static final String CREATED_DATE_TIME = "2016-03-09T11:15:48.023+0000";
-  private static final String LAST_GOOD_RUN_DATE_TIME = "2016-03-09T11:15:48.023+0000";
+  private static final String LAST_RUN_DATE_TIME = "2016-03-09T11:15:48.023+0000";
   private static final String ACTIONPLAN_JSON = "{\"actionPlanId\":21,\"surveyId\":1,\"name\":\"HH\","
       + "\"description\":\"philippetesting\",\"createdBy\":\"SYSTEM\","
-      + "\"createdDateTime\":\"2016-03-10T15:10:39.494+0000\",\"lastGoodRunDateTime\":null}";
+      + "\"lastRunDateTime\":null}";
   private static final String ACTIONPLAN_INVALIDJSON = "{\"some\":\"joke\"}";
 
   @Override
@@ -66,9 +65,8 @@ public class ActionPlanEndpointUnitTest extends CTPJerseyTest {
         .assertStringListInBody("$..name", ACTIONPLAN1_NAME, ACTIONPLAN2_NAME, ACTIONPLAN3_NAME)
         .assertStringListInBody("$..description", ACTIONPLAN1_DESC, ACTIONPLAN2_DESC, ACTIONPLAN3_DESC)
         .assertStringListInBody("$..createdBy", CREATED_BY, CREATED_BY, CREATED_BY)
-        .assertStringListInBody("$..createdDateTime", CREATED_DATE_TIME, CREATED_DATE_TIME, CREATED_DATE_TIME)
-        .assertStringListInBody("$..lastGoodRunDateTime", LAST_GOOD_RUN_DATE_TIME, LAST_GOOD_RUN_DATE_TIME,
-            LAST_GOOD_RUN_DATE_TIME)
+        .assertStringListInBody("$..lastRunDateTime", LAST_RUN_DATE_TIME, LAST_RUN_DATE_TIME,
+            LAST_RUN_DATE_TIME)
         .andClose();
   }
 
@@ -84,8 +82,7 @@ public class ActionPlanEndpointUnitTest extends CTPJerseyTest {
         .assertStringInBody("$.name", ACTIONPLAN3_NAME)
         .assertStringInBody("$.description", ACTIONPLAN3_DESC)
         .assertStringInBody("$.createdBy", CREATED_BY)
-        .assertStringInBody("$.createdDateTime", CREATED_DATE_TIME)
-        .assertStringInBody("$.lastGoodRunDateTime", LAST_GOOD_RUN_DATE_TIME)
+        .assertStringInBody("$.lastRunDateTime", LAST_RUN_DATE_TIME)
         .andClose();
   }
 
@@ -203,8 +200,7 @@ public class ActionPlanEndpointUnitTest extends CTPJerseyTest {
         .assertStringInBody("$.name", ACTIONPLAN3_NAME)
         .assertStringInBody("$.description", ACTIONPLAN3_DESC)
         .assertStringInBody("$.createdBy", CREATED_BY)
-        .assertStringInBody("$.createdDateTime", CREATED_DATE_TIME)
-        .assertStringInBody("$.lastGoodRunDateTime", LAST_GOOD_RUN_DATE_TIME)
+        .assertStringInBody("$.lastRunDateTime", LAST_RUN_DATE_TIME)
         .andClose();
   }
 

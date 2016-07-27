@@ -43,10 +43,7 @@ public class ActionPlan implements Serializable {
   @Column(name = "createdby")
   private String createdBy;
 
-  @Column(name = "createddatetime")
-  private Timestamp createdDateTime;
-
-  @Column(name = "lastgoodrundatetime")
-  private Timestamp lastGoodRunDateTime;
+  @Column(name = "lastrundatetime")
+  private Timestamp lastRunDateTime;
 
 }

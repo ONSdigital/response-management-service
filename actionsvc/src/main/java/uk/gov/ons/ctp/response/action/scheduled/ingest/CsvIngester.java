@@ -152,7 +152,6 @@ public class CsvIngester extends CsvToBean {
             CsvLine csvLine = (CsvLine) processLine(columnPositionMappingStrategy, nextLine);
             Optional<String> namesOfInvalidColumns = validateLine(csvLine);
             if (namesOfInvalidColumns.isPresent()) {
-              reader.close();
               log.error("Problem parsing {} due to {} - entire ingest aborted", Arrays.toString(nextLine),
                   namesOfInvalidColumns.get());
               csvFile.renameTo(
@@ -178,9 +177,10 @@ public class CsvIngester extends CsvToBean {
         }
       } catch (Exception e) {
         log.error("Problem parsing {} - entire ingest aborted : {}", nextLine, e);
-        reader.close();
         csvFile.renameTo(new File(csvFile.getPath() + ".fix_line_" + lineNum));
         return;
+      } finally {
+        reader.close();
       }
 
       reader.close();
