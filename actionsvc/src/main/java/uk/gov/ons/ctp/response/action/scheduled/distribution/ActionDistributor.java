@@ -146,19 +146,19 @@ public class ActionDistributor {
         log.warn("Dealing with actionType {}", actionType.getName());
 
         List<BigInteger> excludedActions = actionMap.values().stream()
-          .flatMap(o -> ((List<BigInteger>) o).stream())
-          .collect(Collectors.toList());
+            .flatMap(o -> ((List<BigInteger>) o).stream())
+            .collect(Collectors.toList());
         log.warn("Excluding actions {}", excludedActions);
         List<Action> actions = retrieveActions(actionType, excludedActions);
-        log.warn("Dealing with actions {}", 
+        log.warn("Dealing with actions {}",
             actions.stream()
-              .map(a->a.getActionId().toString())
-              .collect(Collectors.joining(",")));
+                .map(a -> a.getActionId().toString())
+                .collect(Collectors.joining(",")));
 
         actionMap.put(localUUID,
             actions.stream()
-              .map(a->a.getActionId())
-              .collect(Collectors.toList()));
+                .map(a -> a.getActionId())
+                .collect(Collectors.toList()));
 
         actions.forEach(action -> {
           try {
@@ -190,7 +190,7 @@ public class ActionDistributor {
       // something went wrong retrieving action types or actions
       log.error("Failed to process actions because {}", e);
       // we will be back after a short snooze
-    } 
+    }
     log.debug("ActionDistributor going back to sleep");
     return distInfo;
   }
@@ -253,7 +253,7 @@ public class ActionDistributor {
    */
   private List<Action> retrieveActions(ActionType actionType, List<BigInteger> excludedActionIds) {
     Pageable pageable = new PageRequest(0, appConfig.getActionDistribution().getInstructionMax(), new Sort(
-        new Sort.Order(Direction.ASC, "createdDateTime")));
+        new Sort.Order(Direction.ASC, "updatedDateTime")));
     excludedActionIds.add(BigInteger.valueOf(IMPOSSIBLE_ACTION_ID));
     List<Action> actions = actionRepo
         .findByActionTypeNameAndStateInAndActionIdNotIn(actionType.getName(),
@@ -265,10 +265,9 @@ public class ActionDistributor {
 
   /**
    * Deal with a single action - the transaction boundary is here. The
-   * processing requires numerous calls to Case service and to write to our
-   * own action table. The rollback most likely to be triggered by either
-   * failing to find the Case service, or if it sends back an http error
-   * status code.
+   * processing requires numerous calls to Case service and to write to our own
+   * action table. The rollback most likely to be triggered by either failing to
+   * find the Case service, or if it sends back an http error status code.
    *
    * @param action the action to deal with
    * @return The resulting ActionRequest that will be added to the outbound
@@ -389,11 +388,9 @@ public class ActionDistributor {
    *
    * @param action the persistent Action obj from the db
    * @param caseDTO the Case representation from the CaseSvc
-   * @param questionnaireDTO the Questionnaire representation from the
-   *          CaseSvc
+   * @param questionnaireDTO the Questionnaire representation from the CaseSvc
    * @param addressDTO the Address representation from the CaseSvc
-   * @param caseEventDTOs the list of CaseEvent represenations from the
-   *          CaseSvc
+   * @param caseEventDTOs the list of CaseEvent represenations from the CaseSvc
    * @return the shiney new Action Request
    */
   private ActionRequest createActionRequest(final Action action, final CaseDTO caseDTO,
