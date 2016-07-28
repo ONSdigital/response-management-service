@@ -135,21 +135,27 @@ public class ActionDistributor {
     DistributionInfo distInfo = initDistInfo();
 
     IMap<Object, Object> actionMap = hazelcastInstance.getMap(ActionSvcApplication.ACTION_DISTRIBUTION_MAP);
+    String localUUID = hazelcastInstance.getLocalEndpoint().getUuid();
+    log.warn("Hazel name is {}", localUUID);
     try {
       actionTypeRepo.findAll().forEach(actionType -> {
         // container for outbound requests for this action type
         List<ActionRequest> actionRequests = new ArrayList<>();
         List<ActionCancel> actionCancels = new ArrayList<>();
 
-        log.debug("Dealing with actionType {}", actionType.getName());
+        log.warn("Dealing with actionType {}", actionType.getName());
 
         List<BigInteger> excludedActions = actionMap.values().stream()
           .flatMap(o -> ((List<BigInteger>) o).stream())
           .collect(Collectors.toList());
-        log.debug("Excluding actions {}", excludedActions);
+        log.warn("Excluding actions {}", excludedActions);
         List<Action> actions = retrieveActions(actionType, excludedActions);
+        log.warn("Dealing with actions {}", 
+            actions.stream()
+              .map(a->a.getActionId().toString())
+              .collect(Collectors.joining(",")));
 
-        actionMap.put(hazelcastInstance.getName(), 
+        actionMap.put(localUUID,
             actions.stream()
               .map(a->a.getActionId())
               .collect(Collectors.toList()));
@@ -177,7 +183,7 @@ public class ActionDistributor {
 
         publishActions(actionType, actionRequests, actionCancels);
 
-        actionMap.remove(hazelcastInstance.getName());
+        actionMap.remove(localUUID);
         log.debug("Actions processed for actionType {}", actionType.getName());
       });
     } catch (Exception e) {

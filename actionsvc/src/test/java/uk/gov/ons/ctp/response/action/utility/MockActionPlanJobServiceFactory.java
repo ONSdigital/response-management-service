@@ -5,6 +5,7 @@ import static org.mockito.Matchers.any;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.glassfish.hk2.api.Factory;
 import org.mockito.Mockito;
@@ -45,21 +46,21 @@ public class MockActionPlanJobServiceFactory implements Factory<ActionPlanJobSer
   public ActionPlanJobService provide() {
     final ActionPlanJobService mockedService = Mockito.mock(ActionPlanJobService.class);
 
-    Mockito.when(mockedService.findActionPlanJob(ACTIONPLANJOBID)).thenAnswer(new Answer<ActionPlanJob>() {
-      public ActionPlanJob answer(InvocationOnMock invocation)
+    Mockito.when(mockedService.findActionPlanJob(ACTIONPLANJOBID)).thenAnswer(new Answer<Optional<ActionPlanJob>>() {
+      public Optional<ActionPlanJob> answer(InvocationOnMock invocation)
           throws Throwable {
-        return new ActionPlanJob(ACTIONPLANJOBID, ACTIONPLANJOBID_ACTIONPLANID, ACTIONPLANJOBID_CREATED_BY,
-            ACTIONPLANJOBID_STATE, ACTIONPLANJOBID_CREATEDDATE_TIMESTAMP, ACTIONPLANJOBID_UPDATED_DATE_TIMESTAMP);
+        return Optional.of(new ActionPlanJob(ACTIONPLANJOBID, ACTIONPLANJOBID_ACTIONPLANID, ACTIONPLANJOBID_CREATED_BY,
+            ACTIONPLANJOBID_STATE, ACTIONPLANJOBID_CREATEDDATE_TIMESTAMP, ACTIONPLANJOBID_UPDATED_DATE_TIMESTAMP));
       }
     });
 
     Mockito.when(mockedService.findActionPlanJob(UNCHECKED_EXCEPTION_ACTIONPLANJOBID))
         .thenThrow(new IllegalArgumentException(OUR_EXCEPTION_MESSAGE));
 
-    Mockito.when(mockedService.findActionPlanJob(NON_EXISTING_ACTIONPLANJOBID)).thenAnswer(new Answer<ActionPlanJob>() {
-      public ActionPlanJob answer(InvocationOnMock invocation)
+    Mockito.when(mockedService.findActionPlanJob(NON_EXISTING_ACTIONPLANJOBID)).thenAnswer(new Answer<Optional<ActionPlanJob>>() {
+      public Optional<ActionPlanJob> answer(InvocationOnMock invocation)
           throws Throwable {
-        return null;
+        return Optional.empty();
       }
     });
 
@@ -88,10 +89,10 @@ public class MockActionPlanJobServiceFactory implements Factory<ActionPlanJobSer
         });
 
     Mockito.when(mockedService.createAndExecuteActionPlanJob(any(ActionPlanJob.class))).thenAnswer(
-        new Answer<ActionPlanJob>() {
-          public ActionPlanJob answer(InvocationOnMock invocation) throws Throwable {
-            return new ActionPlanJob(ACTIONPLANJOBID, ACTIONPLANJOBID_ACTIONPLANID, ACTIONPLANJOBID_CREATED_BY,
-                ACTIONPLANJOBID_STATE, ACTIONPLANJOBID_CREATEDDATE_TIMESTAMP, ACTIONPLANJOBID_UPDATED_DATE_TIMESTAMP);
+        new Answer<Optional<ActionPlanJob>>() {
+          public Optional<ActionPlanJob> answer(InvocationOnMock invocation) throws Throwable {
+            return Optional.of(new ActionPlanJob(ACTIONPLANJOBID, ACTIONPLANJOBID_ACTIONPLANID, ACTIONPLANJOBID_CREATED_BY,
+                ACTIONPLANJOBID_STATE, ACTIONPLANJOBID_CREATEDDATE_TIMESTAMP, ACTIONPLANJOBID_UPDATED_DATE_TIMESTAMP));
           }
         });
 

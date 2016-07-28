@@ -24,6 +24,9 @@ import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.support.TransactionTemplate;
 import org.springframework.web.client.RestClientException;
 
+import com.hazelcast.core.HazelcastInstance;
+import com.hazelcast.map.impl.proxy.MapProxyImpl;
+
 import ma.glasnost.orika.MapperFacade;
 import uk.gov.ons.ctp.common.FixtureHelper;
 import uk.gov.ons.ctp.common.state.StateTransitionManager;
@@ -61,6 +64,9 @@ public class ActionDistributorTest {
 
   @Mock
   private InstructionPublisher instructionPublisher;
+
+  @Mock
+  HazelcastInstance hazelcastInstance;
 
   @Mock
   private StateTransitionManager<ActionState,
@@ -112,11 +118,13 @@ public class ActionDistributorTest {
    *
    * @throws Exception oops
    */
+  @SuppressWarnings("unchecked")
   @Test
   public void testFailGetActionType() throws Exception {
 
     Mockito.when(actionTypeRepo.findAll()).thenThrow(new RuntimeException("Database access failed"));
-
+    Mockito.when(hazelcastInstance.getMap(any(String.class))).thenReturn(Mockito.mock(MapProxyImpl.class));
+    Mockito.when(hazelcastInstance.getName()).thenReturn(any(String.class));
     // let it roll
     actionDistributor.distribute();
 
@@ -157,6 +165,8 @@ public class ActionDistributorTest {
   @Test
   public void testFailCaseGet() throws Exception {
 
+    Mockito.when(hazelcastInstance.getMap(any(String.class))).thenReturn(Mockito.mock(MapProxyImpl.class));
+    Mockito.when(hazelcastInstance.getName()).thenReturn("foo");
     List<ActionType> actionTypes = FixtureHelper.loadClassFixtures(ActionType[].class);
 
     List<Action> actionsHHIC = FixtureHelper.loadClassFixtures(Action[].class, "HouseholdInitialContact");
@@ -247,6 +257,8 @@ public class ActionDistributorTest {
   @Test
   public void testBlueSky() throws Exception {
 
+    Mockito.when(hazelcastInstance.getMap(any(String.class))).thenReturn(Mockito.mock(MapProxyImpl.class));
+    Mockito.when(hazelcastInstance.getName()).thenReturn("foo");
     List<ActionType> actionTypes = FixtureHelper.loadClassFixtures(ActionType[].class);
 
     List<Action> actionsHHIC = FixtureHelper.loadClassFixtures(Action[].class, "HouseholdInitialContact");
