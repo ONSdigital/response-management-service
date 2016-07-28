@@ -13,7 +13,7 @@
   <parent>
     <groupId>uk.gov.ons.ctp.product</groupId>
     <artifactId>responsemanagement</artifactId>
-    <version>9.20.0-SNAPSHOT</version>
+    <version>9.21.0-SNAPSHOT</version>
     <relativePath>../</relativePath>
   </parent>
 
@@ -45,7 +45,7 @@
 
     <dependency>
       <groupId>uk.gov.ons.ctp.product</groupId>
-      <artifactId>caseframesvc-api</artifactId>
+      <artifactId>casesvc-api</artifactId>
       <version>9.21.0-SNAPSHOT</version>
     </dependency>
 
@@ -186,7 +186,7 @@
             </dependency>
             <dependency>
               <groupId>uk.gov.ons.ctp.product</groupId>
-              <artifactId>caseframesvc-api</artifactId>
+              <artifactId>casesvc-api</artifactId>
             </dependency>
           </requiresUnpack>
           <mainClass>uk.gov.ons.ctp.response.action.ActionSvcApplication</mainClass>

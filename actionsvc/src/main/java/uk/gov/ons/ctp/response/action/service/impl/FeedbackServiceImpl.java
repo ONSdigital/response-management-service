@@ -17,7 +17,7 @@ import uk.gov.ons.ctp.response.action.domain.repository.ActionRepository;
 import uk.gov.ons.ctp.response.action.message.feedback.ActionFeedback;
 import uk.gov.ons.ctp.response.action.representation.ActionDTO;
 import uk.gov.ons.ctp.response.action.representation.ActionDTO.ActionState;
-import uk.gov.ons.ctp.response.action.service.CaseFrameSvcClientService;
+import uk.gov.ons.ctp.response.action.service.CaseSvcClientService;
 import uk.gov.ons.ctp.response.action.service.FeedbackService;
 import uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO;
 
@@ -33,7 +33,7 @@ public class FeedbackServiceImpl implements FeedbackService {
   private static final int TRANSACTION_TIMEOUT = 30;
 
   @Inject
-  private CaseFrameSvcClientService caseFrameSvcClientService;
+  private CaseSvcClientService caseSvcClientService;
 
   @Inject
   private ActionRepository actionRepo;
@@ -63,7 +63,7 @@ public class FeedbackServiceImpl implements FeedbackService {
           actionRepo.saveAndFlush(action);
 
           if (nextState.equals(ActionDTO.ActionState.COMPLETED)) {
-            caseFrameSvcClientService.createNewCaseEvent(action, CategoryDTO.CategoryName.ACTION_COMPLETED);
+            caseSvcClientService.createNewCaseEvent(action, CategoryDTO.CategoryName.ACTION_COMPLETED);
           }
         } catch (StateTransitionException ste) {
           throw new RuntimeException(ste);

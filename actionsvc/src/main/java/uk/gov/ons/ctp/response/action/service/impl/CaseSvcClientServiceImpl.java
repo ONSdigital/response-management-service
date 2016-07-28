@@ -15,7 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 import uk.gov.ons.ctp.common.rest.RestClient;
 import uk.gov.ons.ctp.response.action.config.AppConfig;
 import uk.gov.ons.ctp.response.action.domain.model.Action;
-import uk.gov.ons.ctp.response.action.service.CaseFrameSvcClientService;
+import uk.gov.ons.ctp.response.action.service.CaseSvcClientService;
 import uk.gov.ons.ctp.response.casesvc.representation.AddressDTO;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseDTO;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseEventDTO;
@@ -23,29 +23,29 @@ import uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO;
 import uk.gov.ons.ctp.response.casesvc.representation.QuestionnaireDTO;
 
 /**
- * Impl of the service that centralizes all REST calls to the caseframe service
+ * Impl of the service that centralizes all REST calls to the Case service
  *
  */
 @Slf4j
 @Named
-public class CaseFrameSvcClientServiceImpl implements CaseFrameSvcClientService {
+public class CaseSvcClientServiceImpl implements CaseSvcClientService {
   @Inject
   private AppConfig appConfig;
 
   @Inject
-  private RestClient caseFrameClient;
+  private RestClient caseSvcClient;
 
   @Override
   public AddressDTO getAddress(final Long uprn) {
-    AddressDTO caseDTO = caseFrameClient.getResource(appConfig.getCaseFrameSvc().getAddressByUprnGetPath(),
+    AddressDTO caseDTO = caseSvcClient.getResource(appConfig.getCaseSvc().getAddressByUprnGetPath(),
         AddressDTO.class, uprn);
     return caseDTO;
   }
 
   @Override
   public QuestionnaireDTO getQuestionnaire(final Integer caseId) {
-    List<QuestionnaireDTO> questionnaireDTOs = caseFrameClient.getResources(
-        appConfig.getCaseFrameSvc().getQuestionnairesByCaseGetPath(),
+    List<QuestionnaireDTO> questionnaireDTOs = caseSvcClient.getResources(
+        appConfig.getCaseSvc().getQuestionnairesByCaseGetPath(),
         QuestionnaireDTO[].class, caseId);
     if (questionnaireDTOs.size() == 0) {
       throw new RuntimeException("Failed to find questionnaire for case " + caseId);
@@ -55,22 +55,22 @@ public class CaseFrameSvcClientServiceImpl implements CaseFrameSvcClientService 
 
   @Override
   public CaseDTO getCase(final Integer caseId) {
-    CaseDTO caseDTO = caseFrameClient.getResource(appConfig.getCaseFrameSvc().getCaseByCaseGetPath(),
+    CaseDTO caseDTO = caseSvcClient.getResource(appConfig.getCaseSvc().getCaseByCaseGetPath(),
         CaseDTO.class, caseId);
     return caseDTO;
   }
 
   @Override
   public List<CaseEventDTO> getCaseEvents(final Integer caseId) {
-    List<CaseEventDTO> caseEventDTOs = caseFrameClient.getResources(
-        appConfig.getCaseFrameSvc().getCaseEventsByCaseGetPath(),
+    List<CaseEventDTO> caseEventDTOs = caseSvcClient.getResources(
+        appConfig.getCaseSvc().getCaseEventsByCaseGetPath(),
         CaseEventDTO[].class, caseId);
     return caseEventDTOs;
   }
 
   @Override
   public CaseEventDTO createNewCaseEvent(final Action action, CategoryDTO.CategoryName actionCategory) {
-    log.debug("posting caseEvent for actionId {} to caseframesvc for category {} ", action.getActionId(),
+    log.debug("posting caseEvent for actionId {} to casesvc for category {} ", action.getActionId(),
         actionCategory);
     CaseEventDTO caseEventDTO = new CaseEventDTO();
     caseEventDTO.setCaseId(action.getCaseId());
@@ -86,8 +86,8 @@ public class CaseFrameSvcClientServiceImpl implements CaseFrameSvcClientService 
       caseEventDTO.setDescription(action.getActionType().getDescription());
     }
 
-    CaseEventDTO returnedCaseEventDTO = caseFrameClient.postResource(
-        appConfig.getCaseFrameSvc().getCaseEventsByCasePostPath(), caseEventDTO,
+    CaseEventDTO returnedCaseEventDTO = caseSvcClient.postResource(
+        appConfig.getCaseSvc().getCaseEventsByCasePostPath(), caseEventDTO,
         CaseEventDTO.class,
         action.getCaseId());
     return returnedCaseEventDTO;
@@ -97,8 +97,8 @@ public class CaseFrameSvcClientServiceImpl implements CaseFrameSvcClientService 
   public List<Integer> getOpenCasesForActionPlan(Integer actionPlanId) {
     MultiValueMap<String, String> queryParamMap = new LinkedMultiValueMap<>();
     queryParamMap.put("state", Arrays.asList(CaseDTO.CaseState.INIT.name(), CaseDTO.CaseState.RESPONDED.name()));
-    List<Integer> openCasesForPlan = caseFrameClient.getResources(
-        appConfig.getCaseFrameSvc().getCaseByStatusAndActionPlanPath(), Integer[].class, null, queryParamMap,
+    List<Integer> openCasesForPlan = caseSvcClient.getResources(
+        appConfig.getCaseSvc().getCaseByStatusAndActionPlanPath(), Integer[].class, null, queryParamMap,
         actionPlanId);
     return openCasesForPlan;
   }

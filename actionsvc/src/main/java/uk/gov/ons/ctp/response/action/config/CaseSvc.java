@@ -3,11 +3,11 @@ package uk.gov.ons.ctp.response.action.config;
 import lombok.Data;
 
 /**
- * App config POJO for caseframe service access - host/location and endpoint locations
+ * App config POJO for Case service access - host/location and endpoint locations
  *
  */
 @Data
-public class CaseFrameSvc {
+public class CaseSvc {
   private String scheme;
   private String host;
   private String port;

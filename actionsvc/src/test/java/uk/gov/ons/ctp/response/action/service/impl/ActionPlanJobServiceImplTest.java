@@ -37,7 +37,7 @@ public class ActionPlanJobServiceImplTest {
 
   @Mock
   HazelcastInstance hazelcastInstance;
-  
+
   @Mock
   private AppConfig appConfig;
 
@@ -63,7 +63,7 @@ public class ActionPlanJobServiceImplTest {
 
   /**
    * Test that when we fail at first hurdle to load ActionTypes we do not go on
-   * to call anything else In reality the wakeup mathod would then be called
+   * to call anything else In reality the wake up method would then be called
    * again after a sleep interval by spring but we cannot test that here
    *
    * @throws Exception oops

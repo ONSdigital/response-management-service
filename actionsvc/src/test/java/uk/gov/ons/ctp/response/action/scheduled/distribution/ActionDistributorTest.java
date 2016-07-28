@@ -32,7 +32,7 @@ import uk.gov.ons.ctp.common.FixtureHelper;
 import uk.gov.ons.ctp.common.state.StateTransitionManager;
 import uk.gov.ons.ctp.response.action.config.ActionDistribution;
 import uk.gov.ons.ctp.response.action.config.AppConfig;
-import uk.gov.ons.ctp.response.action.config.CaseFrameSvc;
+import uk.gov.ons.ctp.response.action.config.CaseSvc;
 import uk.gov.ons.ctp.response.action.domain.model.Action;
 import uk.gov.ons.ctp.response.action.domain.model.ActionType;
 import uk.gov.ons.ctp.response.action.domain.repository.ActionRepository;
@@ -42,7 +42,7 @@ import uk.gov.ons.ctp.response.action.message.instruction.ActionCancel;
 import uk.gov.ons.ctp.response.action.message.instruction.ActionRequest;
 import uk.gov.ons.ctp.response.action.representation.ActionDTO;
 import uk.gov.ons.ctp.response.action.representation.ActionDTO.ActionState;
-import uk.gov.ons.ctp.response.action.service.CaseFrameSvcClientService;
+import uk.gov.ons.ctp.response.action.service.CaseSvcClientService;
 import uk.gov.ons.ctp.response.casesvc.representation.AddressDTO;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseDTO;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseEventDTO;
@@ -76,7 +76,7 @@ public class ActionDistributorTest {
   private MapperFacade mapperFacade;
 
   @Mock
-  private CaseFrameSvcClientService caseFrameSvcClientService;
+  private CaseSvcClientService caseSvcClientService;
 
   @Mock
   private ActionRepository actionRepo;
@@ -98,14 +98,14 @@ public class ActionDistributorTest {
    */
   @Before
   public void setup() {
-    CaseFrameSvc caseFrameSvcConfig = new CaseFrameSvc();
+    CaseSvc caseSvcConfig = new CaseSvc();
     ActionDistribution actionDistributionConfig = new ActionDistribution();
     actionDistributionConfig.setInitialDelaySeconds(I_HATE_CHECKSTYLE_TEN);
     actionDistributionConfig.setSubsequentDelaySeconds(I_HATE_CHECKSTYLE_TEN);
     actionDistributionConfig.setInstructionMax(I_HATE_CHECKSTYLE_TEN);
     actionDistributionConfig.setRetrySleepSeconds(I_HATE_CHECKSTYLE_TEN);
 
-    appConfig.setCaseFrameSvc(caseFrameSvcConfig);
+    appConfig.setCaseSvc(caseSvcConfig);
     appConfig.setActionDistribution(actionDistributionConfig);
 
     MockitoAnnotations.initMocks(this);
@@ -135,20 +135,20 @@ public class ActionDistributorTest {
     verify(actionRepo, times(0)).findByActionTypeNameAndStateInAndActionIdNotIn(eq("HouseholdUploadIAC"),
         anyListOf(ActionState.class), anyListOf(BigInteger.class), any(Pageable.class));
 
-    verify(caseFrameSvcClientService, times(0)).getQuestionnaire(eq(1));
-    verify(caseFrameSvcClientService, times(0)).getQuestionnaire(eq(2));
-    verify(caseFrameSvcClientService, times(0)).getQuestionnaire(eq(3));
-    verify(caseFrameSvcClientService, times(0)).getQuestionnaire(eq(4));
+    verify(caseSvcClientService, times(0)).getQuestionnaire(eq(1));
+    verify(caseSvcClientService, times(0)).getQuestionnaire(eq(2));
+    verify(caseSvcClientService, times(0)).getQuestionnaire(eq(3));
+    verify(caseSvcClientService, times(0)).getQuestionnaire(eq(4));
 
-    verify(caseFrameSvcClientService, times(0)).getCase(eq(3));
-    verify(caseFrameSvcClientService, times(0)).getCase(eq(4));
+    verify(caseSvcClientService, times(0)).getCase(eq(3));
+    verify(caseSvcClientService, times(0)).getCase(eq(4));
 
-    verify(caseFrameSvcClientService, times(0)).getAddress(eq(FAKE_UPRN));
+    verify(caseSvcClientService, times(0)).getAddress(eq(FAKE_UPRN));
 
-    verify(caseFrameSvcClientService, times(0)).getCaseEvents(eq(3));
-    verify(caseFrameSvcClientService, times(0)).getCaseEvents(eq(4));
+    verify(caseSvcClientService, times(0)).getCaseEvents(eq(3));
+    verify(caseSvcClientService, times(0)).getCaseEvents(eq(4));
 
-    verify(caseFrameSvcClientService, times(0)).createNewCaseEvent(any(Action.class),
+    verify(caseSvcClientService, times(0)).createNewCaseEvent(any(Action.class),
         eq(CategoryDTO.CategoryName.ACTION_CREATED));
 
     verify(instructionPublisher, times(0)).sendInstructions(eq("Printer"), anyListOf(ActionRequest.class),
@@ -158,8 +158,8 @@ public class ActionDistributorTest {
   }
 
   /**
-   * Test that when we momentarily fail to call caseframesvc to GET two cases we
-   * carry on trying and succesfully deal with the actions/cases we can retrieve
+   * Test that when we momentarily fail to call casesvc to GET two cases we
+   * carry on trying and successfully deal with the actions/cases we can retrieve
    * @throws Exception oops
    */
   @Test
@@ -196,26 +196,26 @@ public class ActionDistributorTest {
             anyListOf(BigInteger.class), any(Pageable.class)))
         .thenReturn(actionsHHIACLOAD);
 
-    Mockito.when(caseFrameSvcClientService.getQuestionnaire(eq(1)))
-        .thenThrow(new RestClientException("CaseFrameService Temporarily Unavailable"));
-    Mockito.when(caseFrameSvcClientService.getQuestionnaire(eq(2)))
-        .thenThrow(new RestClientException("CaseFrameService Temporarily Unavailable"));
-    Mockito.when(caseFrameSvcClientService.getCase(eq(3))).thenReturn(caseDTOs.get(2));
-    Mockito.when(caseFrameSvcClientService.getCase(eq(4))).thenReturn(caseDTOs.get(3));
+    Mockito.when(caseSvcClientService.getQuestionnaire(eq(1)))
+        .thenThrow(new RestClientException("CaseService Temporarily Unavailable"));
+    Mockito.when(caseSvcClientService.getQuestionnaire(eq(2)))
+        .thenThrow(new RestClientException("CaseService Temporarily Unavailable"));
+    Mockito.when(caseSvcClientService.getCase(eq(3))).thenReturn(caseDTOs.get(2));
+    Mockito.when(caseSvcClientService.getCase(eq(4))).thenReturn(caseDTOs.get(3));
 
-    Mockito.when(caseFrameSvcClientService.getQuestionnaire(eq(3))).thenReturn(questionnaireDTOs.get(2));
-    Mockito.when(caseFrameSvcClientService.getQuestionnaire(eq(4))).thenReturn(questionnaireDTOs.get(3));
+    Mockito.when(caseSvcClientService.getQuestionnaire(eq(3))).thenReturn(questionnaireDTOs.get(2));
+    Mockito.when(caseSvcClientService.getQuestionnaire(eq(4))).thenReturn(questionnaireDTOs.get(3));
 
-    Mockito.when(caseFrameSvcClientService.getAddress(eq(FAKE_UPRN)))
+    Mockito.when(caseSvcClientService.getAddress(eq(FAKE_UPRN)))
         .thenReturn(addressDTOsUprn1234.get(0));
 
-    Mockito.when(caseFrameSvcClientService.getCaseEvents(eq(3)))
+    Mockito.when(caseSvcClientService.getCaseEvents(eq(3)))
         .thenReturn(Arrays.asList(new CaseEventDTO[] {caseEventDTOs.get(2)}));
-    Mockito.when(caseFrameSvcClientService.getCaseEvents(eq(4)))
+    Mockito.when(caseSvcClientService.getCaseEvents(eq(4)))
         .thenReturn(Arrays.asList(new CaseEventDTO[] {caseEventDTOs.get(3)}));
 
     Mockito.when(
-        caseFrameSvcClientService.createNewCaseEvent(any(Action.class), eq(CategoryDTO.CategoryName.ACTION_CREATED)))
+        caseSvcClientService.createNewCaseEvent(any(Action.class), eq(CategoryDTO.CategoryName.ACTION_CREATED)))
         .thenReturn(caseEventDTOsPost.get(2));
 
     // let it roll
@@ -227,20 +227,20 @@ public class ActionDistributorTest {
         anyListOf(ActionState.class), anyListOf(BigInteger.class), any(Pageable.class));
     verify(actionRepo).findByActionTypeNameAndStateInAndActionIdNotIn(eq("HouseholdUploadIAC"),
         anyListOf(ActionState.class), anyListOf(BigInteger.class), any(Pageable.class));
-    verify(caseFrameSvcClientService).getQuestionnaire(eq(1));
-    verify(caseFrameSvcClientService).getQuestionnaire(eq(2));
-    verify(caseFrameSvcClientService).getQuestionnaire(eq(3));
-    verify(caseFrameSvcClientService).getQuestionnaire(eq(4));
+    verify(caseSvcClientService).getQuestionnaire(eq(1));
+    verify(caseSvcClientService).getQuestionnaire(eq(2));
+    verify(caseSvcClientService).getQuestionnaire(eq(3));
+    verify(caseSvcClientService).getQuestionnaire(eq(4));
 
-    verify(caseFrameSvcClientService).getCase(eq(3));
-    verify(caseFrameSvcClientService).getCase(eq(4));
+    verify(caseSvcClientService).getCase(eq(3));
+    verify(caseSvcClientService).getCase(eq(4));
 
-    verify(caseFrameSvcClientService, times(2)).getAddress(eq(FAKE_UPRN));
+    verify(caseSvcClientService, times(2)).getAddress(eq(FAKE_UPRN));
 
-    verify(caseFrameSvcClientService).getCaseEvents(eq(3));
-    verify(caseFrameSvcClientService).getCaseEvents(eq(4));
+    verify(caseSvcClientService).getCaseEvents(eq(3));
+    verify(caseSvcClientService).getCaseEvents(eq(4));
 
-    verify(caseFrameSvcClientService, times(2)).createNewCaseEvent(any(Action.class),
+    verify(caseSvcClientService, times(2)).createNewCaseEvent(any(Action.class),
         eq(CategoryDTO.CategoryName.ACTION_CREATED));
 
     verify(instructionPublisher, times(0)).sendInstructions(eq("Printer"), anyListOf(ActionRequest.class),
@@ -289,34 +289,34 @@ public class ActionDistributorTest {
             anyListOf(BigInteger.class), any(Pageable.class)))
         .thenReturn(actionsHHIACLOAD);
 
-    Mockito.when(caseFrameSvcClientService.getQuestionnaire(eq(1)))
+    Mockito.when(caseSvcClientService.getQuestionnaire(eq(1)))
         .thenReturn(questionnaireDTOs.get(0));
-    Mockito.when(caseFrameSvcClientService.getQuestionnaire(eq(2)))
+    Mockito.when(caseSvcClientService.getQuestionnaire(eq(2)))
         .thenReturn(questionnaireDTOs.get(1));
-    Mockito.when(caseFrameSvcClientService.getQuestionnaire(eq(3)))
+    Mockito.when(caseSvcClientService.getQuestionnaire(eq(3)))
         .thenReturn(questionnaireDTOs.get(2));
-    Mockito.when(caseFrameSvcClientService.getQuestionnaire(eq(4)))
+    Mockito.when(caseSvcClientService.getQuestionnaire(eq(4)))
         .thenReturn(questionnaireDTOs.get(3));
 
-    Mockito.when(caseFrameSvcClientService.getCase(eq(1))).thenReturn(caseDTOs.get(0));
-    Mockito.when(caseFrameSvcClientService.getCase(eq(2))).thenReturn(caseDTOs.get(1));
-    Mockito.when(caseFrameSvcClientService.getCase(eq(3))).thenReturn(caseDTOs.get(2));
-    Mockito.when(caseFrameSvcClientService.getCase(eq(4))).thenReturn(caseDTOs.get(3));
+    Mockito.when(caseSvcClientService.getCase(eq(1))).thenReturn(caseDTOs.get(0));
+    Mockito.when(caseSvcClientService.getCase(eq(2))).thenReturn(caseDTOs.get(1));
+    Mockito.when(caseSvcClientService.getCase(eq(3))).thenReturn(caseDTOs.get(2));
+    Mockito.when(caseSvcClientService.getCase(eq(4))).thenReturn(caseDTOs.get(3));
 
-    Mockito.when(caseFrameSvcClientService.getAddress(eq(FAKE_UPRN)))
+    Mockito.when(caseSvcClientService.getAddress(eq(FAKE_UPRN)))
         .thenReturn(addressDTOsUprn1234.get(0));
 
-    Mockito.when(caseFrameSvcClientService.getCaseEvents(eq(1)))
+    Mockito.when(caseSvcClientService.getCaseEvents(eq(1)))
         .thenReturn(Arrays.asList(new CaseEventDTO[] {caseEventDTOs.get(0)}));
-    Mockito.when(caseFrameSvcClientService.getCaseEvents(eq(2)))
+    Mockito.when(caseSvcClientService.getCaseEvents(eq(2)))
         .thenReturn(Arrays.asList(new CaseEventDTO[] {caseEventDTOs.get(1)}));
-    Mockito.when(caseFrameSvcClientService.getCaseEvents(eq(3)))
+    Mockito.when(caseSvcClientService.getCaseEvents(eq(3)))
         .thenReturn(Arrays.asList(new CaseEventDTO[] {caseEventDTOs.get(2)}));
-    Mockito.when(caseFrameSvcClientService.getCaseEvents(eq(4)))
+    Mockito.when(caseSvcClientService.getCaseEvents(eq(4)))
         .thenReturn(Arrays.asList(new CaseEventDTO[] {caseEventDTOs.get(3)}));
 
     Mockito.when(
-        caseFrameSvcClientService.createNewCaseEvent(any(Action.class), eq(CategoryDTO.CategoryName.ACTION_CREATED)))
+        caseSvcClientService.createNewCaseEvent(any(Action.class), eq(CategoryDTO.CategoryName.ACTION_CREATED)))
         .thenReturn(caseEventDTOsPost.get(2));
 
     // let it roll
@@ -329,24 +329,24 @@ public class ActionDistributorTest {
     verify(actionRepo).findByActionTypeNameAndStateInAndActionIdNotIn(eq("HouseholdUploadIAC"),
         anyListOf(ActionState.class), anyListOf(BigInteger.class), any(Pageable.class));
 
-    verify(caseFrameSvcClientService).getQuestionnaire(eq(1));
-    verify(caseFrameSvcClientService).getQuestionnaire(eq(2));
-    verify(caseFrameSvcClientService).getQuestionnaire(eq(3));
-    verify(caseFrameSvcClientService).getQuestionnaire(eq(4));
+    verify(caseSvcClientService).getQuestionnaire(eq(1));
+    verify(caseSvcClientService).getQuestionnaire(eq(2));
+    verify(caseSvcClientService).getQuestionnaire(eq(3));
+    verify(caseSvcClientService).getQuestionnaire(eq(4));
 
-    verify(caseFrameSvcClientService).getCase(eq(1));
-    verify(caseFrameSvcClientService).getCase(eq(2));
-    verify(caseFrameSvcClientService).getCase(eq(3));
-    verify(caseFrameSvcClientService).getCase(eq(4));
+    verify(caseSvcClientService).getCase(eq(1));
+    verify(caseSvcClientService).getCase(eq(2));
+    verify(caseSvcClientService).getCase(eq(3));
+    verify(caseSvcClientService).getCase(eq(4));
 
-    verify(caseFrameSvcClientService, times(4)).getAddress(eq(FAKE_UPRN));
+    verify(caseSvcClientService, times(4)).getAddress(eq(FAKE_UPRN));
 
-    verify(caseFrameSvcClientService).getCaseEvents(eq(1));
-    verify(caseFrameSvcClientService).getCaseEvents(eq(2));
-    verify(caseFrameSvcClientService).getCaseEvents(eq(3));
-    verify(caseFrameSvcClientService).getCaseEvents(eq(4));
+    verify(caseSvcClientService).getCaseEvents(eq(1));
+    verify(caseSvcClientService).getCaseEvents(eq(2));
+    verify(caseSvcClientService).getCaseEvents(eq(3));
+    verify(caseSvcClientService).getCaseEvents(eq(4));
 
-    verify(caseFrameSvcClientService, times(4)).createNewCaseEvent(any(Action.class),
+    verify(caseSvcClientService, times(4)).createNewCaseEvent(any(Action.class),
         eq(CategoryDTO.CategoryName.ACTION_CREATED));
 
     verify(instructionPublisher, times(1)).sendInstructions(eq("Printer"), anyListOf(ActionRequest.class),

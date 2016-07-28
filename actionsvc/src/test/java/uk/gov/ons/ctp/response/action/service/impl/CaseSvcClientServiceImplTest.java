@@ -25,7 +25,7 @@ import org.springframework.web.client.RestTemplate;
 
 import uk.gov.ons.ctp.common.rest.RestClient;
 import uk.gov.ons.ctp.response.action.config.AppConfig;
-import uk.gov.ons.ctp.response.action.config.CaseFrameSvc;
+import uk.gov.ons.ctp.response.action.config.CaseSvc;
 import uk.gov.ons.ctp.response.action.domain.model.Action;
 import uk.gov.ons.ctp.response.action.domain.model.ActionType;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseEventDTO;
@@ -35,7 +35,7 @@ import uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO;
  * A test of the case frame service client service
  */
 @RunWith(MockitoJUnitRunner.class)
-public class CaseFrameSvcClientServiceImplTest {
+public class CaseSvcClientServiceImplTest {
 
   @Mock
   private AppConfig appConfig;
@@ -44,16 +44,16 @@ public class CaseFrameSvcClientServiceImplTest {
   private RestClient restClient = new RestClient("http", "localhost", "8080");
 
   @InjectMocks
-  private CaseFrameSvcClientServiceImpl caseFrameSvcClientService;
+  private CaseSvcClientServiceImpl caseSvcClientService;
 
   /**
    * Guess what? - a test!
    */
   @Test
   public void testGetOpenCasesForActionPlan() {
-    CaseFrameSvc caseFrameSvcConfig = new CaseFrameSvc();
-    caseFrameSvcConfig.setCaseByStatusAndActionPlanPath("/cases/actionplan/{actionplanid}");
-    Mockito.when(appConfig.getCaseFrameSvc()).thenReturn(caseFrameSvcConfig);
+    CaseSvc caseSvcConfig = new CaseSvc();
+    caseSvcConfig.setCaseByStatusAndActionPlanPath("/cases/actionplan/{actionplanid}");
+    Mockito.when(appConfig.getCaseSvc()).thenReturn(caseSvcConfig);
     RestTemplate restTemplate = this.restClient.getRestTemplate();
 
     MockRestServiceServer mockServer = MockRestServiceServer.createServer(restTemplate);
@@ -61,7 +61,7 @@ public class CaseFrameSvcClientServiceImplTest {
         .andExpect(method(HttpMethod.GET))
         .andRespond(withSuccess("[1,2,3]", MediaType.APPLICATION_JSON));
 
-    List<Integer> cases = caseFrameSvcClientService.getOpenCasesForActionPlan(1);
+    List<Integer> cases = caseSvcClientService.getOpenCasesForActionPlan(1);
     assertTrue(cases != null);
     assertTrue(cases.containsAll(Arrays.asList(new Integer[] {1, 2, 3})));
     mockServer.verify();
@@ -73,9 +73,9 @@ public class CaseFrameSvcClientServiceImplTest {
    */
   @Test
   public void testCreateNewCaseEvent() {
-    CaseFrameSvc caseFrameSvcConfig = new CaseFrameSvc();
-    caseFrameSvcConfig.setCaseEventsByCasePostPath("cases/{caseid}/events");
-    Mockito.when(appConfig.getCaseFrameSvc()).thenReturn(caseFrameSvcConfig);
+    CaseSvc caseSvcConfig = new CaseSvc();
+    caseSvcConfig.setCaseEventsByCasePostPath("cases/{caseid}/events");
+    Mockito.when(appConfig.getCaseSvc()).thenReturn(caseSvcConfig);
     RestTemplate restTemplate = this.restClient.getRestTemplate();
 
     Action action = new Action();
@@ -114,7 +114,7 @@ public class CaseFrameSvcClientServiceImplTest {
             + "\"description\":\"desc\""
             + "}", MediaType.APPLICATION_JSON));
 
-    CaseEventDTO caseEventDTO = caseFrameSvcClientService.createNewCaseEvent(action,
+    CaseEventDTO caseEventDTO = caseSvcClientService.createNewCaseEvent(action,
         CategoryDTO.CategoryName.ACTION_COMPLETED);
     assertTrue(caseEventDTO != null);
     mockServer.verify();

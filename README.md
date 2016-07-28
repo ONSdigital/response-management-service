@@ -2,7 +2,7 @@
 This project contains the server side components for the ResponseManagement product
 
 
-# caseframesvc
+# casesvc
 Provides restful services for :
 
  - Address
