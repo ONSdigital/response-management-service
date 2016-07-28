@@ -45,13 +45,13 @@ public class PlanScheduler implements HealthIndicator {
    */
   @Inject
   public PlanScheduler(AppConfig applicationConfig) {
-    final Runnable distributorRunnable = new Runnable() {
+    final Runnable planExecutionRunnable = new Runnable() {
       public void run() {
         actionPlanJobServiceImpl.createAndExecuteAllActionPlanJobs();
       }
     };
 
-    scheduler.scheduleAtFixedRate(distributorRunnable,
+    scheduler.scheduleAtFixedRate(planExecutionRunnable,
         applicationConfig.getPlanExecution().getInitialDelaySeconds(),
         applicationConfig.getPlanExecution().getSubsequentDelaySeconds(), SECONDS);
   }

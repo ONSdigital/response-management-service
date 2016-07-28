@@ -102,8 +102,8 @@ action-distribution:
 
 plan-execution:
   retry-sleep-seconds: 30
-  initial-delay-seconds: 30
-  subsequent-delay-seconds: 3600
+  initial-delay-seconds: 90
+  subsequent-delay-seconds: 600
 
 case-svc:
   scheme: http
