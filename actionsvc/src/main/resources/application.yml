@@ -99,7 +99,7 @@ action-distribution:
   initial-delay-seconds: 2
   subsequent-delay-seconds: 2
 
-case-frame-svc:
+case-svc:
   scheme: http
   host: localhost
   port: 8171

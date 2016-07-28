@@ -43,13 +43,13 @@ public class ActionSvcApplication {
   private AppConfig appConfig;
 
   /**
-   * Bean used to access case frame service throught REST calls
+   * Bean used to access case frame service through REST calls
    * @return the service client
    */
   @Bean
-  public RestClient caseFrameClient() {
-    RestClient restHelper = new RestClient(appConfig.getCaseFrameSvc().getScheme(),
-        appConfig.getCaseFrameSvc().getHost(), appConfig.getCaseFrameSvc().getPort());
+  public RestClient caseClient() {
+    RestClient restHelper = new RestClient(appConfig.getCaseSvc().getScheme(),
+        appConfig.getCaseSvc().getHost(), appConfig.getCaseSvc().getPort());
     return restHelper;
   }
 

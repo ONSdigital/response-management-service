@@ -40,7 +40,7 @@ import uk.gov.ons.ctp.response.action.message.instruction.ActionRequest;
 import uk.gov.ons.ctp.response.action.message.instruction.Priority;
 import uk.gov.ons.ctp.response.action.representation.ActionDTO;
 import uk.gov.ons.ctp.response.action.representation.ActionDTO.ActionState;
-import uk.gov.ons.ctp.response.action.service.CaseFrameSvcClientService;
+import uk.gov.ons.ctp.response.action.service.CaseSvcClientService;
 import uk.gov.ons.ctp.response.casesvc.representation.AddressDTO;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseDTO;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseEventDTO;
@@ -62,11 +62,11 @@ import uk.gov.ons.ctp.response.casesvc.representation.QuestionnaireDTO;
  * SUBMITTED state to send to downstream handlers. On each wake cycle, it
  * fetches the first n actions of each type, by createddatatime, and attempts to
  * enrich them with case, questionnaire, address and caseevent details all
- * fetched in individual calls to the caseframe service through its RESTful
+ * fetched in individual calls to the Case service through its RESTful
  * endpoints.
  *
  * It then updates its own action table to change the action state to PENDING,
- * posts a new CaseEvent to the CaseFrameService, and constructs an outbound
+ * posts a new CaseEvent to the Case Service, and constructs an outbound
  * ActionRequest instance. That instance is added to the list of request objects
  * that will sent out as a batch inside an ActionInstruction to the
  * SpringIntegration @Publisher once the N actions for the individual type have
@@ -95,7 +95,7 @@ public class ActionDistributor {
   private ActionRepository actionRepo;
 
   @Inject
-  private CaseFrameSvcClientService caseFrameSvcClientService;
+  private CaseSvcClientService caseSvcClientService;
 
   @Inject
   private ActionTypeRepository actionTypeRepo;
@@ -235,9 +235,9 @@ public class ActionDistributor {
 
   /**
    * Deal with a single action - the transaction boundary is here. The
-   * processing requires numerous calls to caseframe service and to write to our
+   * processing requires numerous calls to Case service and to write to our
    * own action table. The rollback most likely to be triggered by either
-   * failing to find the caseframe service, or if it sends back an http error
+   * failing to find the Case service, or if it sends back an http error
    * status code.
    *
    * @param action the action to deal with
@@ -252,12 +252,12 @@ public class ActionDistributor {
         // update our actions state in db
         transitionAction(action, ActionDTO.ActionEvent.REQUEST_DISTRIBUTED);
         // create the request, filling in details by GETs from
-        // caseframesvc
+        // casesvc
         actionRequest = prepareActionRequest(action);
-        // advise caseframesvc to create a corresponding caseevent for
+        // advise casesvc to create a corresponding caseevent for
         // our
         // action
-        caseFrameSvcClientService.createNewCaseEvent(action, CategoryDTO.CategoryName.ACTION_CREATED);
+        caseSvcClientService.createNewCaseEvent(action, CategoryDTO.CategoryName.ACTION_CREATED);
         return actionRequest;
       }
     });
@@ -280,12 +280,12 @@ public class ActionDistributor {
         // update our actions state in db
         transitionAction(action, ActionDTO.ActionEvent.CANCELLATION_DISTRIBUTED);
         // create the request, filling in details by GETs from
-        // caseframesvc
+        // casesvc
         actionCancel = prepareActionCancel(action);
-        // advise caseframesvc to create a corresponding caseevent for
+        // advise casesvc to create a corresponding caseevent for
         // our
         // action
-        caseFrameSvcClientService.createNewCaseEvent(action,
+        caseSvcClientService.createNewCaseEvent(action,
             CategoryDTO.CategoryName.ACTION_CANCELLATION_CREATED);
         return actionCancel;
       }
@@ -316,32 +316,32 @@ public class ActionDistributor {
   }
 
   /**
-   * Take an action and using it, fetch further info from caseframe service in a
+   * Take an action and using it, fetch further info from Case service in a
    * number of rest calls, in order to create the ActionRequest
    *
-   * @param action It all starts wih the Action
+   * @param action It all starts with the Action
    * @return The ActionRequest created from the Action and the other info from
-   *         CaseFrameSvc
+   *         CaseSvc
    */
   private ActionRequest prepareActionRequest(final Action action) {
     log.debug("constructing ActionRequest to publish to downstream handler for action id {} and case id {}",
         action.getActionId(), action.getCaseId());
-    // now call caseframe for the following
-    CaseDTO caseDTO = caseFrameSvcClientService.getCase(action.getCaseId());
-    QuestionnaireDTO questionnaireDTO = caseFrameSvcClientService.getQuestionnaire(action.getCaseId());
-    AddressDTO addressDTO = caseFrameSvcClientService.getAddress(caseDTO.getUprn());
-    List<CaseEventDTO> caseEventDTOs = caseFrameSvcClientService.getCaseEvents(action.getCaseId());
+    // now call caseSvc for the following
+    CaseDTO caseDTO = caseSvcClientService.getCase(action.getCaseId());
+    QuestionnaireDTO questionnaireDTO = caseSvcClientService.getQuestionnaire(action.getCaseId());
+    AddressDTO addressDTO = caseSvcClientService.getAddress(caseDTO.getUprn());
+    List<CaseEventDTO> caseEventDTOs = caseSvcClientService.getCaseEvents(action.getCaseId());
 
     return createActionRequest(action, caseDTO, questionnaireDTO, addressDTO, caseEventDTOs);
   }
 
   /**
-   * Take an action and using it, fetch further info from caseframe service in a
+   * Take an action and using it, fetch further info from Case service in a
    * number of rest calls, in order to create the ActionRequest
    *
    * @param action It all starts wih the Action
    * @return The ActionRequest created from the Action and the other info from
-   *         CaseFrameSvc
+   *         CaseSvc
    */
   private ActionCancel prepareActionCancel(final Action action) {
     log.debug("constructing ActionCancel to publish to downstream handler for action id {} and case id {}",
@@ -358,12 +358,12 @@ public class ActionDistributor {
    * ActionRequest
    *
    * @param action the persistent Action obj from the db
-   * @param caseDTO the Case representation from the CaseFrameSvc
+   * @param caseDTO the Case representation from the CaseSvc
    * @param questionnaireDTO the Questionnaire representation from the
-   *          CaseFrameSvc
-   * @param addressDTO the Address representation from the CaseFrameSvc
+   *          CaseSvc
+   * @param addressDTO the Address representation from the CaseSvc
    * @param caseEventDTOs the list of CaseEvent represenations from the
-   *          CaseFrameSvc
+   *          CaseSvc
    * @return the shiney new Action Request
    */
   private ActionRequest createActionRequest(final Action action, final CaseDTO caseDTO,

@@ -19,7 +19,7 @@ import uk.gov.ons.ctp.response.action.domain.repository.ActionPlanJobRepository;
 import uk.gov.ons.ctp.response.action.domain.repository.ActionPlanRepository;
 import uk.gov.ons.ctp.response.action.representation.ActionPlanJobDTO;
 import uk.gov.ons.ctp.response.action.service.ActionPlanJobService;
-import uk.gov.ons.ctp.response.action.service.CaseFrameSvcClientService;
+import uk.gov.ons.ctp.response.action.service.CaseSvcClientService;
 
 /**
  * Implementation
@@ -30,7 +30,7 @@ public class ActionPlanJobServiceImpl implements ActionPlanJobService {
 
 
   @Inject
-  private CaseFrameSvcClientService caseFrameSvcClientService;
+  private CaseSvcClientService caseSvcClientService;
 
   @Inject
   private ActionPlanRepository actionPlanRepo;
@@ -68,7 +68,7 @@ public class ActionPlanJobServiceImpl implements ActionPlanJobService {
       actionPlanJob.setUpdatedDateTime(now);
       createdJob = actionPlanJobRepo.save(actionPlanJob);
 
-      List<Integer> openCasesForPlan = caseFrameSvcClientService.getOpenCasesForActionPlan(actionPlanId);
+      List<Integer> openCasesForPlan = caseSvcClientService.getOpenCasesForActionPlan(actionPlanId);
 
       // create entry in action.case for each open case for job
       for (Integer openCaseId : openCasesForPlan) {

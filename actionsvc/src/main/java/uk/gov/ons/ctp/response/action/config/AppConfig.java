@@ -14,7 +14,7 @@ import lombok.Data;
 @ConfigurationProperties
 @Data
 public class AppConfig {
-  private CaseFrameSvc caseFrameSvc;
+  private CaseSvc caseSvc;
   private ActionDistribution actionDistribution;
   private CsvIngest csvIngest;
 }

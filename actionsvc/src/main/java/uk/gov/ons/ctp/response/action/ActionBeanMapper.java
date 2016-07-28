@@ -56,7 +56,7 @@ public class ActionBeanMapper extends ConfigurableMapper {
         .byDefault()
         .register();
 
-    // slight deviation from norm here - AddressDTO is from caseframesvc !!
+    // slight deviation from norm here - AddressDTO is from casesvc !!
     factory
         .classMap(AddressDTO.class, ActionAddress.class)
         .byDefault()

@@ -12,12 +12,12 @@ import uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO;
 import uk.gov.ons.ctp.response.casesvc.representation.QuestionnaireDTO;
 
 /**
- * A Service which utilises the CaseFrameSvc via RESTful client calls
+ * A Service which utilises the CaseSvc via RESTful client calls
  *
  */
-public interface CaseFrameSvcClientService {
+public interface CaseSvcClientService {
   /**
-   * Create and post to caseframe service a new CaseEvent
+   * Create and post to Case service a new CaseEvent
    *
    * @param action the action for which we need the event
    * @param actionCategory the category for the event
@@ -26,7 +26,7 @@ public interface CaseFrameSvcClientService {
   CaseEventDTO createNewCaseEvent(final Action action, CategoryDTO.CategoryName actionCategory);
 
   /**
-   * Call CaseFrameSvc using REST to get the Address MAY throw a
+   * Call CaseSvc using REST to get the Address MAY throw a
    * RuntimeException if the call fails
    *
    * @param uprn identifies the Address to fetch
@@ -35,7 +35,7 @@ public interface CaseFrameSvcClientService {
   AddressDTO getAddress(final Long uprn);
 
   /**
-   * Call CaseFrameSvc using REST to get the Questionnaire MAY throw a
+   * Call CaseSvc using REST to get the Questionnaire MAY throw a
    * RuntimeException if the call fails
    *
    * @param caseId used to find the questionnaire
@@ -44,7 +44,7 @@ public interface CaseFrameSvcClientService {
   QuestionnaireDTO getQuestionnaire(final Integer caseId);
 
   /**
-   * Call CaseFrameSvc using REST to get the Case details MAY throw a
+   * Call CaseSvc using REST to get the Case details MAY throw a
    * RuntimeException if the call fails
    *
    * @param caseId identifies the Case to fetch
@@ -55,7 +55,7 @@ public interface CaseFrameSvcClientService {
   CaseDTO getCase(final Integer caseId);
 
   /**
-   * Call CaseFrameSvc using REST to get the CaseEvents for the Case MAY throw a
+   * Call CaseSvc using REST to get the CaseEvents for the Case MAY throw a
    * RuntimeException if the call fails
    *
    * @param caseId identifies the Case to fetch events for
