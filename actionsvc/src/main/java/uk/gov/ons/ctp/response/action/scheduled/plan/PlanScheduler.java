@@ -22,12 +22,6 @@ import uk.gov.ons.ctp.response.action.service.ActionPlanJobService;
 @Named
 public class PlanScheduler implements HealthIndicator {
 
-  @Override
-  public Health health() {
-    return Health.up()
-        .withDetail("planExecutionInfo", executionInfo)
-        .build();
-  }
 
   @Inject
   private ActionPlanJobService actionPlanJobServiceImpl;
@@ -37,7 +31,8 @@ public class PlanScheduler implements HealthIndicator {
   private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
 
   /**
-   * Create the scheduler for the Action Distributor
+   * Create the scheduler for the Execution of Action Plans
+   * It is simply a scheduled trigger for the service layer method.
    *
    * @param applicationConfig injected app config needs injecting as cannot use
    *          the class appConfig - is not injected until this class created -
@@ -47,12 +42,20 @@ public class PlanScheduler implements HealthIndicator {
   public PlanScheduler(AppConfig applicationConfig) {
     final Runnable planExecutionRunnable = new Runnable() {
       public void run() {
-        actionPlanJobServiceImpl.createAndExecuteAllActionPlanJobs();
+        executionInfo = new PlanExecutionInfo();
+        executionInfo.setExecutedJobs(actionPlanJobServiceImpl.createAndExecuteAllActionPlanJobs());
       }
     };
 
     scheduler.scheduleAtFixedRate(planExecutionRunnable,
         applicationConfig.getPlanExecution().getInitialDelaySeconds(),
         applicationConfig.getPlanExecution().getSubsequentDelaySeconds(), SECONDS);
+  }
+
+  @Override
+  public Health health() {
+    return Health.up()
+        .withDetail("planExecutionInfo", executionInfo)
+        .build();
   }
 }

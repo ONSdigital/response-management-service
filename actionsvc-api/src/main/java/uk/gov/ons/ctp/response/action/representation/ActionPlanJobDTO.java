@@ -1,6 +1,6 @@
 package uk.gov.ons.ctp.response.action.representation;
 
-import java.sql.Timestamp;
+import java.util.Date;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -35,6 +35,6 @@ public class ActionPlanJobDTO {
   @Size(min = CREATED_BY_MIN, max = CREATED_BY_MAX)
   private String createdBy;
   private String state;
-  private Timestamp createdDateTime;
-  private Timestamp updatedDateTime;
+  private Date createdDateTime;
+  private Date updatedDateTime;
 }

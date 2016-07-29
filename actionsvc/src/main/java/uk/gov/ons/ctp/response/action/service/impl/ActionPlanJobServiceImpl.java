@@ -1,6 +1,7 @@
 package uk.gov.ons.ctp.response.action.service.impl;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -68,13 +69,15 @@ public class ActionPlanJobServiceImpl implements ActionPlanJobService {
   }
 
   @Override
-  public void createAndExecuteAllActionPlanJobs() {
+  public List<ActionPlanJob> createAndExecuteAllActionPlanJobs() {
+    List<ActionPlanJob> executedJobs = new ArrayList<>();
     actionPlanRepo.findAll().forEach(actionPlan -> {
       ActionPlanJob job = new ActionPlanJob();
       job.setActionPlanId(actionPlan.getActionPlanId());
       job.setCreatedBy(CREATED_BY_SYSTEM);
-      createAndExecuteActionPlanJob(job, false);
+      createAndExecuteActionPlanJob(job, false).ifPresent(j->executedJobs.add(j));;
     });
+    return executedJobs;
   }
 
 
@@ -117,7 +120,7 @@ public class ActionPlanJobServiceImpl implements ActionPlanJobService {
 
             if (actionPlan.getLastRunDateTime() != null
                 && actionPlan.getLastRunDateTime().after(lastExecutionTime)) {
-              log.info("Job has been run since last wake up - skipping");
+              log.info("Job for plan {} has been run since last wake up - skipping", actionPlanId);
               return Optional.empty();
             }
           }
@@ -133,8 +136,8 @@ public class ActionPlanJobServiceImpl implements ActionPlanJobService {
             actionCaseRepo.createActions(createdJob.getActionPlanJobId());
           }
         } finally {
-          lock.unlock();
           log.debug("Unlocking action plan {}", actionPlanId);
+          lock.unlock();
         }
       } else {
         log.warn("Timed out - Could not get lock on action plan {}", actionPlanId);

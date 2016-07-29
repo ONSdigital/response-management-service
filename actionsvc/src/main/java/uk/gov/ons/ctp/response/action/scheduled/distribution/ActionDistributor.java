@@ -132,25 +132,25 @@ public class ActionDistributor {
   @SuppressWarnings("unchecked")
   public final DistributionInfo distribute() {
     log.debug("ActionDistributor awoken from slumber");
-    DistributionInfo distInfo = initDistInfo();
+    DistributionInfo distInfo = new DistributionInfo();
 
     IMap<Object, Object> actionMap = hazelcastInstance.getMap(ActionSvcApplication.ACTION_DISTRIBUTION_MAP);
     String localUUID = hazelcastInstance.getLocalEndpoint().getUuid();
-    log.warn("Hazel name is {}", localUUID);
+    log.debug("Hazel name is {}", localUUID);
     try {
       actionTypeRepo.findAll().forEach(actionType -> {
         // container for outbound requests for this action type
         List<ActionRequest> actionRequests = new ArrayList<>();
         List<ActionCancel> actionCancels = new ArrayList<>();
 
-        log.warn("Dealing with actionType {}", actionType.getName());
+        log.debug("Dealing with actionType {}", actionType.getName());
 
         List<BigInteger> excludedActions = actionMap.values().stream()
             .flatMap(o -> ((List<BigInteger>) o).stream())
             .collect(Collectors.toList());
-        log.warn("Excluding actions {}", excludedActions);
+        log.debug("Excluding actions {}", excludedActions);
         List<Action> actions = retrieveActions(actionType, excludedActions);
-        log.warn("Dealing with actions {}",
+        log.debug("Dealing with actions {}",
             actions.stream()
                 .map(a -> a.getActionId().toString())
                 .collect(Collectors.joining(",")));
@@ -167,7 +167,7 @@ public class ActionDistributor {
             } else if (action.getState().equals(ActionDTO.ActionState.CANCEL_SUBMITTED)) {
               actionCancels.add(processActionCancel(action));
             }
-            log.warn("dealt with action {}", action.getActionId());
+            log.debug("dealt with action {}", action.getActionId());
           } catch (Exception e) {
             // db changes rolled back
             log.error(
@@ -176,9 +176,9 @@ public class ActionDistributor {
           }
         });
 
-        distInfo.addInstructionCount(new InstructionCount(actionType.getName(),
+        distInfo.getInstructionCounts().add(new InstructionCount(actionType.getName(),
             DistributionInfo.Instruction.REQUEST, actionRequests.size()));
-        distInfo.addInstructionCount(new InstructionCount(actionType.getName(),
+        distInfo.getInstructionCounts().add(new InstructionCount(actionType.getName(),
             DistributionInfo.Instruction.CANCEL_REQUEST, actionCancels.size()));
 
         publishActions(actionType, actionRequests, actionCancels);
@@ -198,8 +198,8 @@ public class ActionDistributor {
   /**
    * publish actions using the inject publisher - try and try and try ...
    *
-   * @param actionType the type
    * @param actionRequests requests
+   * @param actionType the type
    * @param actionCancels cancels
    * @throws InterruptedException our pause was interrupted
    */
@@ -231,18 +231,6 @@ public class ActionDistributor {
         }
       } while (!published);
     }
-  }
-
-  /**
-   * construct and init the distribution info
-   *
-   * @return the freshly created and init'd dist info obj
-   */
-  private DistributionInfo initDistInfo() {
-    DistributionInfo distInfo = new DistributionInfo();
-    DateFormat dateTimeInstance = SimpleDateFormat.getDateTimeInstance();
-    distInfo.setLastRunTime(dateTimeInstance.format(Calendar.getInstance().getTime()));
-    return distInfo;
   }
 
   /**

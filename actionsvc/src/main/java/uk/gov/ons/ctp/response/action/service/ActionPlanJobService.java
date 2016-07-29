@@ -35,6 +35,6 @@ public interface ActionPlanJobService extends CTPService {
   /**
    * Will be called by the endpoint when a manual execution of an action plan is requested 
    */
-  void createAndExecuteAllActionPlanJobs();
+  List<ActionPlanJob>createAndExecuteAllActionPlanJobs();
 
 }
