@@ -59,7 +59,7 @@ public class ActionPlanJobServiceImpl implements ActionPlanJobService {
   @Override
   public final Optional<ActionPlanJob> findActionPlanJob(final Integer actionPlanJobId) {
     log.debug("Entering findActionPlanJob with {}", actionPlanJobId);
-    return Optional.of(actionPlanJobRepo.findOne(actionPlanJobId));
+    return Optional.ofNullable(actionPlanJobRepo.findOne(actionPlanJobId));
   }
 
   @Override
@@ -147,6 +147,6 @@ public class ActionPlanJobServiceImpl implements ActionPlanJobService {
       e.printStackTrace();
     }
 
-    return Optional.of(createdJob);
+    return Optional.ofNullable(createdJob);
   }
 }

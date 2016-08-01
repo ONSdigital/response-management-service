@@ -213,7 +213,7 @@ public class CsvIngester extends CsvToBean {
   }
 
   /**
-   * validate the csv line and return the optional concatentated list of fields
+   * validate the csv line and return the optional concatenated list of fields
    * failing validation
    *
    * @param csvLine the line
@@ -223,7 +223,7 @@ public class CsvIngester extends CsvToBean {
     Set<ConstraintViolation<CsvLine>> violations = getValidator().validate(csvLine);
     String invalidColumns = violations.stream().map(v -> v.getPropertyPath().toString())
         .collect(Collectors.joining("_"));
-    return (invalidColumns.length() == 0) ? Optional.empty() : Optional.of(invalidColumns);
+    return (invalidColumns.length() == 0) ? Optional.empty() : Optional.ofNullable(invalidColumns);
   }
 
   /**
