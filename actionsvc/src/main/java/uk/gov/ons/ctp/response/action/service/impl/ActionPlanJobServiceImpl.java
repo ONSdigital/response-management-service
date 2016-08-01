@@ -42,7 +42,7 @@ public class ActionPlanJobServiceImpl implements ActionPlanJobService {
   private static final int PLAN_LOCK_TIMEOUT = 5;
 
   @Inject
-  HazelcastInstance hazelcastInstance;
+  private HazelcastInstance hazelcastInstance;
 
   @Inject
   private AppConfig appConfig;
@@ -75,7 +75,7 @@ public class ActionPlanJobServiceImpl implements ActionPlanJobService {
       ActionPlanJob job = new ActionPlanJob();
       job.setActionPlanId(actionPlan.getActionPlanId());
       job.setCreatedBy(CREATED_BY_SYSTEM);
-      createAndExecuteActionPlanJob(job, false).ifPresent(j->executedJobs.add(j));;
+      createAndExecuteActionPlanJob(job, false).ifPresent(j -> executedJobs.add(j));
     });
     return executedJobs;
   }
@@ -87,15 +87,17 @@ public class ActionPlanJobServiceImpl implements ActionPlanJobService {
   }
 
   /**
-   * the root method for executing an action plan - called indirectly by the restful endpoint when executing a single plan manually
-   * and by the scheduled execution of all plans in sequence. See the other createAndExecute plan methods in this class
+   * the root method for executing an action plan - called indirectly by the restful endpoint when executing a single
+   * plan manually and by the scheduled execution of all plans in sequence. See the other createAndExecute plan methods
+   * in this class
    * @param actionPlanJob the plan to execute
-   * @param forcedExecution true when called indirectly for manual execution - the plan lock is still used (we don't want more than one concurrent plan execution), but we skip the last run time check
+   * @param forcedExecution true when called indirectly for manual execution - the plan lock is still used (we don't
+   *                        want more than one concurrent plan execution), but we skip the last run time check
    * @return the plan job if it was run or null if not
    */
   @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
-  private final Optional<ActionPlanJob> createAndExecuteActionPlanJob(final ActionPlanJob actionPlanJob,
-      boolean forcedExecution) {
+  private Optional<ActionPlanJob> createAndExecuteActionPlanJob(final ActionPlanJob actionPlanJob,
+                                                                boolean forcedExecution) {
     Integer actionPlanId = actionPlanJob.getActionPlanId();
     log.debug("Entering executeActionPlan wth plan id {}, forced {}", actionPlanId, forcedExecution);
 

@@ -83,7 +83,7 @@ public class ActionDistributor {
   private static final long MILLISECONDS = 1000L;
 
   @Inject
-  HazelcastInstance hazelcastInstance;
+  private HazelcastInstance hazelcastInstance;
 
   @Inject
   private AppConfig appConfig;
@@ -234,7 +234,8 @@ public class ActionDistributor {
    * Get the oldest page of submitted actions by type
    *
    * @param actionType the type
-   * @return the actions
+   * @param excludedActionIds the list of action ids to exclude
+   * @return list of actions
    */
   private List<Action> retrieveActions(ActionType actionType, List<BigInteger> excludedActionIds) {
     Pageable pageable = new PageRequest(0, appConfig.getActionDistribution().getInstructionMax(), new Sort(

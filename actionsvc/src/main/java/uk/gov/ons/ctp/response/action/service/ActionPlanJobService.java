@@ -25,7 +25,7 @@ public interface ActionPlanJobService extends CTPService {
   List<ActionPlanJob> findActionPlanJobsForActionPlan(Integer actionPlanId);
 
   /**
-   * Will be called by the endpoint when a manual execution of an action plan is requested 
+   * Will be called by the endpoint when a manual execution of an action plan is requested
    * Create an action plan job and execute it
    * @param actionPlanJob This is the actionPlanJob for the action plan job to be created
    * @return ActionPlanJob This returns the newly created action plan job.
@@ -33,7 +33,8 @@ public interface ActionPlanJobService extends CTPService {
   Optional<ActionPlanJob> createAndExecuteActionPlanJob(ActionPlanJob actionPlanJob);
 
   /**
-   * Will be called by the endpoint when a manual execution of an action plan is requested 
+   * Will be called by the endpoint when a manual execution of an action plan is requested
+   * @return list of action plan jobs.
    */
   List<ActionPlanJob>createAndExecuteAllActionPlanJobs();
 

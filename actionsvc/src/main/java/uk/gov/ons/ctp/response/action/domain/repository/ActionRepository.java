@@ -49,6 +49,7 @@ public interface ActionRepository extends JpaRepository<Action, BigInteger> {
    *
    * @param actionTypeName ActionTypeName filter criteria
    * @param states States of Action
+   * @param actionIds the actionIds
    * @param pageable the paging info for the query
    * @return List<Action> returns all actions for actionTypeName and states, for
    *         the given page

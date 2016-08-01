@@ -2,8 +2,6 @@ package uk.gov.ons.ctp.response.action.service;
 
 import java.util.List;
 
-import org.springframework.web.client.RestClientException;
-
 import uk.gov.ons.ctp.response.action.domain.model.Action;
 import uk.gov.ons.ctp.response.casesvc.representation.AddressDTO;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseDTO;
@@ -49,8 +47,6 @@ public interface CaseSvcClientService {
    *
    * @param caseId identifies the Case to fetch
    * @return the Case we fetched
-   * @throws RestClientException when we cannot connect or the service call
-   *           errors
    */
   CaseDTO getCase(final Integer caseId);
 
@@ -60,8 +56,6 @@ public interface CaseSvcClientService {
    *
    * @param caseId identifies the Case to fetch events for
    * @return the CaseEvents we found for the case
-   * @throws RestClientException when we cannot connect or the service call
-   *           errors
    */
   List<CaseEventDTO> getCaseEvents(final Integer caseId);
 

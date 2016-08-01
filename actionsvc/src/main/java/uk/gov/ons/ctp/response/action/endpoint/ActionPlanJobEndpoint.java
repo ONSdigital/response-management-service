@@ -51,8 +51,8 @@ public class ActionPlanJobEndpoint implements CTPEndpoint {
       throws CTPException {
     log.debug("Entering findActionPlanJobById with {}", actionPlanJobId);
     Optional<ActionPlanJob> actionPlanJob = actionPlanJobService.findActionPlanJob(actionPlanJobId);
-    return mapperFacade.map(actionPlanJob.orElseThrow(() -> 
-      new CTPException(CTPException.Fault.RESOURCE_NOT_FOUND, "ActionPlanJob not found for id %d", actionPlanJobId)), ActionPlanJobDTO.class);
+    return mapperFacade.map(actionPlanJob.orElseThrow(() -> new CTPException(CTPException.Fault.RESOURCE_NOT_FOUND,
+            "ActionPlanJob not found for id %d", actionPlanJobId)), ActionPlanJobDTO.class);
   }
 
   /**
@@ -91,7 +91,7 @@ public class ActionPlanJobEndpoint implements CTPEndpoint {
     ActionPlanJob job = mapperFacade.map(actionPlanJobDTO, ActionPlanJob.class);
     job.setActionPlanId(actionPlanId);
     Optional<ActionPlanJob> actionPlanJob = actionPlanJobService.createAndExecuteActionPlanJob(job);
-    return mapperFacade.map(actionPlanJob.orElseThrow(() -> 
-      new CTPException(CTPException.Fault.RESOURCE_NOT_FOUND, "ActionPlan not found for id %s", actionPlanId)), ActionPlanJobDTO.class);
+    return mapperFacade.map(actionPlanJob.orElseThrow(() -> new CTPException(CTPException.Fault.RESOURCE_NOT_FOUND,
+            "ActionPlan not found for id %s", actionPlanId)), ActionPlanJobDTO.class);
   }
 }
