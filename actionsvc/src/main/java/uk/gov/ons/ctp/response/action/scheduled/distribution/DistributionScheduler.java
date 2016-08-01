@@ -14,7 +14,7 @@ import org.springframework.boot.actuate.health.HealthIndicator;
 import uk.gov.ons.ctp.response.action.config.AppConfig;
 
 /**
- * This bean will have the actiondistributor injected into it by spring on
+ * This bean will have the actionDistributor injected into it by spring on
  * constructions. It will then schedule the running of the distributor using
  * details from the AppConfig
  */

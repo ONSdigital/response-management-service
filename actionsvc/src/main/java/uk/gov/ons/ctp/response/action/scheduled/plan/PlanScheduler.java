@@ -15,8 +15,8 @@ import uk.gov.ons.ctp.response.action.config.AppConfig;
 import uk.gov.ons.ctp.response.action.service.ActionPlanJobService;
 
 /**
- * This bean will have the actiondistributor injected into it by spring on
- * constructions. It will then schedule the running of the distributor using
+ * This bean will have the actionPlanJobService injected into it by spring on
+ * constructions. It will then schedule the running of the actionPlanJobService createAndExecuteAllActionPlanJobs using
  * details from the AppConfig
  */
 @Named
@@ -42,7 +42,6 @@ public class PlanScheduler implements HealthIndicator {
   public PlanScheduler(AppConfig applicationConfig) {
     final Runnable planExecutionRunnable = new Runnable() {
       public void run() {
-        executionInfo = new PlanExecutionInfo();
         executionInfo.setExecutedJobs(actionPlanJobServiceImpl.createAndExecuteAllActionPlanJobs());
       }
     };

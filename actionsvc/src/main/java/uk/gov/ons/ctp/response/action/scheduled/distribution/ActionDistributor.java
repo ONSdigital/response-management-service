@@ -266,12 +266,9 @@ public class ActionDistributor {
         ActionRequest actionRequest = null;
         // update our actions state in db
         transitionAction(action, ActionDTO.ActionEvent.REQUEST_DISTRIBUTED);
-        // create the request, filling in details by GETs from
-        // casesvc
+        // create the request, filling in details by GETs from casesvc
         actionRequest = prepareActionRequest(action);
-        // advise casesvc to create a corresponding caseevent for
-        // our
-        // action
+        // advise casesvc to create a corresponding caseevent for our action
         caseSvcClientService.createNewCaseEvent(action, CategoryDTO.CategoryName.ACTION_CREATED);
         return actionRequest;
       }
@@ -294,14 +291,10 @@ public class ActionDistributor {
 
         // update our actions state in db
         transitionAction(action, ActionDTO.ActionEvent.CANCELLATION_DISTRIBUTED);
-        // create the request, filling in details by GETs from
-        // casesvc
+        // create the request, filling in details by GETs from casesvc
         actionCancel = prepareActionCancel(action);
-        // advise casesvc to create a corresponding caseevent for
-        // our
-        // action
-        caseSvcClientService.createNewCaseEvent(action,
-            CategoryDTO.CategoryName.ACTION_CANCELLATION_CREATED);
+        // advise casesvc to create a corresponding caseevent for our action
+        caseSvcClientService.createNewCaseEvent(action, CategoryDTO.CategoryName.ACTION_CANCELLATION_CREATED);
         return actionCancel;
       }
     });
