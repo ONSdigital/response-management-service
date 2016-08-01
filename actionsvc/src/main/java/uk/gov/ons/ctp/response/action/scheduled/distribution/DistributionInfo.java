@@ -14,7 +14,7 @@ import uk.gov.ons.ctp.response.action.ScheduledHealthInfo;
  */
 @Data
 @NoArgsConstructor
-@EqualsAndHashCode(callSuper=true)
+@EqualsAndHashCode(callSuper = true)
 public class DistributionInfo extends ScheduledHealthInfo {
 
   /**

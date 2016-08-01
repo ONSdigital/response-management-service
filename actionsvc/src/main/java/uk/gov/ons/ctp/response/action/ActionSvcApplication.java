@@ -46,10 +46,14 @@ import uk.gov.ons.ctp.response.action.state.ActionSvcStateTransitionManagerFacto
 public class ActionSvcApplication {
 
   public static final String ACTION_DISTRIBUTION_MAP = "actionsvc.action.distribution";
+
   @Autowired
   private AppConfig appConfig;
 
-  
+  /**
+   * To config Hazelcast
+   * @return the config
+   */
   @Bean
   public Config hazelcastConfig() {
     Config hazelcastConfig = new Config();

@@ -13,8 +13,11 @@ import lombok.Data;
 @Data
 public abstract class ScheduledHealthInfo {
   private String lastRunTime;
-  
-  public ScheduledHealthInfo () {
+
+  /**
+   * The constructor
+   */
+  public ScheduledHealthInfo() {
     DateFormat dateTimeInstance = SimpleDateFormat.getDateTimeInstance();
     lastRunTime = dateTimeInstance.format(Calendar.getInstance().getTime());
   }
