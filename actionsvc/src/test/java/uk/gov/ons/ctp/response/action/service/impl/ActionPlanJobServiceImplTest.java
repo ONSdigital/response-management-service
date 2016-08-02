@@ -60,6 +60,8 @@ public class ActionPlanJobServiceImplTest {
   }
 
   /**
+   * TODO Comment copied over from ActionDistributorTest. To modify to fit the actual test below
+   *
    * Test that when we fail at first hurdle to load ActionTypes we do not go on
    * to call anything else In reality the wake up method would then be called
    * again after a sleep interval by spring but we cannot test that here
@@ -92,5 +94,7 @@ public class ActionPlanJobServiceImplTest {
     verify(actionCaseRepo).findByActionPlanId(1);
     verify(actionPlanJobRepo).save(actionPlanJobs.get(0));
   }
+
+  // TODO Increase test coverage. Test above only tests happy path.
 
 }
