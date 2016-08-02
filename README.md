@@ -23,3 +23,9 @@ Provides restful services for :
  - Action
  - ActionPlan
  - ActionPlanJob
+
+
+# To build: mvn clean site
+    - unit test coverage reports can be found by going to:
+        - /actionsvc/target/site/cobertura/index.html
+        - /casesvc/target/site/cobertura/index.html
