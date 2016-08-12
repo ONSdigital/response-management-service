@@ -1,4 +1,10 @@
+[
 {  
    "actionPlanId":1,
    "caseId":1
+},
+{  
+   "actionPlanId":2,
+   "caseId":2
 }
+]

@@ -80,73 +80,77 @@ public class ActionPlanJobServiceImpl implements ActionPlanJobService {
     return executedJobs;
   }
 
-
   @Override
   public final Optional<ActionPlanJob> createAndExecuteActionPlanJob(final ActionPlanJob actionPlanJob) {
     return createAndExecuteActionPlanJob(actionPlanJob, true);
   }
 
   /**
-   * the root method for executing an action plan - called indirectly by the restful endpoint when executing a single
-   * plan manually and by the scheduled execution of all plans in sequence. See the other createAndExecute plan methods
-   * in this class
+   * the root method for executing an action plan - called indirectly by the
+   * restful endpoint when executing a single plan manually and by the scheduled
+   * execution of all plans in sequence. See the other createAndExecute plan
+   * methods in this class
+   * 
    * @param actionPlanJob the plan to execute
-   * @param forcedExecution true when called indirectly for manual execution - the plan lock is still used (we don't
-   *                        want more than one concurrent plan execution), but we skip the last run time check
+   * @param forcedExecution true when called indirectly for manual execution -
+   *          the plan lock is still used (we don't want more than one
+   *          concurrent plan execution), but we skip the last run time check
    * @return the plan job if it was run or null if not
    */
   @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
   private Optional<ActionPlanJob> createAndExecuteActionPlanJob(final ActionPlanJob actionPlanJob,
-                                                                boolean forcedExecution) {
+      boolean forcedExecution) {
     Integer actionPlanId = actionPlanJob.getActionPlanId();
     log.debug("Entering executeActionPlan wth plan id {}, forced {}", actionPlanId, forcedExecution);
 
-    ActionPlan actionPlan = actionPlanRepo.findOne(actionPlanId);
-    Lock lock = hazelcastInstance.getLock(actionPlan.getName());
     ActionPlanJob createdJob = null;
+    // 1 load the action plan
+    ActionPlan actionPlan = actionPlanRepo.findOne(actionPlanId);
+    if (actionPlan != null) {
+      Lock lock = hazelcastInstance.getLock(actionPlan.getName());
 
-    try {
-      if (lock.tryLock(PLAN_LOCK_TIMEOUT, TimeUnit.SECONDS)) {
-        try {
-          Timestamp now = DateTimeUtil.nowUTC();
+      try {
+        if (lock.tryLock(PLAN_LOCK_TIMEOUT, TimeUnit.SECONDS)) {
+          try {
+            Timestamp now = DateTimeUtil.nowUTC();
+            if (!forcedExecution) {
+              Date lastExecutionTime = new Date(
+                  now.getTime() - appConfig.getPlanExecution().getSubsequentDelaySeconds() * ONE_SECOND);
 
-          List<ActionCase> casesForActionPlan = actionCaseRepo.findByActionPlanId(actionPlanId);
-          if (casesForActionPlan.isEmpty()) {
-            log.info("No open cases for action plan {} - skipping", actionPlanId);
-            return Optional.empty();
-          }
+              if (actionPlan.getLastRunDateTime() != null
+                  && actionPlan.getLastRunDateTime().after(lastExecutionTime)) {
+                log.info("Job for plan {} has been run since last wake up - skipping", actionPlanId);
+                return Optional.empty();
+              }
+            }
 
-          if (!forcedExecution) {
-            Date lastExecutionTime = new Date(
-                now.getTime() - appConfig.getPlanExecution().getSubsequentDelaySeconds() * ONE_SECOND);
-
-            if (actionPlan.getLastRunDateTime() != null
-                && actionPlan.getLastRunDateTime().after(lastExecutionTime)) {
-              log.info("Job for plan {} has been run since last wake up - skipping", actionPlanId);
+            // 2 find the cases for the action plan
+            List<ActionCase> casesForActionPlan = actionCaseRepo.findByActionPlanId(actionPlanId);
+            if (casesForActionPlan.isEmpty()) {
+              log.info("No open cases for action plan {} - skipping", actionPlanId);
               return Optional.empty();
             }
-          }
 
-          if (actionPlan != null) {
             // enrich and save the job
             actionPlanJob.setState(ActionPlanJobDTO.ActionPlanJobState.SUBMITTED);
             actionPlanJob.setCreatedDateTime(now);
             actionPlanJob.setUpdatedDateTime(now);
+            // 3 save the new job record
             createdJob = actionPlanJobRepo.save(actionPlanJob);
 
-            // get the repo to call sql function to create actions
+            // 4 get the repo to call sql function to create actions
             actionCaseRepo.createActions(createdJob.getActionPlanJobId());
+          } finally {
+            log.debug("Unlocking action plan {}", actionPlanId);
+            lock.unlock();
           }
-        } finally {
-          log.debug("Unlocking action plan {}", actionPlanId);
-          lock.unlock();
+        } else {
+          log.warn("Timed out - Could not get lock on action plan {}", actionPlanId);
         }
-      } else {
-        log.warn("Timed out - Could not get lock on action plan {}", actionPlanId);
+      } catch (InterruptedException e) {
+        log.error("Failed attempt to get lock on action plan {}", actionPlanId);
+        e.printStackTrace();
       }
-    } catch (InterruptedException e) {
-      log.error("Failed attempt to get lock on action plan {}", actionPlanId);
-      e.printStackTrace();
     }
 
     return Optional.ofNullable(createdJob);
