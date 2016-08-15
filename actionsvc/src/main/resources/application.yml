@@ -11,7 +11,7 @@ logging:
   level:
     org.springframework: warn
     com.hazelcast: info
-    uk.gov.ons.ctp: warn
+    uk.gov.ons.ctp: debug
 
 liquibase:
   user: postgres

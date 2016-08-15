@@ -140,21 +140,6 @@
       <artifactId>spring-boot-configuration-processor</artifactId>
       <optional>true</optional>
     </dependency>
-    <dependency>
-      <groupId>org.opensaml</groupId>
-      <artifactId>opensaml</artifactId>
-      <version>2.5.1-1</version>
-    </dependency>
-    <dependency>
-      <groupId>org.scala-lang</groupId>
-      <artifactId>scala-library</artifactId>
-      <version>2.11.0</version>
-    </dependency>
-    <dependency>
-      <groupId>org.neo4j</groupId>
-      <artifactId>neo4j-cypher-compiler-2.1</artifactId>
-      <version>2.1.8</version>
-    </dependency>
   </dependencies>
 
   <build>
