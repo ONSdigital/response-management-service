@@ -42,8 +42,6 @@ import uk.gov.ons.ctp.response.action.domain.repository.ActionPlanRepository;
 @RunWith(MockitoJUnitRunner.class)
 public class ActionPlanJobServiceImplTest {
 
-  private static final long ONE_SECOND = 1000L;
-
   @Mock
   HazelcastInstance hazelcastInstance;
 

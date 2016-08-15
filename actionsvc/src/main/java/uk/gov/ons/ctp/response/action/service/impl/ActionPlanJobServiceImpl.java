@@ -104,7 +104,7 @@ public class ActionPlanJobServiceImpl implements ActionPlanJobService {
     log.debug("Entering executeActionPlan wth plan id {}, forced {}", actionPlanId, forcedExecution);
 
     ActionPlanJob createdJob = null;
-    // 1 load the action plan
+    // load the action plan
     ActionPlan actionPlan = actionPlanRepo.findOne(actionPlanId);
     if (actionPlan != null) {
       Lock lock = hazelcastInstance.getLock(actionPlan.getName());
@@ -124,7 +124,7 @@ public class ActionPlanJobServiceImpl implements ActionPlanJobService {
               }
             }
 
-            // 2 find the cases for the action plan
+            // find the cases for the action plan
             List<ActionCase> casesForActionPlan = actionCaseRepo.findByActionPlanId(actionPlanId);
             if (casesForActionPlan.isEmpty()) {
               log.info("No open cases for action plan {} - skipping", actionPlanId);
@@ -135,10 +135,10 @@ public class ActionPlanJobServiceImpl implements ActionPlanJobService {
             actionPlanJob.setState(ActionPlanJobDTO.ActionPlanJobState.SUBMITTED);
             actionPlanJob.setCreatedDateTime(now);
             actionPlanJob.setUpdatedDateTime(now);
-            // 3 save the new job record
+            // save the new job record
             createdJob = actionPlanJobRepo.save(actionPlanJob);
 
-            // 4 get the repo to call sql function to create actions
+            // get the repo to call sql function to create actions
             actionCaseRepo.createActions(createdJob.getActionPlanJobId());
           } finally {
             log.debug("Unlocking action plan {}", actionPlanId);

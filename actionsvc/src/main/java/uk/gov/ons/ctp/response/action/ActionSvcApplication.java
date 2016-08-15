@@ -34,7 +34,7 @@ import uk.gov.ons.ctp.response.action.representation.ActionPlanJobDTO;
 import uk.gov.ons.ctp.response.action.state.ActionSvcStateTransitionManagerFactory;
 
 /**
- * The 'main' entry point into the Action Service SpringBoot Application.
+ * The main entry point into the Action Service SpringBoot Application.
  */
 @SpringBootApplication
 @EnableTransactionManagement
