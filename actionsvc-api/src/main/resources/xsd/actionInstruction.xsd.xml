@@ -5,7 +5,7 @@
     <actionRequest>
       <responseRequired>false</responseRequired>
       <actionId>201</actionId>
-      <actionType>string</actionType>
+      <xactionType>string</xactionType>
       <address>
         <uprn>201</uprn>
         <!--Optional:-->
