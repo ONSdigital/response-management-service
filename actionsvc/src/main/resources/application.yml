@@ -106,15 +106,20 @@ plan-execution:
   subsequent-delay-seconds: 600
 
 case-svc:
-  scheme: http
-  host: localhost
-  port: 8171
   case-by-case-get-path: /cases/{caseid}
   questionnaires-by-case-get-path: /questionnaires/case/{caseid}
   case-events-by-case-get-path: /cases/{caseid}/events
   case-events-by-case-post-path: /cases/{caseid}/events
   address-by-uprn-get-path: /addresses/{uprn}
   case-by-status-and-action-plan-path: /cases/actionplan/{actionplanid}
+  connection-config:
+    scheme: http
+    host: localhost
+    port: 8171
+    retry-attempts: 10
+    retry-pause-milli-seconds: 5000
+    connect-timeout-milli-seconds: 5000
+    read-timeout-milli-seconds: 5000
 
 csv-ingest:
   directory: /tmp/csv

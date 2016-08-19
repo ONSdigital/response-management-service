@@ -41,7 +41,7 @@ public class CaseSvcClientServiceImplTest {
   private AppConfig appConfig;
 
   @Spy
-  private RestClient restClient = new RestClient("http", "localhost", "8080");
+  private RestClient restClient = new RestClient();
 
   @InjectMocks
   private CaseSvcClientServiceImpl caseSvcClientService;

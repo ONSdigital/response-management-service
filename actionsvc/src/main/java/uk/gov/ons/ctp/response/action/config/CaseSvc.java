@@ -1,6 +1,7 @@
 package uk.gov.ons.ctp.response.action.config;
 
 import lombok.Data;
+import uk.gov.ons.ctp.common.rest.RestClientConfig;
 
 /**
  * App config POJO for Case service access - host/location and endpoint locations
@@ -8,9 +9,7 @@ import lombok.Data;
  */
 @Data
 public class CaseSvc {
-  private String scheme;
-  private String host;
-  private String port;
+  private RestClientConfig connectionConfig;
   private String caseByCaseGetPath;
   private String questionnairesByCaseGetPath;
   private String caseEventsByCaseGetPath;
