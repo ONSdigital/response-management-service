@@ -23,5 +23,18 @@
     <property name="recoveryInterval" value="60000" />
     <property name="autoStartup" value="true" />
   </bean>
+  
+    	<!-- The in-bound Case Notification message container config -->
+	<bean id="caseMessageListenerContainer"
+		class="org.springframework.jms.listener.DefaultMessageListenerContainer">
+		<property name="connectionFactory" ref="connectionFactory" />
+		<property name="destinationName" value="caseNotificationQueue" />
+		<property name="maxConcurrentConsumers" value="1" />
+		<property name="concurrentConsumers" value="1" />
+		<property name="receiveTimeout" value="5000" />
+		<property name="recoveryInterval" value="60000" />
+		<property name="autoStartup" value="true" />
+	</bean>
+
 </beans>
 
