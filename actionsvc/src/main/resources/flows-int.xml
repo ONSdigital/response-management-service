@@ -8,13 +8,13 @@
  xmlns:int-http="http://www.springframework.org/schema/integration/http"
  xmlns:int-xml="http://www.springframework.org/schema/integration/xml"
  xmlns:int-file="http://www.springframework.org/schema/integration/file"
- xsi:schemaLocation="http://www.springframework.org/schema/beans   
-  http://www.springframework.org/schema/beans/spring-beans-4.2.xsd  
-  http://www.springframework.org/schema/context  
-  http://www.springframework.org/schema/context/spring-context-4.2.xsd  
+ xsi:schemaLocation="http://www.springframework.org/schema/beans
+  http://www.springframework.org/schema/beans/spring-beans-4.2.xsd
+  http://www.springframework.org/schema/context
+  http://www.springframework.org/schema/context/spring-context-4.2.xsd
   http://www.springframework.org/schema/integration http://www.springframework.org/schema/integration/spring-integration.xsd
   http://www.springframework.org/schema/integration/jms http://www.springframework.org/schema/integration/jms/spring-integration-jms.xsd
-  http://www.springframework.org/schema/jms  
+  http://www.springframework.org/schema/jms
   http://www.springframework.org/schema/jms/spring-jms-4.2.xsd
   http://www.springframework.org/schema/integration/file
   http://www.springframework.org/schema/integration/file/spring-integration-file.xsd
@@ -23,14 +23,50 @@
   http://www.springframework.org/schema/integration/xml
   http://www.springframework.org/schema/integration/xml/spring-integration-xml.xsd">
 
-
  <int-file:inbound-channel-adapter id="csvIngest"
   directory="file:${csv-ingest.directory}" prevent-duplicates="false"
   filename-pattern="${csv-ingest.file-pattern}">
   <int:poller fixed-delay="30000" />
  </int-file:inbound-channel-adapter>
 
- <!-- First the inbound flow -->
+ <!-- The inbound flow for notification messages -->
+
+ <!-- Setup input channel to receive Case notification messages sent to JMS queue -->
+ <int:channel id="caseNotificationXml" />
+
+ <!-- Adapter listening on JMS queue to create Spring Integration message instance and send
+  to input channel -->
+ <int-jms:message-driven-channel-adapter
+  id="jmsCase" container="caseMessageListenerContainer" channel="caseNotificationXml" />
+
+ <!-- invalid xml notification written to disk -->
+ <int:channel id="notificationXmlInvalid" />
+ <int-file:outbound-channel-adapter
+  directory="/var/log/ctp/responsemanagement/actionsvc/notification"
+  channel="notificationXmlInvalid" />
+
+ <!-- validate xml against schema -->
+ <int-xml:validating-filter id="notificationValidator"
+  input-channel="caseNotificationXml"
+  output-channel="notificationXmlValid"
+  schema-location="classpath:xsd/caseNotification.xsd"
+  discard-channel="notificationXmlInvalid" />
+
+ <!-- valid xml is unmarshalled into the jaxb generated object model -->
+ <int:channel id="notificationTransformed" />
+ <int-xml:unmarshalling-transformer
+  input-channel="notificationXmlValid" output-channel="notificationTransformed"
+  unmarshaller="notificationUnmarshaller" />
+
+ <!-- The transformer uses this unmarshaller to do the heavy (un)lifting -->
+ <bean id="notificationUnmarshaller" class="org.springframework.oxm.jaxb.Jaxb2Marshaller">
+  <property name="contextPath"
+   value="uk.gov.ons.ctp.response.casesvc.message.notification" />
+ </bean>
+
+ <!-- Please see CaseNotificationReceiver message handler for continuation of notification flow -->
+
+ <!-- The inbound flow for feedback messages -->
 
  <!-- need an input channel defined for MQ adapter to input to -->
  <int:channel id="feedbackXml" />
@@ -41,18 +77,18 @@
   directory="/var/log/ctp/responsemanagement/actionsvc/feedback"
   channel="feedbackXmlInvalid" />
 
- <!-- the MQ channel adapter reads from testQueue (see the container above) 
+ <!-- the MQ channel adapter reads from testQueue (see the container above)
   and inputs to feedback.xml -->
  <int-jms:message-driven-channel-adapter
   id="jmsIn" container="feedbackMessageListenerContainer" channel="feedbackXml" />
 
- <!-- First the SI message provided by the channel adapter is validated against 
+ <!-- First the SI message provided by the channel adapter is validated against
   the inbound schema -->
  <int-xml:validating-filter id="feedbackValidator"
   input-channel="feedbackXml" output-channel="feedbackXmlValid"
   schema-location="classpath:xsd/actionFeedback.xsd" discard-channel="feedbackXmlInvalid" />
 
- <!-- Secondly the now validated xml is transformed into the jaxb generated 
+ <!-- Secondly the now validated xml is transformed into the jaxb generated
   object model -->
  <int:channel id="feedbackTransformed" />
  <int-xml:unmarshalling-transformer
@@ -123,7 +159,7 @@
  <int:router input-channel="instructionXmlValid"
   expression="'instruction'.concat(headers.HANDLER)" />
 
- <!-- each channel adapter listens to one of our routed channels and adapts 
+ <!-- each channel adapter listens to one of our routed channels and adapts
   the SI message to a JMS message -->
  <int-jms:outbound-channel-adapter id="jmsout.Field"
   channel="instructionField" destination="fieldInstructionQueue" />
