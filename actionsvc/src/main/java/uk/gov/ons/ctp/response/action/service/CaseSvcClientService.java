@@ -24,8 +24,8 @@ public interface CaseSvcClientService {
   CaseEventDTO createNewCaseEvent(final Action action, CategoryDTO.CategoryName actionCategory);
 
   /**
-   * Call CaseSvc using REST to get the Address MAY throw a
-   * RuntimeException if the call fails
+   * Call CaseSvc using REST to get the Address MAY throw a RuntimeException if
+   * the call fails
    *
    * @param uprn identifies the Address to fetch
    * @return the Address we fetched
@@ -60,7 +60,12 @@ public interface CaseSvcClientService {
   List<CaseEventDTO> getCaseEvents(final Integer caseId);
 
   /**
-   * Get the list of case ids for all cases that are 'open' and associated with the given action plan
+   * Get the list of case ids for all cases that are 'open' and associated with
+   * the given action plan. Note that this has been replaced by the
+   * Case.Notification queue mechanism to notify the Action service of case life
+   * cycle events. Has been left in place pending implementation of recovery
+   * functionality if Case and Action service state gets out of synchronisation.
+   *
    * @param actionPlanId the action plan id
    * @return the list of case ids
    */
