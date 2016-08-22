@@ -10,7 +10,7 @@
 		class="org.springframework.jms.connection.CachingConnectionFactory">
 		<property name="targetConnectionFactory">
 			<bean class="org.apache.activemq.ActiveMQConnectionFactory">
-				<property name="brokerURL" value="tcp://localhost:53445" />
+				<property name="brokerURL" value="tcp://localhost:53445?jms.redeliveryPolicy.maximumRedeliveries=3" />
 				<property name="userName" value="smx" />
 				<property name="password" value="smx" />
 			</bean>
@@ -35,6 +35,7 @@
 		class="org.springframework.jms.listener.DefaultMessageListenerContainer">
 		<property name="connectionFactory" ref="connectionFactory" />
 		<property name="destinationName" value="Case.Notifications" />
+		<property name="sessionTransacted" value="true" />
 		<property name="maxConcurrentConsumers" value="1" />
 		<property name="concurrentConsumers" value="1" />
 		<property name="receiveTimeout" value="5000" />
