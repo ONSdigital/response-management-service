@@ -13,7 +13,7 @@ The Action service is a RESTful web service implemented using Spring Boot. An ac
 
 The [Swagger](http://swagger.io/) specification that documents the Action service's API can be found in `/actionsvc-api/swagger.yml`.
 
-# Building Response Management
+## Building Response Management
 The code in this repository depends on some common framework code in the [rm-common-service](https://github.com/ONSdigital/rm-common-service) repository. Build that code first then use the command below to build Response Management:
 
 ```
