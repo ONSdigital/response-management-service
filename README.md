@@ -1,32 +1,20 @@
-# ResponseManagement Service
-This project contains the server side components for the ResponseManagement product
+# Response Management Service
+Response Management is part of ONS's Survey Data Collection platform. It covers overall management of the survey (across all survey modes). It manages the survey sample, tracks responses and initiates required follow-up actions during the collection period.
 
+This repository contains the Java services that comprise Response Management. These services communicate with each other over HTTP and [JMS](https://en.wikipedia.org/wiki/Java_Message_Service) as appropriate. Each service has a dedicated database user and schema i.e. there is no database-level integration. The main services are listed below.
 
-# casesvc
-Provides restful services for :
+## Case Service
+The Case service is a RESTful web service implemented using [Spring Boot](http://projects.spring.io/spring-boot/). It manages cases and associated address frame data. A case represents an expected response from an address. Every address in the survey sample must have at least one associated case. A case has a case type such as Household or Individual. Each case can have multiple questionnaires associated with it, but it must have at least one. Each questionnaire has a question set and a unique Internet Access Code (IAC). Interesting things that happen during the life cycle of a case are recorded as case events. Case life cycle transitions are published as JMS messages for interested parties to subscribe to. The Action service described below is one such party.
 
- - Address
- - Case
- - CaseType
- - LocalAuthority
- - Msoa
- - Questionnaire
- - QuestionnaireSet
- - Region
- - Sample
- - Survey
+The [Swagger](http://swagger.io/) specification that documents the Case service's API can be found in `/casesvc-api/swagger.yml`.
 
+## Action Service
+The Action service is a RESTful web service implemented using Spring Boot. An action represents an operation that is required for a case. For example, posting out a paper form or arranging a field visit. Actions are grouped into action plans via a set of rules that define, in terms of a day, when a certain action should be taken. Action plans are applied to cases to create actions. Once an action is created it is distributed to a remote handler service to be completed. An examples of a remote handler service is the gateway that interfaces with the Field Work Management Tool (FWMT) to schedule field visits. Another example is the service that generates CSV files containing address data and IACs that a print provider mail merges to create the letters inviting participation in a survey. The Action service can receive feedback from remote handlers to change the state of an action.
 
-# actionsvc
-Provides restful services for :
+The [Swagger](http://swagger.io/) specification that documents the Action service's API can be found in `/actionsvc-api/swagger.yml`.
 
- - Action
- - ActionPlan
- - ActionPlanJob
+# Building Response Management
 
-
-# To build: mvn clean site
-    - Note that you must comment out the configuration sections of maven-checkstyle-plugin in actionsvc-api and casesvc-api for it to work.
-    - unit test coverage reports can be found by going to:
-        - /actionsvc/target/site/cobertura/index.html
-        - /casesvc/target/site/cobertura/index.html
+```
+mvn clean site
+```
