@@ -15,6 +15,8 @@ The [Swagger](http://swagger.io/) specification that documents the Action servic
 
 # Building Response Management
 
+The code in this repository depends on some common framework code in the [rm-common-service](https://github.com/ONSdigital/rm-common-service) repository. Build that code first then use the command below to build Response Management:
+
 ```
 mvn clean site
 ```
