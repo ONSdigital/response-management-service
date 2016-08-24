@@ -32,6 +32,10 @@
     <module>printsvc</module>
   </modules>
 
+  <build>
+    <defaultGoal>clean install</defaultGoal>
+  </build>
+
   <dependencyManagement>
     <dependencies>
       <dependency>
