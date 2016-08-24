@@ -32,9 +32,6 @@
     <module>printsvc</module>
   </modules>
 
-  <build>
-    <defaultGoal>clean install</defaultGoal>
-  </build>
 
   <dependencyManagement>
     <dependencies>
@@ -163,6 +160,7 @@
   </dependencies>
 
   <build>
+    <defaultGoal>clean install</defaultGoal>
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
