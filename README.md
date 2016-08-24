@@ -19,3 +19,6 @@ The code in this repository depends on some common framework code in the [rm-com
 ```
 mvn --update-snapshots
 ```
+
+## Copyright
+Copyright (C) 2016 Crown Copyright (Office for National Statistics)
