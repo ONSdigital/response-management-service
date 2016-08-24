@@ -31,7 +31,7 @@ import uk.gov.ons.ctp.response.action.service.ActionService;
 
 @Named
 @Slf4j
-public final class ActionServiceImpl implements ActionService {
+public class ActionServiceImpl implements ActionService {
 
   private static final int TRANSACTION_TIMEOUT = 30;
 

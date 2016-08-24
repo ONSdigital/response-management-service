@@ -9,6 +9,8 @@ import java.util.stream.Collectors;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import org.springframework.cloud.sleuth.Span;
+import org.springframework.cloud.sleuth.Tracer;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -78,10 +80,15 @@ import uk.gov.ons.ctp.response.casesvc.representation.QuestionnaireDTO;
 @Slf4j
 public class ActionDistributor {
 
+  public static final String ACTION_DISTRIBUTOR_SPAN = "actionDistributor";
+
   private static final long IMPOSSIBLE_ACTION_ID = 999999999999L;
 
   private static final long MILLISECONDS = 1000L;
 
+  @Inject
+  private Tracer tracer;
+  
   @Inject
   private HazelcastInstance hazelcastInstance;
 
@@ -128,6 +135,7 @@ public class ActionDistributor {
    */
   @SuppressWarnings("unchecked")
   public final DistributionInfo distribute() {
+    Span distribSpan = tracer.createSpan(ACTION_DISTRIBUTOR_SPAN);
     log.debug("ActionDistributor awoken from slumber");
     DistributionInfo distInfo = new DistributionInfo();
 
@@ -182,6 +190,7 @@ public class ActionDistributor {
 
         actionMap.remove(localUUID);
         log.debug("Actions processed for actionType {}", actionType.getName());
+        tracer.close(distribSpan);
       });
     } catch (Exception e) {
       // something went wrong retrieving action types or actions
@@ -189,6 +198,7 @@ public class ActionDistributor {
       // we will be back after a short snooze
     }
     log.debug("ActionDistributor going back to sleep");
+    tracer.close(distribSpan);
     return distInfo;
   }
 

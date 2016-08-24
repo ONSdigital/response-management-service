@@ -11,6 +11,8 @@ import java.util.concurrent.locks.Lock;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import org.springframework.cloud.sleuth.Span;
+import org.springframework.cloud.sleuth.Tracer;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -35,12 +37,17 @@ import uk.gov.ons.ctp.response.action.service.ActionPlanJobService;
 @Slf4j
 public class ActionPlanJobServiceImpl implements ActionPlanJobService {
 
+  public static final String ACTION_PLAN_SPAN = "automatedActionPlanExecution";
+
   private static final String CREATED_BY_SYSTEM = "SYSTEM";
 
   private static final long ONE_SECOND = 1000L;
 
   private static final int PLAN_LOCK_TIMEOUT = 5;
 
+  @Inject
+  private Tracer tracer;
+  
   @Inject
   private HazelcastInstance hazelcastInstance;
 
@@ -57,19 +64,20 @@ public class ActionPlanJobServiceImpl implements ActionPlanJobService {
   private ActionPlanJobRepository actionPlanJobRepo;
 
   @Override
-  public final Optional<ActionPlanJob> findActionPlanJob(final Integer actionPlanJobId) {
+  public Optional<ActionPlanJob> findActionPlanJob(final Integer actionPlanJobId) {
     log.debug("Entering findActionPlanJob with {}", actionPlanJobId);
     return Optional.ofNullable(actionPlanJobRepo.findOne(actionPlanJobId));
   }
 
   @Override
-  public final List<ActionPlanJob> findActionPlanJobsForActionPlan(final Integer actionPlanId) {
+  public List<ActionPlanJob> findActionPlanJobsForActionPlan(final Integer actionPlanId) {
     log.debug("Entering findActionPlanJobsForActionPlan with {}", actionPlanId);
     return actionPlanJobRepo.findByActionPlanId(actionPlanId);
   }
 
   @Override
   public List<ActionPlanJob> createAndExecuteAllActionPlanJobs() {
+    Span span = tracer.createSpan(ACTION_PLAN_SPAN);
     List<ActionPlanJob> executedJobs = new ArrayList<>();
     actionPlanRepo.findAll().forEach(actionPlan -> {
       ActionPlanJob job = new ActionPlanJob();
@@ -77,11 +85,12 @@ public class ActionPlanJobServiceImpl implements ActionPlanJobService {
       job.setCreatedBy(CREATED_BY_SYSTEM);
       createAndExecuteActionPlanJob(job, false).ifPresent(j -> executedJobs.add(j));
     });
+    tracer.close(span);
     return executedJobs;
   }
 
   @Override
-  public final Optional<ActionPlanJob> createAndExecuteActionPlanJob(final ActionPlanJob actionPlanJob) {
+  public Optional<ActionPlanJob> createAndExecuteActionPlanJob(final ActionPlanJob actionPlanJob) {
     return createAndExecuteActionPlanJob(actionPlanJob, true);
   }
 
@@ -101,7 +110,7 @@ public class ActionPlanJobServiceImpl implements ActionPlanJobService {
   private Optional<ActionPlanJob> createAndExecuteActionPlanJob(final ActionPlanJob actionPlanJob,
       boolean forcedExecution) {
     Integer actionPlanId = actionPlanJob.getActionPlanId();
-    log.debug("Entering executeActionPlan wth plan id {}, forced {}", actionPlanId, forcedExecution);
+    log.debug("Entering createAndExecuteActionPlanJob wth plan id {}, forced {}", actionPlanId, forcedExecution);
 
     ActionPlanJob createdJob = null;
     // load the action plan

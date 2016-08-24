@@ -20,6 +20,7 @@ import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.mockito.Spy;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.springframework.cloud.sleuth.Tracer;
 
 import com.google.common.collect.Lists;
 import com.hazelcast.concurrent.lock.LockProxy;
@@ -41,6 +42,9 @@ import uk.gov.ons.ctp.response.action.domain.repository.ActionPlanRepository;
  */
 @RunWith(MockitoJUnitRunner.class)
 public class ActionPlanJobServiceImplTest {
+
+  @Mock
+  Tracer tracer;
 
   @Mock
   HazelcastInstance hazelcastInstance;

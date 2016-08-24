@@ -11,13 +11,17 @@ import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.List;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
 import org.mockito.Spy;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.springframework.cloud.sleuth.Span;
+import org.springframework.cloud.sleuth.Tracer;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.client.MockRestServiceServer;
@@ -38,6 +42,11 @@ import uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO;
 public class CaseSvcClientServiceImplTest {
 
   @Mock
+  Tracer tracer;
+  @Mock
+  Span span;
+
+  @Mock
   private AppConfig appConfig;
 
   @Spy
@@ -46,6 +55,13 @@ public class CaseSvcClientServiceImplTest {
   @InjectMocks
   private CaseSvcClientServiceImpl caseSvcClientService;
 
+  
+  @Before
+  public void setup() {
+    MockitoAnnotations.initMocks(this);
+    Mockito.when(tracer.getCurrentSpan()).thenReturn(span);
+    restClient.setTracer(tracer);
+  }
   /**
    * Guess what? - a test!
    */

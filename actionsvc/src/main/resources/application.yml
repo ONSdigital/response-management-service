@@ -9,9 +9,10 @@ info:
 # ie -Dlogging.level.org.springframework=DEBUG
 logging:
   level:
-    org.springframework: warn
+    org.springframework.cloud: debug
     com.hazelcast: info
     uk.gov.ons.ctp: debug
+    org.springframework.web.servlet.DispatcherServlet: DEBUG
 
 liquibase:
   user: postgres
@@ -31,7 +32,7 @@ management:
   port: 8251
   context-path: /mgmt
   security:
-    role: SUPERUSER
+    roles: SUPERUSER
     enabled: false
 
 server:
@@ -74,18 +75,21 @@ spring:
   application:
     name: ONS ActionService
 
+  sleuth:
+    sampler:
+      percentage: 1
+      
   activemq:
     broker-url: tcp://localhost:53445
-    pooled: true
+    pool:
+      enabled: true
 
   datasource:
     url: jdbc:postgresql://localhost:5432/postgres
     username: actionsvc
     password: actionsvc
     driverClassName: org.postgresql.Driver
-    test-on-borrow: true
-    remove-abandoned: true
-    validation-query: SELECT 1;
+
   
   jpa:
     database-platform: org.hibernate.dialect.PostgreSQLDialect

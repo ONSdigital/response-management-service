@@ -45,7 +45,7 @@ public class DistributionScheduler implements HealthIndicator {
   @Inject
   public DistributionScheduler(AppConfig applicationConfig) {
     final Runnable distributorRunnable = new Runnable() {
-      public void run() {
+      @Override public void run() {
         distributionInfo = actionDistributorImpl.distribute();
       }
     };

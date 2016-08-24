@@ -31,7 +31,7 @@ import uk.gov.ons.ctp.response.action.representation.ActionPlanJobDTO;
 public class ActionPlanJob {
 
   @Id
-  @GeneratedValue(strategy = GenerationType.AUTO, generator = "actionplanjobseq_gen")
+  @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "actionplanjobseq_gen")
   @SequenceGenerator(name = "actionplanjobseq_gen", sequenceName = "action.actionplanjobseq")
   @Column(name = "actionplanjobid")
   private Integer actionPlanJobId;

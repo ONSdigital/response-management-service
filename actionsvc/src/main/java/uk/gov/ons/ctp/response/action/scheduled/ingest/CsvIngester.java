@@ -52,7 +52,7 @@ import uk.gov.ons.ctp.response.action.message.instruction.Priority;
  */
 @MessageEndpoint
 @Slf4j
-public class CsvIngester extends CsvToBean {
+public class CsvIngester extends CsvToBean<CsvLine> {
 
   private static final String CHANNEL = "csvIngest";
 
@@ -106,7 +106,7 @@ public class CsvIngester extends CsvToBean {
   @Inject
   private InstructionPublisher instructionPublisher;
 
-  private ColumnPositionMappingStrategy columnPositionMappingStrategy;
+  private ColumnPositionMappingStrategy<CsvLine> columnPositionMappingStrategy;
 
   /**
    * Lazy create a reusable validator
@@ -123,7 +123,7 @@ public class CsvIngester extends CsvToBean {
    * Create this ingester
    */
   public CsvIngester() {
-    columnPositionMappingStrategy = new ColumnPositionMappingStrategy();
+    columnPositionMappingStrategy = new ColumnPositionMappingStrategy<>();
     columnPositionMappingStrategy.setType(CsvLine.class);
     columnPositionMappingStrategy.setColumnMapping(COLUMNS);
   }

@@ -32,13 +32,13 @@ public class ActionPlanServiceImpl implements ActionPlanService {
   private ActionRuleRepository actionRuleRepository;
 
   @Override
-  public final List<ActionPlan> findActionPlans() {
+  public List<ActionPlan> findActionPlans() {
     log.debug("Entering findActionPlans");
     return actionPlanRepo.findAll();
   }
 
   @Override
-  public final ActionPlan findActionPlan(final Integer actionPlanId) {
+  public ActionPlan findActionPlan(final Integer actionPlanId) {
     log.debug("Entering findActionPlan with {}", actionPlanId);
     return actionPlanRepo.findOne(actionPlanId);
   }
@@ -46,7 +46,7 @@ public class ActionPlanServiceImpl implements ActionPlanService {
 
   @Override
   @Transactional(propagation = Propagation.REQUIRED, readOnly = false, timeout = TRANSACTION_TIMEOUT)
-  public final ActionPlan updateActionPlan(final Integer actionPlanId, final ActionPlan actionPlan) {
+  public ActionPlan updateActionPlan(final Integer actionPlanId, final ActionPlan actionPlan) {
     log.debug("Entering updateActionPlan with {}", actionPlanId);
     ActionPlan existingActionPlan = actionPlanRepo.findOne(actionPlanId);
     if (existingActionPlan != null) {
@@ -75,7 +75,7 @@ public class ActionPlanServiceImpl implements ActionPlanService {
   }
 
   @Override
-  public final List<ActionRule> findActionRulesForActionPlan(final Integer actionPlanId) {
+  public List<ActionRule> findActionRulesForActionPlan(final Integer actionPlanId) {
     return actionRuleRepository.findByActionPlanId(actionPlanId);
   }
 
