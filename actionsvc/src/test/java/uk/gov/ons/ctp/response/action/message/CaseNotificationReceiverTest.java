@@ -140,8 +140,8 @@ public class CaseNotificationReceiverTest {
   }
 
   /**
-   * Test SI sent badly formed XML to generate a parse error results in ActiveMQ
-   * dead letter queue message. Local Transaction should rollback and message be
+   * SI sent badly formed XML to generate a parse error results in ActiveMQ
+   * dead letter queue message. Local transaction should rollback and message be
    * considered a poisoned bill.
    */
   @Test
