@@ -2,7 +2,9 @@ package uk.gov.ons.ctp.response.action.message;
 
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static uk.gov.ons.ctp.response.casesvc.message.notification.NotificationType.CLOSED;
 import static uk.gov.ons.ctp.response.casesvc.message.notification.NotificationType.CREATED;
@@ -139,7 +141,7 @@ public class CaseNotificationReceiverTest {
 
   /**
    * Test SI sent badly formed XML to generate a parse error results in ActiveMQ
-   * Dead Letter Queue message. Local Transaction should rollback and message be
+   * dead letter queue message. Local Transaction should rollback and message be
    * considered a poisoned bill.
    */
   @Test
@@ -157,6 +159,8 @@ public class CaseNotificationReceiverTest {
     File logDir = new File(INVALID_CASE_NOTIFICATION_LOG_DIRECTORY);
     File[] files = logDir.listFiles();
     assertEquals(0, files.length);
+
+    verify(caseNotificationService, never()).acceptNotification(any());
   }
 
   /**
