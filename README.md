@@ -3,6 +3,8 @@ Response Management is part of ONS's Survey Data Collection platform. It covers 
 
 This repository contains the Java services that comprise Response Management. These services communicate with each other over HTTP and [JMS](https://en.wikipedia.org/wiki/Java_Message_Service) as appropriate. Each service has a dedicated database user and schema i.e. there is no database-level integration. The main services are listed below.
 
+[![Build Status](https://travis-ci.org/ONSdigital/response-management-service.svg?branch=master)](https://travis-ci.org/ONSdigital/response-management-service)
+
 ## Case Service
 The Case service is a RESTful web service implemented using [Spring Boot](http://projects.spring.io/spring-boot/). It manages cases and associated address frame data. A case represents an expected response from an address. Every address in the survey sample must have at least one associated case. A case has a case type such as Household or Individual. Each case can have multiple questionnaires associated with it, but it must have at least one. Each questionnaire has a question set and a unique Internet Access Code (IAC). Interesting things that happen during the life cycle of a case are recorded as case events. Case life cycle transitions are published as JMS messages for interested parties to subscribe to. The Action service described below is one such party.
 
