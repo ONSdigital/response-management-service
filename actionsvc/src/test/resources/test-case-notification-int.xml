@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xmlns:int="http://www.springframework.org/schema/integration"
+ xmlns:int-jms="http://www.springframework.org/schema/integration/jms"
+ xsi:schemaLocation="http://www.springframework.org/schema/beans
+  http://www.springframework.org/schema/beans/spring-beans-4.2.xsd
+  http://www.springframework.org/schema/integration http://www.springframework.org/schema/integration/spring-integration.xsd
+  http://www.springframework.org/schema/integration/jms
+  http://www.springframework.org/schema/integration/jms/spring-integration-jms.xsd" >
+
+  <!-- Message listener on ActiveMQ.DLQ in VM memory -->
+  <bean id="activeMQListenerContainer"
+        class="org.springframework.jms.listener.DefaultMessageListenerContainer">
+    <property name="connectionFactory" ref="connectionFactory" />
+    <property name="destinationName" value="ActiveMQ.DLQ" />
+    <property name="maxConcurrentConsumers" value="1" />
+    <property name="concurrentConsumers" value="1" />
+    <property name="autoStartup" value="true" />
+  </bean>
+
+  <!-- Setup Input channel to receive failed messages-->
+  <int:channel id="activeMQDLQXml">
+    <int:queue capacity="1" />
+  </int:channel>
+
+  <!-- Adapter listening on JMS queue to check for failed messages -->
+  <int-jms:message-driven-channel-adapter
+    id="jmsIn" container="activeMQListenerContainer" channel="activeMQDLQXml"/>
+
+  <!-- case notification jms queue which can be used for testing -->
+  <int:channel id="caseNotificationOutbound" />
+
+  <bean id="caseNotificationJMSQueue" class="org.apache.activemq.command.ActiveMQQueue">
+    <constructor-arg value="Case.Notifications"/>
+  </bean>
+
+  <!--  adapt the SI message to a JMS message -->
+  <int-jms:outbound-channel-adapter id="jmsout" channel="caseNotificationOutbound" destination="caseNotificationJMSQueue"/>
+
+  <!-- Notification Receiver ServiceActivator(inputChannel = "notificationTransformed") -->
+  <bean id="notificationReceiver" class="uk.gov.ons.ctp.response.action.message.impl.CaseNotificationReceiverImpl" />
+
+  <!-- Mapper bean to inject into  notificationReceiver-->
+  <bean id="mapper" class="uk.gov.ons.ctp.response.action.ActionBeanMapper"/>
+
+  <!-- Mock notificationService to inject into notificationReceiver -->
+  <bean id="notificationService" class="org.mockito.Mockito" factory-method="mock"  >
+    <constructor-arg value="uk.gov.ons.ctp.response.action.service.impl.CaseNotificationServiceImpl" />
+  </bean>
+
+  <!-- Mock actionCaseRepository to inject into notificationService -->
+  <bean id="notificationRepository" class="org.mockito.Mockito" factory-method="mock"  >
+    <constructor-arg value="uk.gov.ons.ctp.response.action.domain.repository.ActionCaseRepository" />
+  </bean>
+
+</beans>
