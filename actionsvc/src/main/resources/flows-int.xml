@@ -163,12 +163,16 @@
   the SI message to a JMS message -->
  <int-jms:outbound-channel-adapter id="jmsout.Field"
   channel="instructionField" destination="fieldInstructionQueue" />
+  
  <int-jms:outbound-channel-adapter id="jmsout.Printer"
   channel="instructionPrinter" destination="printerInstructionQueue" />
+
  <int-jms:outbound-channel-adapter id="jmsout.CensusSupport"
   channel="instructionCensusSupport" destination="supportInstructionQueue" />
+  
  <int-jms:outbound-channel-adapter id="jmsout.HHSurvey"
   channel="instructionHHSurvey" destination="householdSurveyInstructionQueue" />
+  
  <int-jms:outbound-channel-adapter id="jmsout.HotelSurvey"
   channel="instructionHotelSurvey" destination="hotelSurveyInstructionQueue" />
 </beans>
