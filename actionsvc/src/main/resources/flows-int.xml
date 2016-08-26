@@ -42,7 +42,7 @@
  <!-- invalid xml notification written to disk -->
  <int:channel id="notificationXmlInvalid" />
  <int-file:outbound-channel-adapter
-  directory="/var/log/ctp/responsemanagement/actionsvc/notification"
+  directory="file:${deadxml.directory}/notification"
   channel="notificationXmlInvalid" />
 
  <!-- validate xml against schema -->
@@ -74,7 +74,7 @@
  <!-- anything sent to this channel is written to disk -->
  <int:channel id="feedbackXmlInvalid" />
  <int-file:outbound-channel-adapter
-  directory="/var/log/ctp/responsemanagement/actionsvc/feedback"
+  directory="file:${deadxml.directory}/feedback"
   channel="feedbackXmlInvalid" />
 
  <!-- the MQ channel adapter reads from testQueue (see the container above)
@@ -106,7 +106,7 @@
  <!-- anything sent to this channel is written to disk -->
  <int:channel id="instructionXmlInvalid" />
  <int-file:outbound-channel-adapter
-  directory="/var/log/ctp/responsemanagement/actionsvc/instruction"
+  directory="file:${deadxml.directory}/instruction"
   channel="instructionXmlInvalid" />
 
  <!-- setup the outbound jms queues -->

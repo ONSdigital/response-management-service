@@ -21,7 +21,6 @@ import com.hazelcast.core.HazelcastInstance;
 import lombok.extern.slf4j.Slf4j;
 import uk.gov.ons.ctp.common.time.DateTimeUtil;
 import uk.gov.ons.ctp.response.action.config.AppConfig;
-import uk.gov.ons.ctp.response.action.domain.model.ActionCase;
 import uk.gov.ons.ctp.response.action.domain.model.ActionPlan;
 import uk.gov.ons.ctp.response.action.domain.model.ActionPlanJob;
 import uk.gov.ons.ctp.response.action.domain.repository.ActionCaseRepository;
@@ -128,15 +127,14 @@ public class ActionPlanJobServiceImpl implements ActionPlanJobService {
 
               if (actionPlan.getLastRunDateTime() != null
                   && actionPlan.getLastRunDateTime().after(lastExecutionTime)) {
-                log.info("Job for plan {} has been run since last wake up - skipping", actionPlanId);
+                log.debug("Job for plan {} has been run since last wake up - skipping", actionPlanId);
                 return Optional.empty();
               }
             }
 
-            // find the cases for the action plan
-            List<ActionCase> casesForActionPlan = actionCaseRepo.findByActionPlanId(actionPlanId);
-            if (casesForActionPlan.isEmpty()) {
-              log.info("No open cases for action plan {} - skipping", actionPlanId);
+            // if no cases for actionplan why bother?
+            if (actionCaseRepo.countByActionPlanId(actionPlanId) == 0) {
+              log.debug("No open cases for action plan {} - skipping", actionPlanId);
               return Optional.empty();
             }
 
@@ -146,7 +144,7 @@ public class ActionPlanJobServiceImpl implements ActionPlanJobService {
             actionPlanJob.setUpdatedDateTime(now);
             // save the new job record
             createdJob = actionPlanJobRepo.save(actionPlanJob);
-
+            log.info("Running actionplanjobid {} actionplanid {}", createdJob.getActionPlanJobId(), createdJob.getActionPlanId() );
             // get the repo to call sql function to create actions
             actionCaseRepo.createActions(createdJob.getActionPlanJobId());
           } finally {

@@ -50,6 +50,7 @@ public class ActionSvcApplication {
   @Autowired
   private AppConfig appConfig;
 
+  
   /**
    * To config Hazelcast
    * @return the config

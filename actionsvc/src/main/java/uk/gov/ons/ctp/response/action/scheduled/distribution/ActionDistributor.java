@@ -136,7 +136,7 @@ public class ActionDistributor {
   @SuppressWarnings("unchecked")
   public final DistributionInfo distribute() {
     Span distribSpan = tracer.createSpan(ACTION_DISTRIBUTOR_SPAN);
-    log.debug("ActionDistributor awoken from slumber");
+    log.info("ActionDistributor is in the house");
     DistributionInfo distInfo = new DistributionInfo();
 
     IMap<Object, Object> actionMap = hazelcastInstance.getMap(ActionSvcApplication.ACTION_DISTRIBUTION_MAP);
@@ -190,14 +190,13 @@ public class ActionDistributor {
 
         actionMap.remove(localUUID);
         log.debug("Actions processed for actionType {}", actionType.getName());
-        tracer.close(distribSpan);
       });
     } catch (Exception e) {
       // something went wrong retrieving action types or actions
       log.error("Failed to process actions because {}", e);
       // we will be back after a short snooze
     }
-    log.debug("ActionDistributor going back to sleep");
+    log.info("ActionDistributor going back to sleep");
     tracer.close(distribSpan);
     return distInfo;
   }
@@ -270,6 +269,7 @@ public class ActionDistributor {
    *         ActionInstruction
    */
   private ActionRequest processActionRequest(final Action action) {
+    log.info("processing action REQUEST actionid {} caseid {} actionplanid {}", action.getActionId(), action.getCaseId(), action.getActionPlanId());
     return transactionTemplate.execute(new TransactionCallback<ActionRequest>() {
       // the code in this method executes in a transactional context
       public ActionRequest doInTransaction(final TransactionStatus status) {
@@ -293,6 +293,7 @@ public class ActionDistributor {
    *         ActionInstruction
    */
   private ActionCancel processActionCancel(final Action action) {
+    log.info("processing action REQUEST actionid {} caseid {} actionplanid {}", action.getActionId(), action.getCaseId(), action.getActionPlanId());
     return transactionTemplate.execute(new TransactionCallback<ActionCancel>() {
       // the code in this method executes in a transactional context
       public ActionCancel doInTransaction(final TransactionStatus status) {

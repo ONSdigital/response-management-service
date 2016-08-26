@@ -16,6 +16,7 @@ import org.springframework.integration.support.MessageBuilder;
 import org.springframework.messaging.MessageChannel;
 import org.springframework.oxm.jaxb.Jaxb2Marshaller;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 /**
@@ -24,6 +25,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
  *
  */
 @ContextConfiguration(locations = { "/FeedbackServiceTest-context.xml" })
+@TestPropertySource("classpath:/application-test.properties")
 @RunWith(SpringJUnit4ClassRunner.class)
 public class FeedbackReceiverTest {
 
@@ -35,7 +37,9 @@ public class FeedbackReceiverTest {
   private Jaxb2Marshaller feedbackUnmarshaller;
 
   private static final String INVALID_ACTION_FEEDBACK_LOG_DIRECTORY_NAME
-    = "/var/log/ctp/responsemanagement/actionsvc/feedback";
+    = "/tmp/ctp/logs/actionsvc/feedback";
+//    = "/var/log/ctp/responsemanagement/actionsvc/feedback";
+
   private static final String PACKAGE_ACTION_FEEDBACK
      = "uk.gov.ons.ctp.response.action.message.feedback.ActionFeedback";
 
@@ -45,6 +49,7 @@ public class FeedbackReceiverTest {
    */
   @Before
   public void setUpAndInitialVerification() throws Exception {
+    
     File logDir = new File(INVALID_ACTION_FEEDBACK_LOG_DIRECTORY_NAME);
     if (!logDir.exists()) {
       logDir.mkdir();

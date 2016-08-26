@@ -29,4 +29,12 @@ public interface ActionCaseRepository extends JpaRepository<ActionCase, Integer>
    * @return the list of (open) cases assoc with that plan
    */
   List<ActionCase> findByActionPlanId(Integer actionPlanId);
+  
+  
+  /**
+   * just count cases for an actionplan
+   * @param actionPlanId the plan id
+   * @return how many cases for that plan
+   */
+  Long countByActionPlanId(Integer actionPlanId);
 }
