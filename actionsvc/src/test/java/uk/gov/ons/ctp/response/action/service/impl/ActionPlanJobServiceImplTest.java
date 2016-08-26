@@ -22,7 +22,6 @@ import org.mockito.Spy;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.cloud.sleuth.Tracer;
 
-import com.google.common.collect.Lists;
 import com.hazelcast.concurrent.lock.LockProxy;
 import com.hazelcast.core.HazelcastInstance;
 
@@ -94,7 +93,7 @@ public class ActionPlanJobServiceImplTest {
 
     // wire up mock responses
     Mockito.when(actionPlanRepo.findOne(1)).thenReturn(actionPlans.get(0));
-    Mockito.when(actionCaseRepo.findByActionPlanId(1)).thenReturn(actionCases);
+    Mockito.when(actionCaseRepo.countByActionPlanId(1)).thenReturn(new Long(actionCases.size()));
     Mockito.when(actionPlanJobRepo.save(actionPlanJobs.get(0))).thenReturn(actionPlanJobs.get(0));
     Mockito.when(actionCaseRepo.createActions(1)).thenReturn(Boolean.TRUE);
 
@@ -103,7 +102,7 @@ public class ActionPlanJobServiceImplTest {
 
     // assert the right calls were made
     verify(actionPlanRepo).findOne(1);
-    verify(actionCaseRepo).findByActionPlanId(1);
+    verify(actionCaseRepo).countByActionPlanId(1);
     verify(actionPlanJobRepo).save(actionPlanJobs.get(0));
     verify(actionCaseRepo).createActions(1);
 
@@ -134,7 +133,7 @@ public class ActionPlanJobServiceImplTest {
   
     // assert the right calls were made
     verify(actionPlanRepo).findOne(1);
-    verify(actionCaseRepo, times(0)).findByActionPlanId(1);
+    verify(actionCaseRepo, times(0)).countByActionPlanId(1);
     verify(actionPlanJobRepo, times(0)).save(actionPlanJobs.get(0));
     verify(actionCaseRepo, times(0)).createActions(1);
     Assert.assertFalse(executedJob.isPresent());
@@ -154,14 +153,14 @@ public class ActionPlanJobServiceImplTest {
   
     // wire up mock responses
     Mockito.when(actionPlanRepo.findOne(1)).thenReturn(actionPlans.get(0));
-    Mockito.when(actionCaseRepo.findByActionPlanId(1)).thenReturn(actionCases);
+    Mockito.when(actionCaseRepo.countByActionPlanId(1)).thenReturn(new Long(actionCases.size()));
   
     // let it roll
     Optional<ActionPlanJob> executedJob = actionPlanJobServiceImpl.createAndExecuteActionPlanJob(actionPlanJobs.get(0));
   
     // assert the right calls were made
     verify(actionPlanRepo).findOne(1);
-    verify(actionCaseRepo).findByActionPlanId(1);
+    verify(actionCaseRepo).countByActionPlanId(1);
     verify(actionPlanJobRepo, times(0)).save(actionPlanJobs.get(0));
     verify(actionCaseRepo, times(0)).createActions(1);
   
@@ -184,14 +183,13 @@ public class ActionPlanJobServiceImplTest {
     actionPlans.forEach(actionPlan->actionPlan.setLastRunDateTime(lastExecutionTime));
 
     List<ActionPlanJob> actionPlanJobs = FixtureHelper.loadClassFixtures(ActionPlanJob[].class);
-    List<ActionCase> actionCases = FixtureHelper.loadClassFixtures(ActionCase[].class);
 
     // wire up mock responses
     Mockito.when(actionPlanRepo.findAll()).thenReturn(actionPlans);
     Mockito.when(actionPlanRepo.findOne(1)).thenReturn(actionPlans.get(0));
     Mockito.when(actionPlanRepo.findOne(2)).thenReturn(actionPlans.get(1));
-    Mockito.when(actionCaseRepo.findByActionPlanId(1)).thenReturn(Lists.newArrayList(actionCases.get(0)));
-    Mockito.when(actionCaseRepo.findByActionPlanId(2)).thenReturn(Lists.newArrayList(actionCases.get(1)));
+    Mockito.when(actionCaseRepo.countByActionPlanId(1)).thenReturn(1L);
+    Mockito.when(actionCaseRepo.countByActionPlanId(2)).thenReturn(1L);
     Mockito.when(actionPlanJobRepo.save(any(ActionPlanJob.class))).thenReturn(actionPlanJobs.get(0));
     Mockito.when(actionCaseRepo.createActions(1)).thenReturn(Boolean.TRUE);
     
@@ -203,8 +201,8 @@ public class ActionPlanJobServiceImplTest {
     verify(actionPlanRepo, times(1)).findAll();
     verify(actionPlanRepo, times(1)).findOne(1);
     verify(actionPlanRepo, times(1)).findOne(2);
-    verify(actionCaseRepo, times(1)).findByActionPlanId(1);
-    verify(actionCaseRepo, times(1)).findByActionPlanId(2);
+    verify(actionCaseRepo, times(1)).countByActionPlanId(1);
+    verify(actionCaseRepo, times(1)).countByActionPlanId(2);
     verify(actionPlanJobRepo, times(2)).save(any(ActionPlanJob.class));
     verify(actionCaseRepo, times(2)).createActions(any(Integer.class));
 

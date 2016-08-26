@@ -38,7 +38,6 @@ public class FeedbackReceiverTest {
 
   private static final String INVALID_ACTION_FEEDBACK_LOG_DIRECTORY_NAME
     = "/tmp/ctp/logs/actionsvc/feedback";
-//    = "/var/log/ctp/responsemanagement/actionsvc/feedback";
 
   private static final String PACKAGE_ACTION_FEEDBACK
      = "uk.gov.ons.ctp.response.action.message.feedback.ActionFeedback";

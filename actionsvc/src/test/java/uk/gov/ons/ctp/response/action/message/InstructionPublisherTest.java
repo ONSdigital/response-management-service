@@ -12,6 +12,7 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jms.listener.DefaultMessageListenerContainer;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import uk.gov.ons.ctp.response.action.message.instruction.ActionCancel;
@@ -22,6 +23,7 @@ import uk.gov.ons.ctp.response.action.utility.ActionMessageListener;
  * Looks like a test
  */
 @ContextConfiguration(locations = { "/InstructionServiceTest-context.xml" })
+@TestPropertySource("classpath:/application-test.properties")
 @RunWith(SpringJUnit4ClassRunner.class)
 public class InstructionPublisherTest {
 

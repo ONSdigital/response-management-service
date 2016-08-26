@@ -2,6 +2,7 @@ package uk.gov.ons.ctp.response.action.service.impl;
 
 import static org.hamcrest.Matchers.containsString;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.any;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.content;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.method;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo;
@@ -60,6 +61,7 @@ public class CaseSvcClientServiceImplTest {
   public void setup() {
     MockitoAnnotations.initMocks(this);
     Mockito.when(tracer.getCurrentSpan()).thenReturn(span);
+    Mockito.when(tracer.createSpan(any(String.class))).thenReturn(span);
     restClient.setTracer(tracer);
   }
   /**
