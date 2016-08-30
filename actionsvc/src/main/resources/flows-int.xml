@@ -116,9 +116,11 @@
  <bean id="printerInstructionQueue" class="org.apache.activemq.command.ActiveMQQueue">
   <constructor-arg value="Action.Printer" />
  </bean>
+ <!-- 
  <bean id="supportInstructionQueue" class="org.apache.activemq.command.ActiveMQQueue">
   <constructor-arg value="Action.CensusSupport" />
  </bean>
+ -->
  <bean id="householdSurveyInstructionQueue" class="org.apache.activemq.command.ActiveMQQueue">
   <constructor-arg value="Action.HHSurvey" />
  </bean>
@@ -134,6 +136,7 @@
  <int:channel id="instructionField" />
  <int:channel id="instructionPrinter" />
  <int:channel id="instructionCensusSupport" />
+ <int:filter id="instructionCensusSupportFilter" input-channel="instructionCensusSupport" output-channel="nullChannel" expression="true"/>
  <int:channel id="instructionHHSurvey" />
  <int:channel id="instructionHotelSurvey" />
 
@@ -167,8 +170,10 @@
  <int-jms:outbound-channel-adapter id="jmsout.Printer"
   channel="instructionPrinter" destination="printerInstructionQueue" />
 
+  <!-- 
  <int-jms:outbound-channel-adapter id="jmsout.CensusSupport"
   channel="instructionCensusSupport" destination="supportInstructionQueue" />
+  --> 
   
  <int-jms:outbound-channel-adapter id="jmsout.HHSurvey"
   channel="instructionHHSurvey" destination="householdSurveyInstructionQueue" />

@@ -29,7 +29,7 @@
     <module>actionsvc</module>
     <module>casesvc-api</module>
     <module>casesvc</module>
-    <module>printsvc</module>
+    <module>actionexporter</module>
   </modules>
 
 
