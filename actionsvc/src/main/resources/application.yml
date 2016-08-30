@@ -107,7 +107,7 @@ action-distribution:
 plan-execution:
   retry-sleep-seconds: 30
   initial-delay-seconds: 90
-  subsequent-delay-seconds: 600
+  subsequent-delay-seconds: 60
 
 case-svc:
   case-by-case-get-path: /cases/{caseid}
