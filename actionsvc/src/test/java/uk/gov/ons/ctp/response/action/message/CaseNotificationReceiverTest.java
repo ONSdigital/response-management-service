@@ -1,7 +1,9 @@
 package uk.gov.ons.ctp.response.action.message;
 
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
+import static org.hamcrest.beans.SamePropertyValuesAs.samePropertyValuesAs;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.never;
@@ -21,6 +23,7 @@ import org.apache.commons.io.FileUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.springframework.integration.support.MessageBuilder;
@@ -31,8 +34,8 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import uk.gov.ons.ctp.response.action.domain.model.ActionCase;
 import uk.gov.ons.ctp.response.action.service.CaseNotificationService;
+import uk.gov.ons.ctp.response.casesvc.message.notification.CaseNotification;
 
 /**
  * Test Spring Integration flow of Case Notification life cycle messages
@@ -44,8 +47,7 @@ import uk.gov.ons.ctp.response.action.service.CaseNotificationService;
 public class CaseNotificationReceiverTest {
 
   private static final int RECEIVE_TIMEOUT = 20000;
-  private static final String INVALID_CASE_NOTIFICATION_LOG_DIRECTORY =
-      "/tmp/ctp/logs/actionsvc/notification";
+  private static final String INVALID_CASE_NOTIFICATION_LOG_DIRECTORY = "/tmp/ctp/logs/actionsvc/notification";
   private static final String VALIDXML_PART1 = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>"
       + "<ns2:caseNotifications xmlns:ns2=\"http://ons.gov.uk/ctp/response/casesvc/message/notification\">"
       + "<caseNotification>"
@@ -93,22 +95,18 @@ public class CaseNotificationReceiverTest {
    *
    * @throws Exception if CountDownLatch interrupted
    */
-//  @Test
+  @SuppressWarnings({"unchecked", "rawtypes"})
+  @Test
   public void testNotificationXmlValid() throws Exception {
     String testMessage = VALIDXML_PART1
         + "<notificationType>CLOSED</notificationType>"
         + VALIDXML_PART2;
 
-    // Test java objects that should be received
-    List<ActionCase> lifeCycleEvents = new ArrayList<ActionCase>();
-    lifeCycleEvents.add(new ActionCase(3, 1, CLOSED));
-    lifeCycleEvents.add(new ActionCase(3, 2, CREATED));
-
     // SetUp CountDownLatch for synchronisation with async call
     final CountDownLatch serviceInvoked = new CountDownLatch(1);
-    // Release all waiting threads when mock caseNotificationService
-    // acceptNotification method is called
-    doAnswer(countsDownLatch(serviceInvoked)).when(caseNotificationService).acceptNotification(lifeCycleEvents);
+    // Release all waiting threads when mock caseNotificationService.acceptNotification method is called
+    doAnswer(countsDownLatch(serviceInvoked)).when(caseNotificationService).acceptNotification(any());
+
     // Send message
     caseNotificationOutbound.send(MessageBuilder.withPayload(testMessage).build());
     // Await synchronisation with the asynchronous message call
@@ -119,8 +117,15 @@ public class CaseNotificationReceiverTest {
     File[] files = logDir.listFiles();
     assertEquals(0, files.length);
 
-    verify(caseNotificationService).acceptNotification(lifeCycleEvents);
+    // Test java objects that should be received
+    List<CaseNotification> lifeCycleEvents = new ArrayList<CaseNotification>();
+    lifeCycleEvents.add(new CaseNotification(1, 3, CLOSED));
+    lifeCycleEvents.add(new CaseNotification(2, 3, CREATED));
 
+    ArgumentCaptor<List> argumentCaptor = ArgumentCaptor.forClass(List.class);
+    verify(caseNotificationService).acceptNotification((List<CaseNotification>) argumentCaptor.capture());
+    assertThat(argumentCaptor.getValue().get(0), samePropertyValuesAs(lifeCycleEvents.get(0)));
+    assertThat(argumentCaptor.getValue().get(1), samePropertyValuesAs(lifeCycleEvents.get(1)));
   }
 
   /**
@@ -142,8 +147,8 @@ public class CaseNotificationReceiverTest {
   }
 
   /**
-   * SI sent badly formed XML to generate a parse error results in ActiveMQ
-   * dead letter queue message. Local transaction should rollback and message be
+   * SI sent badly formed XML to generate a parse error results in ActiveMQ dead
+   * letter queue message. Local transaction should rollback and message should be
    * considered a poisoned bill.
    */
   @Test

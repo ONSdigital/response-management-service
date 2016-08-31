@@ -2,7 +2,7 @@ package uk.gov.ons.ctp.response.action.service;
 
 import java.util.List;
 
-import uk.gov.ons.ctp.response.action.domain.model.ActionCase;
+import uk.gov.ons.ctp.response.casesvc.message.notification.CaseNotification;
 
 /**
  * Service to persist case life cycle event notifications.
@@ -13,8 +13,8 @@ public interface CaseNotificationService {
   /**
    * Deal with case life cycle notification
    *
-   * @param cases List of ActionCase entity objects with notification type.
+   * @param notifications List of CaseNotification message objects.
    */
-  void acceptNotification(List<ActionCase> cases);
+  void acceptNotification(List<CaseNotification> notifications);
 
 }

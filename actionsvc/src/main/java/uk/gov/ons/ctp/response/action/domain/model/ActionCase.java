@@ -10,14 +10,12 @@ import javax.persistence.NamedStoredProcedureQuery;
 import javax.persistence.ParameterMode;
 import javax.persistence.StoredProcedureParameter;
 import javax.persistence.Table;
-import javax.persistence.Transient;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import uk.gov.ons.ctp.response.casesvc.message.notification.NotificationType;
 
 /**
  * Domain model object.
@@ -31,7 +29,7 @@ import uk.gov.ons.ctp.response.casesvc.message.notification.NotificationType;
 @IdClass(ActionCaseCompositeKey.class)
 @NamedStoredProcedureQuery(name = "createactions", procedureName = "action.createactions", parameters = {
     @StoredProcedureParameter(mode = ParameterMode.IN, name = "p_actionplanjobid", type = Integer.class),
-    @StoredProcedureParameter(mode = ParameterMode.OUT, name = "success", type = Boolean.class) })
+    @StoredProcedureParameter(mode = ParameterMode.OUT, name = "success", type = Boolean.class)})
 public class ActionCase implements Serializable {
 
   private static final long serialVersionUID = 7970373271889255844L;
@@ -43,8 +41,5 @@ public class ActionCase implements Serializable {
   @Id
   @Column(name = "caseid")
   private Integer caseId;
-
-  @Transient
-  private NotificationType notificationType;
 
 }

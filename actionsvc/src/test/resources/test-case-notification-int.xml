@@ -41,9 +41,6 @@
   <!-- Notification Receiver ServiceActivator(inputChannel = "notificationTransformed") -->
   <bean id="notificationReceiver" class="uk.gov.ons.ctp.response.action.message.impl.CaseNotificationReceiverImpl" />
 
-  <!-- Mapper bean to inject into  notificationReceiver-->
-  <bean id="mapper" class="uk.gov.ons.ctp.response.action.ActionBeanMapper"/>
-
   <!-- Mock notificationService to inject into notificationReceiver -->
   <bean id="notificationService" class="org.mockito.Mockito" factory-method="mock"  >
     <constructor-arg value="uk.gov.ons.ctp.response.action.service.impl.CaseNotificationServiceImpl" />

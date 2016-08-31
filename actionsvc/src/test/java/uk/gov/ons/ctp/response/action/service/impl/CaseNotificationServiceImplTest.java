@@ -17,6 +17,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import uk.gov.ons.ctp.response.action.domain.model.ActionCase;
 import uk.gov.ons.ctp.response.action.domain.repository.ActionCaseRepository;
+import uk.gov.ons.ctp.response.casesvc.message.notification.CaseNotification;
 
 /**
  * Tests for the CaseNotificationServiceImpl
@@ -37,17 +38,17 @@ public class CaseNotificationServiceImplTest {
   public void testAcceptNotification() {
 
     // Setup Test data
-    List<ActionCase> lifeCycleEvents = new ArrayList<ActionCase>();
-    lifeCycleEvents.add(new ActionCase(3, 1, CLOSED));
-    lifeCycleEvents.add(new ActionCase(3, 2, CREATED));
-    lifeCycleEvents.add(new ActionCase(3, 3, CREATED));
-    lifeCycleEvents.add(new ActionCase(3, 4, CREATED));
+    List<CaseNotification> lifeCycleEvents = new ArrayList<CaseNotification>();
+    lifeCycleEvents.add(new CaseNotification(1, 3, CREATED));
+    lifeCycleEvents.add(new CaseNotification(2, 3, CLOSED));
+    lifeCycleEvents.add(new CaseNotification(3, 3, CREATED));
+    lifeCycleEvents.add(new CaseNotification(4, 4, CREATED));
 
     // Call method
     caseNotificationService.acceptNotification(lifeCycleEvents);
 
     // Verify calls made
-    verify(actionCaseRepo).delete(any(ActionCase.class));
+    verify(actionCaseRepo, times(1)).delete(new ActionCase(3, 2));
     verify(actionCaseRepo, times(3)).save(any(ActionCase.class));
     verify(actionCaseRepo).flush();
 
