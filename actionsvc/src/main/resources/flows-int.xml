@@ -116,11 +116,6 @@
  <bean id="printerInstructionQueue" class="org.apache.activemq.command.ActiveMQQueue">
   <constructor-arg value="Action.Printer" />
  </bean>
- <!-- 
- <bean id="supportInstructionQueue" class="org.apache.activemq.command.ActiveMQQueue">
-  <constructor-arg value="Action.CensusSupport" />
- </bean>
- -->
  <bean id="householdSurveyInstructionQueue" class="org.apache.activemq.command.ActiveMQQueue">
   <constructor-arg value="Action.HHSurvey" />
  </bean>
