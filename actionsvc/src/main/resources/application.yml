@@ -74,10 +74,9 @@ endpoints:
 spring:
   application:
     name: ONS ActionService
-
   sleuth:
     sampler:
-      percentage: 1
+      percentage: 10
       
   activemq:
     broker-url: tcp://localhost:53445
@@ -97,6 +96,9 @@ spring:
     properties:
       hibernate:
         ddl-auto: update
+
+  zipkin:
+    enabled: false
 
 action-distribution:
   instruction-max: 100
