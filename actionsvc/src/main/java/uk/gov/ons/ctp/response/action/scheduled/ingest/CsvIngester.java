@@ -143,8 +143,8 @@ public class CsvIngester extends CsvToBean<CsvLine> {
    */
   @ServiceActivator(inputChannel = CHANNEL)
   public void ingest(File csvFile) {
+    log.debug("INGESTED {}", csvFile.toString());
     Span ingestSpan = tracer.createSpan(CSV_INGESTER_SPAN);
-    log.debug("INGESTED " + csvFile.toString());
     SimpleDateFormat fmt = new SimpleDateFormat(DATE_FORMAT);
     String executionStamp = fmt.format(new Date());
     CSVReader reader = null;

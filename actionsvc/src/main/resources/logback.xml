@@ -39,17 +39,21 @@
         </encoder>
     </appender>
 
-    <logger name="uk.gov.ons.ctp" level="info" additivity="false">
+    <logger name="uk.gov.ons.ctp" level="DEBUG" additivity="false">
+        <appender-ref ref="FILE-ERROR" />
         <appender-ref ref="FILE-AUDIT" />
         <appender-ref ref="STDOUT" />
     </logger>
 
-    <logger name="org.springframework" level="warn" additivity="false">
+    <logger name="org.springframework" level="DEBUG" additivity="false">
+        <appender-ref ref="FILE-ERROR" />
+        <appender-ref ref="FILE-AUDIT" />
         <appender-ref ref="STDOUT" />
     </logger>
 
-    <root level="ERROR">
+    <root level="DEBUG">
         <appender-ref ref="FILE-ERROR" />
+        <appender-ref ref="FILE-AUDIT" />
         <appender-ref ref="STDOUT" />
     </root>
 
