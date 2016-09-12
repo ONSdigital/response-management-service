@@ -22,6 +22,8 @@ import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
 
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cloud.sleuth.Span;
+import org.springframework.cloud.sleuth.Tracer;
 import org.springframework.integration.annotation.MessageEndpoint;
 import org.springframework.integration.annotation.ServiceActivator;
 
@@ -53,6 +55,8 @@ import uk.gov.ons.ctp.response.action.message.instruction.Priority;
 @MessageEndpoint
 @Slf4j
 public class CsvIngester extends CsvToBean<CsvLine> {
+
+  private static final String CSV_INGESTER_SPAN = "csvIngesterSpan";
 
   private static final String CHANNEL = "csvIngest";
 
@@ -101,6 +105,9 @@ public class CsvIngester extends CsvToBean<CsvLine> {
   }
 
   @Inject
+  private Tracer tracer;
+
+  @Inject
   private AppConfig appConfig;
 
   @Inject
@@ -136,7 +143,8 @@ public class CsvIngester extends CsvToBean<CsvLine> {
    */
   @ServiceActivator(inputChannel = CHANNEL)
   public void ingest(File csvFile) {
-    log.debug("INGESTED " + csvFile.toString());
+    log.debug("INGESTED {}", csvFile.toString());
+    Span ingestSpan = tracer.createSpan(CSV_INGESTER_SPAN);
     SimpleDateFormat fmt = new SimpleDateFormat(DATE_FORMAT);
     String executionStamp = fmt.format(new Date());
     CSVReader reader = null;
@@ -188,10 +196,10 @@ public class CsvIngester extends CsvToBean<CsvLine> {
 
       // all lines parsed successfully - now send out bucket contents
       publishBuckets(handlerInstructionBuckets);
-
     } catch (Exception e) {
       log.error("Problem reading ingest file {} because : ", csvFile.getPath(), e);
     }
+    tracer.close(ingestSpan);
   }
 
   /**

@@ -36,8 +36,7 @@ import uk.gov.ons.ctp.response.action.service.ActionPlanJobService;
 @Slf4j
 public class ActionPlanJobServiceImpl implements ActionPlanJobService {
 
-  public static final String ACTION_PLAN_SPAN = "automatedActionPlanExecution";
-
+  private static final String ACTION_PLAN_SPAN = "automatedActionPlanExecution";
   private static final String CREATED_BY_SYSTEM = "SYSTEM";
 
   private static final long ONE_SECOND = 1000L;

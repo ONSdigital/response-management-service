@@ -80,7 +80,7 @@ import uk.gov.ons.ctp.response.casesvc.representation.QuestionnaireDTO;
 @Slf4j
 public class ActionDistributor {
 
-  public static final String ACTION_DISTRIBUTOR_SPAN = "actionDistributor";
+  private static final String ACTION_DISTRIBUTOR_SPAN = "actionDistributor";
 
   private static final long IMPOSSIBLE_ACTION_ID = 999999999999L;
 
