@@ -100,7 +100,6 @@ public class ActionSvcApplication {
      * Its public constructor.
      */
     public JerseyConfig() {
-      packages("uk.gov.ons.ctp");
 
       register(ActionEndpoint.class);
       register(new CTPMessageBodyReader<ActionDTO>(ActionDTO.class) {

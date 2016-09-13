@@ -46,7 +46,7 @@ import uk.gov.ons.ctp.response.casesvc.message.notification.CaseNotification;
 @RunWith(SpringJUnit4ClassRunner.class)
 public class CaseNotificationReceiverTest {
 
-  private static final int RECEIVE_TIMEOUT = 20000;
+  private static final int RECEIVE_TIMEOUT = 140000;
   private static final String INVALID_CASE_NOTIFICATION_LOG_DIRECTORY = "/tmp/ctp/logs/actionsvc/notification";
   private static final String VALIDXML_PART1 = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>"
       + "<ns2:caseNotifications xmlns:ns2=\"http://ons.gov.uk/ctp/response/casesvc/message/notification\">"
