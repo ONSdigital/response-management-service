@@ -21,6 +21,7 @@ import com.hazelcast.config.MulticastConfig;
 import com.hazelcast.config.NetworkConfig;
 
 import uk.gov.ons.ctp.common.jaxrs.CTPMessageBodyReader;
+import uk.gov.ons.ctp.common.jaxrs.JAXRSRegister;
 import uk.gov.ons.ctp.common.rest.RestClient;
 import uk.gov.ons.ctp.common.state.StateTransitionManager;
 import uk.gov.ons.ctp.common.state.StateTransitionManagerFactory;
@@ -101,6 +102,8 @@ public class ActionSvcApplication {
      */
     public JerseyConfig() {
 
+      JAXRSRegister.listCommonTypes().forEach(t->register(t));
+      
       register(ActionEndpoint.class);
       register(new CTPMessageBodyReader<ActionDTO>(ActionDTO.class) {
       });
