@@ -75,7 +75,7 @@ public class CaseSvcClientServiceImplTest {
     RestTemplate restTemplate = this.restClient.getRestTemplate();
 
     MockRestServiceServer mockServer = MockRestServiceServer.createServer(restTemplate);
-    mockServer.expect(requestTo("http://localhost:8080/cases/actionplan/1?state=INIT&state=RESPONDED"))
+    mockServer.expect(requestTo("http://localhost:8080/cases/actionplan/1?state=ACTIVE&state=RESPONDED"))
         .andExpect(method(HttpMethod.GET))
         .andRespond(withSuccess("[1,2,3]", MediaType.APPLICATION_JSON));
 
