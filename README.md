@@ -1,4 +1,4 @@
-a test# Response Management Service
+# Response Management Service
 Response Management is part of ONS's Survey Data Collection platform. It covers overall management of the survey (across all survey modes). It manages the survey sample, tracks responses and initiates required follow-up actions during the collection period.
 
 This repository contains the Java services that comprise Response Management. These services communicate with each other over HTTP and [JMS](https://en.wikipedia.org/wiki/Java_Message_Service) as appropriate. Each service has a dedicated database user and schema i.e. there is no database-level integration. The main services are listed below.
