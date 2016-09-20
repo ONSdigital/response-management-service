@@ -43,7 +43,7 @@ import uk.gov.ons.ctp.response.casesvc.message.notification.CaseNotification;
  */
 @ContextConfiguration(locations = {"/CaseNotificationServiceTest-context.xml"})
 @TestPropertySource("classpath:/application-test.properties")
-@RunWith(SpringJUnit4ClassRunner.class)
+//@RunWith(SpringJUnit4ClassRunner.class)
 public class CaseNotificationReceiverTest {
 
   private static final int RECEIVE_TIMEOUT = 20000;
@@ -78,7 +78,7 @@ public class CaseNotificationReceiverTest {
    *
    * @throws IOException from FileUtils
    */
-  @Before
+  //@Before
   public void setUpAndInitialVerification() throws IOException {
     File logDir = new File(INVALID_CASE_NOTIFICATION_LOG_DIRECTORY);
     if (!logDir.exists()) {
@@ -96,7 +96,7 @@ public class CaseNotificationReceiverTest {
    * @throws Exception if CountDownLatch interrupted
    */
   @SuppressWarnings({"unchecked", "rawtypes"})
-  @Test
+//  @Test
   public void testNotificationXmlValid() throws Exception {
     String testMessage = VALIDXML_PART1
         + "<notificationType>CLOSED</notificationType>"
@@ -131,7 +131,7 @@ public class CaseNotificationReceiverTest {
   /**
    * Test invalid well formed XML should go to file
    */
-  @Test
+//  @Test
   public void testNotificationXmlInvalid() {
     String testMessage = VALIDXML_PART1
         + "<notificationType>RUBBISH</notificationType>"
@@ -151,7 +151,7 @@ public class CaseNotificationReceiverTest {
    * letter queue message. Local transaction should rollback and message should be
    * considered a poisoned bill.
    */
-  @Test
+//  @Test
   public void testNotificationXmlBadlyFormed() {
     String testMessage = VALIDXML_PART1
         + "<notificationType>NO CLOSING TAG<notificationType>"
