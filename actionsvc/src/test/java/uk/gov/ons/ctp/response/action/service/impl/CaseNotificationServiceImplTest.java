@@ -3,8 +3,8 @@ package uk.gov.ons.ctp.response.action.service.impl;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-import static uk.gov.ons.ctp.response.casesvc.message.notification.NotificationType.CLOSED;
-import static uk.gov.ons.ctp.response.casesvc.message.notification.NotificationType.CREATED;
+import static uk.gov.ons.ctp.response.casesvc.message.notification.NotificationType.RESPONDED;
+import static uk.gov.ons.ctp.response.casesvc.message.notification.NotificationType.ACTIVATED;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,10 +39,10 @@ public class CaseNotificationServiceImplTest {
 
     // Setup Test data
     List<CaseNotification> lifeCycleEvents = new ArrayList<CaseNotification>();
-    lifeCycleEvents.add(new CaseNotification(1, 3, CREATED));
-    lifeCycleEvents.add(new CaseNotification(2, 3, CLOSED));
-    lifeCycleEvents.add(new CaseNotification(3, 3, CREATED));
-    lifeCycleEvents.add(new CaseNotification(4, 4, CREATED));
+    lifeCycleEvents.add(new CaseNotification(1, 3, ACTIVATED));
+    lifeCycleEvents.add(new CaseNotification(2, 3, RESPONDED));
+    lifeCycleEvents.add(new CaseNotification(3, 3, ACTIVATED));
+    lifeCycleEvents.add(new CaseNotification(4, 4, ACTIVATED));
 
     // Call method
     caseNotificationService.acceptNotification(lifeCycleEvents);
