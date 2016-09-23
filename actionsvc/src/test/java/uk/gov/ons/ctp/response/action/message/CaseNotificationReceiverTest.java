@@ -6,7 +6,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.doAnswer;
-import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static uk.gov.ons.ctp.response.casesvc.message.notification.NotificationType.RESPONDED;
 import static uk.gov.ons.ctp.response.casesvc.message.notification.NotificationType.ACTIVATED;
@@ -57,7 +56,7 @@ public class CaseNotificationReceiverTest {
       + "<caseNotification>"
       + "<caseId>2</caseId>"
       + "<actionPlanId>3</actionPlanId>"
-      + "<notificationType>CREATED</notificationType>"
+      + "<notificationType>ACTIVATED</notificationType>"
       + "</caseNotification>"
       + "</ns2:caseNotifications>";
 
@@ -99,7 +98,7 @@ public class CaseNotificationReceiverTest {
   @Test
   public void testNotificationXmlValid() throws Exception {
     String testMessage = VALIDXML_PART1
-        + "<notificationType>CLOSED</notificationType>"
+        + "<notificationType>RESPONDED</notificationType>"
         + VALIDXML_PART2;
 
     // SetUp CountDownLatch for synchronisation with async call
