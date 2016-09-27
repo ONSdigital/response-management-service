@@ -37,7 +37,9 @@ import uk.gov.ons.ctp.response.action.config.ActionDistribution;
 import uk.gov.ons.ctp.response.action.config.AppConfig;
 import uk.gov.ons.ctp.response.action.config.CaseSvc;
 import uk.gov.ons.ctp.response.action.domain.model.Action;
+import uk.gov.ons.ctp.response.action.domain.model.ActionPlan;
 import uk.gov.ons.ctp.response.action.domain.model.ActionType;
+import uk.gov.ons.ctp.response.action.domain.repository.ActionPlanRepository;
 import uk.gov.ons.ctp.response.action.domain.repository.ActionRepository;
 import uk.gov.ons.ctp.response.action.domain.repository.ActionTypeRepository;
 import uk.gov.ons.ctp.response.action.message.InstructionPublisher;
@@ -89,6 +91,9 @@ public class ActionDistributorTest {
 
   @Mock
   private ActionRepository actionRepo;
+
+  @Mock
+  private ActionPlanRepository actionPlanRepo;
 
   @Mock
   private ActionTypeRepository actionTypeRepo;
@@ -179,6 +184,7 @@ public class ActionDistributorTest {
     Mockito.when(hazelcastInstance.getLocalEndpoint()).thenReturn(Mockito.mock(Endpoint.class));
     List<ActionType> actionTypes = FixtureHelper.loadClassFixtures(ActionType[].class);
 
+    List<ActionPlan> actionPlans = FixtureHelper.loadClassFixtures(ActionPlan[].class);
     List<Action> actionsHHIC = FixtureHelper.loadClassFixtures(Action[].class, "HouseholdInitialContact");
     List<Action> actionsHHIACLOAD = FixtureHelper.loadClassFixtures(Action[].class, "HouseholdUploadIAC");
 
@@ -193,6 +199,7 @@ public class ActionDistributorTest {
     List<CaseEventDTO> caseEventDTOsPost = FixtureHelper.loadClassFixtures(CaseEventDTO[].class, "post");
 
     // wire up mock responses
+    Mockito.when(actionPlanRepo.findOne(any(Integer.class))).thenReturn(actionPlans.get(0));
     Mockito.when(
         actionSvcStateTransitionManager.transition(ActionState.SUBMITTED, ActionDTO.ActionEvent.REQUEST_DISTRIBUTED))
         .thenReturn(ActionState.PENDING);
@@ -283,6 +290,7 @@ public class ActionDistributorTest {
     List<AddressDTO> addressDTOsUprn1234 = FixtureHelper.loadClassFixtures(AddressDTO[].class, "uprn1234");
 
     List<CaseEventDTO> caseEventDTOs = FixtureHelper.loadClassFixtures(CaseEventDTO[].class);
+    List<ActionPlan> actionPlans = FixtureHelper.loadClassFixtures(ActionPlan[].class);
 
     List<CaseEventDTO> caseEventDTOsPost = FixtureHelper.loadClassFixtures(CaseEventDTO[].class, "post");
 
@@ -292,6 +300,7 @@ public class ActionDistributorTest {
         .thenReturn(ActionState.PENDING);
 
     Mockito.when(actionTypeRepo.findAll()).thenReturn(actionTypes);
+    Mockito.when(actionPlanRepo.findOne(any(Integer.class))).thenReturn(actionPlans.get(0));
     Mockito
         .when(actionRepo.findByActionTypeNameAndStateInAndActionIdNotIn(eq("HouseholdInitialContact"), anyListOf(ActionState.class),
             anyListOf(BigInteger.class), any(Pageable.class)))

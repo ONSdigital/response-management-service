@@ -32,7 +32,9 @@ import uk.gov.ons.ctp.response.action.ActionSvcApplication;
 import uk.gov.ons.ctp.response.action.config.AppConfig;
 import uk.gov.ons.ctp.response.action.domain.model.Action;
 import uk.gov.ons.ctp.response.action.domain.model.Action.ActionPriority;
+import uk.gov.ons.ctp.response.action.domain.model.ActionPlan;
 import uk.gov.ons.ctp.response.action.domain.model.ActionType;
+import uk.gov.ons.ctp.response.action.domain.repository.ActionPlanRepository;
 import uk.gov.ons.ctp.response.action.domain.repository.ActionRepository;
 import uk.gov.ons.ctp.response.action.domain.repository.ActionTypeRepository;
 import uk.gov.ons.ctp.response.action.message.InstructionPublisher;
@@ -88,7 +90,7 @@ public class ActionDistributor {
 
   @Inject
   private Tracer tracer;
-  
+
   @Inject
   private HazelcastInstance hazelcastInstance;
 
@@ -106,6 +108,9 @@ public class ActionDistributor {
 
   @Inject
   private ActionRepository actionRepo;
+
+  @Inject
+  private ActionPlanRepository actionPlanRepo;
 
   @Inject
   private CaseSvcClientService caseSvcClientService;
@@ -269,7 +274,8 @@ public class ActionDistributor {
    *         ActionInstruction
    */
   private ActionRequest processActionRequest(final Action action) {
-    log.info("processing action REQUEST actionid {} caseid {} actionplanid {}", action.getActionId(), action.getCaseId(), action.getActionPlanId());
+    log.info("processing action REQUEST actionid {} caseid {} actionplanid {}", action.getActionId(),
+        action.getCaseId(), action.getActionPlanId());
     return transactionTemplate.execute(new TransactionCallback<ActionRequest>() {
       // the code in this method executes in a transactional context
       public ActionRequest doInTransaction(final TransactionStatus status) {
@@ -293,7 +299,8 @@ public class ActionDistributor {
    *         ActionInstruction
    */
   private ActionCancel processActionCancel(final Action action) {
-    log.info("processing action REQUEST actionid {} caseid {} actionplanid {}", action.getActionId(), action.getCaseId(), action.getActionPlanId());
+    log.info("processing action REQUEST actionid {} caseid {} actionplanid {}", action.getActionId(),
+        action.getCaseId(), action.getActionPlanId());
     return transactionTemplate.execute(new TransactionCallback<ActionCancel>() {
       // the code in this method executes in a transactional context
       public ActionCancel doInTransaction(final TransactionStatus status) {
@@ -346,12 +353,13 @@ public class ActionDistributor {
     log.debug("constructing ActionRequest to publish to downstream handler for action id {} and case id {}",
         action.getActionId(), action.getCaseId());
     // now call caseSvc for the following
+    ActionPlan actionPlan = actionPlanRepo.findOne(action.getActionPlanId());
     CaseDTO caseDTO = caseSvcClientService.getCase(action.getCaseId());
     QuestionnaireDTO questionnaireDTO = caseSvcClientService.getQuestionnaire(action.getCaseId());
     AddressDTO addressDTO = caseSvcClientService.getAddress(caseDTO.getUprn());
     List<CaseEventDTO> caseEventDTOs = caseSvcClientService.getCaseEvents(action.getCaseId());
 
-    return createActionRequest(action, caseDTO, questionnaireDTO, addressDTO, caseEventDTOs);
+    return createActionRequest(action, actionPlan, caseDTO, questionnaireDTO, addressDTO, caseEventDTOs);
   }
 
   /**
@@ -377,18 +385,20 @@ public class ActionDistributor {
    * ActionRequest
    *
    * @param action the persistent Action obj from the db
+   * @param actionPlan the persistent ActionPlan obj from the db
    * @param caseDTO the Case representation from the CaseSvc
    * @param questionnaireDTO the Questionnaire representation from the CaseSvc
    * @param addressDTO the Address representation from the CaseSvc
    * @param caseEventDTOs the list of CaseEvent represenations from the CaseSvc
    * @return the shiney new Action Request
    */
-  private ActionRequest createActionRequest(final Action action, final CaseDTO caseDTO,
+  private ActionRequest createActionRequest(final Action action, final ActionPlan actionPlan, final CaseDTO caseDTO,
       final QuestionnaireDTO questionnaireDTO, final AddressDTO addressDTO,
       final List<CaseEventDTO> caseEventDTOs) {
     ActionRequest actionRequest = new ActionRequest();
     // populate the request
     actionRequest.setActionId(action.getActionId());
+    actionRequest.setActionPlan(actionPlan.getName());
     actionRequest.setActionType(action.getActionType().getName());
     actionRequest.setResponseRequired(true);
     actionRequest.setCaseId(BigInteger.valueOf(action.getCaseId()));

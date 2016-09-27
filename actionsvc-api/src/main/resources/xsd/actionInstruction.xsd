@@ -76,6 +76,7 @@
 			<xs:extension base="Action">
 				<xs:sequence>
 					<xs:element name="actionId" type="xs:positiveInteger" />
+					<xs:element name="actionPlan" type="xs:string" />
 					<xs:element name="actionType" type="xs:string" />
 					<xs:element name="address" type="ActionAddress" />
 					<xs:element name="contactName" type="xs:string"
