@@ -94,6 +94,7 @@ public class CaseSvcClientServiceImpl implements CaseSvcClientService {
   }
 
   @Override
+  @Deprecated
   public List<Integer> getOpenCasesForActionPlan(Integer actionPlanId) {
     MultiValueMap<String, String> queryParamMap = new LinkedMultiValueMap<>();
     queryParamMap.put("state", Arrays.asList(CaseDTO.CaseState.ACTIVE.name(), CaseDTO.CaseState.RESPONDED.name()));
