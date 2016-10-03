@@ -12,7 +12,6 @@ import javax.persistence.Id;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
-import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -26,7 +25,7 @@ import uk.gov.ons.ctp.response.action.representation.ActionPlanJobDTO;
 @Data
 @AllArgsConstructor
 @Builder
-@NoArgsConstructor(access = AccessLevel.PUBLIC)
+@NoArgsConstructor
 @Table(name = "actionplanjob", schema = "action")
 public class ActionPlanJob {
 

@@ -11,7 +11,6 @@ import javax.persistence.ParameterMode;
 import javax.persistence.StoredProcedureParameter;
 import javax.persistence.Table;
 
-import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -24,7 +23,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @Builder
-@NoArgsConstructor(access = AccessLevel.PUBLIC)
+@NoArgsConstructor
 @Table(name = "case", schema = "action")
 @IdClass(ActionCaseCompositeKey.class)
 @NamedStoredProcedureQuery(name = "createactions", procedureName = "action.createactions", parameters = {
