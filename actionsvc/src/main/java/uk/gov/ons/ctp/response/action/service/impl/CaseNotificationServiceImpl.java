@@ -34,14 +34,16 @@ public class CaseNotificationServiceImpl implements CaseNotificationService {
     notifications.forEach((notification) -> {
       ActionCase actionCase = new ActionCase(notification.getActionPlanId(), notification.getCaseId());
       switch (notification.getNotificationType()) {
-      case SAMPLED_ACTIVATED:
+
+      case REPLACED:
+        // XXX the date stuff
+      case ACTIVATED:
         actionCaseRepo.save(actionCase);
         break;
-      case RESPONDED:
+      case DISABLED:
+      case DEACTIVATED:
         actionCaseRepo.delete(actionCase);
         break;
-      //TODO : ? DEACTIVATED
-      //TODO : ? REPLACEMENT_ACTIVATED
       default:
         log.warn("Unknown Case lifecycle event {}", notification.getNotificationType());
         break;

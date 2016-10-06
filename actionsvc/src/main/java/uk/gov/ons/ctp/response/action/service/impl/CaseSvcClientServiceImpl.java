@@ -69,7 +69,7 @@ public class CaseSvcClientServiceImpl implements CaseSvcClientService {
   }
 
   @Override
-  public CaseEventDTO createNewCaseEvent(final Action action, CategoryDTO.CategoryName actionCategory) {
+  public CaseEventDTO createNewCaseEvent(final Action action, CategoryDTO.CategoryType actionCategory) {
     log.debug("posting caseEvent for actionId {} to casesvc for category {} ", action.getActionId(),
         actionCategory);
     CaseEventDTO caseEventDTO = new CaseEventDTO();

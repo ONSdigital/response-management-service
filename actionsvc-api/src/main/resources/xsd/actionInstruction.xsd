@@ -86,7 +86,7 @@
 					<xs:element name="caseId" type="xs:positiveInteger" />
 					<xs:element name="priority" type="Priority" minOccurs="0"
 						maxOccurs="1" />
-					<xs:element name="questionnaireId" type="xs:positiveInteger" />
+					<xs:element name="caseRef" type="xs:string" />
 					<xs:element name="iac" type="xs:string" />
 					<xs:element name="events" type="ActionEvent" />
 				</xs:sequence>

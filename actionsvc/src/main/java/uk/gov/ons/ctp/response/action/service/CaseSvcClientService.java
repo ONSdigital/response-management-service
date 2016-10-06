@@ -7,7 +7,6 @@ import uk.gov.ons.ctp.response.casesvc.representation.AddressDTO;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseDTO;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseEventDTO;
 import uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO;
-import uk.gov.ons.ctp.response.casesvc.representation.QuestionnaireDTO;
 
 /**
  * A Service which utilises the CaseSvc via RESTful client calls
@@ -21,7 +20,7 @@ public interface CaseSvcClientService {
    * @param actionCategory the category for the event
    * @return the newly created caseeventdto
    */
-  CaseEventDTO createNewCaseEvent(final Action action, CategoryDTO.CategoryName actionCategory);
+  CaseEventDTO createNewCaseEvent(final Action action, CategoryDTO.CategoryType actionCategory);
 
   /**
    * Call CaseSvc using REST to get the Address MAY throw a RuntimeException if
@@ -31,15 +30,6 @@ public interface CaseSvcClientService {
    * @return the Address we fetched
    */
   AddressDTO getAddress(final Long uprn);
-
-  /**
-   * Call CaseSvc using REST to get the Questionnaire MAY throw a
-   * RuntimeException if the call fails
-   *
-   * @param caseId used to find the questionnaire
-   * @return the Questionnaire we fetched
-   */
-  QuestionnaireDTO getQuestionnaire(final Integer caseId);
 
   /**
    * Call CaseSvc using REST to get the Case details MAY throw a

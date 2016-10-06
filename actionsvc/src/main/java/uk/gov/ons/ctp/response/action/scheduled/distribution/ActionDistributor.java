@@ -285,7 +285,7 @@ public class ActionDistributor {
         // create the request, filling in details by GETs from casesvc
         actionRequest = prepareActionRequest(action);
         // advise casesvc to create a corresponding caseevent for our action
-        caseSvcClientService.createNewCaseEvent(action, CategoryDTO.CategoryName.ACTION_CREATED);
+        caseSvcClientService.createNewCaseEvent(action, CategoryDTO.CategoryType.ACTION_CREATED);
         return actionRequest;
       }
     });
@@ -312,7 +312,7 @@ public class ActionDistributor {
         // create the request, filling in details by GETs from casesvc
         actionCancel = prepareActionCancel(action);
         // advise casesvc to create a corresponding caseevent for our action
-        caseSvcClientService.createNewCaseEvent(action, CategoryDTO.CategoryName.ACTION_CANCELLATION_CREATED);
+        caseSvcClientService.createNewCaseEvent(action, CategoryDTO.CategoryType.ACTION_CANCELLATION_CREATED);
         return actionCancel;
       }
     });
@@ -355,11 +355,10 @@ public class ActionDistributor {
     // now call caseSvc for the following
     ActionPlan actionPlan = actionPlanRepo.findOne(action.getActionPlanId());
     CaseDTO caseDTO = caseSvcClientService.getCase(action.getCaseId());
-    QuestionnaireDTO questionnaireDTO = caseSvcClientService.getQuestionnaire(action.getCaseId());
     AddressDTO addressDTO = caseSvcClientService.getAddress(caseDTO.getUprn());
     List<CaseEventDTO> caseEventDTOs = caseSvcClientService.getCaseEvents(action.getCaseId());
 
-    return createActionRequest(action, actionPlan, caseDTO, questionnaireDTO, addressDTO, caseEventDTOs);
+    return createActionRequest(action, actionPlan, caseDTO, addressDTO, caseEventDTOs);
   }
 
   /**
@@ -393,8 +392,7 @@ public class ActionDistributor {
    * @return the shiney new Action Request
    */
   private ActionRequest createActionRequest(final Action action, final ActionPlan actionPlan, final CaseDTO caseDTO,
-      final QuestionnaireDTO questionnaireDTO, final AddressDTO addressDTO,
-      final List<CaseEventDTO> caseEventDTOs) {
+      final AddressDTO addressDTO, final List<CaseEventDTO> caseEventDTOs) {
     ActionRequest actionRequest = new ActionRequest();
     // populate the request
     actionRequest.setActionId(action.getActionId());
@@ -402,14 +400,13 @@ public class ActionDistributor {
     actionRequest.setActionType(action.getActionType().getName());
     actionRequest.setResponseRequired(true);
     actionRequest.setCaseId(BigInteger.valueOf(action.getCaseId()));
-    actionRequest.setContactName(null); // TODO - will be avail in data
-    // 2017+
+    actionRequest.setContactName(null); // TODO - will be avail in data 2017+
     ActionEvent actionEvent = new ActionEvent();
     caseEventDTOs.forEach((caseEventDTO) -> actionEvent.getEvents().add(formatCaseEvent(caseEventDTO)));
     actionRequest.setEvents(actionEvent);
-    actionRequest.setIac(questionnaireDTO.getIac());
+    actionRequest.setIac(caseDTO.getIac());
     actionRequest.setPriority(Priority.fromValue(ActionPriority.valueOf(action.getPriority()).getName()));
-    actionRequest.setQuestionnaireId(BigInteger.valueOf(questionnaireDTO.getQuestionnaireId()));
+    actionRequest.setCaseRef(caseDTO.getCaseRef());
 
     ActionAddress actionAddress = mapperFacade.map(addressDTO, ActionAddress.class);
     actionRequest.setAddress(actionAddress);
