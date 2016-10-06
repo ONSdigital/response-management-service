@@ -281,7 +281,7 @@ public class CsvIngester extends CsvToBean<CsvLine> {
         .withIac(csvLine.getIac())
         .withPriority(
             Priority.fromValue(ActionPriority.valueOf(Integer.parseInt(csvLine.getPriority())).getName()))
-        .withQuestionnaireId(new BigInteger(csvLine.getQuestionnaireId()))
+        .withCaseRef(csvLine.getCaseRef())
         .withEvents()
         .withEvents(csvLine.getEvents().split("\\|"))
         .end()
