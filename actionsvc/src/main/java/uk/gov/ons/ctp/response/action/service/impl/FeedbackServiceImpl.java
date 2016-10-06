@@ -63,7 +63,7 @@ public class FeedbackServiceImpl implements FeedbackService {
           actionRepo.saveAndFlush(action);
 
           if (nextState.equals(ActionDTO.ActionState.COMPLETED)) {
-            caseSvcClientService.createNewCaseEvent(action, CategoryDTO.CategoryName.ACTION_COMPLETED);
+            caseSvcClientService.createNewCaseEvent(action, CategoryDTO.CategoryType.ACTION_COMPLETED);
           }
         } catch (StateTransitionException ste) {
           throw new RuntimeException(ste);
