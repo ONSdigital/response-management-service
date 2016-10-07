@@ -52,7 +52,6 @@ import uk.gov.ons.ctp.response.casesvc.representation.AddressDTO;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseDTO;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseEventDTO;
 import uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO;
-import uk.gov.ons.ctp.response.casesvc.representation.QuestionnaireDTO;
 
 /**
  * Test the action distributor
@@ -149,11 +148,6 @@ public class ActionDistributorTest {
     verify(actionRepo, times(0)).findByActionTypeNameAndStateInAndActionIdNotIn(eq("HouseholdUploadIAC"),
         anyListOf(ActionState.class), anyListOf(BigInteger.class), any(Pageable.class));
 
-    verify(caseSvcClientService, times(0)).getQuestionnaire(eq(1));
-    verify(caseSvcClientService, times(0)).getQuestionnaire(eq(2));
-    verify(caseSvcClientService, times(0)).getQuestionnaire(eq(3));
-    verify(caseSvcClientService, times(0)).getQuestionnaire(eq(4));
-
     verify(caseSvcClientService, times(0)).getCase(eq(3));
     verify(caseSvcClientService, times(0)).getCase(eq(4));
 
@@ -163,7 +157,7 @@ public class ActionDistributorTest {
     verify(caseSvcClientService, times(0)).getCaseEvents(eq(4));
 
     verify(caseSvcClientService, times(0)).createNewCaseEvent(any(Action.class),
-        eq(CategoryDTO.CategoryName.ACTION_CREATED));
+        eq(CategoryDTO.CategoryType.ACTION_CREATED));
 
     verify(instructionPublisher, times(0)).sendInstructions(eq("Printer"), anyListOf(ActionRequest.class),
         anyListOf(ActionCancel.class));
@@ -188,8 +182,6 @@ public class ActionDistributorTest {
     List<Action> actionsHHIC = FixtureHelper.loadClassFixtures(Action[].class, "HouseholdInitialContact");
     List<Action> actionsHHIACLOAD = FixtureHelper.loadClassFixtures(Action[].class, "HouseholdUploadIAC");
 
-    List<QuestionnaireDTO> questionnaireDTOs = FixtureHelper.loadClassFixtures(QuestionnaireDTO[].class);
-
     List<CaseDTO> caseDTOs = FixtureHelper.loadClassFixtures(CaseDTO[].class);
 
     List<AddressDTO> addressDTOsUprn1234 = FixtureHelper.loadClassFixtures(AddressDTO[].class, "uprn1234");
@@ -213,15 +205,8 @@ public class ActionDistributorTest {
             anyListOf(BigInteger.class), any(Pageable.class)))
         .thenReturn(actionsHHIACLOAD);
 
-    Mockito.when(caseSvcClientService.getQuestionnaire(eq(1)))
-        .thenThrow(new RestClientException("CaseService Temporarily Unavailable"));
-    Mockito.when(caseSvcClientService.getQuestionnaire(eq(2)))
-        .thenThrow(new RestClientException("CaseService Temporarily Unavailable"));
     Mockito.when(caseSvcClientService.getCase(eq(3))).thenReturn(caseDTOs.get(2));
     Mockito.when(caseSvcClientService.getCase(eq(4))).thenReturn(caseDTOs.get(3));
-
-    Mockito.when(caseSvcClientService.getQuestionnaire(eq(3))).thenReturn(questionnaireDTOs.get(2));
-    Mockito.when(caseSvcClientService.getQuestionnaire(eq(4))).thenReturn(questionnaireDTOs.get(3));
 
     Mockito.when(caseSvcClientService.getAddress(eq(FAKE_UPRN)))
         .thenReturn(addressDTOsUprn1234.get(0));
@@ -232,7 +217,7 @@ public class ActionDistributorTest {
         .thenReturn(Arrays.asList(new CaseEventDTO[] {caseEventDTOs.get(3)}));
 
     Mockito.when(
-        caseSvcClientService.createNewCaseEvent(any(Action.class), eq(CategoryDTO.CategoryName.ACTION_CREATED)))
+        caseSvcClientService.createNewCaseEvent(any(Action.class), eq(CategoryDTO.CategoryType.ACTION_CREATED)))
         .thenReturn(caseEventDTOsPost.get(2));
 
     // let it roll
@@ -244,10 +229,6 @@ public class ActionDistributorTest {
         anyListOf(ActionState.class), anyListOf(BigInteger.class), any(Pageable.class));
     verify(actionRepo).findByActionTypeNameAndStateInAndActionIdNotIn(eq("HouseholdUploadIAC"),
         anyListOf(ActionState.class), anyListOf(BigInteger.class), any(Pageable.class));
-    verify(caseSvcClientService).getQuestionnaire(eq(1));
-    verify(caseSvcClientService).getQuestionnaire(eq(2));
-    verify(caseSvcClientService).getQuestionnaire(eq(3));
-    verify(caseSvcClientService).getQuestionnaire(eq(4));
 
     verify(caseSvcClientService).getCase(eq(3));
     verify(caseSvcClientService).getCase(eq(4));
@@ -258,7 +239,7 @@ public class ActionDistributorTest {
     verify(caseSvcClientService).getCaseEvents(eq(4));
 
     verify(caseSvcClientService, times(2)).createNewCaseEvent(any(Action.class),
-        eq(CategoryDTO.CategoryName.ACTION_CREATED));
+        eq(CategoryDTO.CategoryType.ACTION_CREATED));
 
     verify(instructionPublisher, times(0)).sendInstructions(eq("Printer"), anyListOf(ActionRequest.class),
         anyListOf(ActionCancel.class));
@@ -282,8 +263,6 @@ public class ActionDistributorTest {
 
     List<Action> actionsHHIC = FixtureHelper.loadClassFixtures(Action[].class, "HouseholdInitialContact");
     List<Action> actionsHHIACLOAD = FixtureHelper.loadClassFixtures(Action[].class, "HouseholdUploadIAC");
-
-    List<QuestionnaireDTO> questionnaireDTOs = FixtureHelper.loadClassFixtures(QuestionnaireDTO[].class);
 
     List<CaseDTO> caseDTOs = FixtureHelper.loadClassFixtures(CaseDTO[].class);
 
@@ -310,15 +289,6 @@ public class ActionDistributorTest {
             anyListOf(BigInteger.class), any(Pageable.class)))
         .thenReturn(actionsHHIACLOAD);
 
-    Mockito.when(caseSvcClientService.getQuestionnaire(eq(1)))
-        .thenReturn(questionnaireDTOs.get(0));
-    Mockito.when(caseSvcClientService.getQuestionnaire(eq(2)))
-        .thenReturn(questionnaireDTOs.get(1));
-    Mockito.when(caseSvcClientService.getQuestionnaire(eq(3)))
-        .thenReturn(questionnaireDTOs.get(2));
-    Mockito.when(caseSvcClientService.getQuestionnaire(eq(4)))
-        .thenReturn(questionnaireDTOs.get(3));
-
     Mockito.when(caseSvcClientService.getCase(eq(1))).thenReturn(caseDTOs.get(0));
     Mockito.when(caseSvcClientService.getCase(eq(2))).thenReturn(caseDTOs.get(1));
     Mockito.when(caseSvcClientService.getCase(eq(3))).thenReturn(caseDTOs.get(2));
@@ -337,7 +307,7 @@ public class ActionDistributorTest {
         .thenReturn(Arrays.asList(new CaseEventDTO[] {caseEventDTOs.get(3)}));
 
     Mockito.when(
-        caseSvcClientService.createNewCaseEvent(any(Action.class), eq(CategoryDTO.CategoryName.ACTION_CREATED)))
+        caseSvcClientService.createNewCaseEvent(any(Action.class), eq(CategoryDTO.CategoryType.ACTION_CREATED)))
         .thenReturn(caseEventDTOsPost.get(2));
 
     // let it roll
@@ -350,10 +320,6 @@ public class ActionDistributorTest {
     verify(actionRepo).findByActionTypeNameAndStateInAndActionIdNotIn(eq("HouseholdUploadIAC"),
         anyListOf(ActionState.class), anyListOf(BigInteger.class), any(Pageable.class));
 
-    verify(caseSvcClientService).getQuestionnaire(eq(1));
-    verify(caseSvcClientService).getQuestionnaire(eq(2));
-    verify(caseSvcClientService).getQuestionnaire(eq(3));
-    verify(caseSvcClientService).getQuestionnaire(eq(4));
 
     verify(caseSvcClientService).getCase(eq(1));
     verify(caseSvcClientService).getCase(eq(2));
@@ -368,7 +334,7 @@ public class ActionDistributorTest {
     verify(caseSvcClientService).getCaseEvents(eq(4));
 
     verify(caseSvcClientService, times(4)).createNewCaseEvent(any(Action.class),
-        eq(CategoryDTO.CategoryName.ACTION_CREATED));
+        eq(CategoryDTO.CategoryType.ACTION_CREATED));
 
     verify(instructionPublisher, times(1)).sendInstructions(eq("Printer"), anyListOf(ActionRequest.class),
         anyListOf(ActionCancel.class));

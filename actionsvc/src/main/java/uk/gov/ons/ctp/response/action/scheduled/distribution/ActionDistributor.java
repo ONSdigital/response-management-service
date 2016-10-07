@@ -49,8 +49,8 @@ import uk.gov.ons.ctp.response.action.service.CaseSvcClientService;
 import uk.gov.ons.ctp.response.casesvc.representation.AddressDTO;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseDTO;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseEventDTO;
+import uk.gov.ons.ctp.response.casesvc.representation.CaseGroupDTO;
 import uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO;
-import uk.gov.ons.ctp.response.casesvc.representation.QuestionnaireDTO;
 
 /**
  * This is the 'service' class that distributes actions to downstream services
@@ -355,7 +355,8 @@ public class ActionDistributor {
     // now call caseSvc for the following
     ActionPlan actionPlan = actionPlanRepo.findOne(action.getActionPlanId());
     CaseDTO caseDTO = caseSvcClientService.getCase(action.getCaseId());
-    AddressDTO addressDTO = caseSvcClientService.getAddress(caseDTO.getUprn());
+    CaseGroupDTO caseGroupDTO = caseSvcClientService.getCaseGroup(caseDTO.getCaseId());
+    AddressDTO addressDTO = caseSvcClientService.getAddress(caseGroupDTO.getUprn());
     List<CaseEventDTO> caseEventDTOs = caseSvcClientService.getCaseEvents(action.getCaseId());
 
     return createActionRequest(action, actionPlan, caseDTO, addressDTO, caseEventDTOs);

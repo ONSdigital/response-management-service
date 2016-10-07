@@ -1,6 +1,7 @@
 package uk.gov.ons.ctp.response.action.domain.model;
 
 import java.io.Serializable;
+import java.sql.Timestamp;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -41,4 +42,6 @@ public class ActionCase implements Serializable {
   @Column(name = "caseid")
   private Integer caseId;
 
+  @Column(name = "actionplanstartdate")
+  private Timestamp actionPlanStartDate;
 }

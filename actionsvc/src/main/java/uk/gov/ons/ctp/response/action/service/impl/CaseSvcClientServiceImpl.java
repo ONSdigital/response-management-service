@@ -19,8 +19,8 @@ import uk.gov.ons.ctp.response.action.service.CaseSvcClientService;
 import uk.gov.ons.ctp.response.casesvc.representation.AddressDTO;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseDTO;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseEventDTO;
+import uk.gov.ons.ctp.response.casesvc.representation.CaseGroupDTO;
 import uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO;
-import uk.gov.ons.ctp.response.casesvc.representation.QuestionnaireDTO;
 
 /**
  * Impl of the service that centralizes all REST calls to the Case service
@@ -42,23 +42,21 @@ public class CaseSvcClientServiceImpl implements CaseSvcClientService {
     return caseDTO;
   }
 
-  @Override
-  public QuestionnaireDTO getQuestionnaire(final Integer caseId) {
-    List<QuestionnaireDTO> questionnaireDTOs = caseSvcClient.getResources(
-        appConfig.getCaseSvc().getQuestionnairesByCaseGetPath(),
-        QuestionnaireDTO[].class, caseId);
-    if (questionnaireDTOs.size() == 0) {
-      throw new RuntimeException("Failed to find questionnaire for case " + caseId);
-    }
-    return questionnaireDTOs.get(0);
-  }
 
   @Override
   public CaseDTO getCase(final Integer caseId) {
     CaseDTO caseDTO = caseSvcClient.getResource(appConfig.getCaseSvc().getCaseByCaseGetPath(),
         CaseDTO.class, caseId);
     return caseDTO;
+  } 
+  
+  @Override
+  public CaseGroupDTO getCaseGroup(final Integer caseGroupId) {
+    CaseGroupDTO caseGroupDTO = caseSvcClient.getResource(appConfig.getCaseSvc().getCaseGroupPath(),
+        CaseGroupDTO.class, caseGroupId);
+    return caseGroupDTO;
   }
+  
 
   @Override
   public List<CaseEventDTO> getCaseEvents(final Integer caseId) {
@@ -74,7 +72,7 @@ public class CaseSvcClientServiceImpl implements CaseSvcClientService {
         actionCategory);
     CaseEventDTO caseEventDTO = new CaseEventDTO();
     caseEventDTO.setCaseId(action.getCaseId());
-    caseEventDTO.setCategory(actionCategory.getLabel());
+    caseEventDTO.setCategory(actionCategory);
     caseEventDTO.setCreatedBy(action.getCreatedBy());
     caseEventDTO.setCreatedDateTime(new Date());
     caseEventDTO.setSubCategory(action.getActionType().getName());
@@ -91,16 +89,5 @@ public class CaseSvcClientServiceImpl implements CaseSvcClientService {
         CaseEventDTO.class,
         action.getCaseId());
     return returnedCaseEventDTO;
-  }
-
-  @Override
-  @Deprecated
-  public List<Integer> getOpenCasesForActionPlan(Integer actionPlanId) {
-    MultiValueMap<String, String> queryParamMap = new LinkedMultiValueMap<>();
-    queryParamMap.put("state", Arrays.asList(CaseDTO.CaseState.ACTIVE.name(), CaseDTO.CaseState.RESPONDED.name()));
-    List<Integer> openCasesForPlan = caseSvcClient.getResources(
-        appConfig.getCaseSvc().getCaseByStatusAndActionPlanPath(), Integer[].class, null, queryParamMap,
-        actionPlanId);
-    return openCasesForPlan;
   }
 }

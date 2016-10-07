@@ -6,6 +6,7 @@ import uk.gov.ons.ctp.response.action.domain.model.Action;
 import uk.gov.ons.ctp.response.casesvc.representation.AddressDTO;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseDTO;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseEventDTO;
+import uk.gov.ons.ctp.response.casesvc.representation.CaseGroupDTO;
 import uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO;
 
 /**
@@ -32,6 +33,15 @@ public interface CaseSvcClientService {
   AddressDTO getAddress(final Long uprn);
 
   /**
+   * Call CaseSvc using REST to get the CaseGroups details MAY throw a
+   * RuntimeException if the call fails
+   *
+   * @param caseGroupId identifies the Case to fetch
+   * @return the Case we fetched
+   */
+  CaseGroupDTO getCaseGroup(final Integer caseGroupId);
+
+  /**
    * Call CaseSvc using REST to get the Case details MAY throw a
    * RuntimeException if the call fails
    *
@@ -48,17 +58,5 @@ public interface CaseSvcClientService {
    * @return the CaseEvents we found for the case
    */
   List<CaseEventDTO> getCaseEvents(final Integer caseId);
-
-  /**
-   * Get the list of case ids for all cases that are 'open' and associated with
-   * the given action plan. Note that this has been replaced by the
-   * Case.Notification queue mechanism to notify the Action service of case life
-   * cycle events. Has been left in place pending implementation of recovery
-   * functionality if Case and Action service state gets out of synchronisation.
-   *
-   * @param actionPlanId the action plan id
-   * @return the list of case ids
-   */
-  List<Integer> getOpenCasesForActionPlan(Integer actionPlanId);
 
 }

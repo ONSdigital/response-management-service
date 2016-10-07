@@ -7,8 +7,8 @@ import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.verify;
-import static uk.gov.ons.ctp.response.casesvc.message.notification.NotificationType.RESPONDED;
-import static uk.gov.ons.ctp.response.casesvc.message.notification.NotificationType.SAMPLED_ACTIVATED;
+import static uk.gov.ons.ctp.response.casesvc.message.notification.NotificationType.DISABLED;
+import static uk.gov.ons.ctp.response.casesvc.message.notification.NotificationType.ACTIVATED;
 
 import java.io.File;
 import java.io.IOException;
@@ -118,8 +118,8 @@ public class CaseNotificationReceiverTest {
 
     // Test java objects that should be received
     List<CaseNotification> lifeCycleEvents = new ArrayList<CaseNotification>();
-    lifeCycleEvents.add(new CaseNotification(1, 3, RESPONDED));
-    lifeCycleEvents.add(new CaseNotification(2, 3, SAMPLED_ACTIVATED));
+    lifeCycleEvents.add(new CaseNotification(1, 3, DISABLED));
+    lifeCycleEvents.add(new CaseNotification(2, 3, ACTIVATED));
 
     ArgumentCaptor<List> argumentCaptor = ArgumentCaptor.forClass(List.class);
     verify(caseNotificationService).acceptNotification((List<CaseNotification>) argumentCaptor.capture());

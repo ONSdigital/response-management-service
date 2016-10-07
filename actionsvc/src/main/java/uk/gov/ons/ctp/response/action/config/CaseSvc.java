@@ -11,7 +11,7 @@ import uk.gov.ons.ctp.common.rest.RestClientConfig;
 public class CaseSvc {
   private RestClientConfig connectionConfig;
   private String caseByCaseGetPath;
-  private String questionnairesByCaseGetPath;
+  private String caseGroupPath;
   private String caseEventsByCaseGetPath;
   private String caseEventsByCasePostPath;
   private String addressByUprnGetPath;

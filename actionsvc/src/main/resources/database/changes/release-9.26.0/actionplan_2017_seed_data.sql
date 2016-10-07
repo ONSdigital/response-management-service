@@ -6,7 +6,7 @@ TRUNCATE TABLE action.actiontype cascade;
 TRUNCATE TABLE action.survey cascade;
 
 
-INSERT INTO action.survey(surveyid,surveydate,surveyenddate,name) VALUES (1,'2017-04-09','2017-05-09','2017 Test');
+INSERT INTO action.survey(surveyid,surveystartdate,surveyenddate,name) VALUES (1,'2017-04-09','2017-05-09','2017 Test');
 
 
 --
