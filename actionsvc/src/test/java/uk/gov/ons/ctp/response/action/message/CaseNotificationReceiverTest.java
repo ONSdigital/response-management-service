@@ -56,7 +56,7 @@ public class CaseNotificationReceiverTest {
       + "<caseNotification>"
       + "<caseId>2</caseId>"
       + "<actionPlanId>3</actionPlanId>"
-      + "<notificationType>SAMPLED_ACTIVATED</notificationType>"
+      + "<notificationType>ACTIVATED</notificationType>"
       + "</caseNotification>"
       + "</ns2:caseNotifications>";
 
