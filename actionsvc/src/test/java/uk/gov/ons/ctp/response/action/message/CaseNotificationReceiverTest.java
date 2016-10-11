@@ -98,7 +98,7 @@ public class CaseNotificationReceiverTest {
   //@Test - commented out until such time that it runs reliably in both eclipse and command line!
   public void testNotificationXmlValid() throws Exception {
     String testMessage = VALIDXML_PART1
-        + "<notificationType>RESPONDED</notificationType>"
+        + "<notificationType>DISABLED</notificationType>"
         + VALIDXML_PART2;
 
     // SetUp CountDownLatch for synchronisation with async call
