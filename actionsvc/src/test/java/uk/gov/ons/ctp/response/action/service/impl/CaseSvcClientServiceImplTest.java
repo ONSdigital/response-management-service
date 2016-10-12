@@ -64,26 +64,6 @@ public class CaseSvcClientServiceImplTest {
     Mockito.when(tracer.createSpan(any(String.class))).thenReturn(span);
     restClient.setTracer(tracer);
   }
-  /**
-   * Guess what? - a test!
-   */
-  @Test
-  public void testGetOpenCasesForActionPlan() {
-    CaseSvc caseSvcConfig = new CaseSvc();
-    caseSvcConfig.setCaseByStatusAndActionPlanPath("/cases/actionplan/{actionplanid}");
-    Mockito.when(appConfig.getCaseSvc()).thenReturn(caseSvcConfig);
-    RestTemplate restTemplate = this.restClient.getRestTemplate();
-
-    MockRestServiceServer mockServer = MockRestServiceServer.createServer(restTemplate);
-    mockServer.expect(requestTo("http://localhost:8080/cases/actionplan/1?state=ACTIVE&state=RESPONDED"))
-        .andExpect(method(HttpMethod.GET))
-        .andRespond(withSuccess("[1,2,3]", MediaType.APPLICATION_JSON));
-
-    List<Integer> cases = caseSvcClientService.getOpenCasesForActionPlan(1);
-    assertTrue(cases != null);
-    assertTrue(cases.containsAll(Arrays.asList(new Integer[] {1, 2, 3})));
-    mockServer.verify();
-  }
 
 
   /**
@@ -117,7 +97,7 @@ public class CaseSvcClientServiceImplTest {
         .andExpect(content().string(containsString("\"caseId\":" + action.getCaseId() + ",")))
         .andExpect(content().string(containsString("\"caseEventId\":null,")))
         .andExpect(content()
-            .string(containsString("\"category\":\"" + CategoryDTO.CategoryName.ACTION_COMPLETED.getLabel() + "\"")))
+            .string(containsString("\"category\":\"" + CategoryDTO.CategoryType.ACTION_COMPLETED.name() + "\"")))
         .andExpect(content().string(containsString("\"subCategory\":\"" + action.getActionType().getName() + "\"")))
         .andExpect(content().string(containsString("\"createdBy\":\"" + action.getCreatedBy() + "\"")))
         .andExpect(content().string(containsString(
@@ -126,14 +106,14 @@ public class CaseSvcClientServiceImplTest {
             + "\"createdDateTime\":1460736159699,"
             + "\"caseEventId\":1,"
             + "\"caseId\":1,"
-            + "\"category\":\"cat\","
+            + "\"category\":\"ACTION_COMPLETED\","
             + "\"subCategory\":\"subcat\","
             + "\"createdBy\":\"me\","
             + "\"description\":\"desc\""
             + "}", MediaType.APPLICATION_JSON));
 
     CaseEventDTO caseEventDTO = caseSvcClientService.createNewCaseEvent(action,
-        CategoryDTO.CategoryName.ACTION_COMPLETED);
+        CategoryDTO.CategoryType.ACTION_COMPLETED);
     assertTrue(caseEventDTO != null);
     mockServer.verify();
   }

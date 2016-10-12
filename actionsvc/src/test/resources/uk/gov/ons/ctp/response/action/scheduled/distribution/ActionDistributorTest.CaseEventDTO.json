@@ -3,7 +3,7 @@
    "createdDateTime":1460736159699,
    "caseEventId":1,
    "caseId":1,
-   "category":"cat",
+   "category":"GENERAL_ENQUIRY",
    "subCategory":"subcat",
    "createdBy":"me",
    "description":"desc"
@@ -12,7 +12,7 @@
    "createdDateTime":1460736159699,
    "caseEventId":2,
    "caseId":2,
-   "category":"cat",
+   "category":"GENERAL_ENQUIRY",
    "subCategory":"subcat",
    "createdBy":"me",
    "description":"desc"
@@ -21,7 +21,7 @@
    "createdDateTime":1460736159699,
    "caseEventId":3,
    "caseId":3,
-   "category":"cat",
+   "category":"GENERAL_ENQUIRY",
    "subCategory":"subcat",
    "createdBy":"me",
    "description":"desc"
@@ -30,7 +30,7 @@
    "createdDateTime":1460736159699,
    "caseEventId":4,
    "caseId":4,
-   "category":"cat",
+   "category":"GENERAL_ENQUIRY",
    "subCategory":"subcat",
    "createdBy":"me",
    "description":"desc"

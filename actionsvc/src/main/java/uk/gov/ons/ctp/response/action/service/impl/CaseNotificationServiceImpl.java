@@ -9,8 +9,14 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import lombok.extern.slf4j.Slf4j;
+import uk.gov.ons.ctp.common.time.DateTimeUtil;
 import uk.gov.ons.ctp.response.action.domain.model.ActionCase;
+import uk.gov.ons.ctp.response.action.domain.model.ActionPlan;
+import uk.gov.ons.ctp.response.action.domain.model.Survey;
 import uk.gov.ons.ctp.response.action.domain.repository.ActionCaseRepository;
+import uk.gov.ons.ctp.response.action.domain.repository.ActionPlanRepository;
+import uk.gov.ons.ctp.response.action.domain.repository.SurveyRepository;
+import uk.gov.ons.ctp.response.action.service.ActionService;
 import uk.gov.ons.ctp.response.action.service.CaseNotificationService;
 import uk.gov.ons.ctp.response.casesvc.message.notification.CaseNotification;
 
@@ -28,23 +34,43 @@ public class CaseNotificationServiceImpl implements CaseNotificationService {
   @Inject
   private ActionCaseRepository actionCaseRepo;
 
+  @Inject
+  private ActionPlanRepository actionPlanRepo;
+  
+  @Inject 
+  private ActionService actionService;
+  
+  @Inject
+  private SurveyRepository surveyRepo;
+
   @Override
   @Transactional(propagation = Propagation.REQUIRED, readOnly = false, timeout = TRANSACTION_TIMEOUT)
   public void acceptNotification(List<CaseNotification> notifications) {
-    notifications.forEach((notification) -> {
-      ActionCase actionCase = new ActionCase(notification.getActionPlanId(), notification.getCaseId());
-      switch (notification.getNotificationType()) {
-      case SAMPLED_ACTIVATED:
-        actionCaseRepo.save(actionCase);
-        break;
-      case RESPONDED:
-        actionCaseRepo.delete(actionCase);
-        break;
-      //TODO : ? DEACTIVATED
-      //TODO : ? REPLACEMENT_ACTIVATED
-      default:
-        log.warn("Unknown Case lifecycle event {}", notification.getNotificationType());
-        break;
+    notifications.forEach((notif) -> {
+      ActionPlan actionPlan = actionPlanRepo.findOne(notif.getActionPlanId());
+
+      if (actionPlan != null) {
+        ActionCase actionCase = ActionCase.builder().actionPlanId(notif.getActionPlanId()).caseId(notif.getCaseId()).build();
+        switch (notif.getNotificationType()) {
+        case REPLACED:
+          actionCase.setActionPlanStartDate(DateTimeUtil.nowUTC());
+          actionCaseRepo.save(actionCase);
+        case ACTIVATED:
+          Survey survey = surveyRepo.findOne(actionPlan.getSurveyId());
+          actionCase.setActionPlanStartDate(survey.getSurveyStartDate());
+          actionCaseRepo.save(actionCase);
+          break;
+        case DISABLED:
+        case DEACTIVATED:
+          actionService.cancelActions(notif.getCaseId());
+          actionCaseRepo.delete(actionCase);
+          break;
+        default:
+          log.warn("Unknown Case lifecycle event {}", notif.getNotificationType());
+          break;
+        }
+      } else {
+        log.warn("Cannot accept CaseNotification for none existent actionplan {}", notif.getActionPlanId());
       }
     });
     actionCaseRepo.flush();

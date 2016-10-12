@@ -1,6 +1,7 @@
 package uk.gov.ons.ctp.response.action.domain.model;
 
 import java.io.Serializable;
+import java.sql.Timestamp;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -11,7 +12,6 @@ import javax.persistence.ParameterMode;
 import javax.persistence.StoredProcedureParameter;
 import javax.persistence.Table;
 
-import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -24,7 +24,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @Builder
-@NoArgsConstructor(access = AccessLevel.PUBLIC)
+@NoArgsConstructor
 @Table(name = "case", schema = "action")
 @IdClass(ActionCaseCompositeKey.class)
 @NamedStoredProcedureQuery(name = "createactions", procedureName = "action.createactions", parameters = {
@@ -42,4 +42,6 @@ public class ActionCase implements Serializable {
   @Column(name = "caseid")
   private Integer caseId;
 
+  @Column(name = "actionplanstartdate")
+  private Timestamp actionPlanStartDate;
 }

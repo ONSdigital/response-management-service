@@ -83,8 +83,8 @@ public class CsvLine {
   @Pattern(regexp = NON_BLANK_INTEGER_RE)
   private String caseId;
 
-  @Pattern(regexp = NON_BLANK_INTEGER_RE)
-  private String questionnaireId;
+  @Pattern(regexp = NON_BLANK_ALPHANUM_RE)
+  private String caseRef;
 
   @Pattern(regexp = PRIORITY_RE)
   private String priority;

@@ -87,6 +87,10 @@ spring:
     username: actionsvc
     password: actionsvc
     driverClassName: org.postgresql.Driver
+    tomcat:
+      max-active: 20
+      remove-abandoned: true
+      remove-abandoned-timeout: 180
 
   
   jpa:
@@ -103,7 +107,7 @@ action-distribution:
   instruction-max: 100
   retry-sleep-seconds: 30
   initial-delay-seconds: 60
-  subsequent-delay-seconds: 120
+  subsequent-delay-seconds: 60
 
 plan-execution:
   retry-sleep-seconds: 30
@@ -111,8 +115,8 @@ plan-execution:
   subsequent-delay-seconds: 60
 
 case-svc:
+  case-group-path: /casegroups/{caseGroupId}
   case-by-case-get-path: /cases/{caseid}
-  questionnaires-by-case-get-path: /questionnaires/case/{caseid}
   case-events-by-case-get-path: /cases/{caseid}/events
   case-events-by-case-post-path: /cases/{caseid}/events
   address-by-uprn-get-path: /addresses/{uprn}

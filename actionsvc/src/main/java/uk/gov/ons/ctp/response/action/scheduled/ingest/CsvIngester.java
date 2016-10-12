@@ -84,14 +84,14 @@ public class CsvIngester extends CsvToBean<CsvLine> {
   private static final String UPRN = "uprn";
   private static final String CONTACT_NAME = "contactName";
   private static final String CASE_ID = "caseId";
-  private static final String QUESTIONNAIRE_ID = "questionnaireId";
+  private static final String CASE_REF = "caseRef";
   private static final String PRIORITY = "priority";
   private static final String IAC = "iac";
   private static final String EVENTS = "events";
 
   private static final String[] COLUMNS = new String[] {HANDLER, ACTION_TYPE, INSTRUCTION_TYPE, ADDRESS_TYPE,
       ESTAB_TYPE, LOCALITY, ORGANISATION_NAME, CATEGORY, LINE1, LINE2, TOWN_NAME, POSTCODE,
-      LATITUDE, LONGITUDE, UPRN, CONTACT_NAME, CASE_ID, QUESTIONNAIRE_ID, PRIORITY, IAC, EVENTS};
+      LATITUDE, LONGITUDE, UPRN, CONTACT_NAME, CASE_ID, CASE_REF, PRIORITY, IAC, EVENTS};
 
   /**
    * Inner class to encapsulate the request and cancel data as they do not have
@@ -281,7 +281,7 @@ public class CsvIngester extends CsvToBean<CsvLine> {
         .withIac(csvLine.getIac())
         .withPriority(
             Priority.fromValue(ActionPriority.valueOf(Integer.parseInt(csvLine.getPriority())).getName()))
-        .withQuestionnaireId(new BigInteger(csvLine.getQuestionnaireId()))
+        .withCaseRef(csvLine.getCaseRef())
         .withEvents()
         .withEvents(csvLine.getEvents().split("\\|"))
         .end()

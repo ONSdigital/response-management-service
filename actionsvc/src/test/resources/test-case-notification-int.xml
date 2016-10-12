@@ -47,8 +47,33 @@
   </bean>
 
   <!-- Mock actionCaseRepository to inject into notificationService -->
-  <bean id="notificationRepository" class="org.mockito.Mockito" factory-method="mock"  >
+  <bean id="notificationActionCaseRepository" class="org.mockito.Mockito" factory-method="mock"  >
     <constructor-arg value="uk.gov.ons.ctp.response.action.domain.repository.ActionCaseRepository" />
   </bean>
+  <!-- Mock actionPlanRepository to inject into notificationService -->
+  <bean id="notificationActionPlanRepository" class="org.mockito.Mockito" factory-method="mock"  >
+    <constructor-arg value="uk.gov.ons.ctp.response.action.domain.repository.ActionPlanRepository" />
+  </bean>
+  <!-- Mock actionService to inject into notificationService -->
+  <bean id="notificationActionService" class="org.mockito.Mockito" factory-method="mock"  >
+    <constructor-arg value="uk.gov.ons.ctp.response.action.service.impl.ActionServiceImpl" />
+  </bean>
+  <!-- Mock surveyRepository to inject into notificationService -->
+  <bean id="notificationSurveyRepository" class="org.mockito.Mockito" factory-method="mock"  >
+    <constructor-arg value="uk.gov.ons.ctp.response.action.domain.repository.SurveyRepository" />
+  </bean>
+  <!-- Mock actionRepository to inject into notificationService -->
+  <bean id="notificationActionRepository" class="org.mockito.Mockito" factory-method="mock"  >
+    <constructor-arg value="uk.gov.ons.ctp.response.action.domain.repository.ActionRepository" />
+  </bean>
+  <!-- Mock actionTypeRepository to inject into notificationService -->
+  <bean id="notificationActionTypeRepository" class="org.mockito.Mockito" factory-method="mock"  >
+    <constructor-arg value="uk.gov.ons.ctp.response.action.domain.repository.ActionTypeRepository" />
+  </bean>
+  <!-- Mock actionTypeRepository to inject into notificationService -->
+  <bean id="notificationStateTransitionManager" class="org.mockito.Mockito" factory-method="mock"  >
+    <constructor-arg value="uk.gov.ons.ctp.common.state.StateTransitionManager" />
+  </bean>
+  
 
 </beans>
