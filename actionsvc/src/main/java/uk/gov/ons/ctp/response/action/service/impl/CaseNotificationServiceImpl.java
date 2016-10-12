@@ -50,13 +50,13 @@ public class CaseNotificationServiceImpl implements CaseNotificationService {
       ActionPlan actionPlan = actionPlanRepo.findOne(notif.getActionPlanId());
 
       if (actionPlan != null) {
-        Survey survey = surveyRepo.findOne(actionPlan.getSurveyId());
         ActionCase actionCase = ActionCase.builder().actionPlanId(notif.getActionPlanId()).caseId(notif.getCaseId()).build();
         switch (notif.getNotificationType()) {
         case REPLACED:
           actionCase.setActionPlanStartDate(DateTimeUtil.nowUTC());
           actionCaseRepo.save(actionCase);
         case ACTIVATED:
+          Survey survey = surveyRepo.findOne(actionPlan.getSurveyId());
           actionCase.setActionPlanStartDate(survey.getSurveyStartDate());
           actionCaseRepo.save(actionCase);
           break;

@@ -399,14 +399,14 @@ public class CsvIngesterTest {
    * @throws Exception oops
    */
   @Test
-  public void testQuestionnaireId() throws Exception {
-    File testFile = getTestFile("invalid-questionnaireId.csv");
+  public void testCaseRef() throws Exception {
+    File testFile = getTestFile("invalid-caseRef.csv");
     csvIngester.ingest(testFile);
 
     verify(instructionPublisher, times(0)).sendInstructions(anyString(), anyListOf(ActionRequest.class),
         anyListOf(ActionCancel.class));
 
-    verifyErrorFileExists(testFile, ".error_LINE_2_COLUMN_questionnaireId");
+    verifyErrorFileExists(testFile, ".error_LINE_2_COLUMN_caseRef");
   }
 
 

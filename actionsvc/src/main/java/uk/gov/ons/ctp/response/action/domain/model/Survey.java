@@ -24,6 +24,8 @@ import lombok.NoArgsConstructor;
 @Table(name = "survey", schema = "action")
 public class Survey implements Serializable {
 
+  private static final long serialVersionUID = -7954883336064186610L;
+
   @Id
   @Column(name = "surveyid")
   private Integer surveyId;

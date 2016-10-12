@@ -106,7 +106,7 @@ public class CaseSvcClientServiceImplTest {
             + "\"createdDateTime\":1460736159699,"
             + "\"caseEventId\":1,"
             + "\"caseId\":1,"
-            + "\"category\":\"cat\","
+            + "\"category\":\"ACTION_COMPLETED\","
             + "\"subCategory\":\"subcat\","
             + "\"createdBy\":\"me\","
             + "\"description\":\"desc\""
