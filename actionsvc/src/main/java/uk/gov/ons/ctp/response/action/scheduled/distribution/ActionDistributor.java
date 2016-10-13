@@ -353,7 +353,7 @@ public class ActionDistributor {
     log.debug("constructing ActionRequest to publish to downstream handler for action id {} and case id {}",
         action.getActionId(), action.getCaseId());
     // now call caseSvc for the following
-    ActionPlan actionPlan = actionPlanRepo.findOne(action.getActionPlanId());
+    ActionPlan actionPlan = (action.getActionPlanId() == null) ? null : actionPlanRepo.findOne(action.getActionPlanId());
     CaseDTO caseDTO = caseSvcClientService.getCase(action.getCaseId());
     CaseGroupDTO caseGroupDTO = caseSvcClientService.getCaseGroup(caseDTO.getCaseId());
     AddressDTO addressDTO = caseSvcClientService.getAddress(caseGroupDTO.getUprn());
