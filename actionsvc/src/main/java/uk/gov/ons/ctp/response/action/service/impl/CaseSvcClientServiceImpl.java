@@ -1,14 +1,11 @@
 package uk.gov.ons.ctp.response.action.service.impl;
 
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
 import org.springframework.util.StringUtils;
 
 import lombok.extern.slf4j.Slf4j;

@@ -397,7 +397,7 @@ public class ActionDistributor {
     ActionRequest actionRequest = new ActionRequest();
     // populate the request
     actionRequest.setActionId(action.getActionId());
-    actionRequest.setActionPlan(actionPlan.getName());
+    actionRequest.setActionPlan((actionPlan==null)?null:actionPlan.getName());
     actionRequest.setActionType(action.getActionType().getName());
     actionRequest.setResponseRequired(true);
     actionRequest.setCaseId(BigInteger.valueOf(action.getCaseId()));
