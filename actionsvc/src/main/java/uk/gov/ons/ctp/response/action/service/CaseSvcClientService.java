@@ -7,6 +7,7 @@ import uk.gov.ons.ctp.response.casesvc.representation.AddressDTO;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseDTO;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseEventDTO;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseGroupDTO;
+import uk.gov.ons.ctp.response.casesvc.representation.CaseTypeDTO;
 import uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO;
 
 /**
@@ -49,6 +50,13 @@ public interface CaseSvcClientService {
    * @return the Case we fetched
    */
   CaseDTO getCase(final Integer caseId);
+  
+  /**
+   * Get a casetype by its id
+   * @param caseTypeId the id
+   * @return the casetype
+   */
+  CaseTypeDTO getCaseType(Integer caseTypeId) ;
 
   /**
    * Call CaseSvc using REST to get the CaseEvents for the Case MAY throw a

@@ -80,6 +80,8 @@
 				maxOccurs="1" />
 					<xs:element name="actionType" type="xs:string" minOccurs="1"
 				maxOccurs="1" />
+					<xs:element name="questionSet" type="xs:string" minOccurs="1"
+				maxOccurs="1" />
 					<xs:element name="address" type="ActionAddress" />
 					<xs:element name="contactName" type="xs:string"
 						minOccurs="0" maxOccurs="1" />

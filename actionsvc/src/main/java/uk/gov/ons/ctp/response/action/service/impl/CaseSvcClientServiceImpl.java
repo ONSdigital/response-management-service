@@ -17,6 +17,7 @@ import uk.gov.ons.ctp.response.casesvc.representation.AddressDTO;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseDTO;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseEventDTO;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseGroupDTO;
+import uk.gov.ons.ctp.response.casesvc.representation.CaseTypeDTO;
 import uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO;
 
 /**
@@ -39,6 +40,12 @@ public class CaseSvcClientServiceImpl implements CaseSvcClientService {
     return caseDTO;
   }
 
+  @Override
+  public CaseTypeDTO getCaseType(final Integer caseTypeId) {
+    CaseTypeDTO caseTypeDTO = caseSvcClient.getResource(appConfig.getCaseSvc().getCaseTypeByIdPath(),
+        CaseTypeDTO.class, caseTypeId);
+    return caseTypeDTO;
+  } 
 
   @Override
   public CaseDTO getCase(final Integer caseId) {
