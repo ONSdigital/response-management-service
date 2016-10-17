@@ -50,6 +50,7 @@ import uk.gov.ons.ctp.response.casesvc.representation.AddressDTO;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseDTO;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseEventDTO;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseGroupDTO;
+import uk.gov.ons.ctp.response.casesvc.representation.CaseTypeDTO;
 import uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO;
 
 /**
@@ -355,11 +356,12 @@ public class ActionDistributor {
     // now call caseSvc for the following
     ActionPlan actionPlan = (action.getActionPlanId() == null) ? null : actionPlanRepo.findOne(action.getActionPlanId());
     CaseDTO caseDTO = caseSvcClientService.getCase(action.getCaseId());
+    CaseTypeDTO caseTypeDTO = caseSvcClientService.getCaseType(caseDTO.getCaseTypeId());
     CaseGroupDTO caseGroupDTO = caseSvcClientService.getCaseGroup(caseDTO.getCaseId());
     AddressDTO addressDTO = caseSvcClientService.getAddress(caseGroupDTO.getUprn());
     List<CaseEventDTO> caseEventDTOs = caseSvcClientService.getCaseEvents(action.getCaseId());
 
-    return createActionRequest(action, actionPlan, caseDTO, addressDTO, caseEventDTOs);
+    return createActionRequest(action, actionPlan, caseDTO, caseTypeDTO, addressDTO, caseEventDTOs);
   }
 
   /**
@@ -392,13 +394,14 @@ public class ActionDistributor {
    * @param caseEventDTOs the list of CaseEvent represenations from the CaseSvc
    * @return the shiney new Action Request
    */
-  private ActionRequest createActionRequest(final Action action, final ActionPlan actionPlan, final CaseDTO caseDTO,
+  private ActionRequest createActionRequest(final Action action, final ActionPlan actionPlan, final CaseDTO caseDTO, final CaseTypeDTO caseTypeDTO,
       final AddressDTO addressDTO, final List<CaseEventDTO> caseEventDTOs) {
     ActionRequest actionRequest = new ActionRequest();
     // populate the request
     actionRequest.setActionId(action.getActionId());
     actionRequest.setActionPlan((actionPlan==null)?null:actionPlan.getName());
     actionRequest.setActionType(action.getActionType().getName());
+    actionRequest.setQuestionSet(caseTypeDTO.getQuestionSet());
     actionRequest.setResponseRequired(true);
     actionRequest.setCaseId(BigInteger.valueOf(action.getCaseId()));
     actionRequest.setContactName(null); // TODO - will be avail in data 2017+
