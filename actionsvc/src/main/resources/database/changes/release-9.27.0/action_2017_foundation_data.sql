@@ -1,9 +1,8 @@
+--initial data to insert into action
+-- tables are actionplan, actionplanjobstate, actionrule, actionstate, actiontype, survey
+--this script populates with the data used for 2017 Census Test.
+
 SET schema 'action';
-
-
-TRUNCATE TABLE action.actionplan cascade;
-TRUNCATE TABLE action.actiontype cascade;
-TRUNCATE TABLE action.survey cascade;
 
 
 INSERT INTO action.survey(surveyid,surveystartdate,surveyenddate,name) VALUES (1,'2017-04-09','2017-05-09','2017 Test');
@@ -29,7 +28,6 @@ INSERT INTO actionplan (actionplanid, surveyid, name, description, createdby, la
 INSERT INTO actionplan (actionplanid, surveyid, name, description, createdby, lastrundatetime) VALUES (14, 1, 'C2EO300E', 'Component 2 - England/online/no field/no reminders', 'SYSTEM', NULL);
 INSERT INTO actionplan (actionplanid, surveyid, name, description, createdby, lastrundatetime) VALUES (15, 1, 'C2EO200E', 'Component 2 - England/online/no field/no reminders (later initial contact)', 'SYSTEM', NULL);	
 INSERT INTO actionplan (actionplanid, surveyid, name, description, createdby, lastrundatetime) VALUES (16, 1, 'C2EO331ADE', 'Component 2 - England/online/no field/three reminders (Assisted Digital)', 'SYSTEM', NULL);
-
 
 
 --
@@ -73,9 +71,6 @@ INSERT INTO actiontype (actiontypeid, name, description, handler, cancancel) VAL
 INSERT INTO actiontype (actiontypeid, name, description, handler, cancancel) VALUES (35, 'QGLIT', 'Print translation booklet - Lithuanian', 'Printer', false);
 INSERT INTO actiontype (actiontypeid, name, description, handler, cancancel) VALUES (36, 'QGURD', 'Print translation booklet - Urdu', 'Printer', false);
 INSERT INTO actiontype (actiontypeid, name, description, handler, cancancel) VALUES (37, 'QGGUJ', 'Print translation booklet - Gujarati', 'Printer', false);	
-
-
-
 
 
 --
@@ -142,3 +137,29 @@ INSERT INTO actionrule (actionruleid, actionplanid, actiontypeid, name, descript
 INSERT INTO actionrule (actionruleid, actionplanid, actiontypeid, name, description, surveydatedaysoffset, priority) VALUES (58, 16, 7, 'HH_1RLAD-4', 'Print Reminder Letter 1 (SD-4)', -4, 3);
 INSERT INTO actionrule (actionruleid, actionplanid, actiontypeid, name, description, surveydatedaysoffset, priority) VALUES (59, 16, 10, 'HH_2RLAD+9', 'Print Reminder Letter 2 (SD+9)', 9, 3);
 INSERT INTO actionrule (actionruleid, actionplanid, actiontypeid, name, description, surveydatedaysoffset, priority) VALUES (60, 16, 13, 'HH_3RLAD+17', 'Print Reminder Letter 3 (SD+17)', 17, 3);	
+
+--
+-- Data for Name: actionstate; Type: TABLE DATA; Schema: action; Owner: postgres
+--
+
+INSERT INTO actionstate (state) VALUES ('SUBMITTED');
+INSERT INTO actionstate (state) VALUES ('PENDING');
+INSERT INTO actionstate (state) VALUES ('ACTIVE');
+INSERT INTO actionstate (state) VALUES ('COMPLETED');
+INSERT INTO actionstate (state) VALUES ('CANCEL_SUBMITTED');
+INSERT INTO actionstate (state) VALUES ('CANCELLED');
+INSERT INTO actionstate (state) VALUES ('CANCEL_PENDING');
+INSERT INTO actionstate (state) VALUES ('CANCELLING');
+INSERT INTO actionstate (state) VALUES ('ABORTED');
+
+
+--
+-- Data for Name: actionplanjobstate; Type: TABLE DATA; Schema: action; Owner: postgres
+--
+
+INSERT INTO actionplanjobstate (state) VALUES ('SUBMITTED');
+INSERT INTO actionplanjobstate (state) VALUES ('STARTED');
+INSERT INTO actionplanjobstate (state) VALUES ('COMPLETED');
+INSERT INTO actionplanjobstate (state) VALUES ('FAILED');
+
+

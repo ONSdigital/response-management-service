@@ -5,11 +5,20 @@ databaseChangeLog:
       author: Sarah Radford
       changes:
         - sqlFile:
-            comment: Default Household Action plan seed data for 2017 Test
-            path: actionplan_2017_seed_data.sql
+            comment: Action foundation schema
+            path: action_2017_foundation_schema.sql
             relativeToChangelogFile: true
             splitStatements: false
 
+  - changeSet:
+      id: 9.27.0-2
+      author: Sarah Radford
+      changes:
+        - sqlFile:
+            comment: Default Household Action plan foundation seed data for 2017 Test
+            path: action_2017_foundation_data.sql
+            relativeToChangelogFile: true
+            splitStatements: false
       
 
 
