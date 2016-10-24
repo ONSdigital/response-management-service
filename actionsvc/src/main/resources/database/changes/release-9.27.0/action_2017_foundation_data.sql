@@ -16,10 +16,10 @@ INSERT INTO actionplan (actionplanid, surveyid, name, description, createdby, la
 INSERT INTO actionplan (actionplanid, surveyid, name, description, createdby, lastrundatetime) VALUES (2, 1, 'C1O331D4W', 'Component 1 - Wales/online/field day four/three reminders', 'SYSTEM', NULL);
 INSERT INTO actionplan (actionplanid, surveyid, name, description, createdby, lastrundatetime) VALUES (3, 1, 'C1O331D10E', 'Component 1 - England/online/field day ten/three reminders', 'SYSTEM', NULL);
 INSERT INTO actionplan (actionplanid, surveyid, name, description, createdby, lastrundatetime) VALUES (4, 1, 'C1O331D10W', 'Component 1 - Wales/online/field day ten/three reminders', 'SYSTEM', NULL);
-INSERT INTO actionplan (actionplanid, surveyid, name, description, createdby, lastrundatetime) VALUES (5, 1, 'C2SP331E', 'Component 2 - England/paper/sexual id/no field/three reminders', 'SYSTEM', NULL);
-INSERT INTO actionplan (actionplanid, surveyid, name, description, createdby, lastrundatetime) VALUES (6, 1, 'C2SP331W', 'Component 2 - Wales/paper/sexual id/no field/three reminders', 'SYSTEM', NULL);
-INSERT INTO actionplan (actionplanid, surveyid, name, description, createdby, lastrundatetime) VALUES (7, 1, 'C2EP331E', 'Component 2 - England/paper/without sexual id/no field/three reminders', 'SYSTEM', NULL);
-INSERT INTO actionplan (actionplanid, surveyid, name, description, createdby, lastrundatetime) VALUES (8, 1, 'C2EP331W', 'Component 2 - Wales/paper/without sexual id/no field/three reminders', 'SYSTEM', NULL);
+INSERT INTO actionplan (actionplanid, surveyid, name, description, createdby, lastrundatetime) VALUES (5, 1, 'C2SP331E', 'Component 2 - England/paper/sexual ID/no field/three reminders', 'SYSTEM', NULL);
+INSERT INTO actionplan (actionplanid, surveyid, name, description, createdby, lastrundatetime) VALUES (6, 1, 'C2SP331W', 'Component 2 - Wales/paper/sexual ID/no field/three reminders', 'SYSTEM', NULL);
+INSERT INTO actionplan (actionplanid, surveyid, name, description, createdby, lastrundatetime) VALUES (7, 1, 'C2EP331E', 'Component 2 - England/paper/without sexual ID/no field/three reminders', 'SYSTEM', NULL);
+INSERT INTO actionplan (actionplanid, surveyid, name, description, createdby, lastrundatetime) VALUES (8, 1, 'C2EP331W', 'Component 2 - Wales/paper/without sexual ID/no field/three reminders', 'SYSTEM', NULL);
 INSERT INTO actionplan (actionplanid, surveyid, name, description, createdby, lastrundatetime) VALUES (9, 1, 'C2O331E', 'Component 2 - England/online/no field/three reminders', 'SYSTEM', NULL);
 INSERT INTO actionplan (actionplanid, surveyid, name, description, createdby, lastrundatetime) VALUES (10, 1, 'C2O331W', 'Component 2 - Wales/online/no field/three reminders', 'SYSTEM', NULL);
 INSERT INTO actionplan (actionplanid, surveyid, name, description, createdby, lastrundatetime) VALUES (11, 1, 'C2EO332E', 'Component 2 - England/online/no field/three reminders (final reminder HH questionnaire)', 'SYSTEM', NULL);
@@ -34,25 +34,25 @@ INSERT INTO actionplan (actionplanid, surveyid, name, description, createdby, la
 -- Data for Name: actiontype; Type: TABLE DATA; Schema: action; Owner: postgres
 --
 
-INSERT INTO actiontype (actiontypeid, name, description, handler, cancancel) VALUES (1, 'ICL1_2003', 'Print initial contact letter (english) ', 'Printer', false);
-INSERT INTO actiontype (actiontypeid, name, description, handler, cancancel) VALUES (2, 'ICL2W_2003', 'Print initial contact letter (welsh)', 'Printer', false);
-INSERT INTO actiontype (actiontypeid, name, description, handler, cancancel) VALUES (3, 'ICL1_2703', 'Print initial contact letter (english) ', 'Printer', false);
-INSERT INTO actiontype (actiontypeid, name, description, handler, cancancel) VALUES (4, 'ICLAD_2003', 'Print initial contact letter (assisted digital)', 'Printer', false);
-INSERT INTO actiontype (actiontypeid, name, description, handler, cancancel) VALUES (5, '1RL1_0504', 'Print reminder letter 1 (english)', 'Printer', false);
-INSERT INTO actiontype (actiontypeid, name, description, handler, cancancel) VALUES (6, '1RL2W_0504', 'Print reminder letter 1 (welsh)', 'Printer', false);
-INSERT INTO actiontype (actiontypeid, name, description, handler, cancancel) VALUES (7, '1RLAD_0504', 'Print reminder letter 1 (assisted digital)', 'Printer', false);
-INSERT INTO actiontype (actiontypeid, name, description, handler, cancancel) VALUES (8, '2RL1_1804', 'Print reminder letter 2 (english)', 'Printer', false);
-INSERT INTO actiontype (actiontypeid, name, description, handler, cancancel) VALUES (9, '2RL2W_1804', 'Print reminder letter 2 (welsh)', 'Printer', false);
-INSERT INTO actiontype (actiontypeid, name, description, handler, cancancel) VALUES (10, '2RLAD_1804', 'Print reminder letter 2 (assisted digital)', 'Printer', false);
-INSERT INTO actiontype (actiontypeid, name, description, handler, cancancel) VALUES (11, '3RL1_2604', 'Print reminder letter 3 (english)', 'Printer', false);
-INSERT INTO actiontype (actiontypeid, name, description, handler, cancancel) VALUES (12, '3RL2W_2604', 'Print reminder letter 3 (welsh)', 'Printer', false);
-INSERT INTO actiontype (actiontypeid, name, description, handler, cancancel) VALUES (13, '3RLAD_2604', 'Print reminder letter 3 (assisted digital)', 'Printer', false);
+INSERT INTO actiontype (actiontypeid, name, description, handler, cancancel) VALUES (1, 'ICL1_2003', 'Print initial contact letter (English) ', 'Printer', false);
+INSERT INTO actiontype (actiontypeid, name, description, handler, cancancel) VALUES (2, 'ICL2W_2003', 'Print initial contact letter (Welsh)', 'Printer', false);
+INSERT INTO actiontype (actiontypeid, name, description, handler, cancancel) VALUES (3, 'ICL1_2703', 'Print initial contact letter (English) ', 'Printer', false);
+INSERT INTO actiontype (actiontypeid, name, description, handler, cancancel) VALUES (4, 'ICLAD_2003', 'Print initial contact letter (Assisted Digital)', 'Printer', false);
+INSERT INTO actiontype (actiontypeid, name, description, handler, cancancel) VALUES (5, '1RL1_0504', 'Print reminder letter 1 (English)', 'Printer', false);
+INSERT INTO actiontype (actiontypeid, name, description, handler, cancancel) VALUES (6, '1RL2W_0504', 'Print reminder letter 1 (Welsh)', 'Printer', false);
+INSERT INTO actiontype (actiontypeid, name, description, handler, cancancel) VALUES (7, '1RLAD_0504', 'Print reminder letter 1 (Assisted Digital)', 'Printer', false);
+INSERT INTO actiontype (actiontypeid, name, description, handler, cancancel) VALUES (8, '2RL1_1804', 'Print reminder letter 2 (English)', 'Printer', false);
+INSERT INTO actiontype (actiontypeid, name, description, handler, cancancel) VALUES (9, '2RL2W_1804', 'Print reminder letter 2 (Welsh)', 'Printer', false);
+INSERT INTO actiontype (actiontypeid, name, description, handler, cancancel) VALUES (10, '2RLAD_1804', 'Print reminder letter 2 (Assisted Digital)', 'Printer', false);
+INSERT INTO actiontype (actiontypeid, name, description, handler, cancancel) VALUES (11, '3RL1_2604', 'Print reminder letter 3 (English)', 'Printer', false);
+INSERT INTO actiontype (actiontypeid, name, description, handler, cancancel) VALUES (12, '3RL2W_2604', 'Print reminder letter 3 (Welsh)', 'Printer', false);
+INSERT INTO actiontype (actiontypeid, name, description, handler, cancancel) VALUES (13, '3RLAD_2604', 'Print reminder letter 3 (Assisted Digital)', 'Printer', false);
 INSERT INTO actiontype (actiontypeid, name, description, handler, cancancel) VALUES (14, 'HouseholdCreateVisit', 'Create Visit', 'Field', true);
-INSERT INTO actiontype (actiontypeid, name, description, handler, cancancel) VALUES (15, 'H1S_2003', 'Print household paper questionnaire (english with sexual id)', 'Printer', false);
-INSERT INTO actiontype (actiontypeid, name, description, handler, cancancel) VALUES (16, 'H2S_2003', 'Print household paper questionnaire (welsh with sexual id)', 'Printer', false);
-INSERT INTO actiontype (actiontypeid, name, description, handler, cancancel) VALUES (17, 'H1_2003', 'Print household paper questionnaire (english without sexual id)', 'Printer', false);
-INSERT INTO actiontype (actiontypeid, name, description, handler, cancancel) VALUES (18, 'H2_2003', 'Print household paper questionnaire (welsh without sexual id)', 'Printer', false);
-INSERT INTO actiontype (actiontypeid, name, description, handler, cancancel) VALUES (19, 'H1_2604Q4', 'Print household paper questionnaire (english without sexual id)', 'Printer', false);
+INSERT INTO actiontype (actiontypeid, name, description, handler, cancancel) VALUES (15, 'H1S_2003', 'Print household paper questionnaire (English with sexual ID)', 'Printer', false);
+INSERT INTO actiontype (actiontypeid, name, description, handler, cancancel) VALUES (16, 'H2S_2003', 'Print household paper questionnaire (Welsh with sexual ID)', 'Printer', false);
+INSERT INTO actiontype (actiontypeid, name, description, handler, cancancel) VALUES (17, 'H1_2003', 'Print household paper questionnaire (English without sexual ID)', 'Printer', false);
+INSERT INTO actiontype (actiontypeid, name, description, handler, cancancel) VALUES (18, 'H2_2003', 'Print household paper questionnaire (Welsh without sexual ID)', 'Printer', false);
+INSERT INTO actiontype (actiontypeid, name, description, handler, cancancel) VALUES (19, 'H1_2604Q4', 'Print household paper questionnaire (English without sexual ID)', 'Printer', false);
 INSERT INTO actiontype (actiontypeid, name, description, handler, cancancel) VALUES (20, 'GC_ESCALATION', 'General complaint escalation', 'CensusSupport', false);
 INSERT INTO actiontype (actiontypeid, name, description, handler, cancancel) VALUES (21, 'GE_ESCALATION', 'General enquiry escalation', 'CensusSupport', false);
 INSERT INTO actiontype (actiontypeid, name, description, handler, cancancel) VALUES (22, 'FC_ESCALATION', 'Field complaint escalation', 'FieldSupport', false);
