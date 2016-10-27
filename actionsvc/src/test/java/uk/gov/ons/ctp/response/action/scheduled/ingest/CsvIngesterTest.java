@@ -463,4 +463,13 @@ public class CsvIngesterTest {
     verifyErrorFileExists(testFile, ".error_LINE_2_COLUMN_questionSet");
   }
 
+  @Test
+  public void testSsdTest() throws Exception {
+    File testFile = getTestFile("ssdTest.csv");
+    csvIngester.ingest(testFile);
+
+    verify(instructionPublisher, times(442)).sendInstructions(anyString(), anyListOf(ActionRequest.class),
+            anyListOf(ActionCancel.class));
+  }
+
 }
