@@ -1,5 +1,6 @@
 package uk.gov.ons.ctp.response.action.scheduled.ingest;
 
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
@@ -23,6 +24,8 @@ public class CsvLine {
   private static final int CAT_MAX_LEN = 20;
   private static final int ORG_MAX_LEN = 60;
   private static final int LOCALITY_MAX_LEN = 35;
+  private static final int ACTION_PLAN_MAX_LEN = 100;
+  private static final int QUESTION_SET_MAX_LEN = 10;
   private static final String POSTCODE_RE = "^[A-Z]{1,2}[0-9R][0-9A-Z]? [0-9][ABD-HJLNP-UW-Z]{2}$";
   private static final String NON_BLANK_ALPHANUM_RE = "[\\w]+";
   private static final String NON_BLANK_INTEGER_RE = "[+-]?[\\d]+";
@@ -36,6 +39,15 @@ public class CsvLine {
   @Pattern(regexp = HANDLER_TYPE_RE)
   private String handler;
 
+  @NotNull
+  @Size(min = 1, max = ACTION_PLAN_MAX_LEN)
+  private String actionPlan;
+
+  @NotNull
+  @Size(min = 1, max = QUESTION_SET_MAX_LEN)
+  private String questionSet;
+
+  @NotNull
   @Pattern(regexp = ACTION_TYPE_RE)
   private String actionType;
 

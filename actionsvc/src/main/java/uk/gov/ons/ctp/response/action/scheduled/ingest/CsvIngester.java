@@ -69,6 +69,8 @@ public class CsvIngester extends CsvToBean<CsvLine> {
 
   private static final String HANDLER = "handler";
   private static final String ACTION_TYPE = "actionType";
+  private static final String ACTION_PLAN = "actionPlan";
+  private static final String QUESTION_SET = "questionSet";
   private static final String INSTRUCTION_TYPE = "instructionType";
   private static final String ADDRESS_TYPE = "addressType";
   private static final String ESTAB_TYPE = "estabType";
@@ -91,7 +93,7 @@ public class CsvIngester extends CsvToBean<CsvLine> {
 
   private static final String[] COLUMNS = new String[] {HANDLER, ACTION_TYPE, INSTRUCTION_TYPE, ADDRESS_TYPE,
       ESTAB_TYPE, LOCALITY, ORGANISATION_NAME, CATEGORY, LINE1, LINE2, TOWN_NAME, POSTCODE,
-      LATITUDE, LONGITUDE, UPRN, CONTACT_NAME, CASE_ID, CASE_REF, PRIORITY, IAC, EVENTS};
+      LATITUDE, LONGITUDE, UPRN, CONTACT_NAME, CASE_ID, CASE_REF, PRIORITY, IAC, EVENTS, ACTION_PLAN, QUESTION_SET};
 
   /**
    * Inner class to encapsulate the request and cancel data as they do not have
@@ -261,6 +263,8 @@ public class CsvIngester extends CsvToBean<CsvLine> {
     return ActionRequest.builder()
         .withActionId(new BigInteger(executionStamp + String.format("%08d", lineNum)))
         .withActionType(csvLine.getActionType())
+        .withActionPlan(csvLine.getActionPlan())
+        .withQuestionSet(csvLine.getQuestionSet())
         .withResponseRequired(false)
         .withAddress()
         .withUprn(new BigInteger(csvLine.getUprn()))
