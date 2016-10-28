@@ -9,9 +9,10 @@ info:
 # ie -Dlogging.level.org.springframework=DEBUG
 logging:
   level:
-    org.springframework: info
-    com.hazelcast: info
-    uk.gov.ons.ctp: debug
+    ROOT: ERROR
+    org.springframework: ERROR
+    com.hazelcast: ERROR
+    uk.gov.ons.ctp: ERROR
 
 liquibase:
   user: postgres
