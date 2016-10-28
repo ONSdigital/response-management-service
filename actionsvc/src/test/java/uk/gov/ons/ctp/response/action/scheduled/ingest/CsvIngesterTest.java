@@ -97,7 +97,6 @@ public class CsvIngesterTest {
    */
   @Test
   public void testBlueSky() throws Exception {
-
     csvIngester.ingest(getTestFile("bluesky.csv"));
 
     verify(instructionPublisher, times(1)).sendInstructions(anyString(), anyListOf(ActionRequest.class),
@@ -441,7 +440,36 @@ public class CsvIngesterTest {
 
     verifyErrorFileExists(testFile, ".error_LINE_2_COLUMN_priority");
   }
-  
-  
+
+  @Test
+  public void testActionPlan() throws Exception {
+    File testFile = getTestFile("invalid-actionPlan.csv");
+    csvIngester.ingest(testFile);
+
+    verify(instructionPublisher, times(0)).sendInstructions(anyString(), anyListOf(ActionRequest.class),
+            anyListOf(ActionCancel.class));
+
+    verifyErrorFileExists(testFile, ".error_LINE_2_COLUMN_actionPlan");
+  }
+
+  @Test
+  public void testQuestionSet() throws Exception {
+    File testFile = getTestFile("invalid-questionSet.csv");
+    csvIngester.ingest(testFile);
+
+    verify(instructionPublisher, times(0)).sendInstructions(anyString(), anyListOf(ActionRequest.class),
+            anyListOf(ActionCancel.class));
+
+    verifyErrorFileExists(testFile, ".error_LINE_2_COLUMN_questionSet");
+  }
+
+  @Test
+  public void testSsdTest() throws Exception {
+    File testFile = getTestFile("ssdTest.csv");
+    csvIngester.ingest(testFile);
+
+    verify(instructionPublisher, times(442)).sendInstructions(anyString(), anyListOf(ActionRequest.class),
+            anyListOf(ActionCancel.class));
+  }
 
 }

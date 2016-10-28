@@ -1,2 +1,2 @@
-handler,action_type,instruction_type,address_type,estab_type,locality,organisation_name,category,line1,line2,town_name,postcode,latitude,longitude,uprn,contact_name,case_id,case_ref,priority,iac,events
-Field,AddressCheck,Request,CE,1234567,WELLINGTON,,HOTEL,THE STATION HOTEL,STATION ROAD,TELFORD,TF1 1BY,52.7008250520575,-2.51623143156324,452073602,,999999999,999999999,3,9999999999,
+handler,action_type,instruction_type,address_type,estab_type,locality,organisation_name,category,line1,line2,town_name,postcode,latitude,longitude,uprn,contact_name,case_id,case_ref,priority,iac,events,actionPlan,questionSet
+Field,AddressCheck,Request,CE,1234567,WELLINGTON,,HOTEL,THE STATION HOTEL,STATION ROAD,TELFORD,TF1 1BY,52.7008250520575,-2.51623143156324,452073602,,999999999,999999999,3,9999999999,,test,test
