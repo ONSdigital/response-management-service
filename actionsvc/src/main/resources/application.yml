@@ -12,7 +12,7 @@ logging:
     ROOT: ERROR
     org.springframework: ERROR
     com.hazelcast: ERROR
-    uk.gov.ons.ctp: ERROR
+    uk.gov.ons.ctp: WARN
 
 liquibase:
   user: postgres
@@ -105,10 +105,10 @@ spring:
     enabled: false
 
 action-distribution:
-  instruction-max: 100
+  instruction-max: 200
   retry-sleep-seconds: 30
-  initial-delay-seconds: 60
-  subsequent-delay-seconds: 60
+  initial-delay-seconds: 30
+  subsequent-delay-seconds: 30
 
 plan-execution:
   retry-sleep-seconds: 30
