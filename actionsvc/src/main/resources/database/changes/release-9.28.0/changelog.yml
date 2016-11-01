@@ -1,0 +1,12 @@
+databaseChangeLog:
+
+  - changeSet:
+      id: 9.28.0-1
+      author: Sarah Radford
+      changes:
+        - sqlFile:
+            comment: Action seed data for Individuals in England
+            path: action_2017_individual_england.sql
+            relativeToChangelogFile: true
+            splitStatements: false
+
