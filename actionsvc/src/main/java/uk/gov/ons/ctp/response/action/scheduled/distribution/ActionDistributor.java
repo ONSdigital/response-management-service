@@ -406,8 +406,8 @@ public class ActionDistributor {
     actionRequest.setQuestionSet(caseTypeDTO.getQuestionSet());
     actionRequest.setResponseRequired(true);
     actionRequest.setCaseId(BigInteger.valueOf(action.getCaseId()));
-    if (caseDTO.getContact() != null) {
-      ContactDTO contactDTO = caseDTO.getContact();
+    ContactDTO contactDTO = caseDTO.getContact();
+    if (contactDTO != null) {
       ActionContact actionContact = new ActionContact();
       actionContact.setTitle(contactDTO.getTitle());
       actionContact.setForename(contactDTO.getForename());
