@@ -40,6 +40,7 @@ import uk.gov.ons.ctp.response.action.domain.repository.ActionTypeRepository;
 import uk.gov.ons.ctp.response.action.message.InstructionPublisher;
 import uk.gov.ons.ctp.response.action.message.instruction.ActionAddress;
 import uk.gov.ons.ctp.response.action.message.instruction.ActionCancel;
+import uk.gov.ons.ctp.response.action.message.instruction.ActionContact;
 import uk.gov.ons.ctp.response.action.message.instruction.ActionEvent;
 import uk.gov.ons.ctp.response.action.message.instruction.ActionRequest;
 import uk.gov.ons.ctp.response.action.message.instruction.Priority;
@@ -52,6 +53,7 @@ import uk.gov.ons.ctp.response.casesvc.representation.CaseEventDTO;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseGroupDTO;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseTypeDTO;
 import uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO;
+import uk.gov.ons.ctp.response.casesvc.representation.ContactDTO;
 
 /**
  * This is the 'service' class that distributes actions to downstream services
@@ -404,7 +406,16 @@ public class ActionDistributor {
     actionRequest.setQuestionSet(caseTypeDTO.getQuestionSet());
     actionRequest.setResponseRequired(true);
     actionRequest.setCaseId(BigInteger.valueOf(action.getCaseId()));
-    actionRequest.setContactName(null); // TODO - will be avail in data 2017+
+    if (caseDTO.getContact() != null) {
+      ContactDTO contactDTO = caseDTO.getContact();
+      ActionContact actionContact = new ActionContact();
+      actionContact.setTitle(contactDTO.getTitle());
+      actionContact.setForename(contactDTO.getForename());
+      actionContact.setSurname(contactDTO.getSurname());
+      actionContact.setPhoneNumber(contactDTO.getPhoneNumber());
+      actionContact.setEmailAddress(contactDTO.getEmailAddress());
+      actionRequest.setContact(actionContact);
+    }
     ActionEvent actionEvent = new ActionEvent();
     caseEventDTOs.forEach((caseEventDTO) -> actionEvent.getEvents().add(formatCaseEvent(caseEventDTO)));
     actionRequest.setEvents(actionEvent);

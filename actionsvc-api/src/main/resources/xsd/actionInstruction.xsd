@@ -41,6 +41,21 @@
 		</xs:sequence>
 	</xs:complexType>
 
+	<xs:complexType name="ActionContact">
+		<xs:sequence>
+			<xs:element name="title" type="xs:string" minOccurs="0"
+				maxOccurs="1" />
+			<xs:element name="forename" type="xs:string" minOccurs="0"
+				maxOccurs="1" />
+			<xs:element name="surname" type="xs:string" minOccurs="0"
+				maxOccurs="1" />
+			<xs:element name="phoneNumber" type="xs:string" minOccurs="0"
+				maxOccurs="1" />
+			<xs:element name="emailAddress" type="xs:string" minOccurs="0"
+				maxOccurs="1" />
+		</xs:sequence>
+	</xs:complexType>
+
 	<!-- a complex type for addresses - no statistical geography info -->
 	<xs:complexType name="ActionAddress">
 		<xs:sequence>
@@ -82,9 +97,9 @@
 				maxOccurs="1" />
 					<xs:element name="questionSet" type="xs:string" minOccurs="1"
 				maxOccurs="1" />
+					<xs:element name="contact" type="ActionContact" minOccurs="0"
+				maxOccurs="1" />
 					<xs:element name="address" type="ActionAddress" />
-					<xs:element name="contactName" type="xs:string"
-						minOccurs="0" maxOccurs="1" />
 					<xs:element name="caseId" type="xs:positiveInteger" />
 					<xs:element name="priority" type="Priority" minOccurs="0"
 						maxOccurs="1" />

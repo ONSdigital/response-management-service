@@ -375,6 +375,86 @@ public class CsvIngesterTest {
     verifyErrorFileExists(testFile, ".error_LINE_2_COLUMN_uprn");
   }
 
+   /**
+   * Test ...
+   *
+   * @throws Exception oops
+   */
+  @Test
+  public void testTitle() throws Exception {
+    File testFile = getTestFile("invalid-title.csv");
+    csvIngester.ingest(testFile);
+
+    verify(instructionPublisher, times(0)).sendInstructions(anyString(), anyListOf(ActionRequest.class),
+        anyListOf(ActionCancel.class));
+
+    verifyErrorFileExists(testFile, ".error_LINE_2_COLUMN_title");
+  }
+
+   /**
+   * Test ...
+   *
+   * @throws Exception oops
+   */
+  @Test
+  public void testForename() throws Exception {
+    File testFile = getTestFile("invalid-forename.csv");
+    csvIngester.ingest(testFile);
+
+    verify(instructionPublisher, times(0)).sendInstructions(anyString(), anyListOf(ActionRequest.class),
+        anyListOf(ActionCancel.class));
+
+    verifyErrorFileExists(testFile, ".error_LINE_2_COLUMN_forename");
+  }
+
+  /**
+   * Test ...
+   *
+   * @throws Exception oops
+   */
+  @Test
+  public void testSurname() throws Exception {
+    File testFile = getTestFile("invalid-surname.csv");
+    csvIngester.ingest(testFile);
+
+    verify(instructionPublisher, times(0)).sendInstructions(anyString(), anyListOf(ActionRequest.class),
+        anyListOf(ActionCancel.class));
+
+    verifyErrorFileExists(testFile, ".error_LINE_2_COLUMN_surname");
+  }
+  
+  /**
+   * Test ...
+   *
+   * @throws Exception oops
+   */
+  @Test
+  public void testEmail() throws Exception {
+    File testFile = getTestFile("invalid-emailAddress.csv");
+    csvIngester.ingest(testFile);
+
+    verify(instructionPublisher, times(0)).sendInstructions(anyString(), anyListOf(ActionRequest.class),
+        anyListOf(ActionCancel.class));
+
+    verifyErrorFileExists(testFile, ".error_LINE_2_COLUMN_emailAddress");
+  }
+   
+  /**
+   * Test ...
+   *
+   * @throws Exception oops
+   */
+  @Test
+  public void testTelephone() throws Exception {
+    File testFile = getTestFile("invalid-telephoneNumber.csv");
+    csvIngester.ingest(testFile);
+
+    verify(instructionPublisher, times(0)).sendInstructions(anyString(), anyListOf(ActionRequest.class),
+        anyListOf(ActionCancel.class));
+
+    verifyErrorFileExists(testFile, ".error_LINE_2_COLUMN_telephoneNumber");
+  }
+  
   /**
    * Test ...
    *
@@ -461,15 +541,6 @@ public class CsvIngesterTest {
             anyListOf(ActionCancel.class));
 
     verifyErrorFileExists(testFile, ".error_LINE_2_COLUMN_questionSet");
-  }
-
-  @Test
-  public void testSsdTest() throws Exception {
-    File testFile = getTestFile("ssdTest.csv");
-    csvIngester.ingest(testFile);
-
-    verify(instructionPublisher, times(442)).sendInstructions(anyString(), anyListOf(ActionRequest.class),
-            anyListOf(ActionCancel.class));
   }
 
 }

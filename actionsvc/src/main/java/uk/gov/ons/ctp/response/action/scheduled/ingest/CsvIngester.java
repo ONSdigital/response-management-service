@@ -84,16 +84,20 @@ public class CsvIngester extends CsvToBean<CsvLine> {
   private static final String LATITUDE = "latitude";
   private static final String LONGITUDE = "longitude";
   private static final String UPRN = "uprn";
-  private static final String CONTACT_NAME = "contactName";
   private static final String CASE_ID = "caseId";
   private static final String CASE_REF = "caseRef";
   private static final String PRIORITY = "priority";
   private static final String IAC = "iac";
   private static final String EVENTS = "events";
+  private static final String TITLE = "title";
+  private static final String FORENAME = "forename";
+  private static final String SURNAME = "surname";
+  private static final String EMAIL = "emailAddress";
+  private static final String TELEPHONE = "telephoneNumber";
 
   private static final String[] COLUMNS = new String[] {HANDLER, ACTION_TYPE, INSTRUCTION_TYPE, ADDRESS_TYPE,
       ESTAB_TYPE, LOCALITY, ORGANISATION_NAME, CATEGORY, LINE1, LINE2, TOWN_NAME, POSTCODE,
-      LATITUDE, LONGITUDE, UPRN, CONTACT_NAME, CASE_ID, CASE_REF, PRIORITY, IAC, EVENTS, ACTION_PLAN, QUESTION_SET};
+      LATITUDE, LONGITUDE, UPRN, CASE_ID, CASE_REF, PRIORITY, IAC, EVENTS, ACTION_PLAN, QUESTION_SET, TITLE, FORENAME, SURNAME, EMAIL, TELEPHONE};
 
   /**
    * Inner class to encapsulate the request and cancel data as they do not have
@@ -266,6 +270,13 @@ public class CsvIngester extends CsvToBean<CsvLine> {
         .withActionPlan(csvLine.getActionPlan())
         .withQuestionSet(csvLine.getQuestionSet())
         .withResponseRequired(false)
+        .withContact()
+        .withTitle(csvLine.getTitle())
+        .withForename(csvLine.getForename())
+        .withSurname(csvLine.getSurname())
+        .withPhoneNumber(csvLine.getTelephoneNumber())
+        .withEmailAddress(csvLine.getEmailAddress())
+        .end()
         .withAddress()
         .withUprn(new BigInteger(csvLine.getUprn()))
         .withCategory(csvLine.getCategory())
@@ -281,7 +292,6 @@ public class CsvIngester extends CsvToBean<CsvLine> {
         .withType(csvLine.getAddressType())
         .end()
         .withCaseId(new BigInteger(csvLine.getCaseId()))
-        .withContactName(csvLine.getContactName())
         .withIac(csvLine.getIac())
         .withPriority(
             Priority.fromValue(ActionPriority.valueOf(Integer.parseInt(csvLine.getPriority())).getName()))

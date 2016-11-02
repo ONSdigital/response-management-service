@@ -23,10 +23,15 @@ public class CsvLine {
   private static final int LINE1_MAX_LEN = 60;
   private static final int CAT_MAX_LEN = 20;
   private static final int ORG_MAX_LEN = 60;
+  private static final int TITLE_MAX_LEN = 20;
+  private static final int FORENAME_MAX_LEN = 35;
+  private static final int SURNAME_MAX_LEN = 35;
   private static final int LOCALITY_MAX_LEN = 35;
   private static final int ACTION_PLAN_MAX_LEN = 100;
   private static final int QUESTION_SET_MAX_LEN = 10;
   private static final String POSTCODE_RE = "^[A-Z]{1,2}[0-9R][0-9A-Z]? [0-9][ABD-HJLNP-UW-Z]{2}$";
+  private static final String IAC_RE_SEG = "[bcdfghjklmnpqrstvwxyz23456789]{4}";
+  private static final String IAC_RE = IAC_RE_SEG + " " + IAC_RE_SEG + " " + IAC_RE_SEG;
   private static final String NON_BLANK_ALPHANUM_RE = "[\\w]+";
   private static final String NON_BLANK_INTEGER_RE = "[+-]?[\\d]+";
   private static final String NON_BLANK_FLOAT_RE = "[+-]?[\\d]+\\.?[\\d]*";
@@ -34,6 +39,8 @@ public class CsvLine {
   private static final String PRIORITY_RE = "[1-5]";
   private static final String ADDRESS_TYPE_RE = "|HH|CE";
   private static final String INSTRUCTION_TYPE_RE = "Request|Cancel";
+  private static final String EMAIL_RE = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
+  private static final String TELEPHONE_RE = "[\\d]{0,11}";
   private static final String HANDLER_TYPE_RE = "HotelSurvey|HHSurvey|Printer|Field|CensusSupport";
 
   @Pattern(regexp = HANDLER_TYPE_RE)
@@ -75,6 +82,21 @@ public class CsvLine {
   @Size(min = 0, max = LINE2_MAX_LEN)
   private String line2;
 
+  @Size(min = 0, max = TITLE_MAX_LEN)
+  private String title;
+  
+  @Size(min = 0, max = FORENAME_MAX_LEN)
+  private String forename;
+  
+  @Size(min = 0, max = SURNAME_MAX_LEN)
+  private String surname;
+  
+  @Pattern(regexp = EMAIL_RE)
+  private String emailAddress;
+  
+  @Pattern(regexp = TELEPHONE_RE)
+  private String telephoneNumber;
+
   @Size(min = 0, max = TOWN_MAX_LEN)
   private String townName;
 
@@ -90,8 +112,6 @@ public class CsvLine {
   @Pattern(regexp = NON_BLANK_INTEGER_RE)
   private String uprn;
 
-  private String contactName;
-
   @Pattern(regexp = NON_BLANK_INTEGER_RE)
   private String caseId;
 
@@ -101,7 +121,7 @@ public class CsvLine {
   @Pattern(regexp = PRIORITY_RE)
   private String priority;
 
-  @Pattern(regexp = NON_BLANK_ALPHANUM_RE)
+  @Pattern(regexp = IAC_RE)
   private String iac;
 
   private String events;
