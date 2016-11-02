@@ -39,7 +39,7 @@ public class CsvLine {
   private static final String PRIORITY_RE = "[1-5]";
   private static final String ADDRESS_TYPE_RE = "|HH|CE";
   private static final String INSTRUCTION_TYPE_RE = "Request|Cancel";
-  private static final String EMAIL_RE = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
+  private static final String EMAIL_RE = "^$|[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})";
   private static final String TELEPHONE_RE = "[\\d]{0,11}";
   private static final String HANDLER_TYPE_RE = "HotelSurvey|HHSurvey|Printer|Field|CensusSupport";
 
