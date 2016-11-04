@@ -55,6 +55,7 @@ public class CaseNotificationServiceImpl implements CaseNotificationService {
         case REPLACED:
           actionCase.setActionPlanStartDate(DateTimeUtil.nowUTC());
           actionCaseRepo.save(actionCase);
+          break;
         case ACTIVATED:
           Survey survey = surveyRepo.findOne(actionPlan.getSurveyId());
           actionCase.setActionPlanStartDate(survey.getSurveyStartDate());
