@@ -116,11 +116,8 @@
  <bean id="printerInstructionQueue" class="org.apache.activemq.command.ActiveMQQueue">
   <constructor-arg value="Action.Printer" />
  </bean>
- <bean id="householdSurveyInstructionQueue" class="org.apache.activemq.command.ActiveMQQueue">
-  <constructor-arg value="Action.HHSurvey" />
- </bean>
- <bean id="hotelSurveyInstructionQueue" class="org.apache.activemq.command.ActiveMQQueue">
-  <constructor-arg value="Action.HotelSurvey" />
+ <bean id="notifyInstructionQueue" class="org.apache.activemq.command.ActiveMQQueue">
+  <constructor-arg value="Action.Notify" />
  </bean>
 
 
@@ -132,8 +129,7 @@
  <int:channel id="instructionPrinter" />
  <int:channel id="instructionCensusSupport" />
  <int:filter id="instructionCensusSupportFilter" input-channel="instructionCensusSupport" output-channel="nullChannel" expression="true"/>
- <int:channel id="instructionHHSurvey" />
- <int:channel id="instructionHotelSurvey" />
+ <int:channel id="instructionNotify" />
 
  <!-- the @Publisher sends to the marshalling-transformers input channel -->
  <int-xml:marshalling-transformer
@@ -165,10 +161,8 @@
  <int-jms:outbound-channel-adapter id="jmsout.Printer"
   channel="instructionPrinter" destination="printerInstructionQueue" />
 
- <int-jms:outbound-channel-adapter id="jmsout.HHSurvey"
-  channel="instructionHHSurvey" destination="householdSurveyInstructionQueue" />
+ <int-jms:outbound-channel-adapter id="jmsout.Notify"
+  channel="instructionNotify" destination="notifyInstructionQueue" />
   
- <int-jms:outbound-channel-adapter id="jmsout.HotelSurvey"
-  channel="instructionHotelSurvey" destination="hotelSurveyInstructionQueue" />
 </beans>
 
