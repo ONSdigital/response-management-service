@@ -6,7 +6,6 @@ import java.sql.Timestamp;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.IdClass;
 import javax.persistence.NamedStoredProcedureQuery;
 import javax.persistence.ParameterMode;
 import javax.persistence.StoredProcedureParameter;
@@ -26,7 +25,6 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @Table(name = "case", schema = "action")
-@IdClass(ActionCaseCompositeKey.class)
 @NamedStoredProcedureQuery(name = "createactions", procedureName = "action.createactions", parameters = {
     @StoredProcedureParameter(mode = ParameterMode.IN, name = "p_actionplanjobid", type = Integer.class),
     @StoredProcedureParameter(mode = ParameterMode.OUT, name = "success", type = Boolean.class)})
@@ -35,12 +33,11 @@ public class ActionCase implements Serializable {
   private static final long serialVersionUID = 7970373271889255844L;
 
   @Id
-  @Column(name = "actionplanid")
-  private Integer actionPlanId;
-
-  @Id
   @Column(name = "caseid")
   private Integer caseId;
+
+  @Column(name = "actionplanid")
+  private Integer actionPlanId;
 
   @Column(name = "actionplanstartdate")
   private Timestamp actionPlanStartDate;

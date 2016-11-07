@@ -12,7 +12,7 @@ logging:
     ROOT: ERROR
     org.springframework: ERROR
     com.hazelcast: ERROR
-    uk.gov.ons.ctp: WARN
+    uk.gov.ons.ctp: DEBUG
 
 liquibase:
   user: postgres
@@ -106,14 +106,14 @@ spring:
 
 action-distribution:
   instruction-max: 200
-  retry-sleep-seconds: 30
-  initial-delay-seconds: 30
-  subsequent-delay-seconds: 30
+  retry-sleep-seconds: 30000
+  initial-delay-seconds: 30000
+  subsequent-delay-seconds: 30000
 
 plan-execution:
-  retry-sleep-seconds: 30
-  initial-delay-seconds: 90
-  subsequent-delay-seconds: 60
+  retry-sleep-seconds: 30000
+  initial-delay-seconds: 90000
+  subsequent-delay-seconds: 60000
 
 case-svc:
   case-group-path: /casegroups/{caseGroupId}

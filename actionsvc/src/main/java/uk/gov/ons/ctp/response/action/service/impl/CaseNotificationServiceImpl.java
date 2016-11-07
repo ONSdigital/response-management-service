@@ -54,12 +54,12 @@ public class CaseNotificationServiceImpl implements CaseNotificationService {
         switch (notif.getNotificationType()) {
         case REPLACED:
           actionCase.setActionPlanStartDate(DateTimeUtil.nowUTC());
-          actionCaseRepo.save(actionCase);
+          checkAndSaveCase(actionCase);
           break;
         case ACTIVATED:
           Survey survey = surveyRepo.findOne(actionPlan.getSurveyId());
           actionCase.setActionPlanStartDate(survey.getSurveyStartDate());
-          actionCaseRepo.save(actionCase);
+          checkAndSaveCase(actionCase);
           break;
         case DISABLED:
         case DEACTIVATED:
@@ -75,5 +75,20 @@ public class CaseNotificationServiceImpl implements CaseNotificationService {
       }
     });
     actionCaseRepo.flush();
+  }
+  
+  /**
+   * In the event that the actions service is incorrectly sent a notification that indicates we should create a case
+   * for an already existing caseid, quietly error else save it as a new entry.
+   * If we were to allow the save to go ahead we would get a JPA exception, which would result in the notification going back to the queue
+   * and us retrying again and again
+   * @param actionCase the case to check and save
+   */
+  private void checkAndSaveCase(ActionCase actionCase) {
+    if (actionCaseRepo.exists(actionCase.getCaseId())) {
+      log.error("CaseNotification illiciting case creation for an existing case id {}", actionCase.getCaseId()); 
+    } else {
+      actionCaseRepo.save(actionCase);
+    }
   }
 }
