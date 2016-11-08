@@ -9,10 +9,10 @@ info:
 # ie -Dlogging.level.org.springframework=DEBUG
 logging:
   level:
-    ROOT: ERROR
-    org.springframework: ERROR
+    ROOT: WARN
+    org.springframework: WARN
     com.hazelcast: ERROR
-    uk.gov.ons.ctp: DEBUG
+    uk.gov.ons.ctp: WARN
 
 liquibase:
   user: postgres
@@ -106,14 +106,14 @@ spring:
 
 action-distribution:
   instruction-max: 200
-  retry-sleep-seconds: 30000
-  initial-delay-seconds: 30000
-  subsequent-delay-seconds: 30000
+  retry-sleep-seconds: 30
+  initial-delay-seconds: 30
+  subsequent-delay-seconds: 30
 
 plan-execution:
-  retry-sleep-seconds: 30000
-  initial-delay-seconds: 90000
-  subsequent-delay-seconds: 60000
+  retry-sleep-seconds: 30
+  initial-delay-seconds: 90
+  subsequent-delay-seconds: 60
 
 case-svc:
   case-group-path: /casegroups/{caseGroupId}
