@@ -108,12 +108,12 @@ spring:
 action-distribution:
   instruction-max: 200
   retry-sleep-seconds: 30
-  initial-delay-seconds: 300000000
+  initial-delay-seconds: 30
   subsequent-delay-seconds: 30
 
 plan-execution:
   retry-sleep-seconds: 30
-  initial-delay-seconds: 90000000
+  initial-delay-seconds: 90
   subsequent-delay-seconds: 60
 
 case-svc:

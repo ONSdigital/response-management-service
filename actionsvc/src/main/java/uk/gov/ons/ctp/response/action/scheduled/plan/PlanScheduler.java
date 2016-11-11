@@ -43,7 +43,6 @@ public class PlanScheduler implements HealthIndicator {
     final Runnable planExecutionRunnable = new Runnable() {
       public void run() {
         executionInfo.setExecutedJobs(actionPlanJobServiceImpl.createAndExecuteAllActionPlanJobs());
-        actionPlanJobServiceImpl.createAndExecuteAllActionPlanJobs();
       }
     };
 

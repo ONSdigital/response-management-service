@@ -41,7 +41,6 @@ public class ActionPlanJobServiceImpl implements ActionPlanJobService {
 
   private static final long ONE_SECOND = 1000L;
 
-  private static final int TRANSACTION_TIMEOUT = 60;
   private static final int PLAN_LOCK_TIMEOUT = 5;
 
   @Inject
