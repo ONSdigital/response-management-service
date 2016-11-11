@@ -35,6 +35,7 @@ public class ActionSvcStateTransitionManagerFactory implements StateTransitionMa
     Map<ActionEvent, ActionState> transitionMapForSubmitted = new HashMap<>();
     transitionMapForSubmitted.put(ActionEvent.REQUEST_DISTRIBUTED, ActionState.PENDING);
     transitionMapForSubmitted.put(ActionEvent.REQUEST_CANCELLED, ActionState.ABORTED);
+    transitionMapForSubmitted.put(ActionEvent.REQUEST_COMPLETED, ActionState.COMPLETED);
     transitions.put(ActionState.SUBMITTED, transitionMapForSubmitted);
 
     Map<ActionEvent, ActionState> transitionMapForPending = new HashMap<>();

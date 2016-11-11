@@ -48,7 +48,7 @@ public class ActionPlanEndpoint implements CTPEndpoint {
   @GET
   @Path("/")
   public final List<ActionPlanDTO> findActionPlans() {
-    log.debug("Entering findActionPlans...");
+    log.info("Entering findActionPlans...");
     List<ActionPlan> actionPlans = actionPlanService.findActionPlans();
     List<ActionPlanDTO> actionPlanDTOs = mapperFacade.mapAsList(actionPlans, ActionPlanDTO.class);
     return CollectionUtils.isEmpty(actionPlanDTOs) ? null : actionPlanDTOs;
@@ -65,7 +65,7 @@ public class ActionPlanEndpoint implements CTPEndpoint {
   @Path("/{actionplanid}")
   public final ActionPlanDTO findActionPlanByActionPlanId(@PathParam("actionplanid") final Integer actionPlanId)
       throws CTPException {
-    log.debug("Entering findActionPlanByActionPlanId with {}", actionPlanId);
+    log.info("Entering findActionPlanByActionPlanId with {}", actionPlanId);
     ActionPlan actionPlan = actionPlanService.findActionPlan(actionPlanId);
     if (actionPlan == null) {
       throw new CTPException(CTPException.Fault.RESOURCE_NOT_FOUND, "ActionPlan not found for id %s", actionPlanId);
@@ -86,7 +86,7 @@ public class ActionPlanEndpoint implements CTPEndpoint {
   @Path("/{actionplanid}")
   public final ActionPlanDTO updateActionPlanByActionPlanId(@PathParam("actionplanid") final Integer actionPlanId,
       final ActionPlanDTO requestObject) throws CTPException {
-    log.debug("UpdateActionPlanByActionPlanId with actionplanid {} - actionPlan {}", actionPlanId, requestObject);
+    log.info("UpdateActionPlanByActionPlanId with actionplanid {} - actionPlan {}", actionPlanId, requestObject);
 
     ActionPlan actionPlan = actionPlanService.updateActionPlan(actionPlanId,
         mapperFacade.map(requestObject, ActionPlan.class));
@@ -119,7 +119,7 @@ public class ActionPlanEndpoint implements CTPEndpoint {
   public final List<ActionRuleDTO> returnActionRulesForActionPlanId(
       @PathParam("actionplanid") final Integer actionPlanId)
       throws CTPException {
-    log.debug("Entering returnActionRulesForActionPlanId with {}", actionPlanId);
+    log.info("Entering returnActionRulesForActionPlanId with {}", actionPlanId);
     ActionPlan actionPlan = actionPlanService.findActionPlan(actionPlanId);
     if (actionPlan == null) {
       throw new CTPException(CTPException.Fault.RESOURCE_NOT_FOUND, "ActionPlan not found for id %s", actionPlanId);

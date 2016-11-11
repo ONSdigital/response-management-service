@@ -94,8 +94,6 @@ spring:
       max-active: 10
       max-idle: 5
       min-idle: 3
-      remove-abandoned: true
-
   
   jpa:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
@@ -110,12 +108,12 @@ spring:
 action-distribution:
   instruction-max: 200
   retry-sleep-seconds: 30
-  initial-delay-seconds: 30
+  initial-delay-seconds: 300000000
   subsequent-delay-seconds: 30
 
 plan-execution:
   retry-sleep-seconds: 30
-  initial-delay-seconds: 90
+  initial-delay-seconds: 90000000
   subsequent-delay-seconds: 60
 
 case-svc:

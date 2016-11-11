@@ -39,4 +39,7 @@ public class ActionType implements Serializable {
   @Column(name = "cancancel")
   private Boolean canCancel;
 
+  @Column(name = "responserequired")
+  private Boolean responseRequired;
+
 }

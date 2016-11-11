@@ -49,7 +49,7 @@ public class ActionPlanJobEndpoint implements CTPEndpoint {
   @Path("/jobs/{actionplanjobid}")
   public final ActionPlanJobDTO findActionPlanJobById(@PathParam("actionplanjobid") final Integer actionPlanJobId)
       throws CTPException {
-    log.debug("Entering findActionPlanJobById with {}", actionPlanJobId);
+    log.info("Entering findActionPlanJobById with {}", actionPlanJobId);
     Optional<ActionPlanJob> actionPlanJob = actionPlanJobService.findActionPlanJob(actionPlanJobId);
     return mapperFacade.map(actionPlanJob.orElseThrow(() -> new CTPException(CTPException.Fault.RESOURCE_NOT_FOUND,
             "ActionPlanJob not found for id %d", actionPlanJobId)), ActionPlanJobDTO.class);
@@ -65,7 +65,7 @@ public class ActionPlanJobEndpoint implements CTPEndpoint {
   @Path("/{actionplanid}/jobs")
   public final List<ActionPlanJobDTO> findAllActionPlanJobsByActionPlanId(@PathParam("actionplanid") final Integer
       actionPlanId) throws CTPException {
-    log.debug("Entering findAllActionPlanJobsByActionPlanId with {}", actionPlanId);
+    log.info("Entering findAllActionPlanJobsByActionPlanId with {}", actionPlanId);
     List<ActionPlanJob> actionPlanJobs = actionPlanJobService.findActionPlanJobsForActionPlan(actionPlanId);
     List<ActionPlanJobDTO> actionPlanJobDTOs = mapperFacade.mapAsList(actionPlanJobs, ActionPlanJobDTO.class);
     return CollectionUtils.isEmpty(actionPlanJobDTOs) ? null : actionPlanJobDTOs;
@@ -82,7 +82,7 @@ public class ActionPlanJobEndpoint implements CTPEndpoint {
   @Path("/{actionplanid}/jobs")
   public final ActionPlanJobDTO executeActionPlan(@PathParam("actionplanid") final Integer actionPlanId,
       final @Valid ActionPlanJobDTO actionPlanJobDTO) throws CTPException {
-    log.debug("Entering executeActionPlan with {}", actionPlanId);
+    log.info("Entering executeActionPlan with {}", actionPlanId);
 
     if (actionPlanJobDTO == null) {
       throw new CTPException(CTPException.Fault.VALIDATION_FAILED, "Provided json is incorrect.");

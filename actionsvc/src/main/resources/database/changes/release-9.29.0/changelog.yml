@@ -9,3 +9,13 @@ databaseChangeLog:
             path: action_2017_replacements_england_v7.sql
             relativeToChangelogFile: true
             splitStatements: false
+
+  - changeSet:
+      id: 9.29.0-2
+      author: Phil Whiles
+      changes:
+        - sqlFile:
+            comment: Added column for response required and tweaked cancancels
+            path: action_2017_action_type_response_required.sql
+            relativeToChangelogFile: true
+            splitStatements: false

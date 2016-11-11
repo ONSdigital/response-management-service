@@ -184,8 +184,8 @@ public class ActionDistributor {
           } catch (Exception e) {
             // db changes rolled back
             log.error(
-                "Exception thrown processing action {}. Processing will be retried at next scheduled distribution",
-                action.getActionId());
+                "Exception {} thrown processing action {}. Processing will be retried at next scheduled distribution",
+                e.getMessage(), action.getActionId());
           }
         });
 
@@ -284,7 +284,8 @@ public class ActionDistributor {
       public ActionRequest doInTransaction(final TransactionStatus status) {
         ActionRequest actionRequest = null;
         // update our actions state in db
-        transitionAction(action, ActionDTO.ActionEvent.REQUEST_DISTRIBUTED);
+        ActionDTO.ActionEvent event = action.getActionType().getResponseRequired() ? ActionDTO.ActionEvent.REQUEST_DISTRIBUTED : ActionDTO.ActionEvent.REQUEST_COMPLETED;
+        transitionAction(action, event);
         // create the request, filling in details by GETs from casesvc
         actionRequest = prepareActionRequest(action);
         // advise casesvc to create a corresponding caseevent for our action
@@ -404,7 +405,7 @@ public class ActionDistributor {
     actionRequest.setActionPlan((actionPlan==null)?null:actionPlan.getName());
     actionRequest.setActionType(action.getActionType().getName());
     actionRequest.setQuestionSet(caseTypeDTO.getQuestionSet());
-    actionRequest.setResponseRequired(true);
+    actionRequest.setResponseRequired(action.getActionType().getResponseRequired());
     actionRequest.setCaseId(BigInteger.valueOf(action.getCaseId()));
     ContactDTO contactDTO = caseDTO.getContact();
     if (contactDTO != null) {

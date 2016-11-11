@@ -58,17 +58,18 @@ public final class ActionEndpoint implements CTPEndpoint {
 
     if (actionType != null) {
       if (actionState != null) {
-        log.debug("Entering findActionsByTypeAndState with {} {}", actionType, actionState);
+        log.info("Entering findActionsByTypeAndState with {} {}", actionType, actionState);
         actions = actionService.findActionsByTypeAndStateOrderedByCreatedDateTimeDescending(actionType, actionState);
       } else {
-        log.debug("Entering findActionsByType with {}", actionType);
+        log.info("Entering findActionsByType with {}", actionType);
         actions = actionService.findActionsByType(actionType);
       }
     } else {
       if (actionState != null) {
-        log.debug("Entering findActionsByState with {}", actionState);
+        log.info("Entering findActionsByState with {}", actionState);
         actions = actionService.findActionsByState(actionState);
       } else {
+        log.info("Entering findActionsByState");
         actions = new ArrayList<Action>();
       }
     }
@@ -88,7 +89,7 @@ public final class ActionEndpoint implements CTPEndpoint {
   @POST
   @Path("/")
   public ActionDTO createAction(final @Valid ActionDTO actionDTO) throws CTPException {
-    log.debug("Entering createAction with Action {}", actionDTO);
+    log.info("Entering createAction with Action {}", actionDTO);
     Action action = actionService.createAction(mapperFacade.map(actionDTO, Action.class));
     ActionDTO result = mapperFacade.map(action, ActionDTO.class);
     return result;
@@ -105,7 +106,7 @@ public final class ActionEndpoint implements CTPEndpoint {
   @GET
   @Path("/{actionid}")
   public ActionDTO findActionByActionId(@PathParam("actionid") final BigInteger actionId) throws CTPException {
-    log.debug("Entering findActionByActionId with {}", actionId);
+    log.info("Entering findActionByActionId with {}", actionId);
     Action action = actionService.findActionByActionId(actionId);
     if (action == null) {
       throw new CTPException(CTPException.Fault.RESOURCE_NOT_FOUND, "Action not found for id %s", actionId);
@@ -126,7 +127,7 @@ public final class ActionEndpoint implements CTPEndpoint {
   @Path("/{actionid}")
   public ActionDTO updateAction(@PathParam("actionid") final BigInteger actionId, final ActionDTO actionDTO)
       throws CTPException {
-    log.debug("Updating Action with {} {}", actionId, actionDTO);
+    log.info("Updating Action with {} {}", actionId, actionDTO);
     actionDTO.setActionId(actionId);
     Action action = actionService.updateAction(mapperFacade.map(actionDTO, Action.class));
     if (action == null) {
@@ -147,7 +148,7 @@ public final class ActionEndpoint implements CTPEndpoint {
   @Path("/case/{caseid}/cancel")
   public List<ActionDTO> cancelActions(@PathParam("caseid") final int caseId)
       throws CTPException {
-    log.debug("Cancelling Actions for {}", caseId);
+    log.info("Cancelling Actions for {}", caseId);
     List<Action> actions = actionService.cancelActions(caseId);
 
     List<ActionDTO> results = mapperFacade.mapAsList(actions, ActionDTO.class);
@@ -164,7 +165,7 @@ public final class ActionEndpoint implements CTPEndpoint {
   @GET
   @Path("/case/{caseid}")
   public List<ActionDTO> findActionsByCaseId(@PathParam("caseid") final Integer caseId) {
-    log.debug("Entering findActionsByCaseId...");
+    log.info("Entering findActionsByCaseId...");
     List<Action> actions = actionService.findActionsByCaseId(caseId);
     List<ActionDTO> actionDTOs = mapperFacade.mapAsList(actions, ActionDTO.class);
     return CollectionUtils.isEmpty(actionDTOs) ? null : actionDTOs;
@@ -182,7 +183,7 @@ public final class ActionEndpoint implements CTPEndpoint {
   @Path("/{actionid}/feedback")
   public ActionDTO feedbackAction(@PathParam("actionid") final int actionId, final ActionFeedback actionFeedback)
       throws CTPException {
-    log.debug("Feedback for Action {}", actionId);
+    log.info("Feedback for Action {}", actionId);
     actionFeedback.setActionId(BigInteger.valueOf(actionId));
     Action action = actionService.feedBackAction(actionFeedback);
     if (action == null) {

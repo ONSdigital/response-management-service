@@ -40,6 +40,8 @@ public final class MockActionServiceFactory implements Factory<ActionService> {
   public static final String ACTION2_ACTIONTYPEHANDLER = "Field";
   public static final Boolean ACTION1_ACTIONTYPECANCEL = true;
   public static final Boolean ACTION2_ACTIONTYPECANCEL = false;
+  public static final Boolean ACTION1_RESPONSEREQUIRED = true;
+  public static final Boolean ACTION2_RESPONSEREQUIRED = false;
   public static final Integer ACTION1_PRIORITY = 1;
   public static final Integer ACTION2_PRIORITY = 3;
   public static final String ACTION1_SITUATION = "Assigned";
@@ -66,7 +68,7 @@ public final class MockActionServiceFactory implements Factory<ActionService> {
           public List<Action> answer(final InvocationOnMock invocation) throws Throwable {
             List<Action> result = new ArrayList<Action>();
             ActionType actionType = new ActionType(1, ACTION2_ACTIONTYPENAME, ACTION2_ACTIONTYPEDESC,
-                ACTION2_ACTIONTYPEHANDLER, ACTION2_ACTIONTYPECANCEL);
+                ACTION2_ACTIONTYPEHANDLER, ACTION2_ACTIONTYPECANCEL, ACTION2_RESPONSEREQUIRED);
             result.add(new Action(ACTIONID_2, ACTION_CASEID, ACTION2_PLANID, ACTION2_RULEID, ACTION_CREATEDBY,
                 ACTION2_MANUALLY_CREATED, actionType, ACTION2_PRIORITY, ACTION2_SITUATION,
                 ACTION2_ACTIONSTATE, ACTION_CREATEDDATE_TIMESTAMP, ACTION_UPDATEDDATE_TIMESTAMP, 0));
@@ -85,7 +87,7 @@ public final class MockActionServiceFactory implements Factory<ActionService> {
       public List<Action> answer(final InvocationOnMock invocation) throws Throwable {
         List<Action> result = new ArrayList<Action>();
         ActionType actionType = new ActionType(1, ACTION2_ACTIONTYPENAME, ACTION2_ACTIONTYPEDESC,
-            ACTION2_ACTIONTYPEHANDLER, ACTION2_ACTIONTYPECANCEL);
+            ACTION2_ACTIONTYPEHANDLER, ACTION2_ACTIONTYPECANCEL, ACTION2_RESPONSEREQUIRED);
         result.add(new Action(ACTIONID_2, ACTION_CASEID, ACTION2_PLANID, ACTION2_RULEID, ACTION_CREATEDBY,
             ACTION2_MANUALLY_CREATED, actionType, ACTION2_PRIORITY, ACTION2_SITUATION, ACTION2_ACTIONSTATE,
             ACTION_CREATEDDATE_TIMESTAMP, ACTION_UPDATEDDATE_TIMESTAMP, 0));
@@ -103,7 +105,7 @@ public final class MockActionServiceFactory implements Factory<ActionService> {
       public List<Action> answer(final InvocationOnMock invocation) throws Throwable {
         List<Action> result = new ArrayList<Action>();
         ActionType actionType = new ActionType(1, ACTION2_ACTIONTYPENAME, ACTION2_ACTIONTYPEDESC,
-            ACTION2_ACTIONTYPEHANDLER, ACTION2_ACTIONTYPECANCEL);
+            ACTION2_ACTIONTYPEHANDLER, ACTION2_ACTIONTYPECANCEL, ACTION2_RESPONSEREQUIRED);
         result.add(new Action(ACTIONID_2, ACTION_CASEID, ACTION2_PLANID, ACTION2_RULEID, ACTION_CREATEDBY,
             ACTION2_MANUALLY_CREATED, actionType, ACTION2_PRIORITY, ACTION2_SITUATION, ACTION2_ACTIONSTATE,
             ACTION_CREATEDDATE_TIMESTAMP, ACTION_UPDATEDDATE_TIMESTAMP, 0));
@@ -114,7 +116,7 @@ public final class MockActionServiceFactory implements Factory<ActionService> {
     Mockito.when(mockedService.findActionByActionId(ACTIONID_2)).thenAnswer(new Answer<Action>() {
       public Action answer(final InvocationOnMock invocation) throws Throwable {
         ActionType actionType = new ActionType(1, ACTION2_ACTIONTYPENAME, ACTION2_ACTIONTYPEDESC,
-            ACTION2_ACTIONTYPEHANDLER, ACTION2_ACTIONTYPECANCEL);
+            ACTION2_ACTIONTYPEHANDLER, ACTION2_ACTIONTYPECANCEL, ACTION2_RESPONSEREQUIRED);
         return new Action(ACTIONID_2, ACTION_CASEID, ACTION2_PLANID, ACTION2_RULEID, ACTION_CREATEDBY,
             ACTION2_MANUALLY_CREATED, actionType, ACTION2_PRIORITY, ACTION2_SITUATION, ACTION2_ACTIONSTATE,
             ACTION_CREATEDDATE_TIMESTAMP, ACTION_UPDATEDDATE_TIMESTAMP, 0);
@@ -131,9 +133,9 @@ public final class MockActionServiceFactory implements Factory<ActionService> {
       public List<Action> answer(final InvocationOnMock invocation) throws Throwable {
         List<Action> result = new ArrayList<Action>();
         ActionType actionType1 = new ActionType(1, ACTION1_ACTIONTYPENAME, ACTION1_ACTIONTYPEDESC,
-            ACTION1_ACTIONTYPEHANDLER, ACTION1_ACTIONTYPECANCEL);
+            ACTION1_ACTIONTYPEHANDLER, ACTION1_ACTIONTYPECANCEL, ACTION1_RESPONSEREQUIRED);
         ActionType actionType2 = new ActionType(1, ACTION2_ACTIONTYPENAME, ACTION2_ACTIONTYPEDESC,
-            ACTION2_ACTIONTYPEHANDLER, ACTION2_ACTIONTYPECANCEL);
+            ACTION2_ACTIONTYPEHANDLER, ACTION2_ACTIONTYPECANCEL, ACTION2_RESPONSEREQUIRED);
         result.add(new Action(ACTIONID_1, ACTION_CASEID, ACTION1_PLANID, ACTION1_RULEID, ACTION_CREATEDBY,
             ACTION1_MANUALLY_CREATED, actionType1, ACTION1_PRIORITY, ACTION1_SITUATION, ACTION1_ACTIONSTATE,
             ACTION_CREATEDDATE_TIMESTAMP, ACTION_UPDATEDDATE_TIMESTAMP, 0));
@@ -156,7 +158,7 @@ public final class MockActionServiceFactory implements Factory<ActionService> {
     Mockito.when(mockedService.createAction(any(Action.class))).thenAnswer(new Answer<Action>() {
       public Action answer(final InvocationOnMock invocation) throws Throwable {
         ActionType actionType = new ActionType(1, ACTION2_ACTIONTYPENAME, ACTION2_ACTIONTYPEDESC,
-            ACTION2_ACTIONTYPEHANDLER, ACTION2_ACTIONTYPECANCEL);
+            ACTION2_ACTIONTYPEHANDLER, ACTION2_ACTIONTYPECANCEL, ACTION2_RESPONSEREQUIRED);
         return new Action(ACTIONID_2, ACTION_CASEID, ACTION2_PLANID, ACTION2_RULEID, ACTION_CREATEDBY,
             ACTION2_MANUALLY_CREATED, actionType, ACTION2_PRIORITY, ACTION2_SITUATION, ACTION2_ACTIONSTATE,
             ACTION_CREATEDDATE_TIMESTAMP, null, 0);
@@ -167,7 +169,7 @@ public final class MockActionServiceFactory implements Factory<ActionService> {
       public List<Action> answer(final InvocationOnMock invocation) throws Throwable {
         List<Action> result = new ArrayList<Action>();
         ActionType actionType = new ActionType(1, ACTION2_ACTIONTYPENAME, ACTION2_ACTIONTYPEDESC,
-            ACTION2_ACTIONTYPEHANDLER, ACTION2_ACTIONTYPECANCEL);
+            ACTION2_ACTIONTYPEHANDLER, ACTION2_ACTIONTYPECANCEL, ACTION2_RESPONSEREQUIRED);
         result.add(new Action(ACTIONID_2, ACTION_CASEID, ACTION2_PLANID, ACTION2_RULEID, ACTION_CREATEDBY,
             ACTION2_MANUALLY_CREATED, actionType, ACTION2_PRIORITY, ACTION2_SITUATION, ACTION3_ACTIONSTATE,
             ACTION_CREATEDDATE_TIMESTAMP, ACTION_UPDATEDDATE_TIMESTAMP, 0));
