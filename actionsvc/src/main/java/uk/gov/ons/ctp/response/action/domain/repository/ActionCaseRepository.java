@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.query.Procedure;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import uk.gov.ons.ctp.response.action.domain.model.ActionCase;
@@ -21,7 +22,7 @@ public interface ActionCaseRepository extends JpaRepository<ActionCase, Integer>
    * @param actionplanjobid the id of the action plan job
    * @return true if successful
    */
-  @Transactional
+  @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
   @Procedure(name = "createactions")
   boolean createActions(@Param("p_actionplanjobid") Integer actionplanjobid);
 
