@@ -32,7 +32,7 @@
   <int:channel id="caseNotificationOutbound" />
 
   <bean id="caseNotificationJMSQueue" class="org.apache.activemq.command.ActiveMQQueue">
-    <constructor-arg value="Case.Notifications"/>
+    <constructor-arg value="Case.LifecycleEvents"/>
   </bean>
 
   <!--  adapt the SI message to a JMS message -->
