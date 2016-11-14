@@ -22,7 +22,7 @@ import uk.gov.ons.ctp.response.action.utility.ActionMessageListener;
 /**
  * Looks like a test
  */
-@ContextConfiguration(locations = { "/InstructionServiceTest-context.xml" })
+@ContextConfiguration(locations = {"/springintegration/InstructionServiceTest-context.xml"})
 @TestPropertySource("classpath:/application-test.properties")
 @RunWith(SpringJUnit4ClassRunner.class)
 public class InstructionPublisherTest {

@@ -6,7 +6,7 @@ import org.springframework.integration.annotation.MessageEndpoint;
 import org.springframework.integration.annotation.ServiceActivator;
 
 import lombok.extern.slf4j.Slf4j;
-import uk.gov.ons.ctp.response.action.message.FeedbackReceiver;
+import uk.gov.ons.ctp.response.action.message.ActionFeedbackReceiver;
 import uk.gov.ons.ctp.response.action.message.feedback.ActionFeedback;
 import uk.gov.ons.ctp.response.action.service.FeedbackService;
 
@@ -20,12 +20,12 @@ import uk.gov.ons.ctp.response.action.service.FeedbackService;
  */
 @MessageEndpoint
 @Slf4j
-public class FeedbackReceiverImpl implements FeedbackReceiver {
+public class ActionFeedbackReceiverImpl implements ActionFeedbackReceiver {
   @Inject
   private FeedbackService feedbackService;
 
   @Override
-  @ServiceActivator(inputChannel = "feedbackTransformed")
+  @ServiceActivator(inputChannel = "actionFeedbackTransformed")
   public void acceptFeedback(ActionFeedback feedback) {
     log.debug("We have feedback with situation " + feedback.getSituation());
     feedbackService.acceptFeedback(feedback);

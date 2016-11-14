@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:int="http://www.springframework.org/schema/integration"
+       xmlns:int-jms="http://www.springframework.org/schema/integration/jms"
+       xmlns:int-xml="http://www.springframework.org/schema/integration/xml"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+  http://www.springframework.org/schema/beans/spring-beans-4.2.xsd
+  http://www.springframework.org/schema/integration http://www.springframework.org/schema/integration/spring-integration.xsd
+  http://www.springframework.org/schema/integration/jms http://www.springframework.org/schema/integration/jms/spring-integration-jms.xsd
+  http://www.springframework.org/schema/integration/xml
+  http://www.springframework.org/schema/integration/xml/spring-integration-xml.xsd">
+
+    <bean id="fieldInstructionQueue" class="org.apache.activemq.command.ActiveMQQueue">
+        <constructor-arg value="Action.Field" />
+    </bean>
+    <bean id="printerInstructionQueue" class="org.apache.activemq.command.ActiveMQQueue">
+        <constructor-arg value="Action.Printer" />
+    </bean>
+    <bean id="notifyInstructionQueue" class="org.apache.activemq.command.ActiveMQQueue">
+        <constructor-arg value="Action.Notify" />
+    </bean>
+    <bean id="invalidActionInstructionQueue" class="org.apache.activemq.command.ActiveMQQueue">
+        <constructor-arg value="Case.InvalidActionInstructions"/>
+    </bean>
+
+    <!-- setup the outbound channels - note each queue needs a channel -->
+    <int:channel id="instructionOutbound" />
+    <int:channel id="instructionXml" />
+    <int:channel id="instructionXmlInvalid" />
+    <int:channel id="instructionField" />
+    <int:channel id="instructionPrinter" />
+    <int:channel id="instructionCensusSupport" />
+    <int:filter id="instructionCensusSupportFilter" input-channel="instructionCensusSupport" output-channel="nullChannel" expression="true"/>
+    <int:channel id="instructionNotify" />
+
+    <!-- the @Publisher sends to the marshalling-transformers input channel -->
+    <int-xml:marshalling-transformer
+            input-channel="instructionOutbound" output-channel="instructionXml"
+            marshaller="instructionMarshaller" result-transformer="instructionTransformer" />
+    <!-- the instructionMarshaller turns java objs into xml dom -->
+    <bean id="instructionMarshaller" class="org.springframework.oxm.jaxb.Jaxb2Marshaller">
+        <property name="contextPath"
+                  value="uk.gov.ons.ctp.response.action.message.instruction" />
+    </bean>
+
+    <!-- the instructionTransformer turns the xml dom into a string -->
+    <bean id="instructionTransformer"
+          class="org.springframework.integration.xml.transformer.ResultToStringTransformer" />
+
+    <int-xml:validating-filter id="instructionValidator"
+                               input-channel="instructionXml" output-channel="instructionXmlValid"
+                               schema-location="classpath:xsd/actionInstruction.xsd" discard-channel="instructionXmlInvalid" />
+    <int-jms:outbound-channel-adapter id="invalidActionInstructionJmsOut" destination="invalidActionInstructionQueue" channel="instructionXmlInvalid"/>
+
+    <!-- each channel adapter listens to one of our routed channels and adapts the SI message to a JMS message -->
+    <int-jms:outbound-channel-adapter id="jmsout.Field"
+                                      channel="instructionField" destination="fieldInstructionQueue" />
+
+    <int-jms:outbound-channel-adapter id="jmsout.Printer"
+                                      channel="instructionPrinter" destination="printerInstructionQueue" />
+
+    <int-jms:outbound-channel-adapter id="jmsout.Notify"
+                                      channel="instructionNotify" destination="notifyInstructionQueue" />
+
+    <!-- the router ... routes ... using the header 'HANDLER' set by the @Publisher -->
+    <!-- the SpEL constructs the channel name to send our xml string to -->
+    <int:router input-channel="instructionXmlValid" expression="'instruction'.concat(headers.HANDLER)" />
+
+</beans>

@@ -11,8 +11,7 @@ import uk.gov.ons.ctp.response.action.service.CaseNotificationService;
 import uk.gov.ons.ctp.response.casesvc.message.notification.CaseNotifications;
 
 /**
- * Message end point for Case notification life cycle messages, please see
- * flows-int.xml.
+ * Message end point for Case notification life cycle messages, please see flows.xml.
  *
  */
 @MessageEndpoint
@@ -23,7 +22,7 @@ public class CaseNotificationReceiverImpl implements CaseNotificationReceiver {
   private CaseNotificationService caseNotificationService;
 
   @Override
-  @ServiceActivator(inputChannel = "notificationTransformed")
+  @ServiceActivator(inputChannel = "caseNotificationTransformed")
   public void acceptNotification(CaseNotifications caseNotifications) {
     log.debug("Entering acceptNotifications for  {} events", caseNotifications.getCaseNotifications().size());
     caseNotificationService.acceptNotification(caseNotifications.getCaseNotifications());

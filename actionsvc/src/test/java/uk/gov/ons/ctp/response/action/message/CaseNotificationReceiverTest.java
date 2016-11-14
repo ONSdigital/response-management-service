@@ -10,7 +10,6 @@ import static org.mockito.Mockito.verify;
 import static uk.gov.ons.ctp.response.casesvc.message.notification.NotificationType.DISABLED;
 import static uk.gov.ons.ctp.response.casesvc.message.notification.NotificationType.ACTIVATED;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -18,7 +17,6 @@ import java.util.concurrent.CountDownLatch;
 
 import javax.inject.Inject;
 
-import org.apache.commons.io.FileUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -40,13 +38,12 @@ import uk.gov.ons.ctp.response.casesvc.message.notification.CaseNotification;
  * Test Spring Integration flow of Case Notification life cycle messages
  *
  */
-@ContextConfiguration(locations = {"/CaseNotificationServiceTest-context.xml"})
+@ContextConfiguration(locations = {"/springintegration/CaseNotificationServiceTest-context.xml"})
 @TestPropertySource("classpath:/application-test.properties")
 @RunWith(SpringJUnit4ClassRunner.class)
 public class CaseNotificationReceiverTest {
 
   private static final int RECEIVE_TIMEOUT = 20000;
-  private static final String INVALID_CASE_NOTIFICATION_LOG_DIRECTORY = "/tmp/ctp/logs/actionsvc/notification";
   private static final String VALIDXML_PART1 = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>"
       + "<ns2:caseNotifications xmlns:ns2=\"http://ons.gov.uk/ctp/response/casesvc/message/notification\">"
       + "<caseNotification>"
@@ -67,7 +64,7 @@ public class CaseNotificationReceiverTest {
   private CaseNotificationService caseNotificationService;
 
   @Inject
-  private MessageChannel caseNotificationXml;
+  private MessageChannel caseLifecycleEventsXml;
 
   @Inject
   private PollableChannel activeMQDLQXml;
@@ -79,14 +76,7 @@ public class CaseNotificationReceiverTest {
    */
   @Before
   public void setUpAndInitialVerification() throws IOException {
-    File logDir = new File(INVALID_CASE_NOTIFICATION_LOG_DIRECTORY);
-    if (!logDir.exists()) {
-      logDir.mkdir();
-    }
-    FileUtils.cleanDirectory(logDir);
-    File[] files = logDir.listFiles();
-    assertEquals(0, files.length);
-
+    // TODO
   }
 
   /**
@@ -111,10 +101,7 @@ public class CaseNotificationReceiverTest {
     // Await synchronisation with the asynchronous message call
     serviceInvoked.await(RECEIVE_TIMEOUT, MILLISECONDS);
 
-    // Test not rejected to notificationXmlInvalid channel
-    File logDir = new File(INVALID_CASE_NOTIFICATION_LOG_DIRECTORY);
-    File[] files = logDir.listFiles();
-    assertEquals(0, files.length);
+    // TODO Check no msg ends up on invalid queue
 
     // Test java objects that should be received
     List<CaseNotification> lifeCycleEvents = new ArrayList<CaseNotification>();
@@ -138,11 +125,9 @@ public class CaseNotificationReceiverTest {
 
     // Send direct to flow rather than JMS queue to avoid problems with
     // asynchronous threads
-    caseNotificationXml.send(MessageBuilder.withPayload(testMessage).build());
+    caseLifecycleEventsXml.send(MessageBuilder.withPayload(testMessage).build());
 
-    File logDir = new File(INVALID_CASE_NOTIFICATION_LOG_DIRECTORY);
-    File[] files = logDir.listFiles();
-    assertEquals(1, files.length);
+    // TODO Check msg ends up on invalid queue
   }
 
   /**
@@ -162,10 +147,7 @@ public class CaseNotificationReceiverTest {
     String payload = (String) message.getPayload();
     assertEquals(testMessage, payload);
 
-    File logDir = new File(INVALID_CASE_NOTIFICATION_LOG_DIRECTORY);
-    File[] files = logDir.listFiles();
-    assertEquals(0, files.length);
-
+    // TODO Check NO msg ends up on invalid queue
   }
 
   /**

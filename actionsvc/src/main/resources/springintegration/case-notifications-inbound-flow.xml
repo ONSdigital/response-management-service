@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:int="http://www.springframework.org/schema/integration"
+       xmlns:int-jms="http://www.springframework.org/schema/integration/jms"
+       xmlns:int-xml="http://www.springframework.org/schema/integration/xml"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+  http://www.springframework.org/schema/beans/spring-beans-4.2.xsd
+  http://www.springframework.org/schema/integration http://www.springframework.org/schema/integration/spring-integration.xsd
+  http://www.springframework.org/schema/integration/jms http://www.springframework.org/schema/integration/jms/spring-integration-jms.xsd
+  http://www.springframework.org/schema/integration/xml
+  http://www.springframework.org/schema/integration/xml/spring-integration-xml.xsd">
+
+
+    <bean id="caseLifecycleEventsMessageListenerContainer"
+          class="org.springframework.jms.listener.DefaultMessageListenerContainer">
+        <property name="connectionFactory" ref="connectionFactory" />
+        <property name="destinationName" value="Case.LifecycleEvents" />
+        <property name="maxConcurrentConsumers" value="1" />
+        <property name="concurrentConsumers" value="1" />
+        <property name="receiveTimeout" value="5000" />
+        <property name="recoveryInterval" value="60000" />
+        <property name="autoStartup" value="true" />
+        <property name="sessionTransacted" value="true" />
+    </bean>
+
+    <int:channel id="caseLifecycleEventsXml" />
+
+    <int-jms:message-driven-channel-adapter
+            id="jmsCase" container="caseLifecycleEventsMessageListenerContainer" channel="caseLifecycleEventsXml" />
+
+    <int:channel id="caseLifecycleEventsXmlInvalid" />
+    <bean id="invalidCaseNotificationsQueue" class="org.apache.activemq.command.ActiveMQQueue">
+        <constructor-arg value="Case.InvalidCaseNotifications"/>
+    </bean>
+    <int-jms:outbound-channel-adapter id="invalidCaseNotificationsJmsOut" destination="invalidCaseNotificationsQueue" channel="caseLifecycleEventsXmlInvalid"/>
+    <int-xml:validating-filter id="caseNotificationValidator" input-channel="caseLifecycleEventsXml"
+                               output-channel="caseLifecycleEventsXmlValid" schema-location="classpath:xsd/caseNotification.xsd" discard-channel="caseLifecycleEventsXmlInvalid"/>
+
+    <int:channel id="caseNotificationTransformed" datatype="uk.gov.ons.ctp.response.casesvc.message.notification.CaseNotifications"/>
+    <int-xml:unmarshalling-transformer
+            input-channel="caseLifecycleEventsXmlValid" output-channel="caseNotificationTransformed"
+            unmarshaller="caseNotificationUnmarshaller" />
+
+    <!-- The transformer uses this unmarshaller to do the heavy (un)lifting -->
+    <bean id="caseNotificationUnmarshaller" class="org.springframework.oxm.jaxb.Jaxb2Marshaller">
+        <property name="contextPath"
+                  value="uk.gov.ons.ctp.response.casesvc.message.notification" />
+    </bean>
+</beans>

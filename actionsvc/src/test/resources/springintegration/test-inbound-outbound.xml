@@ -4,7 +4,7 @@
   xsi:schemaLocation="http://www.springframework.org/schema/beans   
   http://www.springframework.org/schema/beans/spring-beans-4.2.xsd">
 
-  <bean id="feedbackReceiver" class="uk.gov.ons.ctp.response.action.message.impl.FeedbackReceiverImpl"/>
+  <bean id="feedbackReceiver" class="uk.gov.ons.ctp.response.action.message.impl.ActionFeedbackReceiverImpl"/>
   <bean id="feedbackService" class="uk.gov.ons.ctp.response.action.service.impl.DummyFeedbackServiceImpl"/>
 
   <bean id="actionInstructionMessageListenerContainer" class="org.springframework.jms.listener.DefaultMessageListenerContainer">

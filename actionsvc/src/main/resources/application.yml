@@ -138,6 +138,7 @@ csv-ingest:
   #the poll-milliseconds property is not used at the moment due to a bug in spring context loading in integration tests
   poll-milliseconds: 10000
 
-deadxml:
-  directory: /var/log/ctp/responsemanagement/actionsvc
-
+redelivery-policy:
+  maxRedeliveries: 10
+  initialRedeliveryDelay: 1000
+  redeliveryDelay: 1000

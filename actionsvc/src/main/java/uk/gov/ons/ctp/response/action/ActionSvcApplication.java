@@ -43,7 +43,7 @@ import uk.gov.ons.ctp.response.action.state.ActionSvcStateTransitionManagerFacto
 @EnableAsync
 @EnableCaching
 @EnableScheduling
-@ImportResource("main-int.xml")
+@ImportResource("springintegration/main.xml")
 public class ActionSvcApplication {
 
   public static final String ACTION_DISTRIBUTION_MAP = "actionsvc.action.distribution";
