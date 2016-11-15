@@ -19,3 +19,26 @@ databaseChangeLog:
             path: action_2017_action_type_response_required.sql
             relativeToChangelogFile: true
             splitStatements: false
+
+  - changeSet:
+      id: 9.29.0-3
+      author: Sarah Radford
+      changes:
+        - sqlFile:
+            comment: Corrections to V7 of action plan seed data
+            path: action_2017_data_corrections_V7.sql
+            relativeToChangelogFile: true
+            splitStatements: false
+
+  - changeSet:
+      id: 9.29.0-4
+      author: Sarah Radford
+      changes:
+        - sqlFile:
+            comment: Create situationcategory table
+            path: create_situationcategory_table.sql
+            relativeToChangelogFile: true
+            splitStatements: false
+
+
+
