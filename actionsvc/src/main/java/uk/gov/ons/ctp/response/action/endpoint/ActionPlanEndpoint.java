@@ -102,7 +102,6 @@ public class ActionPlanEndpoint implements CTPEndpoint {
    * @return a not implemented response for 2016.
    */
   @POST
-  @Path("/")
   public final Response createActionPlan(final ActionPlanDTO requestObject) {
     return Response.status(Response.Status.NOT_IMPLEMENTED).build();
   }
