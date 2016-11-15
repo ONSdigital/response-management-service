@@ -46,7 +46,6 @@ public class ActionPlanEndpoint implements CTPEndpoint {
    * @return List<ActionPlanDTO> This returns all action plans.
    */
   @GET
-  @Path("/")
   public final List<ActionPlanDTO> findActionPlans() {
     log.info("Entering findActionPlans...");
     List<ActionPlan> actionPlans = actionPlanService.findActionPlans();

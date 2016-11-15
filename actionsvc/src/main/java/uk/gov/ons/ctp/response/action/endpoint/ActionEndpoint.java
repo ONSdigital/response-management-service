@@ -50,7 +50,6 @@ public final class ActionEndpoint implements CTPEndpoint {
    * @return List<ActionDTO> Actions for the specified filters
    */
   @GET
-  @Path("/")
   public List<ActionDTO> findActions(@QueryParam("actiontype") final String actionType,
       @QueryParam("state") final ActionDTO.ActionState actionState) {
 
@@ -87,7 +86,6 @@ public final class ActionEndpoint implements CTPEndpoint {
    * @throws CTPException on failure to create Action
    */
   @POST
-  @Path("/")
   public ActionDTO createAction(final @Valid ActionDTO actionDTO) throws CTPException {
     log.info("Entering createAction with Action {}", actionDTO);
     Action action = actionService.createAction(mapperFacade.map(actionDTO, Action.class));
