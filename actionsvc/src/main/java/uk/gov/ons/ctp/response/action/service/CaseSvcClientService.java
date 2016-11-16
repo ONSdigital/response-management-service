@@ -56,7 +56,7 @@ public interface CaseSvcClientService {
    * @param caseTypeId the id
    * @return the casetype
    */
-  CaseTypeDTO getCaseType(Integer caseTypeId) ;
+  CaseTypeDTO getCaseType(Integer caseTypeId);
 
   /**
    * Call CaseSvc using REST to get the CaseEvents for the Case MAY throw a

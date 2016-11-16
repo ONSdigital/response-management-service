@@ -4,45 +4,22 @@
 	xsi:schemaLocation="http://www.springframework.org/schema/beans   
   http://www.springframework.org/schema/beans/spring-beans-4.2.xsd">
 
-	<!-- maximumRedeliveries default is 6, don't want any in test where designing 
-		failure and checking DLQ -->
-	<bean id="connectionFactory"
-		class="org.springframework.jms.connection.SingleConnectionFactory">
+	<bean id="redeliveryPolicy" class="org.apache.activemq.RedeliveryPolicy">
+		<property name="maximumRedeliveries" value="1"/>
+		<property name="initialRedeliveryDelay" value="100"/>
+		<property name="redeliveryDelay" value="100"/>
+	</bean>
+	<bean id="redeliveryPolicyMap" class="org.apache.activemq.broker.region.policy.RedeliveryPolicyMap">
+		<property name="defaultEntry" ref="redeliveryPolicy" />
+	</bean>
+	<bean id="connectionFactory" class="org.springframework.jms.connection.CachingConnectionFactory">
 		<property name="targetConnectionFactory">
 			<bean class="org.apache.activemq.ActiveMQConnectionFactory">
-				<property name="brokerURL"
-					value="vm://localhost?broker.persistent=false&amp;jms.redeliveryPolicy.maximumRedeliveries=0" />
-				<property name="dispatchAsync" value="false" />
+				<property name="brokerURL" value="vm://localhost?broker.persistent=false" />
+				<property name="redeliveryPolicyMap" ref="redeliveryPolicyMap" />
 			</bean>
 		</property>
+		<property name="sessionCacheSize" value="10"/>
 	</bean>
-
-	<bean id="actionFeedbackMessageListenerContainer"
-		class="org.springframework.jms.listener.DefaultMessageListenerContainer">
-		<property name="connectionFactory" ref="connectionFactory" />
-		<property name="destinationName" value="feedbackQueue" />
-		<property name="maxConcurrentConsumers" value="1" />
-		<property name="concurrentConsumers" value="1" />
-		<property name="receiveTimeout" value="5000" />
-		<property name="recoveryInterval" value="60000" />
-		<property name="autoStartup" value="true" />
-	</bean>
-
-	<!-- The in-bound Case Notification message container config sessionTransacted 
-		must be 1 as for live config. Each message listener invocation will then 
-		operate within an active JMS transaction, with message reception rolled back 
-		in case of listener execution failure. -->
-	<bean id="caseLifecycleEventsMessageListenerContainer"
-		class="org.springframework.jms.listener.DefaultMessageListenerContainer">
-		<property name="connectionFactory" ref="connectionFactory" />
-		<property name="destinationName" value="Case.LifecycleEvents" />
-		<property name="sessionTransacted" value="true" />
-		<property name="maxConcurrentConsumers" value="1" />
-		<property name="concurrentConsumers" value="1" />
-		<property name="receiveTimeout" value="5000" />
-		<property name="recoveryInterval" value="60000" />
-		<property name="autoStartup" value="true" />
-	</bean>
-
 </beans>
 

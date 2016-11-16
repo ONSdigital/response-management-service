@@ -21,7 +21,7 @@
         <constructor-arg value="Action.Notify" />
     </bean>
     <bean id="invalidActionInstructionQueue" class="org.apache.activemq.command.ActiveMQQueue">
-        <constructor-arg value="Case.InvalidActionInstructions"/>
+        <constructor-arg value="Action.InvalidActionInstructions"/>
     </bean>
 
     <!-- setup the outbound channels - note each queue needs a channel -->

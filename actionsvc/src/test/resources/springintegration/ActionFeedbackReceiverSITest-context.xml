@@ -7,8 +7,9 @@
 			http://www.springframework.org/schema/integration
 			http://www.springframework.org/schema/integration/spring-integration.xsd">
 
-	<beans:import resource="flows.xml" />
+    <beans:import resource="flows.xml" />
 	<beans:import resource="test-broker.xml" />
-	<beans:import resource="test-outbound-only.xml" />
+	<beans:import resource="test-action-feedback.xml" />
 
 </beans:beans>
+
