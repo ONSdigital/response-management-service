@@ -284,7 +284,8 @@ public class ActionDistributor {
       public ActionRequest doInTransaction(final TransactionStatus status) {
         ActionRequest actionRequest = null;
         // update our actions state in db
-        ActionDTO.ActionEvent event = action.getActionType().getResponseRequired() ? ActionDTO.ActionEvent.REQUEST_DISTRIBUTED : ActionDTO.ActionEvent.REQUEST_COMPLETED;
+        ActionDTO.ActionEvent event = action.getActionType().getResponseRequired() ?
+                ActionDTO.ActionEvent.REQUEST_DISTRIBUTED : ActionDTO.ActionEvent.REQUEST_COMPLETED;
         transitionAction(action, event);
         // create the request, filling in details by GETs from casesvc
         actionRequest = prepareActionRequest(action);
@@ -357,7 +358,8 @@ public class ActionDistributor {
     log.debug("constructing ActionRequest to publish to downstream handler for action id {} and case id {}",
         action.getActionId(), action.getCaseId());
     // now call caseSvc for the following
-    ActionPlan actionPlan = (action.getActionPlanId() == null) ? null : actionPlanRepo.findOne(action.getActionPlanId());
+    ActionPlan actionPlan = (action.getActionPlanId() == null) ?
+            null : actionPlanRepo.findOne(action.getActionPlanId());
     CaseDTO caseDTO = caseSvcClientService.getCase(action.getCaseId());
     CaseTypeDTO caseTypeDTO = caseSvcClientService.getCaseType(caseDTO.getCaseTypeId());
     CaseGroupDTO caseGroupDTO = caseSvcClientService.getCaseGroup(caseDTO.getCaseGroupId());
@@ -392,17 +394,18 @@ public class ActionDistributor {
    * @param action the persistent Action obj from the db
    * @param actionPlan the persistent ActionPlan obj from the db
    * @param caseDTO the Case representation from the CaseSvc
-   * @param questionnaireDTO the Questionnaire representation from the CaseSvc
+   * @param caseTypeDTO the CaseType representation from the CaseSvc
    * @param addressDTO the Address representation from the CaseSvc
    * @param caseEventDTOs the list of CaseEvent represenations from the CaseSvc
    * @return the shiney new Action Request
    */
-  private ActionRequest createActionRequest(final Action action, final ActionPlan actionPlan, final CaseDTO caseDTO, final CaseTypeDTO caseTypeDTO,
-      final AddressDTO addressDTO, final List<CaseEventDTO> caseEventDTOs) {
+  private ActionRequest createActionRequest(final Action action, final ActionPlan actionPlan, final CaseDTO caseDTO,
+                                            final CaseTypeDTO caseTypeDTO, final AddressDTO addressDTO,
+                                            final List<CaseEventDTO> caseEventDTOs) {
     ActionRequest actionRequest = new ActionRequest();
     // populate the request
     actionRequest.setActionId(action.getActionId());
-    actionRequest.setActionPlan((actionPlan==null)?null:actionPlan.getName());
+    actionRequest.setActionPlan((actionPlan == null) ? null : actionPlan.getName());
     actionRequest.setActionType(action.getActionType().getName());
     actionRequest.setQuestionSet(caseTypeDTO.getQuestionSet());
     actionRequest.setResponseRequired(action.getActionType().getResponseRequired());

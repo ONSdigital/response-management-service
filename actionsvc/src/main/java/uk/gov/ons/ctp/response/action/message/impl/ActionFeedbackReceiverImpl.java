@@ -27,7 +27,7 @@ public class ActionFeedbackReceiverImpl implements ActionFeedbackReceiver {
   @Override
   @ServiceActivator(inputChannel = "actionFeedbackTransformed")
   public void acceptFeedback(ActionFeedback feedback) {
-    log.debug("We have feedback with situation " + feedback.getSituation());
+    log.debug("Accepting feedback {}", feedback);
     feedbackService.acceptFeedback(feedback);
   }
 }

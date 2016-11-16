@@ -24,7 +24,7 @@ public class CaseNotificationReceiverImpl implements CaseNotificationReceiver {
   @Override
   @ServiceActivator(inputChannel = "caseNotificationTransformed")
   public void acceptNotification(CaseNotifications caseNotifications) {
-    log.debug("Entering acceptNotifications for  {} events", caseNotifications.getCaseNotifications().size());
+    log.debug("Entering acceptNotifications for {} events", caseNotifications.getCaseNotifications().size());
     caseNotificationService.acceptNotification(caseNotifications.getCaseNotifications());
   }
 
