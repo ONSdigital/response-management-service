@@ -11,28 +11,27 @@ import javax.inject.Named;
 import org.springframework.boot.actuate.health.Health;
 import org.springframework.boot.actuate.health.HealthIndicator;
 
+import lombok.extern.slf4j.Slf4j;
 import uk.gov.ons.ctp.response.action.config.AppConfig;
 import uk.gov.ons.ctp.response.action.service.ActionPlanJobService;
 
 /**
  * This bean will have the actionPlanJobService injected into it by spring on
- * constructions. It will then schedule the running of the actionPlanJobService createAndExecuteAllActionPlanJobs using
- * details from the AppConfig
+ * constructions. It will then schedule the running of the actionPlanJobService
+ * createAndExecuteAllActionPlanJobs using details from the AppConfig
  */
 @Named
+@Slf4j
 public class PlanScheduler implements HealthIndicator {
-
 
   @Inject
   private ActionPlanJobService actionPlanJobServiceImpl;
 
   private PlanExecutionInfo executionInfo = new PlanExecutionInfo();
 
-  private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
-
   /**
-   * Create the scheduler for the Execution of Action Plans
-   * It is simply a scheduled trigger for the service layer method.
+   * Create the scheduler for the Execution of Action Plans It is simply a
+   * scheduled trigger for the service layer method.
    *
    * @param applicationConfig injected app config needs injecting as cannot use
    *          the class appConfig - is not injected until this class created -
@@ -40,12 +39,23 @@ public class PlanScheduler implements HealthIndicator {
    */
   @Inject
   public PlanScheduler(AppConfig applicationConfig) {
+    log.debug("Creating PlanScheduler");
     final Runnable planExecutionRunnable = new Runnable() {
       public void run() {
-        executionInfo.setExecutedJobs(actionPlanJobServiceImpl.createAndExecuteAllActionPlanJobs());
+        try {
+          executionInfo = new PlanExecutionInfo();
+          executionInfo.setExecutedJobs(actionPlanJobServiceImpl.createAndExecuteAllActionPlanJobs());
+        } catch (Exception e) {
+          log.error("Exception in action plan scheduler", e);
+        }
       }
     };
 
+    log.debug("Scheduling Plan Execution initial delay={}, subsequent delay={}",
+        applicationConfig.getPlanExecution().getInitialDelaySeconds(),
+        applicationConfig.getPlanExecution().getSubsequentDelaySeconds(), SECONDS);
+
+    ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
     scheduler.scheduleAtFixedRate(planExecutionRunnable,
         applicationConfig.getPlanExecution().getInitialDelaySeconds(),
         applicationConfig.getPlanExecution().getSubsequentDelaySeconds(), SECONDS);

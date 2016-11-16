@@ -11,6 +11,7 @@ import javax.inject.Named;
 import org.springframework.boot.actuate.health.Health;
 import org.springframework.boot.actuate.health.HealthIndicator;
 
+import lombok.extern.slf4j.Slf4j;
 import uk.gov.ons.ctp.response.action.config.AppConfig;
 
 /**
@@ -19,6 +20,7 @@ import uk.gov.ons.ctp.response.action.config.AppConfig;
  * details from the AppConfig
  */
 @Named
+@Slf4j
 public class DistributionScheduler implements HealthIndicator {
 
   @Override
@@ -33,8 +35,6 @@ public class DistributionScheduler implements HealthIndicator {
 
   private DistributionInfo distributionInfo = new DistributionInfo();
 
-  private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
-
   /**
    * Create the scheduler for the Action Distributor
    *
@@ -46,10 +46,18 @@ public class DistributionScheduler implements HealthIndicator {
   public DistributionScheduler(AppConfig applicationConfig) {
     final Runnable distributorRunnable = new Runnable() {
       @Override public void run() {
-        distributionInfo = actionDistributorImpl.distribute();
+        try {
+          distributionInfo = actionDistributorImpl.distribute();
+        } catch (Exception e) {
+          log.error("Exception in action distributor", e);
+        }
       }
     };
 
+    log.debug("Scheduling Action Distribution initial delay={}, subsequent delay={}",applicationConfig.getActionDistribution().getInitialDelaySeconds(),
+        applicationConfig.getActionDistribution().getSubsequentDelaySeconds(), SECONDS);
+
+    ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
     scheduler.scheduleAtFixedRate(distributorRunnable,
         applicationConfig.getActionDistribution().getInitialDelaySeconds(),
         applicationConfig.getActionDistribution().getSubsequentDelaySeconds(), SECONDS);

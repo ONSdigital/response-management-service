@@ -13,7 +13,7 @@ logging:
     org.springframework: ERROR
     org.apache.tomcat.jdbc.pool: ERROR
     com.hazelcast: ERROR
-    uk.gov.ons.ctp: INFO
+    uk.gov.ons.ctp: DEBUG
 
 liquibase:
   user: postgres
@@ -108,12 +108,12 @@ spring:
 action-distribution:
   instruction-max: 200
   retry-sleep-seconds: 30
-  initial-delay-seconds: 30
-  subsequent-delay-seconds: 30
+  initial-delay-seconds: 10
+  subsequent-delay-seconds: 60
 
 plan-execution:
   retry-sleep-seconds: 30
-  initial-delay-seconds: 90
+  initial-delay-seconds: 40
   subsequent-delay-seconds: 60
 
 case-svc:

@@ -5,6 +5,7 @@ import java.math.BigInteger;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -13,7 +14,9 @@ import uk.gov.ons.ctp.common.state.StateTransitionException;
 import uk.gov.ons.ctp.common.state.StateTransitionManager;
 import uk.gov.ons.ctp.common.time.DateTimeUtil;
 import uk.gov.ons.ctp.response.action.domain.model.Action;
+import uk.gov.ons.ctp.response.action.domain.model.SituationCategory;
 import uk.gov.ons.ctp.response.action.domain.repository.ActionRepository;
+import uk.gov.ons.ctp.response.action.domain.repository.SituationCategoryRepository;
 import uk.gov.ons.ctp.response.action.message.feedback.ActionFeedback;
 import uk.gov.ons.ctp.response.action.representation.ActionDTO;
 import uk.gov.ons.ctp.response.action.representation.ActionDTO.ActionState;
@@ -39,6 +42,9 @@ public class FeedbackServiceImpl implements FeedbackService {
   private ActionRepository actionRepo;
 
   @Inject
+  private SituationCategoryRepository situationCategoryRepository;
+
+  @Inject
   private StateTransitionManager<ActionState, ActionDTO.ActionEvent> actionSvcStateTransitionManager;
 
   @Transactional(propagation = Propagation.REQUIRED, readOnly = false, timeout = TRANSACTION_TIMEOUT)
@@ -61,7 +67,12 @@ public class FeedbackServiceImpl implements FeedbackService {
           actionRepo.saveAndFlush(action);
 
           if (nextState.equals(ActionDTO.ActionState.COMPLETED)) {
-            caseSvcClientService.createNewCaseEvent(action, CategoryDTO.CategoryType.ACTION_COMPLETED);
+            CategoryDTO.CategoryType category = CategoryDTO.CategoryType.ACTION_COMPLETED;
+//            if (!StringUtils.isBlank(feedback.getSituation())) {
+//              SituationCategory situationCategory = situationCategoryRepository.findOne(feedback.getSituation());
+//              category = CategoryDTO.CategoryType.valueOf(situationCategory.getEventCategory());
+//            }
+            caseSvcClientService.createNewCaseEvent(action, category);
           }
         } catch (StateTransitionException ste) {
           throw new RuntimeException(ste);

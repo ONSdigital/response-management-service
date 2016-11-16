@@ -161,12 +161,16 @@ public class ActionDistributor {
         List<BigInteger> excludedActions = actionMap.values().stream()
             .flatMap(o -> ((List<BigInteger>) o).stream())
             .collect(Collectors.toList());
-        log.debug("Excluding actions {}", excludedActions);
+        if (!excludedActions.isEmpty()) {
+          log.debug("Excluding actions {}", excludedActions);
+        }
         List<Action> actions = retrieveActions(actionType, excludedActions);
-        log.debug("Dealing with actions {}",
+        if (!actions.isEmpty()) {
+          log.debug("Dealing with actions {}",
             actions.stream()
                 .map(a -> a.getActionId().toString())
                 .collect(Collectors.joining(",")));
+        }
 
         actionMap.put(localUUID,
             actions.stream()
@@ -180,7 +184,6 @@ public class ActionDistributor {
             } else if (action.getState().equals(ActionDTO.ActionState.CANCEL_SUBMITTED)) {
               actionCancels.add(processActionCancel(action));
             }
-            log.debug("dealt with action {}", action.getActionId());
           } catch (Exception e) {
             // db changes rolled back
             log.error(
@@ -197,7 +200,6 @@ public class ActionDistributor {
         publishActions(actionType, actionRequests, actionCancels);
 
         actionMap.remove(localUUID);
-        log.debug("Actions processed for actionType {}", actionType.getName());
       });
     } catch (Exception e) {
       // something went wrong retrieving action types or actions
@@ -261,8 +263,10 @@ public class ActionDistributor {
     List<Action> actions = actionRepo
         .findByActionTypeNameAndStateInAndActionIdNotIn(actionType.getName(),
             Arrays.asList(ActionState.SUBMITTED, ActionState.CANCEL_SUBMITTED), excludedActionIds, pageable);
-    log.debug("RETRIEVED action ids {}", actions.stream().map(a -> a.getActionId().toString())
+    if (!actions.isEmpty()) {
+      log.debug("RETRIEVED action ids {}", actions.stream().map(a -> a.getActionId().toString())
         .collect(Collectors.joining(",")));
+    }
     return actions;
   }
 

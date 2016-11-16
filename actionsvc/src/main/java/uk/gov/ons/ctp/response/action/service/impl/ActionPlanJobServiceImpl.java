@@ -108,7 +108,6 @@ public class ActionPlanJobServiceImpl implements ActionPlanJobService {
   private Optional<ActionPlanJob> createAndExecuteActionPlanJob(final ActionPlanJob actionPlanJob,
       boolean forcedExecution) {
     Integer actionPlanId = actionPlanJob.getActionPlanId();
-    log.debug("Entering createAndExecuteActionPlanJob wth plan id {}, forced {}", actionPlanId, forcedExecution);
 
     ActionPlanJob createdJob = null;
     // load the action plan
@@ -147,7 +146,6 @@ public class ActionPlanJobServiceImpl implements ActionPlanJobService {
             // get the repo to call sql function to create actions
             actionCaseRepo.createActions(createdJob.getActionPlanJobId());
           } finally {
-            log.debug("Unlocking action plan {}", actionPlanId);
             lock.unlock();
           }
         } else {
