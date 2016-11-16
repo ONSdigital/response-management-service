@@ -46,7 +46,6 @@ public class ActionPlanEndpoint implements CTPEndpoint {
    * @return List<ActionPlanDTO> This returns all action plans.
    */
   @GET
-  @Path("/")
   public final List<ActionPlanDTO> findActionPlans() {
     log.info("Entering findActionPlans...");
     List<ActionPlan> actionPlans = actionPlanService.findActionPlans();
@@ -103,7 +102,6 @@ public class ActionPlanEndpoint implements CTPEndpoint {
    * @return a not implemented response for 2016.
    */
   @POST
-  @Path("/")
   public final Response createActionPlan(final ActionPlanDTO requestObject) {
     return Response.status(Response.Status.NOT_IMPLEMENTED).build();
   }

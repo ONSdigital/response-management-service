@@ -32,11 +32,11 @@
     <!-- First the SI message provided by the channel adapter is validated against the inbound schema -->
     <!-- Option to be used in Debug/Test: throw-exception-on-rejection="true" -->
     <int:channel id="actionFeedbackXmlInvalid" />
-    <bean id="invalidCaseFeedbackQueue" class="org.apache.activemq.command.ActiveMQQueue">
-        <constructor-arg value="Case.InvalidCaseFeedback"/>
+    <bean id="invalidActionFeedbackQueue" class="org.apache.activemq.command.ActiveMQQueue">
+        <constructor-arg value="Action.InvalidActionFeedback"/>
     </bean>
-    <int-jms:outbound-channel-adapter id="invalidCaseFeedbackJmsOut" destination="invalidCaseFeedbackQueue" channel="actionFeedbackXmlInvalid"/>
-    <int-xml:validating-filter id="caseFeedbackValidator" input-channel="actionFeedbackXml"
+    <int-jms:outbound-channel-adapter id="invalidActionFeedbackJmsOut" destination="invalidActionFeedbackQueue" channel="actionFeedbackXmlInvalid"/>
+    <int-xml:validating-filter id="actionFeedbackValidator" input-channel="actionFeedbackXml"
                                output-channel="actionFeedbackXmlValid" schema-location="classpath:xsd/actionFeedback.xsd" discard-channel="actionFeedbackXmlInvalid"/>
 
     <!-- Secondly the now validated xml is transformed into the jaxb generated object model -->

@@ -28,52 +28,47 @@
   <int-jms:message-driven-channel-adapter
     id="jmsIn" container="activeMQListenerContainer" channel="activeMQDLQXml"/>
 
-  <!-- case notification jms queue which can be used for testing -->
-  <int:channel id="caseNotificationOutbound" />
-
   <bean id="caseNotificationJMSQueue" class="org.apache.activemq.command.ActiveMQQueue">
     <constructor-arg value="Case.LifecycleEvents"/>
   </bean>
 
-  <!--  adapt the SI message to a JMS message -->
-  <int-jms:outbound-channel-adapter id="jmsout" channel="caseNotificationOutbound" destination="caseNotificationJMSQueue"/>
+  <int:channel id="testOutbound" />
 
-  <!-- Notification Receiver ServiceActivator(inputChannel = "notificationTransformed") -->
-  <bean id="notificationReceiver" class="uk.gov.ons.ctp.response.action.message.impl.CaseNotificationReceiverImpl" />
+  <int-jms:outbound-channel-adapter id="jmsout" channel="testOutbound" destination="caseNotificationJMSQueue"/>
 
-  <!-- Mock notificationService to inject into notificationReceiver -->
+  <!-- ServiceActivator(inputChannel = "notificationTransformed")  -->
+  <bean id="notificationReceiver" class="uk.gov.ons.ctp.response.action.message.impl.CaseNotificationReceiverImpl"/>
+  <int:service-activator input-channel="notificationTransformed" ref="notificationReceiver"/>
+
   <bean id="notificationService" class="org.mockito.Mockito" factory-method="mock"  >
     <constructor-arg value="uk.gov.ons.ctp.response.action.service.impl.CaseNotificationServiceImpl" />
   </bean>
 
-  <!-- Mock actionCaseRepository to inject into notificationService -->
   <bean id="notificationActionCaseRepository" class="org.mockito.Mockito" factory-method="mock"  >
     <constructor-arg value="uk.gov.ons.ctp.response.action.domain.repository.ActionCaseRepository" />
   </bean>
-  <!-- Mock actionPlanRepository to inject into notificationService -->
+
   <bean id="notificationActionPlanRepository" class="org.mockito.Mockito" factory-method="mock"  >
     <constructor-arg value="uk.gov.ons.ctp.response.action.domain.repository.ActionPlanRepository" />
   </bean>
-  <!-- Mock actionService to inject into notificationService -->
+
   <bean id="notificationActionService" class="org.mockito.Mockito" factory-method="mock"  >
     <constructor-arg value="uk.gov.ons.ctp.response.action.service.impl.ActionServiceImpl" />
   </bean>
-  <!-- Mock surveyRepository to inject into notificationService -->
+
   <bean id="notificationSurveyRepository" class="org.mockito.Mockito" factory-method="mock"  >
     <constructor-arg value="uk.gov.ons.ctp.response.action.domain.repository.SurveyRepository" />
   </bean>
-  <!-- Mock actionRepository to inject into notificationService -->
+
   <bean id="notificationActionRepository" class="org.mockito.Mockito" factory-method="mock"  >
     <constructor-arg value="uk.gov.ons.ctp.response.action.domain.repository.ActionRepository" />
   </bean>
-  <!-- Mock actionTypeRepository to inject into notificationService -->
+
   <bean id="notificationActionTypeRepository" class="org.mockito.Mockito" factory-method="mock"  >
     <constructor-arg value="uk.gov.ons.ctp.response.action.domain.repository.ActionTypeRepository" />
   </bean>
-  <!-- Mock actionTypeRepository to inject into notificationService -->
+
   <bean id="notificationStateTransitionManager" class="org.mockito.Mockito" factory-method="mock"  >
     <constructor-arg value="uk.gov.ons.ctp.common.state.StateTransitionManager" />
   </bean>
-  
-
 </beans>
