@@ -40,5 +40,25 @@ databaseChangeLog:
             relativeToChangelogFile: true
             splitStatements: false
 
+  - changeSet:
+      id: 9.29.0-5
+      author: Sarah Radford
+      changes:
+        - sqlFile:
+            comment: Add action plan data for V8, V9 ad V10 and correct a actiontype description
+            path: action_2017_V8_V9_V10.sql
+            relativeToChangelogFile: true
+            splitStatements: false
+
+  - changeSet:
+      id: 9.29.0-6
+      author: Sarah Radford
+      changes:
+        - sqlFile:
+            comment: Create rule descriptions
+            path: action_2017_create_rule_desc.sql
+            relativeToChangelogFile: true
+            splitStatements: false
+
 
 
