@@ -4,6 +4,6 @@ import org.springframework.boot.SpringBootConfiguration;
 import org.springframework.context.annotation.ImportResource;
 
 @SpringBootConfiguration
-@ImportResource(locations = { "classpath:springintegration/CaseNotificationReceiverSITest-context.xml" })
-public class CaseNotificationReceiverSITestConfig {
+@ImportResource(locations = { "classpath:springintegration/CaseNotificationReceiverITCase-context.xml" })
+public class CaseNotificationReceiverITCaseConfig {
 }

@@ -14,8 +14,8 @@ import org.springframework.context.annotation.ImportResource;
 import java.util.Random;
 
 @SpringBootConfiguration
-@ImportResource(locations = { "classpath:springintegration/ActionFeedbackReceiverSITest-context.xml" })
-public class ActionFeedbackReceiverSITestConfig {
+@ImportResource(locations = { "classpath:springintegration/ActionFeedbackReceiverITCase-context.xml" })
+public class ActionFeedbackReceiverITCaseConfig {
   @Bean
   public Tracer tracer() {
     return new DefaultTracer(new AlwaysSampler(), new Random(), new DefaultSpanNamer(), new NoOpSpanLogger(), new NoOpSpanReporter());
