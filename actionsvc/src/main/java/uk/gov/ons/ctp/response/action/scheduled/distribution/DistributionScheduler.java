@@ -58,7 +58,7 @@ public class DistributionScheduler implements HealthIndicator {
         applicationConfig.getActionDistribution().getSubsequentDelaySeconds(), SECONDS);
 
     ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
-    scheduler.scheduleAtFixedRate(distributorRunnable,
+    scheduler.scheduleWithFixedDelay(distributorRunnable,
         applicationConfig.getActionDistribution().getInitialDelaySeconds(),
         applicationConfig.getActionDistribution().getSubsequentDelaySeconds(), SECONDS);
   }

@@ -56,7 +56,7 @@ public class PlanScheduler implements HealthIndicator {
         applicationConfig.getPlanExecution().getSubsequentDelaySeconds(), SECONDS);
 
     ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
-    scheduler.scheduleAtFixedRate(planExecutionRunnable,
+    scheduler.scheduleWithFixedDelay(planExecutionRunnable,
         applicationConfig.getPlanExecution().getInitialDelaySeconds(),
         applicationConfig.getPlanExecution().getSubsequentDelaySeconds(), SECONDS);
   }

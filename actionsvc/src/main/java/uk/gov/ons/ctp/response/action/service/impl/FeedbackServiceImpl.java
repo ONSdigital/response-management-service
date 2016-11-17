@@ -68,10 +68,10 @@ public class FeedbackServiceImpl implements FeedbackService {
 
           if (nextState.equals(ActionDTO.ActionState.COMPLETED)) {
             CategoryDTO.CategoryType category = CategoryDTO.CategoryType.ACTION_COMPLETED;
-//            if (!StringUtils.isBlank(feedback.getSituation())) {
-//              SituationCategory situationCategory = situationCategoryRepository.findOne(feedback.getSituation());
-//              category = CategoryDTO.CategoryType.valueOf(situationCategory.getEventCategory());
-//            }
+            if (!StringUtils.isBlank(feedback.getSituation())) {
+              SituationCategory situationCategory = situationCategoryRepository.findOne(feedback.getSituation());
+              category = CategoryDTO.CategoryType.valueOf(situationCategory.getEventCategory());
+            }
             caseSvcClientService.createNewCaseEvent(action, category);
           }
         } catch (StateTransitionException ste) {

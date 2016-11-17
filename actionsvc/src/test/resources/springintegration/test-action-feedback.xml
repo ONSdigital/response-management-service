@@ -60,6 +60,10 @@
         <constructor-arg value="uk.gov.ons.ctp.response.action.domain.repository.ActionRepository"/>
     </bean>
 
+    <bean id="situationCategoryRepo" class="org.mockito.Mockito" factory-method="mock">
+        <constructor-arg value="uk.gov.ons.ctp.response.action.domain.repository.SituationCategoryRepository"/>
+    </bean>
+
     <bean id="actionSvcStateTransitionManager" class="org.mockito.Mockito" factory-method="mock">
         <constructor-arg value="uk.gov.ons.ctp.common.state.StateTransitionManager"/>
     </bean>
