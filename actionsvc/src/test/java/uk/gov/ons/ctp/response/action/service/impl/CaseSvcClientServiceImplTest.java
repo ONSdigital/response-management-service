@@ -78,7 +78,7 @@ public class CaseSvcClientServiceImplTest {
     action.setActionId(BigInteger.valueOf(1));
     action.setActionPlanId(2);
     action.setActionRuleId(3);
-    ;
+    
     ActionType actionType = new ActionType();
     actionType.setActionTypeId(4);
     actionType.setHandler("Field");
