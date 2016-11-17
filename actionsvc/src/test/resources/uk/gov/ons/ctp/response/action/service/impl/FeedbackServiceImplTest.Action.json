@@ -1,0 +1,62 @@
+[
+{  
+   "actionId":1,
+   "caseId":1,
+   "actionPlanId":1,
+   "actionRuleId":1,
+   "createdBy":"me",
+   "manuallyCreated":true,
+   "actionType":{  
+      "actionTypeId":1,
+      "name":"HouseholdInitialContact",
+      "description":"Household Initial Contact",
+      "handler":"Printer",
+      "canCancel":false
+   },
+   "priority":1,
+   "situation":"cool",
+   "state":"PENDING",
+   "createdDateTime":1460719498196,
+   "updatedDateTime":1460719498196
+},
+{  
+   "actionId":2,
+   "caseId":2,
+   "actionPlanId":2,
+   "actionRuleId":2,
+   "createdBy":"me",
+   "manuallyCreated":true,
+   "actionType":{  
+      "actionTypeId":1,
+      "name":"HouseholdInitialContact",
+      "description":"Household Initial Contact",
+      "handler":"Printer",
+      "canCancel":false
+   },
+   "priority":1,
+   "situation":"cool",
+   "state":"SUBMITTED",
+   "createdDateTime":1460719498196,
+   "updatedDateTime":1460719498196
+},
+{  
+   "actionId":1,
+   "caseId":1,
+   "actionPlanId":1,
+   "actionRuleId":1,
+   "createdBy":"me",
+   "manuallyCreated":true,
+   "actionType":{  
+      "actionTypeId":1,
+      "name":"HouseholdInitialContact",
+      "description":"Household Initial Contact",
+      "handler":"Printer",
+      "canCancel":false
+   },
+   "priority":1,
+   "situation":"cool",
+   "state":"ACTIVE",
+   "createdDateTime":1460719498196,
+   "updatedDateTime":1460719498196
+}
+]

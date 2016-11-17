@@ -1,0 +1,10 @@
+[
+{  
+   "situation":"DERELI",
+   "eventCategory":"ACTION_COMPLETED_DISABLED"
+},
+{  
+   "situation":"CONFUS",
+   "eventCategory":"ACTION_COMPLETED_DEACTIVATED"
+}
+]
