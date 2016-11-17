@@ -60,5 +60,35 @@ databaseChangeLog:
             relativeToChangelogFile: true
             splitStatements: false
 
+  - changeSet:
+      id: 9.29.0-7
+      author: Sarah Radford
+      changes:
+        - sqlFile:
+            comment: Update rule descriptions
+            path: action_2017_update_rule_desc.sql
+            relativeToChangelogFile: true
+            splitStatements: false
+
+  - changeSet:
+      id: 9.29.0-8
+      author: Sarah Radford
+      changes:
+        - sqlFile:
+            comment: Update responserequired for newly added actiontypes
+            path: action_2017_update_responserequired.sql
+            relativeToChangelogFile: true
+            splitStatements: false
+
+  - changeSet:
+      id: 9.29.0-9
+      author: Sarah Radford
+      changes:
+        - sqlFile:
+            comment: Seed data for situationcategory tables
+            path: action_2017_situationcategory_seeddata.sql
+            relativeToChangelogFile: true
+            splitStatements: false
+
 
 
