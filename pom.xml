@@ -32,7 +32,6 @@
         <module>actionexporter</module>
     </modules>
 
-
     <dependencyManagement>
         <dependencies>
             <dependency>
@@ -307,7 +306,7 @@
                 <activeByDefault>true</activeByDefault>
             </activation>
             <properties>
-                <skip.integration.tests>true</skip.integration.tests>
+                <skip.integration.tests>false</skip.integration.tests>
             </properties>
             <distributionManagement>
                 <repository>
@@ -321,24 +320,6 @@
                     <url>http://192.168.11.11:8081/artifactory/libs-snapshot-local</url>
                 </snapshotRepository>
             </distributionManagement>
-        </profile>
-        <profile>
-            <id>dev</id>
-            <properties>
-                <skip.integration.tests>true</skip.integration.tests>
-            </properties>
-        </profile>
-        <profile>
-            <id>test</id>
-            <properties>
-                <skip.integration.tests>true</skip.integration.tests>
-            </properties>
-        </profile>
-        <profile>
-            <id>prod</id>
-            <properties>
-                <skip.integration.tests>true</skip.integration.tests>
-            </properties>
         </profile>
     </profiles>
 </project>
