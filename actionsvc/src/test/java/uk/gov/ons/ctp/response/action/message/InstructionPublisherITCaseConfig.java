@@ -4,6 +4,6 @@ import org.springframework.boot.SpringBootConfiguration;
 import org.springframework.context.annotation.ImportResource;
 
 @SpringBootConfiguration
-@ImportResource(locations = { "classpath:springintegration/InstructionPublisherSITest-context.xml" })
-public class InstructionPublisherSITestConfig {
+@ImportResource(locations = { "classpath:springintegration/InstructionPublisherITCase-context.xml" })
+public class InstructionPublisherITCaseConfig {
 }

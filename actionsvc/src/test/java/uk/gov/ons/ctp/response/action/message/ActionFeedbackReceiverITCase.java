@@ -1,6 +1,5 @@
 package uk.gov.ons.ctp.response.action.message;
 
-import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static junit.framework.TestCase.assertNull;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -14,14 +13,11 @@ import java.io.InputStream;
 import java.math.BigInteger;
 import java.util.concurrent.CountDownLatch;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -29,7 +25,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.integration.channel.QueueChannel;
 import org.springframework.jms.connection.CachingConnectionFactory;
 import org.springframework.jms.listener.DefaultMessageListenerContainer;
-import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
 import org.springframework.oxm.jaxb.Jaxb2Marshaller;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -46,8 +41,8 @@ import javax.jms.JMSException;
  * Test focusing on Spring Integration
  */
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = ActionFeedbackReceiverSITestConfig.class)
-public class ActionFeedbackReceiverSITest {
+@SpringBootTest(classes = ActionFeedbackReceiverITCaseConfig.class)
+public class ActionFeedbackReceiverITCase {
 
   @Inject
   private MessageChannel testOutbound;

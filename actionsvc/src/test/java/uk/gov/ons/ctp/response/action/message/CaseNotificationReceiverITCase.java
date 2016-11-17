@@ -1,63 +1,47 @@
 package uk.gov.ons.ctp.response.action.message;
 
-import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static junit.framework.TestCase.assertNull;
-import static org.hamcrest.beans.SamePropertyValuesAs.samePropertyValuesAs;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
-import static uk.gov.ons.ctp.response.casesvc.message.notification.NotificationType.DISABLED;
-import static uk.gov.ons.ctp.response.casesvc.message.notification.NotificationType.ACTIVATED;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.CountDownLatch;
 
 import javax.inject.Inject;
 import javax.jms.Connection;
 import javax.jms.JMSException;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.integration.channel.QueueChannel;
-import org.springframework.integration.support.MessageBuilder;
 import org.springframework.jms.connection.CachingConnectionFactory;
 import org.springframework.jms.listener.DefaultMessageListenerContainer;
-import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
-import org.springframework.messaging.PollableChannel;
 import org.springframework.oxm.jaxb.Jaxb2Marshaller;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import org.springframework.test.context.junit4.SpringRunner;
 import uk.gov.ons.ctp.common.message.JmsHelper;
 import uk.gov.ons.ctp.response.action.service.CaseNotificationService;
-import uk.gov.ons.ctp.response.casesvc.message.notification.CaseNotification;
 
 /**
  * Test focusing on Spring Integration
  */
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = CaseNotificationReceiverSITestConfig.class)
-public class CaseNotificationReceiverSITest {
+@SpringBootTest(classes = CaseNotificationReceiverITCaseConfig.class)
+public class CaseNotificationReceiverITCase {
 
   @Inject
   private MessageChannel testOutbound;

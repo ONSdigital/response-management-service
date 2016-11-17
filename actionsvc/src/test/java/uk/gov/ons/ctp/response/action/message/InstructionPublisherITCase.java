@@ -1,6 +1,5 @@
 package uk.gov.ons.ctp.response.action.message;
 
-import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasXPath;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
@@ -13,11 +12,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.concurrent.TimeUnit;
 
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.junit.After;
 import org.junit.Before;
@@ -45,8 +41,8 @@ import javax.xml.parsers.DocumentBuilderFactory;
 
 @Slf4j
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = InstructionPublisherSITestConfig.class)
-public class InstructionPublisherSITest {
+@SpringBootTest(classes = InstructionPublisherITCaseConfig.class)
+public class InstructionPublisherITCase {
 
   private static final String FIELD_HANDLER = "Field";
 
