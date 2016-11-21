@@ -11,7 +11,6 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import lombok.extern.slf4j.Slf4j;
-import uk.gov.ons.ctp.common.state.StateTransitionException;
 import uk.gov.ons.ctp.common.state.StateTransitionManager;
 import uk.gov.ons.ctp.common.time.DateTimeUtil;
 import uk.gov.ons.ctp.response.action.domain.model.Action;
@@ -42,9 +41,7 @@ public class ActionServiceImpl implements ActionService {
   private ActionTypeRepository actionTypeRepo;
 
   @Inject
-  private StateTransitionManager<ActionState,
-    uk.gov.ons.ctp.response.action.representation.ActionDTO.ActionEvent>
-    actionSvcStateTransitionManager;
+  private StateTransitionManager<ActionState, uk.gov.ons.ctp.response.action.representation.ActionDTO.ActionEvent> actionSvcStateTransitionManager;
 
   @Override
   public List<Action> findActionsByTypeAndStateOrderedByCreatedDateTimeDescending(final String actionTypeName,
@@ -83,21 +80,17 @@ public class ActionServiceImpl implements ActionService {
     log.debug("Entering cancelAction with {}", caseId);
 
     List<Action> flushedActions = new ArrayList<>();
-    try {
-      List<Action> actions = actionRepo.findByCaseId(caseId);
-      for (Action action : actions) {
-        if (action.getActionType().getCanCancel()) {
-          log.debug("Cancelling action {} of type {}", action.getActionId(), action.getActionType().getName());
-          ActionDTO.ActionState nextState = actionSvcStateTransitionManager.transition(action.getState(),
-              ActionEvent.REQUEST_CANCELLED);
-          action.setState(nextState);
-          action.setUpdatedDateTime(DateTimeUtil.nowUTC());
-          actionRepo.saveAndFlush(action);
-          flushedActions.add(action);
-        }
+    List<Action> actions = actionRepo.findByCaseId(caseId);
+    for (Action action : actions) {
+      if (action.getActionType().getCanCancel()) {
+        log.debug("Cancelling action {} of type {}", action.getActionId(), action.getActionType().getName());
+        ActionDTO.ActionState nextState = actionSvcStateTransitionManager.transition(action.getState(),
+            ActionEvent.REQUEST_CANCELLED);
+        action.setState(nextState);
+        action.setUpdatedDateTime(DateTimeUtil.nowUTC());
+        actionRepo.saveAndFlush(action);
+        flushedActions.add(action);
       }
-    } catch (StateTransitionException ste) {
-      throw new RuntimeException(ste);
     }
     return flushedActions;
   }
@@ -113,12 +106,8 @@ public class ActionServiceImpl implements ActionService {
       ActionDTO.ActionEvent event = ActionDTO.ActionEvent.valueOf(actionFeedback.getOutcome().name());
       action.setSituation(actionFeedback.getSituation());
       action.setUpdatedDateTime(DateTimeUtil.nowUTC());
-      try {
-        ActionDTO.ActionState nextState = actionSvcStateTransitionManager.transition(action.getState(), event);
-        action.setState(nextState);
-      } catch (StateTransitionException ste) {
-        throw new RuntimeException(ste);
-      }
+      ActionDTO.ActionState nextState = actionSvcStateTransitionManager.transition(action.getState(), event);
+      action.setState(nextState);
       action = actionRepo.saveAndFlush(action);
     }
     return action;

@@ -25,7 +25,6 @@ import com.hazelcast.core.IMap;
 
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
-import uk.gov.ons.ctp.common.state.StateTransitionException;
 import uk.gov.ons.ctp.common.state.StateTransitionManager;
 import uk.gov.ons.ctp.common.time.DateTimeUtil;
 import uk.gov.ons.ctp.response.action.ActionSvcApplication;
@@ -167,9 +166,9 @@ public class ActionDistributor {
         List<Action> actions = retrieveActions(actionType, excludedActions);
         if (!actions.isEmpty()) {
           log.debug("Dealing with actions {}",
-            actions.stream()
-                .map(a -> a.getActionId().toString())
-                .collect(Collectors.joining(",")));
+              actions.stream()
+                  .map(a -> a.getActionId().toString())
+                  .collect(Collectors.joining(",")));
         }
 
         actionMap.put(localUUID,
@@ -265,7 +264,7 @@ public class ActionDistributor {
             Arrays.asList(ActionState.SUBMITTED, ActionState.CANCEL_SUBMITTED), excludedActionIds, pageable);
     if (!actions.isEmpty()) {
       log.debug("RETRIEVED action ids {}", actions.stream().map(a -> a.getActionId().toString())
-        .collect(Collectors.joining(",")));
+          .collect(Collectors.joining(",")));
     }
     return actions;
   }
@@ -288,8 +287,8 @@ public class ActionDistributor {
       public ActionRequest doInTransaction(final TransactionStatus status) {
         ActionRequest actionRequest = null;
         // update our actions state in db
-        ActionDTO.ActionEvent event = action.getActionType().getResponseRequired() ?
-                ActionDTO.ActionEvent.REQUEST_DISTRIBUTED : ActionDTO.ActionEvent.REQUEST_COMPLETED;
+        ActionDTO.ActionEvent event = action.getActionType().getResponseRequired()
+            ? ActionDTO.ActionEvent.REQUEST_DISTRIBUTED : ActionDTO.ActionEvent.REQUEST_COMPLETED;
         transitionAction(action, event);
         // create the request, filling in details by GETs from casesvc
         actionRequest = prepareActionRequest(action);
@@ -338,15 +337,11 @@ public class ActionDistributor {
    */
   private Action transitionAction(final Action action, final ActionDTO.ActionEvent event) {
     Action updatedAction = null;
-    try {
-      ActionDTO.ActionState nextState = actionSvcStateTransitionManager.transition(action.getState(), event);
-      action.setState(nextState);
-      action.setSituation(null);
-      action.setUpdatedDateTime(DateTimeUtil.nowUTC());
-      updatedAction = actionRepo.saveAndFlush(action);
-    } catch (StateTransitionException ste) {
-      throw new RuntimeException(ste);
-    }
+    ActionDTO.ActionState nextState = actionSvcStateTransitionManager.transition(action.getState(), event);
+    action.setState(nextState);
+    action.setSituation(null);
+    action.setUpdatedDateTime(DateTimeUtil.nowUTC());
+    updatedAction = actionRepo.saveAndFlush(action);
     return updatedAction;
   }
 
@@ -362,8 +357,8 @@ public class ActionDistributor {
     log.debug("constructing ActionRequest to publish to downstream handler for action id {} and case id {}",
         action.getActionId(), action.getCaseId());
     // now call caseSvc for the following
-    ActionPlan actionPlan = (action.getActionPlanId() == null) ?
-            null : actionPlanRepo.findOne(action.getActionPlanId());
+    ActionPlan actionPlan = (action.getActionPlanId() == null) ? null
+        : actionPlanRepo.findOne(action.getActionPlanId());
     CaseDTO caseDTO = caseSvcClientService.getCase(action.getCaseId());
     CaseTypeDTO caseTypeDTO = caseSvcClientService.getCaseType(caseDTO.getCaseTypeId());
     CaseGroupDTO caseGroupDTO = caseSvcClientService.getCaseGroup(caseDTO.getCaseGroupId());
@@ -404,8 +399,8 @@ public class ActionDistributor {
    * @return the shiney new Action Request
    */
   private ActionRequest createActionRequest(final Action action, final ActionPlan actionPlan, final CaseDTO caseDTO,
-                                            final CaseTypeDTO caseTypeDTO, final AddressDTO addressDTO,
-                                            final List<CaseEventDTO> caseEventDTOs) {
+      final CaseTypeDTO caseTypeDTO, final AddressDTO addressDTO,
+      final List<CaseEventDTO> caseEventDTOs) {
     ActionRequest actionRequest = new ActionRequest();
     // populate the request
     actionRequest.setActionId(action.getActionId());

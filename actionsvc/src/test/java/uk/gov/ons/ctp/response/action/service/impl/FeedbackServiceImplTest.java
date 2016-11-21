@@ -18,7 +18,6 @@ import org.mockito.MockitoAnnotations;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import uk.gov.ons.ctp.common.FixtureHelper;
-import uk.gov.ons.ctp.common.state.StateTransitionException;
 import uk.gov.ons.ctp.common.state.StateTransitionManager;
 import uk.gov.ons.ctp.response.action.config.AppConfig;
 import uk.gov.ons.ctp.response.action.domain.model.Action;
@@ -26,9 +25,8 @@ import uk.gov.ons.ctp.response.action.domain.model.SituationCategory;
 import uk.gov.ons.ctp.response.action.domain.repository.ActionRepository;
 import uk.gov.ons.ctp.response.action.domain.repository.SituationCategoryRepository;
 import uk.gov.ons.ctp.response.action.message.feedback.ActionFeedback;
-import uk.gov.ons.ctp.response.action.representation.ActionDTO;
-import uk.gov.ons.ctp.response.action.representation.ActionDTO.ActionState;
 import uk.gov.ons.ctp.response.action.representation.ActionDTO.ActionEvent;
+import uk.gov.ons.ctp.response.action.representation.ActionDTO.ActionState;
 import uk.gov.ons.ctp.response.action.service.CaseSvcClientService;
 import uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO;
 
@@ -92,7 +90,7 @@ public class FeedbackServiceImplTest {
 
     Mockito.when(actionRepo.getOne(BigInteger.valueOf(2))).thenReturn(actions.get(1));
     Mockito.when(actionSvcStateTransitionManager.transition(ActionState.SUBMITTED, ActionEvent.REQUEST_FAILED))
-        .thenThrow(StateTransitionException.class);
+        .thenThrow(RuntimeException.class);
 
     // Call method
     try {
@@ -127,7 +125,32 @@ public class FeedbackServiceImplTest {
     verify(actionRepo, times(1)).saveAndFlush(any(Action.class));
     verify(caseSvcClientService, times(1)).createNewCaseEvent(actions.get(2), CategoryDTO.CategoryType.ACTION_COMPLETED);
   }
-  
+
+  /**
+   * Yep - another test
+   */
+  @Test
+  public void testFeedbackSillySituationActionCompleted() throws Exception {
+    List<ActionFeedback> actionFeedbacks = FixtureHelper.loadClassFixtures(ActionFeedback[].class);
+    List<Action> actions = FixtureHelper.loadClassFixtures(Action[].class);
+
+    Mockito.when(actionRepo.getOne(BigInteger.valueOf(1))).thenReturn(actions.get(2));
+
+    // mock result of being asked for a non existent category
+    Mockito.when(situationCategoryRepository.findOne(actionFeedbacks.get(2).getSituation()))
+        .thenReturn(null);
+
+    Mockito.when(actionSvcStateTransitionManager.transition(ActionState.ACTIVE, ActionEvent.REQUEST_COMPLETED))
+        .thenReturn(ActionState.COMPLETED);
+
+    // Call method
+    feedbackService.acceptFeedback(actionFeedbacks.get(3));
+
+    // Verify calls made
+    verify(actionRepo, times(0)).saveAndFlush(any(Action.class));
+    verify(caseSvcClientService, times(0)).createNewCaseEvent(actions.get(2), CategoryDTO.CategoryType.ACTION_COMPLETED);
+  }
+
   /**
    * Yep - another test
    */
