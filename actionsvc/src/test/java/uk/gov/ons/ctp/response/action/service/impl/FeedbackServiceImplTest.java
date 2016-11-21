@@ -125,7 +125,32 @@ public class FeedbackServiceImplTest {
     verify(actionRepo, times(1)).saveAndFlush(any(Action.class));
     verify(caseSvcClientService, times(1)).createNewCaseEvent(actions.get(2), CategoryDTO.CategoryType.ACTION_COMPLETED);
   }
-  
+
+  /**
+   * Yep - another test
+   */
+  @Test
+  public void testFeedbackSillySituationActionCompleted() throws Exception {
+    List<ActionFeedback> actionFeedbacks = FixtureHelper.loadClassFixtures(ActionFeedback[].class);
+    List<Action> actions = FixtureHelper.loadClassFixtures(Action[].class);
+
+    Mockito.when(actionRepo.getOne(BigInteger.valueOf(1))).thenReturn(actions.get(2));
+
+    // mock result of being asked for a non existent category
+    Mockito.when(situationCategoryRepository.findOne(actionFeedbacks.get(2).getSituation()))
+        .thenReturn(null);
+
+    Mockito.when(actionSvcStateTransitionManager.transition(ActionState.ACTIVE, ActionEvent.REQUEST_COMPLETED))
+        .thenReturn(ActionState.COMPLETED);
+
+    // Call method
+    feedbackService.acceptFeedback(actionFeedbacks.get(3));
+
+    // Verify calls made
+    verify(actionRepo, times(0)).saveAndFlush(any(Action.class));
+    verify(caseSvcClientService, times(0)).createNewCaseEvent(actions.get(2), CategoryDTO.CategoryType.ACTION_COMPLETED);
+  }
+
   /**
    * Yep - another test
    */

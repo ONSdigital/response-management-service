@@ -59,24 +59,46 @@ public class FeedbackServiceImpl implements FeedbackService {
         ActionDTO.ActionState nextState = actionSvcStateTransitionManager.transition(
             action.getState(),
             outcomeEvent);
-        action.setSituation(feedback.getSituation());
-        action.setState(nextState);
-        action.setUpdatedDateTime(DateTimeUtil.nowUTC());
-        actionRepo.saveAndFlush(action);
+        String situation = feedback.getSituation();
 
         if (nextState.equals(ActionDTO.ActionState.COMPLETED)) {
           CategoryDTO.CategoryType category = CategoryDTO.CategoryType.ACTION_COMPLETED;
           if (!StringUtils.isBlank(feedback.getSituation())) {
             SituationCategory situationCategory = situationCategoryRepository.findOne(feedback.getSituation());
-            category = CategoryDTO.CategoryType.valueOf(situationCategory.getEventCategory());
+            if (situationCategory != null) {
+              category = CategoryDTO.CategoryType.valueOf(situationCategory.getEventCategory());
+              caseSvcClientService.createNewCaseEvent(action, category);
+              updateAction(action, nextState, situation);
+            } else {
+              log.error("Feedback Service unable to decipher the situation {} from feedback - ignoring this feedback",
+                  feedback.getSituation());
+            }
+          } else {
+            caseSvcClientService.createNewCaseEvent(action, category);
+            updateAction(action, nextState, situation);
           }
-          caseSvcClientService.createNewCaseEvent(action, category);
+        } else {
+          updateAction(action, nextState, situation);
         }
       } else {
         log.error("Feedback Service unable to decipher the outcome {} from feedback - ignoring this feedback",
             feedback.getOutcome());
       }
     }
+
+  }
+
+  /**
+   * Update the action
+   * @param action the action to update
+   * @param nextState the state to transition to
+   * @param situation the situation provided by the feedback
+   */
+  private void updateAction(Action action, ActionDTO.ActionState nextState, String situation) {
+    action.setSituation(situation);
+    action.setState(nextState);
+    action.setUpdatedDateTime(DateTimeUtil.nowUTC());
+    actionRepo.saveAndFlush(action);
 
   }
 
