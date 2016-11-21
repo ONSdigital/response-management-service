@@ -10,7 +10,6 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import lombok.extern.slf4j.Slf4j;
-import uk.gov.ons.ctp.common.state.StateTransitionException;
 import uk.gov.ons.ctp.common.state.StateTransitionManager;
 import uk.gov.ons.ctp.common.time.DateTimeUtil;
 import uk.gov.ons.ctp.response.action.domain.model.Action;
@@ -57,25 +56,21 @@ public class FeedbackServiceImpl implements FeedbackService {
       ActionDTO.ActionEvent outcomeEvent = ActionDTO.ActionEvent.valueOf(feedback.getOutcome().name());
 
       if (outcomeEvent != null) {
-        try {
-          ActionDTO.ActionState nextState = actionSvcStateTransitionManager.transition(
-              action.getState(),
-              outcomeEvent);
-          action.setSituation(feedback.getSituation());
-          action.setState(nextState);
-          action.setUpdatedDateTime(DateTimeUtil.nowUTC());
-          actionRepo.saveAndFlush(action);
+        ActionDTO.ActionState nextState = actionSvcStateTransitionManager.transition(
+            action.getState(),
+            outcomeEvent);
+        action.setSituation(feedback.getSituation());
+        action.setState(nextState);
+        action.setUpdatedDateTime(DateTimeUtil.nowUTC());
+        actionRepo.saveAndFlush(action);
 
-          if (nextState.equals(ActionDTO.ActionState.COMPLETED)) {
-            CategoryDTO.CategoryType category = CategoryDTO.CategoryType.ACTION_COMPLETED;
-            if (!StringUtils.isBlank(feedback.getSituation())) {
-              SituationCategory situationCategory = situationCategoryRepository.findOne(feedback.getSituation());
-              category = CategoryDTO.CategoryType.valueOf(situationCategory.getEventCategory());
-            }
-            caseSvcClientService.createNewCaseEvent(action, category);
+        if (nextState.equals(ActionDTO.ActionState.COMPLETED)) {
+          CategoryDTO.CategoryType category = CategoryDTO.CategoryType.ACTION_COMPLETED;
+          if (!StringUtils.isBlank(feedback.getSituation())) {
+            SituationCategory situationCategory = situationCategoryRepository.findOne(feedback.getSituation());
+            category = CategoryDTO.CategoryType.valueOf(situationCategory.getEventCategory());
           }
-        } catch (StateTransitionException ste) {
-          throw new RuntimeException(ste);
+          caseSvcClientService.createNewCaseEvent(action, category);
         }
       } else {
         log.error("Feedback Service unable to decipher the outcome {} from feedback - ignoring this feedback",

@@ -18,7 +18,6 @@ import org.mockito.MockitoAnnotations;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import uk.gov.ons.ctp.common.FixtureHelper;
-import uk.gov.ons.ctp.common.state.StateTransitionException;
 import uk.gov.ons.ctp.common.state.StateTransitionManager;
 import uk.gov.ons.ctp.response.action.config.AppConfig;
 import uk.gov.ons.ctp.response.action.domain.model.Action;
@@ -26,9 +25,8 @@ import uk.gov.ons.ctp.response.action.domain.model.SituationCategory;
 import uk.gov.ons.ctp.response.action.domain.repository.ActionRepository;
 import uk.gov.ons.ctp.response.action.domain.repository.SituationCategoryRepository;
 import uk.gov.ons.ctp.response.action.message.feedback.ActionFeedback;
-import uk.gov.ons.ctp.response.action.representation.ActionDTO;
-import uk.gov.ons.ctp.response.action.representation.ActionDTO.ActionState;
 import uk.gov.ons.ctp.response.action.representation.ActionDTO.ActionEvent;
+import uk.gov.ons.ctp.response.action.representation.ActionDTO.ActionState;
 import uk.gov.ons.ctp.response.action.service.CaseSvcClientService;
 import uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO;
 
@@ -92,7 +90,7 @@ public class FeedbackServiceImplTest {
 
     Mockito.when(actionRepo.getOne(BigInteger.valueOf(2))).thenReturn(actions.get(1));
     Mockito.when(actionSvcStateTransitionManager.transition(ActionState.SUBMITTED, ActionEvent.REQUEST_FAILED))
-        .thenThrow(StateTransitionException.class);
+        .thenThrow(RuntimeException.class);
 
     // Call method
     try {

@@ -8,7 +8,6 @@ import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-import uk.gov.ons.ctp.common.state.StateTransitionException;
 import uk.gov.ons.ctp.common.state.StateTransitionManager;
 import uk.gov.ons.ctp.common.state.StateTransitionManagerFactory;
 import uk.gov.ons.ctp.response.action.representation.ActionDTO.ActionEvent;
@@ -100,8 +99,8 @@ public class TestActionStateTransitionManager {
       transitions.forEach((actionEvent, actionState) -> {
         try {
           Assert.assertEquals(actionState, stm.transition(sourceState, actionEvent));
-        } catch (StateTransitionException ste) {
-          Assert.fail("bad transition!", ste);
+        } catch (RuntimeException re) {
+          Assert.fail("bad transition!", re);
         }
       });
 
@@ -110,7 +109,7 @@ public class TestActionStateTransitionManager {
           boolean caught = false;
           try {
             stm.transition(sourceState, event);
-          } catch (StateTransitionException ste) {
+          } catch (RuntimeException re) {
             caught = true;
           }
           Assert.assertTrue(caught, "Transition " + sourceState + "(" + event + ") should be invalid");
