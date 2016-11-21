@@ -209,9 +209,6 @@
                 <!-- IMPORTANT: old version used below because https://github.com/spring-projects/spring-boot/issues/6254
                 Once a newer version than 2.19.1 is developed, try to move to it. -->
                 <version>2.18.1</version>
-                <configuration>
-                    <skipTests>${skip.integration.tests}</skipTests>
-                </configuration>
                 <executions>
                     <execution>
                         <goals>
@@ -305,9 +302,6 @@
             <activation>
                 <activeByDefault>true</activeByDefault>
             </activation>
-            <properties>
-                <skip.integration.tests>false</skip.integration.tests>
-            </properties>
             <distributionManagement>
                 <repository>
                     <id>central</id>
