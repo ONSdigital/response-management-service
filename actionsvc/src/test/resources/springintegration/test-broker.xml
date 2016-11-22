@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://www.springframework.org/schema/beans   
-  http://www.springframework.org/schema/beans/spring-beans-4.2.xsd">
+	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	   xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.2.xsd">
 
 	<bean id="redeliveryPolicy" class="org.apache.activemq.RedeliveryPolicy">
 		<property name="maximumRedeliveries" value="1"/>
@@ -21,5 +20,5 @@
 		</property>
 		<property name="sessionCacheSize" value="10"/>
 	</bean>
-</beans>
 
+</beans>
