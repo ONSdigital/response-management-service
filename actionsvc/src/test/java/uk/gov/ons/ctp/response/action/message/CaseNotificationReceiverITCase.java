@@ -186,10 +186,10 @@ public class CaseNotificationReceiverITCase {
     assertEquals(testMessage, payload);
 
     /**
-     * We check the message was processed AND re-processed once (see maximumRedeliveries in test-broker.xml)
+     * We check the message was processed AND NOT re-processed (see maximumRedeliveries in test-broker.xml)
      */
     // TODO Assertion below is ok in IDE but not from command line?
-    // verify(caseNotificationService, times(2)).acceptNotification(anyList());
+    // verify(caseNotificationService, times(1)).acceptNotification(anyList());
   }
 
   /**
