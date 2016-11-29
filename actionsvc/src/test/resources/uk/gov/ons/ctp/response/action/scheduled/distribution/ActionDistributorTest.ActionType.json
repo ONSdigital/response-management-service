@@ -4,13 +4,15 @@
     "name": "HouseholdInitialContact",
     "description": "Household Initial Contact",
     "handler": "Printer",
-    "canCancel": false
+    "canCancel": false,
+    "responseRequired": true
   },
   {
     "actionTypeId": 2,
     "name": "HouseholdUploadIAC",
     "description": "Household upload IAC",
     "handler": "HHSurvey",
-    "canCancel": true
+    "canCancel": true,
+    "responseRequired": true
   }
 ]

@@ -20,14 +20,11 @@ import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.TransactionCallback;
 import org.springframework.transaction.support.TransactionTemplate;
 
-import com.hazelcast.core.HazelcastInstance;
-import com.hazelcast.core.IMap;
-
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
+import uk.gov.ons.ctp.common.distributed.DistributedListManager;
 import uk.gov.ons.ctp.common.state.StateTransitionManager;
 import uk.gov.ons.ctp.common.time.DateTimeUtil;
-import uk.gov.ons.ctp.response.action.ActionSvcApplication;
 import uk.gov.ons.ctp.response.action.config.AppConfig;
 import uk.gov.ons.ctp.response.action.domain.model.Action;
 import uk.gov.ons.ctp.response.action.domain.model.Action.ActionPriority;
@@ -86,15 +83,16 @@ public class ActionDistributor {
 
   private static final String ACTION_DISTRIBUTOR_SPAN = "actionDistributor";
 
+  // WILL NOT WORK WITHOUT THIS NEXT LINE
   private static final long IMPOSSIBLE_ACTION_ID = 999999999999L;
 
   private static final long MILLISECONDS = 1000L;
 
   @Inject
-  private Tracer tracer;
+  private DistributedListManager<BigInteger> actionDistributionListManager;
 
   @Inject
-  private HazelcastInstance hazelcastInstance;
+  private Tracer tracer;
 
   @Inject
   private AppConfig appConfig;
@@ -125,13 +123,14 @@ public class ActionDistributor {
 
   /**
    * Constructor into which the Spring PlatformTransactionManager is injected
-   *
+   * 
    * @param transactionManager provided by Spring
    */
   @Inject
   public ActionDistributor(final PlatformTransactionManager transactionManager) {
     this.transactionTemplate = new TransactionTemplate(transactionManager);
   }
+
 
   /**
    * wake up on schedule and check for submitted actions, enrich and distribute
@@ -140,65 +139,57 @@ public class ActionDistributor {
    * @return the info for the health endpoint regarding the distribution just
    *         performed
    */
-  @SuppressWarnings("unchecked")
   public final DistributionInfo distribute() {
     Span distribSpan = tracer.createSpan(ACTION_DISTRIBUTOR_SPAN);
     log.info("ActionDistributor is in the house");
     DistributionInfo distInfo = new DistributionInfo();
 
-    IMap<Object, Object> actionMap = hazelcastInstance.getMap(ActionSvcApplication.ACTION_DISTRIBUTION_MAP);
-    String localUUID = hazelcastInstance.getLocalEndpoint().getUuid();
-    log.debug("Hazel name is {}", localUUID);
     try {
       actionTypeRepo.findAll().forEach(actionType -> {
-        // container for outbound requests for this action type
+        List<BigInteger> distributedActionList = actionDistributionListManager.findListForAllInstances(actionType.getName());
         List<ActionRequest> actionRequests = new ArrayList<>();
         List<ActionCancel> actionCancels = new ArrayList<>();
 
         log.debug("Dealing with actionType {}", actionType.getName());
 
-        List<BigInteger> excludedActions = actionMap.values().stream()
-            .flatMap(o -> ((List<BigInteger>) o).stream())
-            .collect(Collectors.toList());
-        if (!excludedActions.isEmpty()) {
-          log.debug("Excluding actions {}", excludedActions);
+        if (!distributedActionList.isEmpty()) {
+          log.debug("Excluding actions {}", distributedActionList);
         }
-        List<Action> actions = retrieveActions(actionType, excludedActions);
+
+        List<Action> actions = retrieveActions(actionType, distributedActionList);
         if (!actions.isEmpty()) {
           log.debug("Dealing with actions {}",
               actions.stream()
                   .map(a -> a.getActionId().toString())
                   .collect(Collectors.joining(",")));
-        }
 
-        actionMap.put(localUUID,
-            actions.stream()
-                .map(a -> a.getActionId())
-                .collect(Collectors.toList()));
+          List<BigInteger> actionIds = actions.stream().map(a -> a.getActionId())
+              .collect(Collectors.toList());
 
-        actions.forEach(action -> {
-          try {
-            if (action.getState().equals(ActionDTO.ActionState.SUBMITTED)) {
-              actionRequests.add(processActionRequest(action));
-            } else if (action.getState().equals(ActionDTO.ActionState.CANCEL_SUBMITTED)) {
-              actionCancels.add(processActionCancel(action));
+          actionDistributionListManager.saveList(actionType.getName(), actionIds);
+
+          actions.forEach(action -> {
+            try {
+              if (action.getState().equals(ActionDTO.ActionState.SUBMITTED)) {
+                actionRequests.add(processActionRequest(action));
+              } else if (action.getState().equals(ActionDTO.ActionState.CANCEL_SUBMITTED)) {
+                actionCancels.add(processActionCancel(action));
+              }
+            } catch (Exception e) {
+              // db changes rolled back
+              log.error(
+                  "Exception {} thrown processing action {}. Processing will be retried at next scheduled distribution",
+                  e.getMessage(), action.getActionId());
             }
-          } catch (Exception e) {
-            // db changes rolled back
-            log.error(
-                "Exception {} thrown processing action {}. Processing will be retried at next scheduled distribution",
-                e.getMessage(), action.getActionId());
-          }
-        });
+          });
 
+          publishActions(actionType, actionRequests, actionCancels);
+          actionDistributionListManager.deleteList(actionType.getName());
+        }
         distInfo.getInstructionCounts().add(new InstructionCount(actionType.getName(),
             DistributionInfo.Instruction.REQUEST, actionRequests.size()));
         distInfo.getInstructionCounts().add(new InstructionCount(actionType.getName(),
             DistributionInfo.Instruction.CANCEL_REQUEST, actionCancels.size()));
-
-        publishActions(actionType, actionRequests, actionCancels);
-
-        actionMap.remove(localUUID);
       });
     } catch (Exception e) {
       // something went wrong retrieving action types or actions
@@ -258,7 +249,10 @@ public class ActionDistributor {
   private List<Action> retrieveActions(ActionType actionType, List<BigInteger> excludedActionIds) {
     Pageable pageable = new PageRequest(0, appConfig.getActionDistribution().getInstructionMax(), new Sort(
         new Sort.Order(Direction.ASC, "updatedDateTime")));
+
+    // DO NOT REMOVE THIS NEXT LINE
     excludedActionIds.add(BigInteger.valueOf(IMPOSSIBLE_ACTION_ID));
+
     List<Action> actions = actionRepo
         .findByActionTypeNameAndStateInAndActionIdNotIn(actionType.getName(),
             Arrays.asList(ActionState.SUBMITTED, ActionState.CANCEL_SUBMITTED), excludedActionIds, pageable);

@@ -4,7 +4,7 @@
   <modelVersion>4.0.0</modelVersion>
 
   <artifactId>actionsvc</artifactId>
-  <version>9.29.0-SNAPSHOT</version>
+  <version>9.30.0-SNAPSHOT</version>
   <packaging>jar</packaging>
 
   <name>CTP : ResponseManagement : ActionSvc</name>
@@ -13,20 +13,15 @@
   <parent>
     <groupId>uk.gov.ons.ctp.product</groupId>
     <artifactId>responsemanagement</artifactId>
-    <version>9.29.0-SNAPSHOT</version>
+    <version>9.30.0-SNAPSHOT</version>
     <relativePath>../</relativePath>
   </parent>
 
   <dependencies>
+
     <dependency>
       <groupId>org.springframework.cloud</groupId>
       <artifactId>spring-cloud-starter-zipkin</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>com.hazelcast</groupId>
-      <artifactId>hazelcast</artifactId>
-      <version>3.6.4</version>
     </dependency>
 
     <dependency>
@@ -34,17 +29,16 @@
       <artifactId>guava</artifactId>
       <version>19.0</version>
     </dependency>
-
     <dependency>
       <groupId>uk.gov.ons.ctp.product</groupId>
       <artifactId>actionsvc-api</artifactId>
-      <version>9.29.0-SNAPSHOT</version>
+      <version>9.30.0-SNAPSHOT</version>
     </dependency>
 
     <dependency>
       <groupId>uk.gov.ons.ctp.product</groupId>
       <artifactId>casesvc-api</artifactId>
-      <version>9.29.0-SNAPSHOT</version>
+      <version>9.30.0-SNAPSHOT</version>
     </dependency>
 
     <dependency>
@@ -136,6 +130,13 @@
       <artifactId>spring-boot-configuration-processor</artifactId>
       <optional>true</optional>
     </dependency>
+
+    <dependency>
+       <groupId>org.redisson</groupId>
+        <artifactId>redisson</artifactId>
+        <version>3.2.0</version>
+    </dependency>
+
   </dependencies>
 
   <build>

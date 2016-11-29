@@ -30,14 +30,14 @@ security:
     password: secret
 
 management:
-  port: 8251
+  port: 8254
   context-path: /mgmt
   security:
     roles: SUPERUSER
     enabled: false
 
 server:
-  port: 8151
+  port: 8154
   servlet-path: /mgmt
 
 endpoints:
@@ -104,17 +104,23 @@ spring:
 
   zipkin:
     enabled: false
+    
+data-grid:
+  address: localhost:6379
+  password: redis
+  list-time-to-live-seconds: 600
+  lock-time-to-live-seconds: 600
 
 action-distribution:
   instruction-max: 200
   retry-sleep-seconds: 30
-  initial-delay-seconds: 10
+  initial-delay-seconds: 100000
   subsequent-delay-seconds: 60
 
 plan-execution:
   retry-sleep-seconds: 30
-  initial-delay-seconds: 40
-  subsequent-delay-seconds: 60
+  initial-delay-seconds: 10
+  subsequent-delay-seconds: 5
 
 case-svc:
   case-group-path: /casegroups/{caseGroupId}

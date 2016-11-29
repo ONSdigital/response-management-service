@@ -18,4 +18,5 @@ public class AppConfig {
   private ActionDistribution actionDistribution;
   private PlanExecution planExecution;
   private CsvIngest csvIngest;
+  private DataGrid dataGrid;
 }

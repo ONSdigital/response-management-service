@@ -1,0 +1,22 @@
+[
+{
+  "caseGroupId":"1",
+  "sampleId":"1",
+  "uprn":"1234"
+},
+{
+  "caseGroupId":"2",
+  "sampleId":"1",
+  "uprn":"1234"
+},
+{
+  "caseGroupId":"3",
+  "sampleId":"1",
+  "uprn":"1234"
+},
+{
+  "caseGroupId":"4",
+  "sampleId":"1",
+  "uprn":"1234"
+}
+]

@@ -1,8 +1,13 @@
 package uk.gov.ons.ctp.response.action;
 
+import java.math.BigInteger;
+
 import javax.inject.Named;
 
 import org.glassfish.jersey.server.ResourceConfig;
+import org.redisson.Redisson;
+import org.redisson.api.RedissonClient;
+import org.redisson.config.Config;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -14,12 +19,10 @@ import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
-import com.hazelcast.config.Config;
-import com.hazelcast.config.JoinConfig;
-import com.hazelcast.config.MapConfig;
-import com.hazelcast.config.MulticastConfig;
-import com.hazelcast.config.NetworkConfig;
-
+import uk.gov.ons.ctp.common.distributed.DistributedListManager;
+import uk.gov.ons.ctp.common.distributed.DistributedListManagerRedissonImpl;
+import uk.gov.ons.ctp.common.distributed.DistributedLockManager;
+import uk.gov.ons.ctp.common.distributed.DistributedLockManagerRedissonImpl;
 import uk.gov.ons.ctp.common.jaxrs.CTPMessageBodyReader;
 import uk.gov.ons.ctp.common.jaxrs.JAXRSRegister;
 import uk.gov.ons.ctp.common.rest.RestClient;
@@ -46,31 +49,36 @@ import uk.gov.ons.ctp.response.action.state.ActionSvcStateTransitionManagerFacto
 @ImportResource("springintegration/main.xml")
 public class ActionSvcApplication {
 
-  public static final String ACTION_DISTRIBUTION_MAP = "actionsvc.action.distribution";
+  public static final String ACTION_DISTRIBUTION_LIST = "actionsvc.action.distribution";
+  public static final String ACTION_EXECUTION_LOCK = "actionsvc.action.execution";
 
   @Autowired
   private AppConfig appConfig;
 
-  
-  /**
-   * To config Hazelcast
-   * @return the config
-   */
   @Bean
-  public Config hazelcastConfig() {
-    Config hazelcastConfig = new Config();
-    hazelcastConfig.addMapConfig(new MapConfig().setName(ACTION_DISTRIBUTION_MAP));
-    NetworkConfig networkConfig = hazelcastConfig.getNetworkConfig();
-
-    JoinConfig joinConfig = networkConfig.getJoin();
-    MulticastConfig multicastConfig = joinConfig.getMulticastConfig();
-    multicastConfig.setEnabled(true);
-
-    return hazelcastConfig;
+  public DistributedListManager<BigInteger> actionDistributionListManager(RedissonClient redissonClient) {
+    return new DistributedListManagerRedissonImpl<BigInteger>(ActionSvcApplication.ACTION_DISTRIBUTION_LIST, redissonClient,
+        appConfig.getDataGrid().getListTimeToLiveSeconds());
   }
-  
+
+  @Bean
+  public DistributedLockManager actionPlanExecutionLockManager(RedissonClient redissonClient) {
+    return new DistributedLockManagerRedissonImpl(ActionSvcApplication.ACTION_EXECUTION_LOCK, redissonClient,
+        appConfig.getDataGrid().getLockTimeToLiveSeconds());
+  }
+
+  @Bean
+  public RedissonClient redissonClient() {
+    Config config = new Config();
+    config.useSingleServer()
+        .setAddress(appConfig.getDataGrid().getAddress())
+        .setPassword(appConfig.getDataGrid().getPassword());
+    return Redisson.create(config);
+  }
+
   /**
    * Bean used to access case frame service through REST calls
+   * 
    * @return the service client
    */
   @Bean
@@ -84,6 +92,7 @@ public class ActionSvcApplication {
 
   /**
    * Bean to allow application to make controlled state transitions of Actions
+   * 
    * @return the state transition manager specifically for Actions
    */
   @Bean
@@ -102,8 +111,8 @@ public class ActionSvcApplication {
      */
     public JerseyConfig() {
 
-      JAXRSRegister.listCommonTypes().forEach(t->register(t));
-      
+      JAXRSRegister.listCommonTypes().forEach(t -> register(t));
+
       register(ActionEndpoint.class);
       register(new CTPMessageBodyReader<ActionDTO>(ActionDTO.class) {
       });

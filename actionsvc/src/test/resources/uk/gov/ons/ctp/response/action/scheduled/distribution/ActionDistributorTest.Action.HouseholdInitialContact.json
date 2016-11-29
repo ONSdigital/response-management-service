@@ -11,7 +11,8 @@
       "name":"HouseholdInitialContact",
       "description":"Household Initial Contact",
       "handler":"Printer",
-      "canCancel":false
+      "canCancel":false,
+      "responseRequired":true
    },
    "priority":1,
    "situation":"cool",
@@ -31,7 +32,8 @@
       "name":"HouseholdInitialContact",
       "description":"Household Initial Contact",
       "handler":"Printer",
-      "canCancel":false
+      "canCancel":false,
+      "responseRequired":true
    },
    "priority":1,
    "situation":"cool",

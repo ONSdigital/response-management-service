@@ -4,6 +4,7 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
+import java.math.BigInteger;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
@@ -22,10 +23,9 @@ import org.mockito.Spy;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.cloud.sleuth.Tracer;
 
-import com.hazelcast.concurrent.lock.LockProxy;
-import com.hazelcast.core.HazelcastInstance;
-
 import uk.gov.ons.ctp.common.FixtureHelper;
+import uk.gov.ons.ctp.common.distributed.DistributedListManager;
+import uk.gov.ons.ctp.common.distributed.DistributedLockManager;
 import uk.gov.ons.ctp.common.time.DateTimeUtil;
 import uk.gov.ons.ctp.response.action.config.AppConfig;
 import uk.gov.ons.ctp.response.action.config.PlanExecution;
@@ -46,7 +46,7 @@ public class ActionPlanJobServiceImplTest {
   Tracer tracer;
 
   @Mock
-  HazelcastInstance hazelcastInstance;
+  private DistributedLockManager actionPlanExecutionLockManager;
 
   @Spy
   private AppConfig appConfig = new AppConfig();
@@ -73,10 +73,7 @@ public class ActionPlanJobServiceImplTest {
     appConfig.setPlanExecution(planExecution);
     MockitoAnnotations.initMocks(this);
 
-    // set up mock hazelcast
-    LockProxy mockLock = Mockito.mock(LockProxy.class);
-    Mockito.when(hazelcastInstance.getLock(any(String.class))).thenReturn(mockLock);
-    Mockito.when(mockLock.tryLock(any(Long.class), any(TimeUnit.class))).thenReturn(true);
+    Mockito.when(actionPlanExecutionLockManager.lock(any(String.class))).thenReturn(true);
   }
 
   /**
@@ -117,9 +114,7 @@ public class ActionPlanJobServiceImplTest {
   public void testCreateAndExecuteActionPlanJobForcedExecutionFailedLock() throws Exception {
   
     // set up mock hazelcast with a lock that will fail
-    LockProxy mockLock = Mockito.mock(LockProxy.class);
-    Mockito.when(hazelcastInstance.getLock(any(String.class))).thenReturn(mockLock);
-    Mockito.when(mockLock.tryLock(any(Long.class), any(TimeUnit.class))).thenReturn(false);
+    Mockito.when(actionPlanExecutionLockManager.lock(any(String.class))).thenReturn(false);
 
     // load fixtures
     List<ActionPlan> actionPlans = FixtureHelper.loadClassFixtures(ActionPlan[].class);

@@ -11,7 +11,8 @@
     "name": "HouseholdUploadIAC",
     "description": "Household upload IAC",
     "handler": "HHSurvey",
-    "canCancel": true
+    "canCancel": true,
+    "responseRequired":true
   },
    "priority":1,
    "situation":"cool",
@@ -31,7 +32,8 @@
     "name": "HouseholdUploadIAC",
     "description": "Household upload IAC",
     "handler": "HHSurvey",
-    "canCancel": true
+    "canCancel": true,
+    "responseRequired":true
   },
    "priority":1,
    "situation":"cool",
