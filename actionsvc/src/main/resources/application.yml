@@ -9,10 +9,6 @@ info:
 # ie -Dlogging.level.org.springframework=DEBUG
 logging:
   level:
-    ROOT: ERROR
-    org.springframework: ERROR
-    org.apache.tomcat.jdbc.pool: ERROR
-    com.hazelcast: ERROR
     uk.gov.ons.ctp: DEBUG
 
 liquibase:

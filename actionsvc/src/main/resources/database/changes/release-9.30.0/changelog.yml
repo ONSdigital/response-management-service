@@ -1,0 +1,22 @@
+databaseChangeLog:
+
+  - changeSet:
+      id: 9.30.0-1
+      author: Sarah Radford
+      changes:
+        - sqlFile:
+            comment: Action seed data version 11
+            path: action_2017_correct_plans_V11.sql
+            relativeToChangelogFile: true
+            splitStatements: false
+
+
+  - changeSet:
+      id: 9.30.0-2
+      author: Sarah Radford
+      changes:
+        - sqlFile:
+            comment: Action seed data version 12
+            path: action_2017_plan_changes_V12.sql
+            relativeToChangelogFile: true
+            splitStatements: false
