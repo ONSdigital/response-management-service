@@ -1,4 +1,3 @@
-
 set schema 'action';
 ALTER TABLE action.actiontype add column responserequired boolean;
 

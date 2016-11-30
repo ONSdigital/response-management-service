@@ -89,6 +89,3 @@ databaseChangeLog:
             path: action_2017_situationcategory_seeddata.sql
             relativeToChangelogFile: true
             splitStatements: false
-
-
-

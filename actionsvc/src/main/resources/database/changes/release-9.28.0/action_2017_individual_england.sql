@@ -1,4 +1,3 @@
-
 set schema 'action';
 
 -- Drop foreign keys constraints on action, case and actionplanjob
@@ -12,7 +11,6 @@ ALTER TABLE action.actionplanjob DROP CONSTRAINT actionplanid_fkey;
 DELETE FROM action.actionrule WHERE actionruleid IN(61,62,63,64,65);
 DELETE FROM action.actiontype WHERE actiontypeid IN(38,39,40,41,42);
 DELETE FROM action.actionplan WHERE actionplanid IN(17,18,19,20,21);
-
 
 -- Insert action plans for Indivduals in England
 INSERT INTO actionplan (actionplanid, surveyid, name, description, createdby, lastrundatetime) VALUES (17, 1, 'I1S-P', 'Individual - England/paper/sexual id', 'SYSTEM', NULL);

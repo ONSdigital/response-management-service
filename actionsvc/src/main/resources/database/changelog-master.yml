@@ -2,7 +2,7 @@ databaseChangeLog:
 
   - preConditions:
     - runningAs:
-        username: postgres
+        username: actionsvc
 
   - include:
       file: database/changes/release-9.27.0/changelog.yml

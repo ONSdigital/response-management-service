@@ -1,9 +1,7 @@
-
 -- Update actiontype description
 UPDATE action.actiontype
 set description = 'Create Household Visit' 
 WHERE actiontypeid = 14;
-
 
 -- Action types V8
 INSERT INTO action.actiontype (actiontypeid, name, description, handler, cancancel) VALUES (44, 'I2S_OR'  ,'Print individual paper questionnaire (welsh in english with sexual id)'    , 'Printer', false);
@@ -26,8 +24,6 @@ INSERT INTO action.actionrule (actionruleid, actionplanid, actiontypeid, name, d
 INSERT INTO action.actionrule (actionruleid, actionplanid, actiontypeid, name, description, surveydatedaysoffset, priority) VALUES (82, 32, 47, 'I2W_OR-100' ,'', -100, 3);
 INSERT INTO action.actionrule (actionruleid, actionplanid, actiontypeid, name, description, surveydatedaysoffset, priority) VALUES (83, 33, 40, 'SMSE-100'   ,'', -100 ,3);
 INSERT INTO action.actionrule (actionruleid, actionplanid, actiontypeid, name, description, surveydatedaysoffset, priority) VALUES (84, 34, 43, 'SMSB-100'   ,'', -100 ,3);
-
-
 
 
 -- Action types V9
@@ -81,8 +77,6 @@ INSERT INTO action.actionrule (actionruleid, actionplanid, actiontypeid, name, d
 INSERT INTO action.actionrule (actionruleid, actionplanid, actiontypeid, name, description, surveydatedaysoffset, priority) VALUES (109, 49, 43, 'SMSB-100'     ,'' , -100,3);
 
 
-
-
 -- Action types V10
 INSERT INTO action.actiontype (actiontypeid, name, description, handler, cancancel) VALUES (52, 'SHousingCreateVisit','Create Sheltered Housing Visit'           , 'Field'   ,true); 
 INSERT INTO action.actiontype (actiontypeid, name, description, handler, cancancel) VALUES (53, 'ICLH1_2003'         ,'Print Initial Contact Letter (Hotel)'     , 'Printer', false);
@@ -103,5 +97,3 @@ INSERT INTO action.actionrule (actionruleid, actionplanid, actiontypeid, name, d
 INSERT INTO action.actionrule (actionruleid, actionplanid, actiontypeid, name, description, surveydatedaysoffset, priority) VALUES (114, 53, 40, 'SMSE-100'       ,'', -100,3);
 INSERT INTO action.actionrule (actionruleid, actionplanid, actiontypeid, name, description, surveydatedaysoffset, priority) VALUES (115, 53, 52, 'SH_CV+9'        ,'', 9   ,3);
 INSERT INTO action.actionrule (actionruleid, actionplanid, actiontypeid, name, description, surveydatedaysoffset, priority) VALUES (116, 54, 40, 'SMSE-100'       ,'', -100,3);
-
-

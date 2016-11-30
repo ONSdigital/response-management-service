@@ -44,5 +44,3 @@ INSERT INTO action.actionrule (actionplanid, actionruleid,  actiontypeid, name, 
  UPDATE action.actionrule ar
  SET description =  (SELECT r.new FROM ruledesc r WHERE r.old <> r.new AND ar.actionruleid = r.actionruleid)
  WHERE ar.actionruleid IN(SELECT actionruleid from ruledesc WHERE old <> new);
-
-

@@ -4,13 +4,7 @@
 
 SET schema 'action';
 
-
 INSERT INTO action.survey(surveyid,surveystartdate,surveyenddate,name) VALUES (1,'2017-04-09','2017-05-09','2017 Test');
-
-
---
--- Data for Name: actionplan; Type: TABLE DATA; Schema: action; Owner: postgres
---
 
 INSERT INTO actionplan (actionplanid, surveyid, name, description, createdby, lastrundatetime) VALUES (1, 1, 'C1O331D4E', 'Component 1 - England/online/field day four/three reminders', 'SYSTEM', NULL);
 INSERT INTO actionplan (actionplanid, surveyid, name, description, createdby, lastrundatetime) VALUES (2, 1, 'C1O331D4W', 'Component 1 - Wales/online/field day four/three reminders', 'SYSTEM', NULL);
@@ -29,10 +23,6 @@ INSERT INTO actionplan (actionplanid, surveyid, name, description, createdby, la
 INSERT INTO actionplan (actionplanid, surveyid, name, description, createdby, lastrundatetime) VALUES (15, 1, 'C2EO200E', 'Component 2 - England/online/no field/no reminders (later initial contact)', 'SYSTEM', NULL);	
 INSERT INTO actionplan (actionplanid, surveyid, name, description, createdby, lastrundatetime) VALUES (16, 1, 'C2EO331ADE', 'Component 2 - England/online/no field/three reminders (Assisted Digital)', 'SYSTEM', NULL);
 
-
---
--- Data for Name: actiontype; Type: TABLE DATA; Schema: action; Owner: postgres
---
 
 INSERT INTO actiontype (actiontypeid, name, description, handler, cancancel) VALUES (1, 'ICL1_2003', 'Print initial contact letter (English) ', 'Printer', false);
 INSERT INTO actiontype (actiontypeid, name, description, handler, cancancel) VALUES (2, 'ICL2W_2003', 'Print initial contact letter (Welsh)', 'Printer', false);
@@ -72,10 +62,6 @@ INSERT INTO actiontype (actiontypeid, name, description, handler, cancancel) VAL
 INSERT INTO actiontype (actiontypeid, name, description, handler, cancancel) VALUES (36, 'QGURD', 'Print translation booklet - Urdu', 'Printer', false);
 INSERT INTO actiontype (actiontypeid, name, description, handler, cancancel) VALUES (37, 'QGGUJ', 'Print translation booklet - Gujarati', 'Printer', false);	
 
-
---
--- Data for Name: actionrule; Type: TABLE DATA; Schema: action; Owner: postgres
---
 
 INSERT INTO actionrule (actionruleid, actionplanid, actiontypeid, name, description, surveydatedaysoffset, priority) VALUES (1, 1, 1, 'HH_ICL1-25', 'Print Initial Contact Letter (SD-25)', -25, 3);
 INSERT INTO actionrule (actionruleid, actionplanid, actiontypeid, name, description, surveydatedaysoffset, priority) VALUES (2, 1, 5, 'HH_1RL1-4', 'Print Reminder Letter 1 (SD-4)', -4, 3);
@@ -138,9 +124,6 @@ INSERT INTO actionrule (actionruleid, actionplanid, actiontypeid, name, descript
 INSERT INTO actionrule (actionruleid, actionplanid, actiontypeid, name, description, surveydatedaysoffset, priority) VALUES (59, 16, 10, 'HH_2RLAD+9', 'Print Reminder Letter 2 (SD+9)', 9, 3);
 INSERT INTO actionrule (actionruleid, actionplanid, actiontypeid, name, description, surveydatedaysoffset, priority) VALUES (60, 16, 13, 'HH_3RLAD+17', 'Print Reminder Letter 3 (SD+17)', 17, 3);	
 
---
--- Data for Name: actionstate; Type: TABLE DATA; Schema: action; Owner: postgres
---
 
 INSERT INTO actionstate (state) VALUES ('SUBMITTED');
 INSERT INTO actionstate (state) VALUES ('PENDING');
@@ -153,13 +136,7 @@ INSERT INTO actionstate (state) VALUES ('CANCELLING');
 INSERT INTO actionstate (state) VALUES ('ABORTED');
 
 
---
--- Data for Name: actionplanjobstate; Type: TABLE DATA; Schema: action; Owner: postgres
---
-
 INSERT INTO actionplanjobstate (state) VALUES ('SUBMITTED');
 INSERT INTO actionplanjobstate (state) VALUES ('STARTED');
 INSERT INTO actionplanjobstate (state) VALUES ('COMPLETED');
 INSERT INTO actionplanjobstate (state) VALUES ('FAILED');
-
-
