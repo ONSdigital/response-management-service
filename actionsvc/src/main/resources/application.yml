@@ -26,14 +26,14 @@ security:
     password: secret
 
 management:
-  port: 8254
+  port: 8251
   context-path: /mgmt
   security:
     roles: SUPERUSER
     enabled: false
 
 server:
-  port: 8154
+  port: 8151
   servlet-path: /mgmt
 
 endpoints:
@@ -74,7 +74,7 @@ spring:
   sleuth:
     sampler:
       percentage: 10
-      
+
   activemq:
     broker-url: tcp://localhost:53445
     pool:
@@ -90,7 +90,7 @@ spring:
       max-active: 10
       max-idle: 5
       min-idle: 3
-  
+
   jpa:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
     show-sql: false
@@ -100,7 +100,7 @@ spring:
 
   zipkin:
     enabled: false
-    
+
 data-grid:
   address: localhost:6379
   password: redis
