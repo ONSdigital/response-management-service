@@ -110,13 +110,13 @@ data-grid:
 action-distribution:
   instruction-max: 200
   retry-sleep-seconds: 30
-  initial-delay-seconds: 100000
+  initial-delay-seconds: 10
   subsequent-delay-seconds: 60
 
 plan-execution:
   retry-sleep-seconds: 30
-  initial-delay-seconds: 10
-  subsequent-delay-seconds: 5
+  initial-delay-seconds: 20
+  subsequent-delay-seconds: 80
 
 case-svc:
   case-group-path: /casegroups/{caseGroupId}
