@@ -36,6 +36,8 @@ public class ActionSvcStateTransitionManagerFactory implements StateTransitionMa
     transitionMapForSubmitted.put(ActionEvent.REQUEST_DISTRIBUTED, ActionState.PENDING);
     transitionMapForSubmitted.put(ActionEvent.REQUEST_CANCELLED, ActionState.ABORTED);
     transitionMapForSubmitted.put(ActionEvent.REQUEST_COMPLETED, ActionState.COMPLETED);
+    transitionMapForSubmitted.put(ActionEvent.REQUEST_COMPLETED_DEACTIVATE, ActionState.COMPLETED);
+    transitionMapForSubmitted.put(ActionEvent.REQUEST_COMPLETED_DISABLE, ActionState.COMPLETED);
     transitions.put(ActionState.SUBMITTED, transitionMapForSubmitted);
 
     Map<ActionEvent, ActionState> transitionMapForPending = new HashMap<>();
@@ -44,6 +46,8 @@ public class ActionSvcStateTransitionManagerFactory implements StateTransitionMa
         ActionState.CANCEL_SUBMITTED);
     transitionMapForPending.put(ActionEvent.REQUEST_ACCEPTED, ActionState.ACTIVE);
     transitionMapForPending.put(ActionEvent.REQUEST_COMPLETED, ActionState.COMPLETED);
+    transitionMapForPending.put(ActionEvent.REQUEST_COMPLETED_DEACTIVATE, ActionState.COMPLETED);
+    transitionMapForPending.put(ActionEvent.REQUEST_COMPLETED_DISABLE, ActionState.COMPLETED);
     transitions.put(ActionState.PENDING, transitionMapForPending);
 
     Map<ActionEvent, ActionState> transitionMapForActive = new HashMap<>();
@@ -51,6 +55,10 @@ public class ActionSvcStateTransitionManagerFactory implements StateTransitionMa
     transitionMapForActive.put(ActionEvent.REQUEST_CANCELLED,
         ActionState.CANCEL_SUBMITTED);
     transitionMapForActive.put(ActionEvent.REQUEST_COMPLETED,
+        ActionState.COMPLETED);
+    transitionMapForActive.put(ActionEvent.REQUEST_COMPLETED_DEACTIVATE,
+        ActionState.COMPLETED);
+    transitionMapForActive.put(ActionEvent.REQUEST_COMPLETED_DISABLE,
         ActionState.COMPLETED);
     transitions.put(ActionState.ACTIVE, transitionMapForActive);
 
@@ -68,6 +76,10 @@ public class ActionSvcStateTransitionManagerFactory implements StateTransitionMa
         ActionState.CANCEL_SUBMITTED);
     transitionMapForCancelSubmitted.put(ActionEvent.REQUEST_COMPLETED,
         ActionState.CANCEL_SUBMITTED);
+    transitionMapForCancelSubmitted.put(ActionEvent.REQUEST_COMPLETED_DEACTIVATE,
+        ActionState.CANCEL_SUBMITTED);
+    transitionMapForCancelSubmitted.put(ActionEvent.REQUEST_COMPLETED_DISABLE,
+        ActionState.CANCEL_SUBMITTED);
     transitionMapForCancelSubmitted.put(ActionEvent.CANCELLATION_DISTRIBUTED,
         ActionState.CANCEL_PENDING);
     transitions.put(ActionState.CANCEL_SUBMITTED, transitionMapForCancelSubmitted);
@@ -80,6 +92,10 @@ public class ActionSvcStateTransitionManagerFactory implements StateTransitionMa
     transitionMapForCancelPending.put(ActionEvent.REQUEST_ACCEPTED,
         ActionState.CANCEL_PENDING);
     transitionMapForCancelPending.put(ActionEvent.REQUEST_COMPLETED,
+        ActionState.CANCEL_PENDING);
+    transitionMapForCancelPending.put(ActionEvent.REQUEST_COMPLETED_DEACTIVATE,
+        ActionState.CANCEL_PENDING);
+    transitionMapForCancelPending.put(ActionEvent.REQUEST_COMPLETED_DISABLE,
         ActionState.CANCEL_PENDING);
     transitionMapForCancelPending.put(ActionEvent.CANCELLATION_FAILED,
         ActionState.CANCEL_SUBMITTED);

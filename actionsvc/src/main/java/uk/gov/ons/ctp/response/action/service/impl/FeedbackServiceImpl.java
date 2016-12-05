@@ -5,17 +5,18 @@ import java.math.BigInteger;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import lombok.extern.slf4j.Slf4j;
+import uk.gov.ons.ctp.common.error.CTPException;
 import uk.gov.ons.ctp.common.state.StateTransitionManager;
 import uk.gov.ons.ctp.common.time.DateTimeUtil;
 import uk.gov.ons.ctp.response.action.domain.model.Action;
-import uk.gov.ons.ctp.response.action.domain.model.SituationCategory;
+import uk.gov.ons.ctp.response.action.domain.model.OutcomeCategory;
+import uk.gov.ons.ctp.response.action.domain.model.OutcomeHandlerId;
 import uk.gov.ons.ctp.response.action.domain.repository.ActionRepository;
-import uk.gov.ons.ctp.response.action.domain.repository.SituationCategoryRepository;
+import uk.gov.ons.ctp.response.action.domain.repository.OutcomeCategoryRepository;
 import uk.gov.ons.ctp.response.action.message.feedback.ActionFeedback;
 import uk.gov.ons.ctp.response.action.representation.ActionDTO;
 import uk.gov.ons.ctp.response.action.representation.ActionDTO.ActionState;
@@ -41,51 +42,43 @@ public class FeedbackServiceImpl implements FeedbackService {
   private ActionRepository actionRepo;
 
   @Inject
-  private SituationCategoryRepository situationCategoryRepository;
+  private OutcomeCategoryRepository outcomeCategoryRepository;
 
   @Inject
   private StateTransitionManager<ActionState, ActionDTO.ActionEvent> actionSvcStateTransitionManager;
 
   @Transactional(propagation = Propagation.REQUIRED, readOnly = false, timeout = TRANSACTION_TIMEOUT)
   @Override
-  public void acceptFeedback(ActionFeedback feedback) {
+  public void acceptFeedback(ActionFeedback feedback) throws CTPException {
     BigInteger actionId = feedback.getActionId();
 
     if (actionId.compareTo(CSV_GENERATED_ID_BOUNDARY) == -1) {
       Action action = actionRepo.getOne(actionId);
-      ActionDTO.ActionEvent outcomeEvent = ActionDTO.ActionEvent.valueOf(feedback.getOutcome().name());
+      if (action != null) {
+        ActionDTO.ActionEvent outcomeEvent = ActionDTO.ActionEvent.valueOf(feedback.getOutcome().name());
 
-      if (outcomeEvent != null) {
-        ActionDTO.ActionState nextState = actionSvcStateTransitionManager.transition(
-            action.getState(),
-            outcomeEvent);
-        String situation = feedback.getSituation();
+        if (outcomeEvent != null) {
+          String situation = feedback.getSituation();
 
-        if (nextState.equals(ActionDTO.ActionState.COMPLETED)) {
-          CategoryDTO.CategoryType category = CategoryDTO.CategoryType.ACTION_COMPLETED;
-          if (!StringUtils.isBlank(feedback.getSituation())) {
-            SituationCategory situationCategory = situationCategoryRepository.findOne(feedback.getSituation());
-            if (situationCategory != null) {
-              category = CategoryDTO.CategoryType.valueOf(situationCategory.getEventCategory());
-              caseSvcClientService.createNewCaseEvent(action, category);
-              updateAction(action, nextState, situation);
-            } else {
-              log.error("Feedback Service unable to decipher the situation {} from feedback - ignoring this feedback",
-                  feedback.getSituation());
-            }
-          } else {
+          ActionDTO.ActionState nextState = actionSvcStateTransitionManager.transition(action.getState(), outcomeEvent);
+          updateAction(action, nextState, situation);
+
+          String handler = action.getActionType().getHandler();
+          OutcomeHandlerId outcomeHandlerId = OutcomeHandlerId.builder().handler(handler).outcome(outcomeEvent).build();
+          OutcomeCategory outcomeCategory = outcomeCategoryRepository.findOne(outcomeHandlerId);
+          if (outcomeCategory != null) {
+            CategoryDTO.CategoryType category = CategoryDTO.CategoryType.valueOf(outcomeCategory.getEventCategory());
             caseSvcClientService.createNewCaseEvent(action, category);
-            updateAction(action, nextState, situation);
           }
         } else {
-          updateAction(action, nextState, situation);
+          log.error("Feedback Service unable to decipher the outcome {} from feedback - ignoring this feedback",
+              feedback.getOutcome());
         }
       } else {
-        log.error("Feedback Service unable to decipher the outcome {} from feedback - ignoring this feedback",
-            feedback.getOutcome());
+        log.error("Feedback Service unable to find action id {} from feedback - ignoring this feedback",
+            feedback.getActionId());
       }
     }
-
   }
 
   /**
@@ -101,5 +94,4 @@ public class FeedbackServiceImpl implements FeedbackService {
     actionRepo.saveAndFlush(action);
 
   }
-
 }
