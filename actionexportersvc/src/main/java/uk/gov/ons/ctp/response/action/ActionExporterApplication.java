@@ -48,7 +48,7 @@ public class ActionExporterApplication {
   private AppConfig appConfig;
 
   @Bean
-  public DistributedLockManager actionRequestExecutionLockManager(RedissonClient redissonClient) {
+  public DistributedLockManager actionExportExecutionLockManager(RedissonClient redissonClient) {
     return new DistributedLockManagerRedissonImpl(ACTION_EXECUTION_LOCK, redissonClient,
         appConfig.getDataGrid().getLockTimeToLiveSeconds());
   }

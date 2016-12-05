@@ -15,6 +15,7 @@ import org.springframework.boot.actuate.health.HealthIndicator;
 import org.springframework.scheduling.annotation.Scheduled;
 
 import lombok.extern.slf4j.Slf4j;
+import uk.gov.ons.ctp.common.distributed.DistributedLockManager;
 import uk.gov.ons.ctp.common.error.CTPException;
 import uk.gov.ons.ctp.response.action.export.domain.ActionRequestDocument;
 import uk.gov.ons.ctp.response.action.export.domain.ExportMessage;
@@ -45,6 +46,9 @@ public class ExportScheduler implements HealthIndicator {
 
   @Inject
   private ActionRequestService actionRequestService;
+
+  @Inject
+  private DistributedLockManager actionExportLockManager;
 
   @Inject
   private ExportInfo exportInfo;
@@ -83,25 +87,33 @@ public class ExportScheduler implements HealthIndicator {
       String timeStamp = new SimpleDateFormat(DATE_FORMAT_IN_FILE_NAMES).format(Calendar.getInstance().getTime());
       templateMappingService.retrieveTemplateMappingByFilename(TEMPLATE_MAPPING)
           .forEach((fileName, templatemappings) -> {
-            ExportMessage message = new ExportMessage();
-            // process Collection of templateMappings
-            templatemappings.forEach((templateMapping) -> {
-              List<ActionRequestDocument> requests = actionRequestService
-                  .findByDateSentIsNullAndActionType(templateMapping.getActionType());
-              if (requests.isEmpty()) {
-                log.info("Scheduled run no requests for actionType {} to process", templateMapping.getActionType());
-              } else {
-                try {
-                  transformationService.processActionRequests(message, requests);
-                } catch (CTPException e) {
-                  // Error retrieving TemplateMapping in transformationService
-                  log.error("Scheduled run error transforming ActionRequests");
+            if (!actionExportLockManager.isLocked(fileName)) {
+              if (actionExportLockManager.lock(fileName)) {
+            	log.info("Lock {} {}", fileName, actionExportLockManager.isLocked(fileName) );
+                ExportMessage message = new ExportMessage();
+                // process Collection of templateMappings
+                templatemappings.forEach((templateMapping) -> {
+                  List<ActionRequestDocument> requests = actionRequestService
+                      .findByDateSentIsNullAndActionType(templateMapping.getActionType());
+                  if (requests.isEmpty()) {
+                    log.info("Scheduled run no requests for actionType {} to process", templateMapping.getActionType());
+                  } else {
+                    try {
+                      transformationService.processActionRequests(message, requests);
+                    } catch (CTPException e) {
+                      // Error retrieving TemplateMapping in
+                      // transformationService
+                      log.error("Scheduled run error transforming ActionRequests");
+                    }
+                  }
+                });
+                if (!message.isEmpty()) {
+                  sftpService.sendMessage(fileName + "_" + timeStamp + ".csv", message.getMergedActionRequestIds(),
+                      message.getMergedOutputStreams());
                 }
+                actionExportLockManager.unlock(fileName);
+                log.info("Lock {} {}", fileName, actionExportLockManager.isLocked(fileName) );
               }
-            });
-            if (!message.isEmpty()) {
-              sftpService.sendMessage(fileName + "_" + timeStamp + ".csv", message.getMergedActionRequestIds(),
-                  message.getMergedOutputStreams());
             }
           });
     } catch (CTPException e) {
