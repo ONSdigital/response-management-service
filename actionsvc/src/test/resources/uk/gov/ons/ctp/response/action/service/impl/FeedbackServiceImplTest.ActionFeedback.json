@@ -2,31 +2,26 @@
 {  
   "actionId": 1,
   "situation": "",
-  "outcome": "REQUEST_ACCEPTED",
-  "notes": "C#"
+  "outcome": "REQUEST_ACCEPTED"
 },
 {  
   "actionId": 2,
   "situation": "",
-  "outcome": "REQUEST_FAILED",
-  "notes": "C#"
+  "outcome": "REQUEST_FAILED"
 },
 {  
   "actionId": 1,
   "situation": "",
-  "outcome": "REQUEST_COMPLETED",
-  "notes": "C#"
+  "outcome": "REQUEST_COMPLETED"
 },
 {  
   "actionId": 1,
   "situation": "DERELI",
-  "outcome": "REQUEST_COMPLETED",
-  "notes": "C#"
+  "outcome": "REQUEST_COMPLETED"
 },
 {  
   "actionId": 1,
   "situation": "CONFUS",
-  "outcome": "REQUEST_COMPLETED",
-  "notes": "C#"
+  "outcome": "REQUEST_COMPLETED"
 }
 ]
