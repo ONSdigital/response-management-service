@@ -9,7 +9,7 @@ info:
 # ie -Dlogging.level.org.springframework=DEBUG
 logging:
   level:
-    uk.gov.ons.ctp: DEBUG
+    uk.gov.ons.ctp: INFO
 
 security:
   basic:
@@ -85,7 +85,6 @@ spring:
 data-grid:
   address: localhost:6379
   password: redis
-  list-time-to-live-seconds: 600
   lock-time-to-live-seconds: 600
 
 export-schedule:
