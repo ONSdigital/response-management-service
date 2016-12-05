@@ -10,7 +10,6 @@ databaseChangeLog:
             relativeToChangelogFile: true
             splitStatements: false
 
-
   - changeSet:
       id: 9.30.0-2
       author: Sarah Radford
@@ -18,5 +17,15 @@ databaseChangeLog:
         - sqlFile:
             comment: Action seed data version 12
             path: action_2017_plan_changes_V12.sql
+            relativeToChangelogFile: true
+            splitStatements: false
+
+  - changeSet:
+      id: 9.30.0-3
+      author: Phil Whiles
+      changes:
+        - sqlFile:
+            comment: SituationCategory becomes OutcomeCategory
+            path: sitcat_becomes_outcat.sql
             relativeToChangelogFile: true
             splitStatements: false

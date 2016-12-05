@@ -26,14 +26,14 @@ security:
     password: secret
 
 management:
-  port: 8254
+  port: 8251
   context-path: /mgmt
   security:
     roles: SUPERUSER
     enabled: false
 
 server:
-  port: 8154
+  port: 8151
   servlet-path: /mgmt
 
 endpoints:
@@ -116,7 +116,7 @@ action-distribution:
 plan-execution:
   retry-sleep-seconds: 30
   initial-delay-seconds: 20
-  subsequent-delay-seconds: 80
+  subsequent-delay-seconds: 90
 
 case-svc:
   case-group-path: /casegroups/{caseGroupId}

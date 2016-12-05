@@ -1,8 +1,8 @@
 package uk.gov.ons.ctp.response.action.domain.model;
 
 import javax.persistence.Column;
+import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
-import javax.persistence.Id;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
@@ -16,10 +16,10 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @Table(name = "situationcategory", schema = "action")
-public class SituationCategory {
+public class OutcomeCategory {
 
-  @Id
-  private String situation;
+  @EmbeddedId
+  private OutcomeHandlerId id;
 
   @Column(name = "eventcategory")
   private String eventCategory;

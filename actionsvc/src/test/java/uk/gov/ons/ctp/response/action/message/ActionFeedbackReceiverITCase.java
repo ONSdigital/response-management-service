@@ -1,17 +1,21 @@
 package uk.gov.ons.ctp.response.action.message;
 
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
-import static junit.framework.TestCase.assertNull;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.reset;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.concurrent.CountDownLatch;
+
+import javax.inject.Inject;
+import javax.jms.Connection;
+import javax.jms.JMSException;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
@@ -26,17 +30,14 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.integration.channel.QueueChannel;
 import org.springframework.jms.connection.CachingConnectionFactory;
-import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
 import org.springframework.oxm.jaxb.Jaxb2Marshaller;
 import org.springframework.test.context.junit4.SpringRunner;
+
+import uk.gov.ons.ctp.common.error.CTPException;
 import uk.gov.ons.ctp.common.message.JmsHelper;
 import uk.gov.ons.ctp.response.action.message.feedback.ActionFeedback;
 import uk.gov.ons.ctp.response.action.service.FeedbackService;
-
-import javax.inject.Inject;
-import javax.jms.Connection;
-import javax.jms.JMSException;
 
 /**
  * Test focusing on Spring Integration
@@ -124,7 +125,7 @@ public class ActionFeedbackReceiverITCase {
   }
 
   @Test
-  public void testReceivingActionFeedbackValidXml() throws InterruptedException, IOException, JMSException {
+  public void testReceivingActionFeedbackValidXml() throws InterruptedException, IOException, JMSException, CTPException {
     // Set up CountDownLatch for synchronisation with async call
     final CountDownLatch feedbackServiceInvoked = new CountDownLatch(1);
     // Release all waiting threads when mock feedbackService.acceptFeedback method is called
@@ -156,7 +157,8 @@ public class ActionFeedbackReceiverITCase {
   }
 
   @Test
-  public void testReceivingActionFeedbackValidXmlExceptionThrownInProcessing() throws InterruptedException, IOException, JMSException {
+  public void testReceivingActionFeedbackValidXmlExceptionThrownInProcessing() throws InterruptedException, IOException, JMSException, CTPException {
+	 
     // Set up CountDownLatch for synchronisation with async call
     final CountDownLatch feedbackServiceInvoked = new CountDownLatch(1);
     // Release all waiting threads when mock feedbackService.acceptFeedback method is called
