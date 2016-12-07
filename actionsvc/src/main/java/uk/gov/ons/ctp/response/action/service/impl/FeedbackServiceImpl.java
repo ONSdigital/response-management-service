@@ -64,7 +64,7 @@ public class FeedbackServiceImpl implements FeedbackService {
           updateAction(action, nextState, situation);
 
           String handler = action.getActionType().getHandler();
-          OutcomeHandlerId outcomeHandlerId = OutcomeHandlerId.builder().handler(handler).outcome(outcomeEvent).build();
+          OutcomeHandlerId outcomeHandlerId = OutcomeHandlerId.builder().handler(handler).actionOutcome(outcomeEvent).build();
           OutcomeCategory outcomeCategory = outcomeCategoryRepository.findOne(outcomeHandlerId);
           if (outcomeCategory != null) {
             CategoryDTO.CategoryType category = CategoryDTO.CategoryType.valueOf(outcomeCategory.getEventCategory());
