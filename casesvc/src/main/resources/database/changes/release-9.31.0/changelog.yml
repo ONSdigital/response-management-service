@@ -10,5 +10,15 @@ databaseChangeLog:
             relativeToChangelogFile: true
             splitStatements: false
             
+  - changeSet:
+      id: 9.31.0-2
+      author: Gareth Turner
+      changes:
+        - sqlFile:
+            comment: added IAC_AUTHENTICATED to category table
+            path: iac_authd.sql
+            relativeToChangelogFile: true
+            splitStatements: false
+            
 
 
