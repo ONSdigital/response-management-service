@@ -1,11 +1,11 @@
 [
 	{
-		"id": {"outcome":"REQUEST_COMPLETED","handler":"Printer"},"eventCategory":"ACTION_COMPLETED"
+		"id": {"actionOutcome":"REQUEST_COMPLETED","handler":"Printer"},"eventCategory":"ACTION_COMPLETED"
 	},
 	{
-		"id": {"outcome":"REQUEST_COMPLETED_DEACTIVATE","handler":"Printer"},"eventCategory":"ACTION_COMPLETED_DEACTIVATED"
+		"id": {"actionOutcome":"REQUEST_COMPLETED_DEACTIVATE","handler":"Printer"},"eventCategory":"ACTION_COMPLETED_DEACTIVATED"
 	},
 	{
-		"id": {"outcome":"REQUEST_COMPLETED_DISABLE","handler":"Printer"},"eventCategory":"ACTION_COMPLETED_DISABLED"
+		"id": {"actionOutcome":"REQUEST_COMPLETED_DISABLE","handler":"Printer"},"eventCategory":"ACTION_COMPLETED_DISABLED"
 	}
 ]
