@@ -2,5 +2,4 @@
     <actionId>13</actionId>
     <situation>aTest</situation>
     <outcome>CANCELLATION_ACCEPTED</outcome>
-    <notes>someNotes</notes>
 </feed:actionFeedback>
