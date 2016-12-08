@@ -141,6 +141,6 @@ csv-ingest:
   poll-milliseconds: 10000
 
 redelivery-policy:
-  maxRedeliveries: 10
+  maxRedeliveries: -1
   initialRedeliveryDelay: 1000
   redeliveryDelay: 1000

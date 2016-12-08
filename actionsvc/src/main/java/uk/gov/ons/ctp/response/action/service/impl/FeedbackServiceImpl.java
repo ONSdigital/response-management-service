@@ -53,10 +53,11 @@ public class FeedbackServiceImpl implements FeedbackService {
     BigInteger actionId = feedback.getActionId();
 
     if (actionId.compareTo(CSV_GENERATED_ID_BOUNDARY) == -1) {
-      Action action = actionRepo.getOne(actionId);
+      Action action = actionRepo.findOne(actionId);
       if (action != null) {
         ActionDTO.ActionEvent outcomeEvent = ActionDTO.ActionEvent.valueOf(feedback.getOutcome().name());
-
+        
+        
         if (outcomeEvent != null) {
           String situation = feedback.getSituation();
 

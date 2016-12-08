@@ -234,7 +234,7 @@ public final class ActionEndpointUnitTest extends CTPJerseyTest {
   @Test
   public void createActionGoodJsonProvided() {
     with("http://localhost:9998/actions").post(MediaType.APPLICATION_JSON_TYPE, ACTION_VALIDJSON)
-        .assertResponseCodeIs(HttpStatus.OK)
+        .assertResponseCodeIs(HttpStatus.CREATED)
         .assertIntegerInBody("$.actionId", ACTIONID_2.intValue())
         .assertIntegerInBody("$.caseId", ACTION_CASEID)
         .assertIntegerInBody("$.actionPlanId", ACTION2_PLANID)
