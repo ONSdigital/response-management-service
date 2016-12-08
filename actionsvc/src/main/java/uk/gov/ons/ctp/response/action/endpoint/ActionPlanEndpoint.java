@@ -100,16 +100,6 @@ public class ActionPlanEndpoint implements CTPEndpoint {
   }
 
   /**
-   * This method creates a new action plan.
-   * @param requestObject the action plan to be created
-   * @return a not implemented response for 2016.
-   */
-  @POST
-  public final Response createActionPlan(final ActionPlanDTO requestObject) {
-    return Response.status(Response.Status.NOT_IMPLEMENTED).build();
-  }
-
-  /**
    * Returns all action rules for the given action plan id.
    * @param actionPlanId the action plan id
    * @return Returns all action rules for the given action plan id.

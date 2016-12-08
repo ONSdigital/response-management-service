@@ -11,7 +11,7 @@ info:
     a day, when a certain action should be taken. action plans are applied to open cases to create
     actions. Once an action is created it is forwarded to an appropriate remote handler service to be
     completed.
-  version: 9.21.0
+  version: 9.30.0
 schemes:
   - http
 basePath: /
@@ -54,6 +54,8 @@ paths:
             type: array
             items:
               $ref: '#/definitions/Action'
+        204:
+          description: Actions not found
         default:
           description: Unexpected error
           schema:
@@ -188,6 +190,8 @@ paths:
             $ref: '#/definitions/Action'
         400:
           description: Invalid input
+        404:
+          description: Action not found
         default:
           description: Unexpected error
           schema:
@@ -271,32 +275,10 @@ paths:
             type: array
             items:
               $ref: '#/definitions/ActionPlan'
+        204:
+          description: Action plans not found
         default:
           description: Unexpected error
-          schema:
-            $ref: '#/definitions/Error'
-    post:
-      summary: Create Action Plan (Not Implemented in 2016)
-      description: Creates an action plan from the mandatory surveyId, name, description, surveyDateDaysOffet and createdBy properties. Note that this operation will not be implemented for the 2016 test; action plans will be created via seed data.
-      consumes:
-        - application/json
-      parameters:
-        - name: Accept
-          in: header
-          description: Response type, application/json
-          required: false
-          type: string
-        - in: body
-          name: actionplan
-          description: Action plan to create
-          required: true
-          schema:
-            $ref: '#/definitions/ActionPlanCreationRequest'
-      tags:
-        - ActionPlan
-      responses:
-        501:
-          description: Action plan creation not implemented
           schema:
             $ref: '#/definitions/Error'
   /actionplans/{actionPlanId}:
@@ -360,6 +342,8 @@ paths:
             $ref: '#/definitions/ActionPlan'
         400:
           description: Invalid input
+        404:
+          description: ActionPlan not found
         default:
           description: Unexpected error
           schema:

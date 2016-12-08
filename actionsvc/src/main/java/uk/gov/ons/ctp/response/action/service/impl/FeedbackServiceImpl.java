@@ -93,6 +93,5 @@ public class FeedbackServiceImpl implements FeedbackService {
     action.setState(nextState);
     action.setUpdatedDateTime(DateTimeUtil.nowUTC());
     actionRepo.saveAndFlush(action);
-
   }
 }
