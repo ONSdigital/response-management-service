@@ -33,7 +33,9 @@ import uk.gov.ons.ctp.common.jaxrs.CTPMessageBodyReader;
 import uk.gov.ons.ctp.common.jersey.CTPJerseyTest;
 import uk.gov.ons.ctp.response.action.ActionBeanMapper;
 import uk.gov.ons.ctp.response.action.representation.ActionDTO;
+import uk.gov.ons.ctp.response.action.service.ActionCaseService;
 import uk.gov.ons.ctp.response.action.service.ActionService;
+import uk.gov.ons.ctp.response.action.utility.MockActionCaseServiceFactory;
 import uk.gov.ons.ctp.response.action.utility.MockActionServiceFactory;
 
 /**
@@ -65,7 +67,11 @@ public final class ActionEndpointUnitTest extends CTPJerseyTest {
 
   @Override
   public Application configure() {
-    return super.init(ActionEndpoint.class, ActionService.class, MockActionServiceFactory.class,
+    return super.init(ActionEndpoint.class, 
+        new ServiceFactoryPair [] {
+        new ServiceFactoryPair(ActionService.class, MockActionServiceFactory.class),
+        new ServiceFactoryPair(ActionCaseService.class, MockActionCaseServiceFactory.class)
+        }, 
         new ActionBeanMapper(), new CTPMessageBodyReader<ActionDTO>(ActionDTO.class));
   }
 
@@ -305,13 +311,13 @@ public final class ActionEndpointUnitTest extends CTPJerseyTest {
         .andClose();
   }
 
-//  /**
-//   * Test cancelling an Action.
-//   */
-//  @Test
-//  public void cancelActionsCaseNotFound() {
-//    with("http://localhost:9998/actions/case/%s/cancel", NON_EXISTING_ID).put(MediaType.APPLICATION_JSON_TYPE, "")
-//        .assertResponseCodeIs(HttpStatus.NOT_FOUND)
-//        .andClose();
-//  }
+  /**
+   * Test cancelling an Action.
+   */
+  @Test
+  public void cancelActionsCaseNotFound() {
+    with("http://localhost:9998/actions/case/%s/cancel", NON_EXISTING_ID).put(MediaType.APPLICATION_JSON_TYPE, "")
+        .assertResponseCodeIs(HttpStatus.NOT_FOUND)
+        .andClose();
+  }
 }

@@ -26,8 +26,10 @@ import ma.glasnost.orika.MapperFacade;
 import uk.gov.ons.ctp.common.endpoint.CTPEndpoint;
 import uk.gov.ons.ctp.common.error.CTPException;
 import uk.gov.ons.ctp.response.action.domain.model.Action;
+import uk.gov.ons.ctp.response.action.domain.model.ActionCase;
 import uk.gov.ons.ctp.response.action.message.feedback.ActionFeedback;
 import uk.gov.ons.ctp.response.action.representation.ActionDTO;
+import uk.gov.ons.ctp.response.action.service.ActionCaseService;
 import uk.gov.ons.ctp.response.action.service.ActionService;
 
 /**
@@ -41,6 +43,9 @@ public final class ActionEndpoint implements CTPEndpoint {
 
   @Inject
   private ActionService actionService;
+
+  @Inject
+  private ActionCaseService actionCaseService;
 
   @Inject
   private MapperFacade mapperFacade;
@@ -149,6 +154,12 @@ public final class ActionEndpoint implements CTPEndpoint {
   public Response cancelActions(@PathParam("caseid") final int caseId)
       throws CTPException {
     log.info("Cancelling Actions for {}", caseId);
+  
+    ActionCase caze = actionCaseService.findActionCase(caseId);
+    if (caze == null) {
+      throw new CTPException(CTPException.Fault.RESOURCE_NOT_FOUND, "Case not found for caseId %s", caseId);
+    }
+    
     List<Action> actions = actionService.cancelActions(caseId);
 
     List<ActionDTO> results = mapperFacade.mapAsList(actions, ActionDTO.class);
