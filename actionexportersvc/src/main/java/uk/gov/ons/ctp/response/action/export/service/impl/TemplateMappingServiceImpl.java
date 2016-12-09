@@ -28,15 +28,6 @@ import uk.gov.ons.ctp.response.action.export.domain.TemplateMappingDocument;
 import uk.gov.ons.ctp.response.action.export.repository.TemplateMappingRepository;
 import uk.gov.ons.ctp.response.action.export.service.TemplateMappingService;
 
-import javax.inject.Inject;
-import javax.inject.Named;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 
 /**
  * The implementation of the TemplateMappingService

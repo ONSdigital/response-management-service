@@ -74,7 +74,7 @@ public class SftpServicePublisherImpl implements SftpServicePublisher {
       } else {
         if (saved.isResponseRequired()) {
           ActionFeedback actionFeedback = new ActionFeedback(saved.getActionId(),
-              "ActionExport Sent: " + timeStamp, Outcome.REQUEST_COMPLETED, null);
+              "ActionExport Sent: " + timeStamp, Outcome.REQUEST_COMPLETED);
           actionFeedbackPubl.sendActionFeedback(actionFeedback);
         }
       }

@@ -216,6 +216,17 @@ public final class ActionEndpointUnitTest extends CTPJerseyTest {
   }
 
   /**
+   * Test updating action not found
+   */
+  @Test
+  public void updateActionByActionIdNotFound() {
+    with("http://localhost:9998/actions/%s", NON_EXISTING_ID).put(MediaType.APPLICATION_JSON_TYPE, ACTION_VALIDJSON)
+        .assertResponseCodeIs(HttpStatus.NOT_FOUND)
+        .assertFaultIs(CTPException.Fault.RESOURCE_NOT_FOUND)
+        .andClose();
+  }
+
+  /**
    * Test requesting an Action creating an Unchecked Exception.
    */
   @Test
@@ -294,4 +305,13 @@ public final class ActionEndpointUnitTest extends CTPJerseyTest {
         .andClose();
   }
 
+  /**
+   * Test cancelling an Action.
+   */
+  @Test
+  public void cancelActionsCaseNotFound() {
+    with("http://localhost:9998/actions/case/%s/cancel", NON_EXISTING_ID).put(MediaType.APPLICATION_JSON_TYPE, "")
+        .assertResponseCodeIs(HttpStatus.NOT_FOUND)
+        .andClose();
+  }
 }
