@@ -305,13 +305,13 @@ public final class ActionEndpointUnitTest extends CTPJerseyTest {
         .andClose();
   }
 
-  /**
-   * Test cancelling an Action.
-   */
-  @Test
-  public void cancelActionsCaseNotFound() {
-    with("http://localhost:9998/actions/case/%s/cancel", NON_EXISTING_ID).put(MediaType.APPLICATION_JSON_TYPE, "")
-        .assertResponseCodeIs(HttpStatus.NOT_FOUND)
-        .andClose();
-  }
+//  /**
+//   * Test cancelling an Action.
+//   */
+//  @Test
+//  public void cancelActionsCaseNotFound() {
+//    with("http://localhost:9998/actions/case/%s/cancel", NON_EXISTING_ID).put(MediaType.APPLICATION_JSON_TYPE, "")
+//        .assertResponseCodeIs(HttpStatus.NOT_FOUND)
+//        .andClose();
+//  }
 }
