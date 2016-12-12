@@ -3,7 +3,7 @@
   xmlns="http://ons.gov.uk/ctp/response/action/message/feedback"
   targetNamespace="http://ons.gov.uk/ctp/response/action/message/feedback">
 
-  <!-- root element of a feedback message to the action service -->
+  <!-- root element of a feedback message to the action service # Tag to verify latest code ends up in artifactory (zzz) -->
   <xs:element name="actionFeedback" type="ActionFeedback"/>
 
   <xs:complexType name="ActionFeedback">

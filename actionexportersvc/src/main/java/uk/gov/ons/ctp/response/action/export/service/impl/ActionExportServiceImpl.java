@@ -76,7 +76,7 @@ public class ActionExportServiceImpl implements ActionExportService {
     actionRequestDocs.forEach(actionRequestDoc -> {
       if (actionRequestDoc.isResponseRequired()) {
         ActionFeedback actionFeedback = new ActionFeedback(actionRequestDoc.getActionId(),
-            "ActionExport Stored: " + timeStamp, Outcome.REQUEST_ACCEPTED, null);
+            "ActionExport Stored: " + timeStamp, Outcome.REQUEST_ACCEPTED);
         actionFeedbackPubl.sendActionFeedback(actionFeedback);
       }
     });
@@ -101,7 +101,7 @@ public class ActionExportServiceImpl implements ActionExportService {
       if (actionCancel.isResponseRequired()) {
         ActionFeedback actionFeedback = new ActionFeedback(actionCancel.getActionId(),
             "ActionExport Cancelled: " + timeStamp,
-            cancelled ? Outcome.CANCELLATION_COMPLETED : Outcome.CANCELLATION_FAILED, null);
+            cancelled ? Outcome.CANCELLATION_COMPLETED : Outcome.CANCELLATION_FAILED);
         actionFeedbackPubl.sendActionFeedback(actionFeedback);
       }
     }
