@@ -1,11 +1,8 @@
 package uk.gov.ons.ctp.response.action.service.impl;
 
-import java.math.BigInteger;
-
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import lombok.extern.slf4j.Slf4j;
 import uk.gov.ons.ctp.response.action.domain.model.ActionCase;
 import uk.gov.ons.ctp.response.action.domain.repository.ActionCaseRepository;
 import uk.gov.ons.ctp.response.action.service.ActionCaseService;

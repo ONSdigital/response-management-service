@@ -26,7 +26,7 @@ public class ActionFeedbackReceiverImpl implements ActionFeedbackReceiver {
   private FeedbackService feedbackService;
 
   @Override
-  @ServiceActivator(inputChannel = "processActionFeedback")
+  @ServiceActivator(inputChannel = "actionFeedbackTransformed")
   public void acceptFeedback(ActionFeedback feedback) throws CTPException {
     log.debug("Accepting feedback {}", feedback);
     feedbackService.acceptFeedback(feedback);
