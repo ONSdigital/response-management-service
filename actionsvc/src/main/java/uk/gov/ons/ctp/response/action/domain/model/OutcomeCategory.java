@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 @NoArgsConstructor
-@Table(name = "situationcategory", schema = "action")
+@Table(name = "outcomecategory", schema = "action")
 public class OutcomeCategory {
 
   @EmbeddedId

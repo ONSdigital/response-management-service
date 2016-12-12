@@ -154,25 +154,7 @@ public class ActionPlanEndpointUnitTest extends CTPJerseyTest {
         .andClose();
   }
 
-  /**
-   * A Test
-   */
-  @Test
-  public void createActionPlanPositiveScenario() {
-    with("http://localhost:9998/actionplans").post(MediaType.APPLICATION_JSON_TYPE, ACTIONPLAN_JSON)
-        .assertResponseCodeIs(HttpStatus.NOT_IMPLEMENTED)
-        .andClose();
-  }
 
-  /**
-   * A Test
-   */
-  @Test
-  public void createActionPlanUnimplementedPostScenario() {
-    with("http://localhost:9998/actionplans").post(MediaType.APPLICATION_JSON_TYPE, ACTIONPLAN_JSON)
-        .assertResponseCodeIs(HttpStatus.NOT_IMPLEMENTED)
-        .andClose();
-  }
 
   /**
    * A Test

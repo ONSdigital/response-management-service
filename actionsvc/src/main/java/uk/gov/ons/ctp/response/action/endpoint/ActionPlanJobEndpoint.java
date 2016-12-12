@@ -12,6 +12,9 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.ResponseBuilder;
+import javax.ws.rs.core.Response.Status;
 
 import org.springframework.util.CollectionUtils;
 
@@ -47,12 +50,12 @@ public class ActionPlanJobEndpoint implements CTPEndpoint {
    */
   @GET
   @Path("/jobs/{actionplanjobid}")
-  public final ActionPlanJobDTO findActionPlanJobById(@PathParam("actionplanjobid") final Integer actionPlanJobId)
+  public final Response findActionPlanJobById(@PathParam("actionplanjobid") final Integer actionPlanJobId)
       throws CTPException {
     log.info("Entering findActionPlanJobById with {}", actionPlanJobId);
     Optional<ActionPlanJob> actionPlanJob = actionPlanJobService.findActionPlanJob(actionPlanJobId);
-    return mapperFacade.map(actionPlanJob.orElseThrow(() -> new CTPException(CTPException.Fault.RESOURCE_NOT_FOUND,
-            "ActionPlanJob not found for id %d", actionPlanJobId)), ActionPlanJobDTO.class);
+    return Response.ok(mapperFacade.map(actionPlanJob.orElseThrow(() -> new CTPException(CTPException.Fault.RESOURCE_NOT_FOUND,
+            "ActionPlanJob not found for id %d", actionPlanJobId)), ActionPlanJobDTO.class)).build();
   }
 
   /**
@@ -63,12 +66,14 @@ public class ActionPlanJobEndpoint implements CTPEndpoint {
    */
   @GET
   @Path("/{actionplanid}/jobs")
-  public final List<ActionPlanJobDTO> findAllActionPlanJobsByActionPlanId(@PathParam("actionplanid") final Integer
+  public final Response findAllActionPlanJobsByActionPlanId(@PathParam("actionplanid") final Integer
       actionPlanId) throws CTPException {
     log.info("Entering findAllActionPlanJobsByActionPlanId with {}", actionPlanId);
     List<ActionPlanJob> actionPlanJobs = actionPlanJobService.findActionPlanJobsForActionPlan(actionPlanId);
     List<ActionPlanJobDTO> actionPlanJobDTOs = mapperFacade.mapAsList(actionPlanJobs, ActionPlanJobDTO.class);
-    return CollectionUtils.isEmpty(actionPlanJobDTOs) ? null : actionPlanJobDTOs;
+    ResponseBuilder responseBuilder = Response.ok(CollectionUtils.isEmpty(actionPlanJobDTOs) ? null : actionPlanJobDTOs);
+    responseBuilder.status(CollectionUtils.isEmpty(actionPlanJobDTOs) ? Status.NO_CONTENT : Status.OK);
+    return responseBuilder.build();
   }
 
   /**
@@ -80,7 +85,7 @@ public class ActionPlanJobEndpoint implements CTPEndpoint {
    */
   @POST
   @Path("/{actionplanid}/jobs")
-  public final ActionPlanJobDTO executeActionPlan(@PathParam("actionplanid") final Integer actionPlanId,
+  public final Response executeActionPlan(@PathParam("actionplanid") final Integer actionPlanId,
       final @Valid ActionPlanJobDTO actionPlanJobDTO) throws CTPException {
     log.info("Entering executeActionPlan with {}", actionPlanId);
 
@@ -91,7 +96,7 @@ public class ActionPlanJobEndpoint implements CTPEndpoint {
     ActionPlanJob job = mapperFacade.map(actionPlanJobDTO, ActionPlanJob.class);
     job.setActionPlanId(actionPlanId);
     Optional<ActionPlanJob> actionPlanJob = actionPlanJobService.createAndExecuteActionPlanJob(job);
-    return mapperFacade.map(actionPlanJob.orElseThrow(() -> new CTPException(CTPException.Fault.RESOURCE_NOT_FOUND,
-            "ActionPlan not found for id %s", actionPlanId)), ActionPlanJobDTO.class);
+    return Response.ok(mapperFacade.map(actionPlanJob.orElseThrow(() -> new CTPException(CTPException.Fault.RESOURCE_NOT_FOUND,
+            "ActionPlan not found for id %s", actionPlanId)), ActionPlanJobDTO.class)).build();
   }
 }
