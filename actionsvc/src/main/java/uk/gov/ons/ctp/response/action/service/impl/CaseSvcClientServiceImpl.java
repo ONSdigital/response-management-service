@@ -94,16 +94,5 @@ public class CaseSvcClientServiceImpl implements CaseSvcClientService {
         action.getCaseId());
     return returnedCaseEventDTO;
   }
-  
-  public boolean isDrunk(int unitOfAlcohol) throws Exception{
-	  if (unitOfAlcohol>25){
-		  throw new Exception("HELP");
-	  }
-	  if (unitOfAlcohol>3){
-		  return true;
-	  }else{
-		  return false;
-	  }
-  }
 
 }
