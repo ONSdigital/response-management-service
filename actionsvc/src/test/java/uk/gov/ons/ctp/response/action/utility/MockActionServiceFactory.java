@@ -165,7 +165,7 @@ public final class MockActionServiceFactory implements Factory<ActionService> {
       }
     });
 
-    Mockito.when(mockedService.cancelActions(any(Integer.class))).thenAnswer(new Answer<List<Action>>() {
+    Mockito.when(mockedService.cancelActions(ACTION_CASEID)).thenAnswer(new Answer<List<Action>>() {
       public List<Action> answer(final InvocationOnMock invocation) throws Throwable {
         List<Action> result = new ArrayList<Action>();
         ActionType actionType = new ActionType(1, ACTION2_ACTIONTYPENAME, ACTION2_ACTIONTYPEDESC,
@@ -173,6 +173,13 @@ public final class MockActionServiceFactory implements Factory<ActionService> {
         result.add(new Action(ACTIONID_2, ACTION_CASEID, ACTION2_PLANID, ACTION2_RULEID, ACTION_CREATEDBY,
             ACTION2_MANUALLY_CREATED, actionType, ACTION2_PRIORITY, ACTION2_SITUATION, ACTION3_ACTIONSTATE,
             ACTION_CREATEDDATE_TIMESTAMP, ACTION_UPDATEDDATE_TIMESTAMP, 0));
+        return result;
+      }
+    });
+
+    Mockito.when(mockedService.cancelActions(NON_EXISTING_ID)).thenAnswer(new Answer<List<Action>>() {
+      public List<Action> answer(final InvocationOnMock invocation) throws Throwable {
+        List<Action> result = new ArrayList<Action>();
         return result;
       }
     });

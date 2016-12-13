@@ -51,6 +51,7 @@ public class ActionRequestServiceImpl implements ActionRequestService {
     return repository.findByDateSentIsNullAndActionType(actionType);
   }
 
+  @SuppressWarnings("unchecked")
   @Override
   public List<String> retieveActionTypes() {
     return mongoTemplate.getCollection(collectionName).distinct(fieldName);

@@ -53,10 +53,11 @@ public class FeedbackServiceImpl implements FeedbackService {
     BigInteger actionId = feedback.getActionId();
 
     if (actionId.compareTo(CSV_GENERATED_ID_BOUNDARY) == -1) {
-      Action action = actionRepo.getOne(actionId);
+      Action action = actionRepo.findOne(actionId);
       if (action != null) {
         ActionDTO.ActionEvent outcomeEvent = ActionDTO.ActionEvent.valueOf(feedback.getOutcome().name());
-
+        
+        
         if (outcomeEvent != null) {
           String situation = feedback.getSituation();
 
@@ -64,7 +65,7 @@ public class FeedbackServiceImpl implements FeedbackService {
           updateAction(action, nextState, situation);
 
           String handler = action.getActionType().getHandler();
-          OutcomeHandlerId outcomeHandlerId = OutcomeHandlerId.builder().handler(handler).outcome(outcomeEvent).build();
+          OutcomeHandlerId outcomeHandlerId = OutcomeHandlerId.builder().handler(handler).actionOutcome(outcomeEvent).build();
           OutcomeCategory outcomeCategory = outcomeCategoryRepository.findOne(outcomeHandlerId);
           if (outcomeCategory != null) {
             CategoryDTO.CategoryType category = CategoryDTO.CategoryType.valueOf(outcomeCategory.getEventCategory());
@@ -92,6 +93,5 @@ public class FeedbackServiceImpl implements FeedbackService {
     action.setState(nextState);
     action.setUpdatedDateTime(DateTimeUtil.nowUTC());
     actionRepo.saveAndFlush(action);
-
   }
 }
