@@ -93,8 +93,8 @@ export-schedule:
 sftp:
   host: localhost
   port: 22
-  username: philw
-  password: t5unam1
+  username: centos
+  password: "JLibV2&XD,"
   directory: Documents
 
 jms:
