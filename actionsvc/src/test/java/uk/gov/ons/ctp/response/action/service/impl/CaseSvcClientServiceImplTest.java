@@ -98,8 +98,6 @@ public class CaseSvcClientServiceImplTest {
             .string(containsString("\"category\":\"" + CategoryDTO.CategoryType.ACTION_COMPLETED.name() + "\"")))
         .andExpect(content().string(containsString("\"subCategory\":\"" + action.getActionType().getName() + "\"")))
         .andExpect(content().string(containsString("\"createdBy\":\"" + action.getCreatedBy() + "\"")))
-        .andExpect(content().string(containsString(
-            "\"description\":\"" + action.getActionType().getDescription() + " (" + action.getSituation() + ")\"")))
         .andRespond(withSuccess("{"
             + "\"createdDateTime\":1460736159699,"
             + "\"caseEventId\":1,"
@@ -115,4 +113,6 @@ public class CaseSvcClientServiceImplTest {
     assertTrue(caseEventDTO != null);
     mockServer.verify();
   }
+  
+	  
 }
