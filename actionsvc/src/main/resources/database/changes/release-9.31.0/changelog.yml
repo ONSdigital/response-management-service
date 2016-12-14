@@ -1,0 +1,11 @@
+databaseChangeLog:
+
+  - changeSet:
+      id: 9.31.0-1
+      author: Sarah Radford
+      changes:
+        - sqlFile:
+            comment: Update rule dates
+            path: action_2017_plan_changes_V13.sql
+            relativeToChangelogFile: true
+            splitStatements: false
