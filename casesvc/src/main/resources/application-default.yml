@@ -1,0 +1,141 @@
+info:
+  contactEmail: philip.whiles@ons.gov.uk
+  version: ${project.version}
+  commit: ${buildNumber}
+  branch: ${scmBranch}
+  buildTime: ${timestamp}
+
+# logging config here as a reminder as to how to override logback from cmd line
+# ie -Dlogging.level.org.springframework=DEBUG
+logging:
+  level:
+    uk.gov.ons.ctp: DEBUG
+
+liquibase:
+  user: casesvc
+  password: casesvc
+  default-schema: casesvc
+  url: jdbc:postgresql://localhost:5432/postgres
+  changeLog: classpath:/database/changelog-master.yml
+  
+  
+
+security:
+  basic:
+    enabled: false
+  user:
+    name: admin
+    password: secret
+
+management:
+  port: 8271
+  context-path: /mgmt
+  security:
+    roles: SUPERUSER
+    enabled: false
+
+server:
+  port: 8171
+  servlet-path: /mgmt
+
+endpoints:
+  autoconfig:
+    enabled: true
+    sensitive: true
+  beans:
+    enabled: true
+    sensitive: true
+  configprops:
+    enabled: true
+    sensitive: true
+  dump:
+    enabled: true
+    sensitive: true
+  env:
+    enabled: true
+    sensitive: true
+  info:
+    enabled: true
+    sensitive: true
+  metrics:
+    enabled: true
+    sensitive: true
+  mappings:
+    enabled: true
+    sensitive: true
+  shutdown:
+    enabled: true
+    sensitive: true
+  trace:
+    enabled: true
+    sensitive: true
+
+spring:
+  application:
+    name: ONS CaseService
+  sleuth:
+    sampler:
+      percentage: 10
+  datasource:
+    url: jdbc:postgresql://localhost:5432/postgres
+    username: casesvc
+    password: casesvc
+    driverClassName: org.postgresql.Driver
+    tomcat:
+      initial-size: 5
+      max-active: 10
+      max-idle: 5
+      min-idle: 3
+
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    show-sql: false
+    properties:
+      hibernate:
+        ddl-auto: update
+
+  zipkin:
+    enabled: false
+
+data-grid:
+  address: localhost:6379
+  password: redis
+  list-time-to-live-seconds: 600
+
+internet-access-code-svc:
+  iac-post-path: /iacs
+  iac-put-path: /iacs/{iac}
+  connection-config:
+    scheme: http
+    host: localhost
+    port: 8121
+    retry-attempts: 1
+    retry-pause-milli-seconds: 5000
+    connect-timeout-milli-seconds: 5000
+    read-timeout-milli-seconds: 5000
+
+action-svc:
+  actions-path: /actions
+  connection-config:
+    scheme: http
+    host: localhost
+    port: 8151
+    retry-attempts: 10
+    retry-pause-milli-seconds: 5000
+    connect-timeout-milli-seconds: 5000
+    read-timeout-milli-seconds: 5000
+
+case-distribution:
+  iac-max: 50
+  retrieval-max: 200
+  distribution-max: 50
+  retry-sleep-seconds: 30
+  initial-delay-seconds: 30
+  subsequent-delay-seconds: 30
+
+redelivery-policy:
+  maxRedeliveries: 10
+  initialRedeliveryDelay: 1000
+  redeliveryDelay: 1000
+
+# Tag to verify latest code ends up in artifactory (zzz)
