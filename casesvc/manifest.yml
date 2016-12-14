@@ -1,0 +1,11 @@
+applications:
+- name: casesvc
+  # Fork of https://github.com/cloudfoundry/java-buildpack
+  # For stability, keep your own fork.
+  buildpack: https://github.com/cloudfoundry/java-buildpack.git
+  instances: 1
+  memory: 4096M
+  path: target/casesvc-9.31.0-SNAPSHOT.jar
+  services:
+    - casesvc_pg_db
+    - casesvc_redis
