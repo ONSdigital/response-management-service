@@ -23,6 +23,7 @@
         </filter>
     </appender>
 
+		<springProfile name="!cloud">
     <appender name="FILE-AUDIT" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <file>/var/log/ctp/responsemanagement/casesvc/debug.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
@@ -58,12 +59,15 @@
             <level>ERROR</level>
         </filter>
     </appender>
+	</springProfile>
 
     <root level="WARN">
         <appender-ref ref="STDOUT" />
         <appender-ref ref="STDERR" />
+		<springProfile name="!cloud">
         <appender-ref ref="FILE-AUDIT" />
         <appender-ref ref="FILE-ERROR" />
+		</springProfile>
     </root>
 
 </configuration>
