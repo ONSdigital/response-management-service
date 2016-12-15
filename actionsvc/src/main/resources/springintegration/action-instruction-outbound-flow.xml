@@ -30,6 +30,8 @@
     <int:channel id="instructionXmlInvalid" />
     <int:channel id="instructionField" />
     <int:channel id="instructionPrinter" />
+    <int:channel id="instructionFieldSupport" />
+    <int:filter id="instructionFieldSupportFilter" input-channel="instructionFieldSupport" output-channel="nullChannel" expression="true"/>
     <int:channel id="instructionCensusSupport" />
     <int:filter id="instructionCensusSupportFilter" input-channel="instructionCensusSupport" output-channel="nullChannel" expression="true"/>
     <int:channel id="instructionNotify" />
