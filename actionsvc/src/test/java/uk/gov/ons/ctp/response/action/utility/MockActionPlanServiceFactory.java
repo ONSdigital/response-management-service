@@ -11,6 +11,7 @@ import org.mockito.stubbing.Answer;
 
 import uk.gov.ons.ctp.response.action.domain.model.ActionPlan;
 import uk.gov.ons.ctp.response.action.domain.model.ActionRule;
+import uk.gov.ons.ctp.response.action.domain.model.ActionType;
 import uk.gov.ons.ctp.response.action.service.ActionPlanService;
 
 import static org.mockito.Matchers.any;
@@ -20,6 +21,11 @@ import static org.mockito.Matchers.any;
  */
 public class MockActionPlanServiceFactory implements Factory<ActionPlanService> {
 
+  public static final String ACTIONTYPE_NAME = "Action Type Name";
+  public static final String ACTIONTYPE_DESC = "Action Type Desc";
+  public static final String ACTIONTYPE_HANDLER = "Field";
+  public static final boolean ACTIONTYPE_CANCANCEL = true;
+  public static final boolean ACTIONTYPE_RESPONSEREQUIRED = true;
   public static final Integer ACTIONPLAN_SURVEYID = 1;
   public static final String ACTIONPLAN1_NAME = "HH_APL1";
   public static final String ACTIONPLAN2_NAME = "HGH_APL1";
@@ -44,6 +50,7 @@ public class MockActionPlanServiceFactory implements Factory<ActionPlanService> 
 
   /**
    * mock it like you mean it
+   * 
    * @return something
    */
   public ActionPlanService provide() {
@@ -94,13 +101,15 @@ public class MockActionPlanServiceFactory implements Factory<ActionPlanService> 
     Mockito.when(mockedService.findActionRulesForActionPlan(ACTIONPLANID)).thenAnswer(new Answer<List<ActionRule>>() {
       public List<ActionRule> answer(InvocationOnMock invocation)
           throws Throwable {
+        ActionType actionType = new ActionType(1, ACTIONTYPE_NAME, ACTIONTYPE_DESC, ACTIONTYPE_HANDLER,
+            ACTIONTYPE_CANCANCEL, ACTIONTYPE_RESPONSEREQUIRED);
         List<ActionRule> result = new ArrayList<>();
         result.add(new ActionRule(1, ACTIONPLANID, ACTIONRULE_PRIORITY, ACTIONRULE_SURVEYDATEDAYSOFFSET,
-            ACTIONRULE_ACTIONTYPENAME, ACTIONRULE_NAME, ACTIONRULE_DESCRIPTION));
+            actionType, ACTIONRULE_NAME, ACTIONRULE_DESCRIPTION));
         result.add(new ActionRule(2, ACTIONPLANID, ACTIONRULE_PRIORITY, ACTIONRULE_SURVEYDATEDAYSOFFSET,
-            ACTIONRULE_ACTIONTYPENAME, ACTIONRULE_NAME, ACTIONRULE_DESCRIPTION));
+            actionType, ACTIONRULE_NAME, ACTIONRULE_DESCRIPTION));
         result.add(new ActionRule(3, ACTIONPLANID, ACTIONRULE_PRIORITY, ACTIONRULE_SURVEYDATEDAYSOFFSET,
-            ACTIONRULE_ACTIONTYPENAME, ACTIONRULE_NAME, ACTIONRULE_DESCRIPTION));
+            actionType, ACTIONRULE_NAME, ACTIONRULE_DESCRIPTION));
         return result;
       }
     });
@@ -128,6 +137,7 @@ public class MockActionPlanServiceFactory implements Factory<ActionPlanService> 
 
   /**
    * dispose of s*it
+   * 
    * @param t the s*it to dispose
    */
   public void dispose(ActionPlanService t) {

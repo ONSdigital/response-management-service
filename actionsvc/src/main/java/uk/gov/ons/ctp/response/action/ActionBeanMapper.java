@@ -53,6 +53,7 @@ public class ActionBeanMapper extends ConfigurableMapper {
 
     factory
         .classMap(ActionRule.class, ActionRuleDTO.class)
+        .field("actionType.name", "actionTypeName")
         .byDefault()
         .register();
 

@@ -97,6 +97,6 @@ public class ActionPlanJobEndpoint implements CTPEndpoint {
     job.setActionPlanId(actionPlanId);
     Optional<ActionPlanJob> actionPlanJob = actionPlanJobService.createAndExecuteActionPlanJob(job);
     return Response.ok(mapperFacade.map(actionPlanJob.orElseThrow(() -> new CTPException(CTPException.Fault.RESOURCE_NOT_FOUND,
-            "ActionPlan not found for id %s", actionPlanId)), ActionPlanJobDTO.class)).build();
+            "ActionPlan not found for id %s", actionPlanId)), ActionPlanJobDTO.class)).status(Status.CREATED).build();
   }
 }

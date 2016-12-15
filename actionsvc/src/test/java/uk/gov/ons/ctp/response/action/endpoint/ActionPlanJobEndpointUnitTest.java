@@ -132,7 +132,7 @@ public class ActionPlanJobEndpointUnitTest extends CTPJerseyTest {
   public void executeActionPlanGoodJsonProvided() {
     with("http://localhost:9998/actionplans/%s/jobs", ACTIONPLANID)
         .post(MediaType.APPLICATION_JSON_TYPE, ACTIONPLANJOB_VALIDJSON)
-        .assertResponseCodeIs(HttpStatus.OK)
+        .assertResponseCodeIs(HttpStatus.CREATED)
         .assertIntegerInBody("$.actionPlanJobId", ACTIONPLANJOBID)
         .assertIntegerInBody("$.actionPlanId", ACTIONPLANJOBID_ACTIONPLANID)
         .assertStringInBody("$.createdBy", ACTIONPLANJOBID_CREATED_BY)

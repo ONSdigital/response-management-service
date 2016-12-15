@@ -6,6 +6,8 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
@@ -39,8 +41,9 @@ public class ActionRule implements Serializable {
   @Column(name = "surveydatedaysoffset")
   private Integer surveyDateDaysOffset;
 
-  @Column(name = "actiontypename")
-  private String actionTypeName;
+  @ManyToOne
+  @JoinColumn(name = "actiontypeid")
+  private ActionType actionType;
 
   private String name;
 
