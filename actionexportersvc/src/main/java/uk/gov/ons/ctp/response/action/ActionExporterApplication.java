@@ -1,5 +1,6 @@
 package uk.gov.ons.ctp.response.action;
 
+import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.glassfish.jersey.media.multipart.MultiPartFeature;
@@ -7,7 +8,6 @@ import org.glassfish.jersey.server.ResourceConfig;
 import org.redisson.Redisson;
 import org.redisson.api.RedissonClient;
 import org.redisson.config.Config;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cache.annotation.EnableCaching;
@@ -19,13 +19,17 @@ import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
+import uk.gov.ons.ctp.common.distributed.DistributedInstanceManager;
+import uk.gov.ons.ctp.common.distributed.DistributedInstanceManagerRedissonImpl;
+import uk.gov.ons.ctp.common.distributed.DistributedLatchManager;
+import uk.gov.ons.ctp.common.distributed.DistributedLatchManagerRedissonImpl;
 import uk.gov.ons.ctp.common.distributed.DistributedLockManager;
 import uk.gov.ons.ctp.common.distributed.DistributedLockManagerRedissonImpl;
 import uk.gov.ons.ctp.common.jaxrs.JAXRSRegister;
 import uk.gov.ons.ctp.response.action.export.config.AppConfig;
 import uk.gov.ons.ctp.response.action.export.endpoint.ActionRequestEndpoint;
-import uk.gov.ons.ctp.response.action.export.endpoint.TemplateEndpoint;
 import uk.gov.ons.ctp.response.action.export.endpoint.ManualTestEndpoint;
+import uk.gov.ons.ctp.response.action.export.endpoint.TemplateEndpoint;
 import uk.gov.ons.ctp.response.action.export.endpoint.TemplateMappingEndpoint;
 
 /**
@@ -44,8 +48,19 @@ public class ActionExporterApplication {
 
   public static final String ACTION_EXECUTION_LOCK = "actionexport.request.execution";
 
-  @Autowired
+  @Inject
   private AppConfig appConfig;
+
+  @Bean
+  public DistributedInstanceManager actionExportInstanceManager(RedissonClient redissonClient) {
+    return new DistributedInstanceManagerRedissonImpl(ACTION_EXECUTION_LOCK, redissonClient);
+  }
+
+  @Bean
+  public DistributedLatchManager actionExportLatchManager(RedissonClient redissonClient) {
+    return new DistributedLatchManagerRedissonImpl(ACTION_EXECUTION_LOCK, redissonClient,
+        appConfig.getDataGrid().getLockTimeToLiveSeconds());
+  }
 
   @Bean
   public DistributedLockManager actionExportExecutionLockManager(RedissonClient redissonClient) {
@@ -71,7 +86,7 @@ public class ActionExporterApplication {
      * Its public constructor.
      */
     public JerseyConfig() {
-      JAXRSRegister.listCommonTypes().forEach(t->register(t));
+      JAXRSRegister.listCommonTypes().forEach(t -> register(t));
 
       register(MultiPartFeature.class);
       register(TemplateEndpoint.class);
