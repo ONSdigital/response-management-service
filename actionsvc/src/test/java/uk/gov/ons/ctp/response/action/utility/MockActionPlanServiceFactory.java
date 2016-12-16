@@ -39,7 +39,7 @@ public class MockActionPlanServiceFactory implements Factory<ActionPlanService> 
   public static final Integer ACTIONRULE_SURVEYDATEDAYSOFFSET = 1;
   public static final Integer NON_EXISTING_ACTIONPLANID = 998;
   public static final Integer UNCHECKED_EXCEPTION = 999;
-  public static final String ACTIONRULE_ACTIONTYPENAME = "Type test";
+  public static final String ACTIONRULE_ACTIONTYPENAME = "Action Type Name";
   public static final String ACTIONRULE_DESCRIPTION = "This is a Test Action Rule";
   public static final String ACTIONRULE_NAME = "Test Action Rule";
   public static final String OUR_EXCEPTION_MESSAGE = "this is what we throw";
