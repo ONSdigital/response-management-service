@@ -1,11 +1,10 @@
-require 'csv'
-require 'net/http'
+#!/usr/bin/env ruby
 require 'rest_client'
 require 'json'
+require 'csv'
 
-# check for correct number of arguments
 unless ARGV.length == 2
-  puts "Usage: ruby run_samples.rb inputFile.csv server \n"
+  puts 'Usage: run_samples.rb <input.csv> <server>'
   exit
 end
 
@@ -18,15 +17,13 @@ csv.each do |row|
   server    = ARGV[1]
 
   RestClient.put("http://#{server}:8171/samples/#{sample_id}",
-                  {
-                    type: area_type,
-                    code: area_code
-                  }.to_json, content_type: :json, accept: :json
-                ) do |put_response, _request, _result, &_block|
-    if put_response.code == 200
-      puts "Successfully run sample for sampleId  #{sample_id}"
+                 { type: area_type, code: area_code }.to_json,
+                 content_type: :json,
+                 accept: :json) do |response, _request, _result, &_block|
+    if response.code == 200
+      puts "Successfully run sample for sample ID  #{sample_id}"
     else
-      puts "Failed to run sample for sampleId #{sample_id}"
+      puts "Failed to run sample for sample ID #{sample_id}"
     end
   end
 end
