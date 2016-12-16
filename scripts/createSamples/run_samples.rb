@@ -21,7 +21,7 @@ csv.each do |row|
                  content_type: :json,
                  accept: :json) do |response, _request, _result, &_block|
     if response.code == 200
-      puts "Successfully run sample for sample ID  #{sample_id}"
+      puts "Successfully run sample for sample ID #{sample_id}"
     else
       puts "Failed to run sample for sample ID #{sample_id}"
     end
