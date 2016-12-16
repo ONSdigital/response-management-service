@@ -21,7 +21,6 @@ import uk.gov.ons.ctp.common.distributed.DistributedInstanceManager;
 import uk.gov.ons.ctp.common.distributed.DistributedLatchManager;
 import uk.gov.ons.ctp.common.distributed.DistributedLockManager;
 import uk.gov.ons.ctp.common.error.CTPException;
-import uk.gov.ons.ctp.response.action.export.config.AppConfig;
 import uk.gov.ons.ctp.response.action.export.domain.ActionRequestDocument;
 import uk.gov.ons.ctp.response.action.export.domain.ExportMessage;
 import uk.gov.ons.ctp.response.action.export.domain.TemplateMapping;
@@ -92,6 +91,8 @@ public class ExportScheduler implements HealthIndicator {
   @PreDestroy
   public void cleanUp() {
     actionExportInstanceManager.decrementInstanceCount(DISTRIBUTED_OBJECT_KEY_INSTANCE_COUNT);
+    // Make sure no locks if interrupted in middle of run
+    actionExportLockManager.unlockInstanceLocks();
     log.info("{} {} instance/s running",
         actionExportInstanceManager.getInstanceCount(DISTRIBUTED_OBJECT_KEY_INSTANCE_COUNT),
         DISTRIBUTED_OBJECT_KEY_INSTANCE_COUNT);
@@ -157,15 +158,13 @@ public class ExportScheduler implements HealthIndicator {
       // Wait for all instances to finish to synchronise the removal of locks
       try {
         actionExportLatchManager.countDown(DISTRIBUTED_OBJECT_KEY_LATCH);
-        actionExportLatchManager.awaitCountDownLatch(DISTRIBUTED_OBJECT_KEY_LATCH);
+        if (!actionExportLatchManager.awaitCountDownLatch(DISTRIBUTED_OBJECT_KEY_LATCH)) {
+          log.error("Scheduled run error countdownlatch timed out, should be {} instances running");
+        }
       } catch (InterruptedException e) {
-        log.error("Scheduled run error waiting for countdownlock: {}", e.getMessage());
+        log.error("Scheduled run error waiting for countdownlatch: {}", e.getMessage());
       } finally {
-        templateMappingService.retrieveTemplateMappingByFilename(TEMPLATE_MAPPING)
-            .forEach((fileName, templatemappings) -> {
-              actionExportLockManager.unlock(fileName);
-              log.info("Lock {} {}", fileName, actionExportLockManager.isLocked(fileName));
-            });
+        actionExportLockManager.unlockInstanceLocks(); 
         actionExportLatchManager.deleteCountDownLatch(DISTRIBUTED_OBJECT_KEY_LATCH);
         log.info("{} {} instance/s running",
             actionExportInstanceManager.getInstanceCount(DISTRIBUTED_OBJECT_KEY_INSTANCE_COUNT),
