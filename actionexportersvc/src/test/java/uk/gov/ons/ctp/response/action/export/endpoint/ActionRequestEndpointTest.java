@@ -39,7 +39,7 @@ public class ActionRequestEndpointTest extends CTPJerseyTest {
 
   @Test
   public void findAllActionRequests() {
-    with("http://localhost:9998/actionrequests/")
+    with("/actionrequests/")
             .assertResponseCodeIs(HttpStatus.OK)
             .assertArrayLengthInBodyIs(3)
             .assertIntegerListInBody("$..actionId", 0, 1, 2)
@@ -48,7 +48,7 @@ public class ActionRequestEndpointTest extends CTPJerseyTest {
 
   @Test
   public void findNonExistingActionRequest() {
-    with("http://localhost:9998/actionrequests/%s/", NON_EXISTING_ACTION_ID)
+    with("/actionrequests/%s/", NON_EXISTING_ACTION_ID)
             .assertResponseCodeIs(HttpStatus.NOT_FOUND)
             .assertFaultIs(CTPException.Fault.RESOURCE_NOT_FOUND)
             .assertTimestampExists()
@@ -58,7 +58,7 @@ public class ActionRequestEndpointTest extends CTPJerseyTest {
 
   @Test
   public void findExistingActionRequest() {
-    with("http://localhost:9998/actionrequests/%s/", EXISTING_ACTION_ID)
+    with("/actionrequests/%s/", EXISTING_ACTION_ID)
             .assertResponseCodeIs(HttpStatus.OK)
             .assertIntegerInBody("$.actionId", EXISTING_ACTION_ID)
             .andClose();
@@ -66,7 +66,7 @@ public class ActionRequestEndpointTest extends CTPJerseyTest {
 
   @Test
   public void exportNonExistingActionRequest() {
-    with("http://localhost:9998/actionrequests/%s/", NON_EXISTING_ACTION_ID).post(MediaType.APPLICATION_JSON_TYPE, null)
+    with("/actionrequests/%s/", NON_EXISTING_ACTION_ID).post(MediaType.APPLICATION_JSON_TYPE, null)
             .assertResponseCodeIs(HttpStatus.NOT_FOUND)
             .assertFaultIs(CTPException.Fault.RESOURCE_NOT_FOUND)
             .assertTimestampExists()
@@ -76,7 +76,7 @@ public class ActionRequestEndpointTest extends CTPJerseyTest {
 
   @Test
   public void exportExistingActionRequest() {
-    with("http://localhost:9998/actionrequests/%s/", EXISTING_ACTION_ID).post(MediaType.APPLICATION_JSON_TYPE, null)
+    with("/actionrequests/%s/", EXISTING_ACTION_ID).post(MediaType.APPLICATION_JSON_TYPE, null)
             .assertResponseCodeIs(HttpStatus.CREATED)
             .assertIntegerInBody("$.actionId", EXISTING_ACTION_ID)
             .andClose();

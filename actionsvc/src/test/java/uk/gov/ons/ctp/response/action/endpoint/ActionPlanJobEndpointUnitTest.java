@@ -48,7 +48,7 @@ public class ActionPlanJobEndpointUnitTest extends CTPJerseyTest {
    */
   @Test
   public void findActionPlanJobFound() {
-    with("http://localhost:9998/actionplans/jobs/%s", ACTIONPLANJOBID)
+    with("/actionplans/jobs/%s", ACTIONPLANJOBID)
         .assertResponseCodeIs(HttpStatus.OK)
         .assertIntegerInBody("$.actionPlanJobId", ACTIONPLANJOBID)
         .assertIntegerInBody("$.actionPlanId", ACTIONPLANJOBID_ACTIONPLANID)
@@ -64,7 +64,7 @@ public class ActionPlanJobEndpointUnitTest extends CTPJerseyTest {
    */
   @Test
   public void findActionPlanJobNotFound() {
-    with("http://localhost:9998/actionplans/jobs/%s", NON_EXISTING_ACTIONPLANJOBID)
+    with("/actionplans/jobs/%s", NON_EXISTING_ACTIONPLANJOBID)
         .assertResponseCodeIs(HttpStatus.NOT_FOUND)
         .assertFaultIs(CTPException.Fault.RESOURCE_NOT_FOUND)
         .assertTimestampExists()
@@ -76,7 +76,7 @@ public class ActionPlanJobEndpointUnitTest extends CTPJerseyTest {
    */
   @Test
   public void findActionPlanUnCheckedException() {
-    with("http://localhost:9998/actionplans/jobs/%s", UNCHECKED_EXCEPTION_ACTIONPLANJOBID)
+    with("/actionplans/jobs/%s", UNCHECKED_EXCEPTION_ACTIONPLANJOBID)
         .assertResponseCodeIs(HttpStatus.INTERNAL_SERVER_ERROR)
         .assertFaultIs(CTPException.Fault.SYSTEM_ERROR)
         .assertTimestampExists()
@@ -89,7 +89,7 @@ public class ActionPlanJobEndpointUnitTest extends CTPJerseyTest {
    */
   @Test
   public void findNoActionPlanJobForActionPlan() {
-    with("http://localhost:9998/actionplans/%s/jobs", ACTIONPLANID_WITHNOACTIONPLANJOB)
+    with("/actionplans/%s/jobs", ACTIONPLANID_WITHNOACTIONPLANJOB)
         .assertResponseCodeIs(HttpStatus.NO_CONTENT)
         .andClose();
   }
@@ -99,7 +99,7 @@ public class ActionPlanJobEndpointUnitTest extends CTPJerseyTest {
    */
   @Test
   public void findActionPlanJobsForActionPlan() {
-    with("http://localhost:9998/actionplans/%s/jobs", ACTIONPLANID)
+    with("/actionplans/%s/jobs", ACTIONPLANID)
         .assertResponseCodeIs(HttpStatus.OK)
         .assertArrayLengthInBodyIs(3)
         .assertIntegerListInBody("$..actionPlanJobId", 1, 2, 3)
@@ -116,7 +116,7 @@ public class ActionPlanJobEndpointUnitTest extends CTPJerseyTest {
    */
   @Test
   public void executeActionPlanBadJsonProvided() {
-    with("http://localhost:9998/actionplans/%s/jobs", ACTIONPLANID)
+    with("/actionplans/%s/jobs", ACTIONPLANID)
         .post(MediaType.APPLICATION_JSON_TYPE, ACTIONPLANJOB_INVALIDJSON)
         .assertResponseCodeIs(HttpStatus.BAD_REQUEST)
         .assertFaultIs(CTPException.Fault.VALIDATION_FAILED)
@@ -130,7 +130,7 @@ public class ActionPlanJobEndpointUnitTest extends CTPJerseyTest {
    */
   @Test
   public void executeActionPlanGoodJsonProvided() {
-    with("http://localhost:9998/actionplans/%s/jobs", ACTIONPLANID)
+    with("/actionplans/%s/jobs", ACTIONPLANID)
         .post(MediaType.APPLICATION_JSON_TYPE, ACTIONPLANJOB_VALIDJSON)
         .assertResponseCodeIs(HttpStatus.CREATED)
         .assertIntegerInBody("$.actionPlanJobId", ACTIONPLANJOBID)
