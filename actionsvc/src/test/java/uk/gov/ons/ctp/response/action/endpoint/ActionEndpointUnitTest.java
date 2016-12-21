@@ -80,7 +80,7 @@ public final class ActionEndpointUnitTest extends CTPJerseyTest {
    */
   @Test
   public void findActionsByActionTypeAndStateFound() {
-    with("http://localhost:9998/actions?actiontype=%s&state=%s", ACTION2_ACTIONTYPENAME, ACTION2_ACTIONSTATE)
+    with("/actions?actiontype=%s&state=%s", ACTION2_ACTIONTYPENAME, ACTION2_ACTIONSTATE)
         .assertResponseCodeIs(HttpStatus.OK)
         .assertIntegerListInBody("$..actionId", ACTIONID_2.intValue())
         .assertIntegerListInBody("$..caseId", ACTION_CASEID)
@@ -100,7 +100,7 @@ public final class ActionEndpointUnitTest extends CTPJerseyTest {
    */
   @Test
   public void findActionsByActionTypeAndStateNotFound() {
-    with("http://localhost:9998/actions?actiontype=%s&state=%s", ACTION_NOTFOUND, ACTION2_ACTIONSTATE)
+    with("/actions?actiontype=%s&state=%s", ACTION_NOTFOUND, ACTION2_ACTIONSTATE)
         .assertResponseCodeIs(HttpStatus.NO_CONTENT)
         .assertResponseLengthIs(-1)
         .andClose();
@@ -111,7 +111,7 @@ public final class ActionEndpointUnitTest extends CTPJerseyTest {
    */
   @Test
   public void findActionsByActionTypeFound() {
-    with("http://localhost:9998/actions?actiontype=%s", ACTION2_ACTIONTYPENAME)
+    with("/actions?actiontype=%s", ACTION2_ACTIONTYPENAME)
         .assertResponseCodeIs(HttpStatus.OK)
         .assertIntegerListInBody("$..actionId", ACTIONID_2.intValue())
         .assertIntegerListInBody("$..caseId", ACTION_CASEID)
@@ -131,7 +131,7 @@ public final class ActionEndpointUnitTest extends CTPJerseyTest {
    */
   @Test
   public void findActionsByActionTypeNotFound() {
-    with("http://localhost:9998/actions?actiontype=%s", ACTION_NOTFOUND)
+    with("/actions?actiontype=%s", ACTION_NOTFOUND)
         .assertResponseCodeIs(HttpStatus.NO_CONTENT)
         .assertResponseLengthIs(-1)
         .andClose();
@@ -142,7 +142,7 @@ public final class ActionEndpointUnitTest extends CTPJerseyTest {
    */
   @Test
   public void findActionsByStateFound() {
-    with("http://localhost:9998/actions?state=%s", ACTION2_ACTIONSTATE.toString())
+    with("/actions?state=%s", ACTION2_ACTIONSTATE.toString())
         .assertResponseCodeIs(HttpStatus.OK)
         .assertIntegerListInBody("$..actionId", ACTIONID_2.intValue())
         .assertIntegerListInBody("$..caseId", ACTION_CASEID)
@@ -162,7 +162,7 @@ public final class ActionEndpointUnitTest extends CTPJerseyTest {
    */
   @Test
   public void findActionByActionIdFound() {
-    with("http://localhost:9998/actions/%s", ACTIONID_2.intValue())
+    with("/actions/%s", ACTIONID_2.intValue())
         .assertResponseCodeIs(HttpStatus.OK)
         .assertIntegerInBody("$.actionId", ACTIONID_2.intValue())
         .assertIntegerInBody("$.caseId", ACTION_CASEID)
@@ -182,7 +182,7 @@ public final class ActionEndpointUnitTest extends CTPJerseyTest {
    */
   @Test
   public void findActionByActionIdNotFound() {
-    with("http://localhost:9998/actions/%s", NON_EXISTING_ID)
+    with("/actions/%s", NON_EXISTING_ID)
         .assertResponseCodeIs(HttpStatus.NOT_FOUND)
         .assertFaultIs(CTPException.Fault.RESOURCE_NOT_FOUND)
         .assertTimestampExists()
@@ -195,7 +195,7 @@ public final class ActionEndpointUnitTest extends CTPJerseyTest {
    */
   @Test
   public void findActionsByCaseIdFound() {
-    with("http://localhost:9998/actions/case/%s", ACTION_CASEID)
+    with("/actions/case/%s", ACTION_CASEID)
         .assertResponseCodeIs(HttpStatus.OK)
         .assertIntegerListInBody("$..actionId", new Integer(1), new Integer(2))
         .assertIntegerListInBody("$..caseId", ACTION_CASEID, ACTION_CASEID)
@@ -215,7 +215,7 @@ public final class ActionEndpointUnitTest extends CTPJerseyTest {
    */
   @Test
   public void findActionByCaseIdNotFound() {
-    with("http://localhost:9998/actions/case/%s", NON_EXISTING_ID)
+    with("/actions/case/%s", NON_EXISTING_ID)
         .assertResponseCodeIs(HttpStatus.NO_CONTENT)
         .assertResponseLengthIs(-1)
         .andClose();
@@ -226,7 +226,7 @@ public final class ActionEndpointUnitTest extends CTPJerseyTest {
    */
   @Test
   public void updateActionByActionIdNotFound() {
-    with("http://localhost:9998/actions/%s", NON_EXISTING_ID).put(MediaType.APPLICATION_JSON_TYPE, ACTION_VALIDJSON)
+    with("/actions/%s", NON_EXISTING_ID).put(MediaType.APPLICATION_JSON_TYPE, ACTION_VALIDJSON)
         .assertResponseCodeIs(HttpStatus.NOT_FOUND)
         .assertFaultIs(CTPException.Fault.RESOURCE_NOT_FOUND)
         .andClose();
@@ -237,7 +237,7 @@ public final class ActionEndpointUnitTest extends CTPJerseyTest {
    */
   @Test
   public void findActionByActionIdUnCheckedException() {
-    with("http://localhost:9998/actions/%s", UNCHECKED_EXCEPTION)
+    with("/actions/%s", UNCHECKED_EXCEPTION)
         .assertResponseCodeIs(HttpStatus.INTERNAL_SERVER_ERROR)
         .assertFaultIs(CTPException.Fault.SYSTEM_ERROR)
         .assertTimestampExists()
@@ -250,7 +250,7 @@ public final class ActionEndpointUnitTest extends CTPJerseyTest {
    */
   @Test
   public void createActionGoodJsonProvided() {
-    with("http://localhost:9998/actions").post(MediaType.APPLICATION_JSON_TYPE, ACTION_VALIDJSON)
+    with("/actions").post(MediaType.APPLICATION_JSON_TYPE, ACTION_VALIDJSON)
         .assertResponseCodeIs(HttpStatus.CREATED)
         .assertIntegerInBody("$.actionId", ACTIONID_2.intValue())
         .assertIntegerInBody("$.caseId", ACTION_CASEID)
@@ -270,7 +270,7 @@ public final class ActionEndpointUnitTest extends CTPJerseyTest {
    */
   @Test
   public void createActionInvalidPropJsonProvided() {
-    with("http://localhost:9998/actions").post(MediaType.APPLICATION_JSON_TYPE, ACTION_INVALIDJSON_PROP)
+    with("/actions").post(MediaType.APPLICATION_JSON_TYPE, ACTION_INVALIDJSON_PROP)
         .assertResponseCodeIs(HttpStatus.BAD_REQUEST)
         .assertFaultIs(CTPException.Fault.VALIDATION_FAILED)
         .assertTimestampExists()
@@ -283,7 +283,7 @@ public final class ActionEndpointUnitTest extends CTPJerseyTest {
    */
   @Test
   public void createActionMissingPropJsonProvided() {
-    with("http://localhost:9998/actions").post(MediaType.APPLICATION_JSON_TYPE, ACTION_INVALIDJSON_MISSING_PROP)
+    with("/actions").post(MediaType.APPLICATION_JSON_TYPE, ACTION_INVALIDJSON_MISSING_PROP)
         .assertResponseCodeIs(HttpStatus.BAD_REQUEST)
         .assertFaultIs(CTPException.Fault.VALIDATION_FAILED)
         .assertTimestampExists()
@@ -296,7 +296,7 @@ public final class ActionEndpointUnitTest extends CTPJerseyTest {
    */
   @Test
   public void cancelActions() {
-    with("http://localhost:9998/actions/case/%s/cancel", ACTION_CASEID).put(MediaType.APPLICATION_JSON_TYPE, "")
+    with("/actions/case/%s/cancel", ACTION_CASEID).put(MediaType.APPLICATION_JSON_TYPE, "")
         .assertResponseCodeIs(HttpStatus.OK)
         .assertIntegerListInBody("$..actionId", ACTIONID_2.intValue())
         .assertIntegerListInBody("$..caseId", ACTION_CASEID)
@@ -316,7 +316,7 @@ public final class ActionEndpointUnitTest extends CTPJerseyTest {
    */
   @Test
   public void cancelActionsCaseNotFound() {
-    with("http://localhost:9998/actions/case/%s/cancel", NON_EXISTING_ID).put(MediaType.APPLICATION_JSON_TYPE, "")
+    with("/actions/case/%s/cancel", NON_EXISTING_ID).put(MediaType.APPLICATION_JSON_TYPE, "")
         .assertResponseCodeIs(HttpStatus.NOT_FOUND)
         .andClose();
   }

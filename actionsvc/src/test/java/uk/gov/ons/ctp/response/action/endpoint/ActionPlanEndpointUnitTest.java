@@ -57,7 +57,7 @@ public class ActionPlanEndpointUnitTest extends CTPJerseyTest {
    */
   @Test
   public void findActionPlansFound() {
-    with("http://localhost:9998/actionplans")
+    with("/actionplans")
         .assertResponseCodeIs(HttpStatus.OK)
         .assertArrayLengthInBodyIs(3)
         .assertIntegerListInBody("$..actionPlanId", 1, 2, 3)
@@ -75,7 +75,7 @@ public class ActionPlanEndpointUnitTest extends CTPJerseyTest {
    */
   @Test
   public void findActionPlanFound() {
-    with("http://localhost:9998/actionplans/%s", ACTIONPLANID)
+    with("/actionplans/%s", ACTIONPLANID)
         .assertResponseCodeIs(HttpStatus.OK)
         .assertIntegerInBody("$.actionPlanId", 3)
         .assertIntegerInBody("$.surveyId", ACTIONPLAN_SURVEYID)
@@ -91,7 +91,7 @@ public class ActionPlanEndpointUnitTest extends CTPJerseyTest {
    */
   @Test
   public void findActionPlanNotFound() {
-    with("http://localhost:9998/actionplans/%s", NON_EXISTING_ACTIONPLANID)
+    with("/actionplans/%s", NON_EXISTING_ACTIONPLANID)
         .assertResponseCodeIs(HttpStatus.NOT_FOUND)
         .assertFaultIs(CTPException.Fault.RESOURCE_NOT_FOUND)
         .assertTimestampExists()
@@ -103,7 +103,7 @@ public class ActionPlanEndpointUnitTest extends CTPJerseyTest {
    */
   @Test
   public void findActionPlanUnCheckedException() {
-    with("http://localhost:9998/actionplans/%s", UNCHECKED_EXCEPTION)
+    with("/actionplans/%s", UNCHECKED_EXCEPTION)
         .assertResponseCodeIs(HttpStatus.INTERNAL_SERVER_ERROR)
         .assertFaultIs(CTPException.Fault.SYSTEM_ERROR)
         .assertTimestampExists()
@@ -116,7 +116,7 @@ public class ActionPlanEndpointUnitTest extends CTPJerseyTest {
    */
   @Test
   public void findActionRulesForActionPlanFound() {
-    with("http://localhost:9998/actionplans/%s/rules", ACTIONPLANID)
+    with("/actionplans/%s/rules", ACTIONPLANID)
         .assertResponseCodeIs(HttpStatus.OK)
         .assertArrayLengthInBodyIs(3)
         .assertIntegerListInBody("$..actionRuleId", 1, 2, 3)
@@ -137,7 +137,7 @@ public class ActionPlanEndpointUnitTest extends CTPJerseyTest {
    */
   @Test
   public void findNoActionRulesForActionPlan() {
-    with("http://localhost:9998/actionplans/%s/rules", ACTIONPLANID_WITHNOACTIONRULE)
+    with("/actionplans/%s/rules", ACTIONPLANID_WITHNOACTIONRULE)
         .assertResponseCodeIs(HttpStatus.NO_CONTENT)
         .andClose();
   }
@@ -147,7 +147,7 @@ public class ActionPlanEndpointUnitTest extends CTPJerseyTest {
    */
   @Test
   public void findActionRulesForNonExistingActionPlan() {
-    with("http://localhost:9998/actionplans/%s/rules", NON_EXISTING_ACTIONPLANID)
+    with("/actionplans/%s/rules", NON_EXISTING_ACTIONPLANID)
         .assertResponseCodeIs(HttpStatus.NOT_FOUND)
         .assertFaultIs(CTPException.Fault.RESOURCE_NOT_FOUND)
         .assertTimestampExists()
@@ -161,7 +161,7 @@ public class ActionPlanEndpointUnitTest extends CTPJerseyTest {
    */
   @Test
   public void updateActionPlanNegativeScenarioInvalidJsonProvided() {
-    with("http://localhost:9998/actionplans/%s", ACTIONPLANID)
+    with("/actionplans/%s", ACTIONPLANID)
         .put(MediaType.APPLICATION_JSON_TYPE, ACTIONPLAN_INVALIDJSON)
         .assertResponseCodeIs(HttpStatus.BAD_REQUEST)
         .assertFaultIs(CTPException.Fault.VALIDATION_FAILED)
@@ -175,7 +175,7 @@ public class ActionPlanEndpointUnitTest extends CTPJerseyTest {
    */
   @Test
   public void updateActionPlanHappyScenario() {
-    with("http://localhost:9998/actionplans/%s", ACTIONPLANID).put(MediaType.APPLICATION_JSON_TYPE, ACTIONPLAN_JSON)
+    with("/actionplans/%s", ACTIONPLANID).put(MediaType.APPLICATION_JSON_TYPE, ACTIONPLAN_JSON)
         .assertResponseCodeIs(HttpStatus.OK)
         .assertIntegerInBody("$.actionPlanId", ACTIONPLANID)
         .assertIntegerInBody("$.surveyId", ACTIONPLAN_SURVEYID)
