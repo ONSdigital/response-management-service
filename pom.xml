@@ -4,13 +4,14 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>uk.gov.ons.ctp.product</groupId>
     <artifactId>responsemanagement</artifactId>
-    <version>9.31.2-SNAPSHOT</version>
+    <version>9.31.0-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>CTP : ResponseManagement</name>
     <description>CTP : ResponseManagement</description>
 
     <properties>
+        <skip.integration.tests>true</skip.integration.tests>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <common.version>9.31.2-SNAPSHOT</common.version>
         <maven.compiler.plugin.version>3.5.1</maven.compiler.plugin.version>
@@ -210,6 +211,9 @@
                 <!-- IMPORTANT: old version used below because https://github.com/spring-projects/spring-boot/issues/6254
                 Once a newer version than 2.19.1 is developed, try to move to it. -->
                 <version>2.18.1</version>
+                <configuration>
+                    <skipTests>${skip.integration.tests}</skipTests>
+                </configuration>
                 <executions>
                     <execution>
                         <goals>
