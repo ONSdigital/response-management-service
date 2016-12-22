@@ -1,9 +1,12 @@
-<ins:actionInstruction xmlns:ins="http://ons.gov.uk/ctp/response/action/message/instruction">
+<ins:actionInstruction
+	xmlns:ins="http://ons.gov.uk/ctp/response/action/message/instruction"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://ons.gov.uk/ctp/response/action/message/instruction actionInstruction.xsd ">
     <!--Optional:-->
     <actionRequests>
         <actionRequest>
-            <responseRequired>false</responseRequired>
             <actionId>1</actionId>
+            <responseRequired>false</responseRequired>
             <actionPlan>actionPlan</actionPlan>
             <actionType>actionType</actionType>
             <questionSet>questionSet</questionSet>
@@ -25,6 +28,7 @@
                 <line2>line2</line2>
                 <townName>townName</townName>
                 <postcode>postcode</postcode>
+                <ladCode>1</ladCode>
                 <latitude>1000.00</latitude>
                 <longitude>1000.00</longitude>
             </address>
@@ -37,8 +41,8 @@
             </events>
         </actionRequest>
         <actionRequest>
-            <responseRequired>false</responseRequired>
             <actionId>2</actionId>
+            <responseRequired>false</responseRequired>
             <actionPlan>actionPlan</actionPlan>
             <actionType>actionType</actionType>
             <questionSet>questionSet</questionSet>
@@ -60,6 +64,7 @@
                 <line2>line2</line2>
                 <townName>townName</townName>
                 <postcode>postcode</postcode>
+                <ladCode>1</ladCode>
                 <latitude>1000.00</latitude>
                 <longitude>1000.00</longitude>
             </address>
