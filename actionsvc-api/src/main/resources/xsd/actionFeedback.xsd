@@ -25,6 +25,7 @@
       <xs:enumeration value="REQUEST_FAILED" />
       <xs:enumeration value="REQUEST_ACCEPTED" />
       <xs:enumeration value="REQUEST_COMPLETED" />
+      <xs:enumeration value="REQUEST_DECLINED" />
       <xs:enumeration value="REQUEST_COMPLETED_DEACTIVATE" />
       <xs:enumeration value="REQUEST_COMPLETED_DISABLE" />
       <xs:enumeration value="CANCELLATION_FAILED" />

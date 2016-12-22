@@ -51,8 +51,8 @@
 				maxOccurs="1" />
 			<xs:element name="phoneNumber" type="xs:string" minOccurs="0"
 				maxOccurs="1" />
-			<xs:element name="emailAddress" type="xs:string" minOccurs="0"
-				maxOccurs="1" />
+			<xs:element name="emailAddress" type="xs:string"
+				minOccurs="0" maxOccurs="1" />
 		</xs:sequence>
 	</xs:complexType>
 
@@ -90,15 +90,14 @@
 		<xs:complexContent>
 			<xs:extension base="Action">
 				<xs:sequence>
-					<xs:element name="actionId" type="xs:positiveInteger" />
-					<xs:element name="actionPlan" type="xs:string" minOccurs="0"
-				maxOccurs="1" />
-					<xs:element name="actionType" type="xs:string" minOccurs="1"
-				maxOccurs="1" />
-					<xs:element name="questionSet" type="xs:string" minOccurs="1"
-				maxOccurs="1" />
-					<xs:element name="contact" type="ActionContact" minOccurs="0"
-				maxOccurs="1" />
+					<xs:element name="actionPlan" type="xs:string"
+						minOccurs="0" maxOccurs="1" />
+					<xs:element name="actionType" type="xs:string"
+						minOccurs="1" maxOccurs="1" />
+					<xs:element name="questionSet" type="xs:string"
+						minOccurs="1" maxOccurs="1" />
+					<xs:element name="contact" type="ActionContact"
+						minOccurs="0" maxOccurs="1" />
 					<xs:element name="address" type="ActionAddress" />
 					<xs:element name="caseId" type="xs:positiveInteger" />
 					<xs:element name="priority" type="Priority" minOccurs="0"
@@ -137,7 +136,6 @@
 		<xs:complexContent>
 			<xs:extension base="Action">
 				<xs:sequence>
-					<xs:element name="actionId" type="xs:positiveInteger" />
 					<xs:element name="reason" type="xs:string" />
 				</xs:sequence>
 			</xs:extension>
@@ -149,7 +147,6 @@
 		<xs:complexContent>
 			<xs:extension base="Action">
 				<xs:sequence>
-					<xs:element name="actionId" type="xs:positiveInteger" />
 					<xs:element name="priority" type="Priority" />
 					<xs:element name="events" type="ActionEvent" />
 				</xs:sequence>
@@ -160,6 +157,7 @@
 
 	<xs:complexType name="Action">
 		<xs:sequence>
+			<xs:element name="actionId" type="xs:positiveInteger" />
 			<xs:element name="responseRequired" type="xs:boolean"></xs:element>
 		</xs:sequence>
 	</xs:complexType>

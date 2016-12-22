@@ -35,15 +35,13 @@ public class TestActionStateTransitionManager {
     Map<ActionEvent, ActionState> submittedTransitions = new HashMap<>();
     submittedTransitions.put(ActionEvent.REQUEST_DISTRIBUTED, ActionState.PENDING);
     submittedTransitions.put(ActionEvent.REQUEST_CANCELLED, ActionState.ABORTED);
-    submittedTransitions.put(ActionEvent.REQUEST_COMPLETED, ActionState.COMPLETED);
-    submittedTransitions.put(ActionEvent.REQUEST_COMPLETED_DEACTIVATE, ActionState.COMPLETED);
-    submittedTransitions.put(ActionEvent.REQUEST_COMPLETED_DISABLE, ActionState.COMPLETED);
     validTransitions.put(ActionState.SUBMITTED, submittedTransitions);
 
     Map<ActionEvent, ActionState> pendingTransitions = new HashMap<>();
     pendingTransitions.put(ActionEvent.REQUEST_FAILED, ActionState.SUBMITTED);
     pendingTransitions.put(ActionEvent.REQUEST_CANCELLED, ActionState.CANCEL_SUBMITTED);
     pendingTransitions.put(ActionEvent.REQUEST_ACCEPTED, ActionState.ACTIVE);
+    pendingTransitions.put(ActionEvent.REQUEST_DECLINED, ActionState.DECLINED);
     pendingTransitions.put(ActionEvent.REQUEST_COMPLETED, ActionState.COMPLETED);
     pendingTransitions.put(ActionEvent.REQUEST_COMPLETED_DEACTIVATE, ActionState.COMPLETED);
     pendingTransitions.put(ActionEvent.REQUEST_COMPLETED_DISABLE, ActionState.COMPLETED);
@@ -65,6 +63,7 @@ public class TestActionStateTransitionManager {
     cancelSubmittedTransitions.put(ActionEvent.REQUEST_FAILED, ActionState.CANCEL_SUBMITTED);
     cancelSubmittedTransitions.put(ActionEvent.REQUEST_CANCELLED, ActionState.CANCEL_SUBMITTED);
     cancelSubmittedTransitions.put(ActionEvent.REQUEST_ACCEPTED, ActionState.CANCEL_SUBMITTED);
+    cancelSubmittedTransitions.put(ActionEvent.REQUEST_DECLINED, ActionState.CANCEL_SUBMITTED);
     cancelSubmittedTransitions.put(ActionEvent.REQUEST_COMPLETED, ActionState.CANCEL_SUBMITTED);
     cancelSubmittedTransitions.put(ActionEvent.REQUEST_COMPLETED_DEACTIVATE, ActionState.CANCEL_SUBMITTED);
     cancelSubmittedTransitions.put(ActionEvent.REQUEST_COMPLETED_DISABLE, ActionState.CANCEL_SUBMITTED);
@@ -75,6 +74,7 @@ public class TestActionStateTransitionManager {
     cancelPendingTransitions.put(ActionEvent.REQUEST_FAILED, ActionState.CANCEL_PENDING);
     cancelPendingTransitions.put(ActionEvent.REQUEST_CANCELLED, ActionState.CANCEL_PENDING);
     cancelPendingTransitions.put(ActionEvent.REQUEST_ACCEPTED, ActionState.CANCEL_PENDING);
+    cancelPendingTransitions.put(ActionEvent.REQUEST_DECLINED, ActionState.CANCEL_PENDING);
     cancelPendingTransitions.put(ActionEvent.REQUEST_COMPLETED, ActionState.CANCEL_PENDING);
     cancelPendingTransitions.put(ActionEvent.REQUEST_COMPLETED_DEACTIVATE, ActionState.CANCEL_PENDING);
     cancelPendingTransitions.put(ActionEvent.REQUEST_COMPLETED_DISABLE, ActionState.CANCEL_PENDING);
