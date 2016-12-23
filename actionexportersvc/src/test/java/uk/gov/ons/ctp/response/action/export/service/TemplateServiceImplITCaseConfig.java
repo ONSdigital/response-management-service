@@ -1,19 +1,21 @@
 package uk.gov.ons.ctp.response.action.export.service;
 
-import com.mongodb.Mongo;
-import freemarker.template.TemplateExceptionHandler;
+import static org.glassfish.jersey.message.internal.ReaderWriter.UTF8;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringBootConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
+
+import com.mongodb.Mongo;
+
+import freemarker.template.TemplateExceptionHandler;
 import uk.gov.ons.ctp.response.action.export.service.impl.TemplateMappingServiceImpl;
 import uk.gov.ons.ctp.response.action.export.service.impl.TemplateServiceImpl;
-import uk.gov.ons.ctp.response.action.export.templating.freemarker.config.MongoTemplateLoader;
 import uk.gov.ons.ctp.response.action.export.service.impl.TransformationServiceImpl;
-
-import static org.glassfish.jersey.message.internal.ReaderWriter.UTF8;
+import uk.gov.ons.ctp.response.action.export.templating.freemarker.config.MongoTemplateLoader;
 
 @PropertySource("classpath:application-test.properties")
 @EnableMongoRepositories(basePackages = "uk.gov.ons.ctp.response.action.export.repository")
@@ -26,6 +28,7 @@ public class TemplateServiceImplITCaseConfig {
   @Value("${mongodb.database}")
   private String databaseName;
 
+  @SuppressWarnings("deprecation")
   public @Bean
   Mongo mongo() throws Exception {
     return new Mongo(databseServerName);

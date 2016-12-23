@@ -1,7 +1,5 @@
-<ins:actionInstruction
-	xmlns:ins="http://ons.gov.uk/ctp/response/action/message/instruction"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://ons.gov.uk/ctp/response/action/message/instruction actionInstruction.xsd ">
+<?xml version="1.0" encoding="UTF-8"?>
+<ins:actionInstruction xmlns:ins="http://ons.gov.uk/ctp/response/action/message/instruction">
     <!--Optional:-->
     <actionRequests>
         <actionRequest>

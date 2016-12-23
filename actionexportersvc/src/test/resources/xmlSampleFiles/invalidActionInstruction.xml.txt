@@ -1,3 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE ins>
 <ins:actionInstruction xmlns:ins="http://ons.gov.uk/ctp/response/action/message/instruction">
     <!--Note values of longitude and latitude -->
     <actionRequests>

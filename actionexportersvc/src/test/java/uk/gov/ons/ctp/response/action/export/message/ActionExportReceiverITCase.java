@@ -120,7 +120,7 @@ public class ActionExportReceiverITCase {
     Date now = new Date();
     long startBadlyFormed = now.getTime();
 
-    String testMessage = FileUtils.readFileToString(provideTempFile("/xmlSampleFiles/badlyFormedActionInstruction.xml"), "UTF-8");
+    String testMessage = FileUtils.readFileToString(provideTempFile("/xmlSampleFiles/badlyFormedActionInstruction.xml.txt"), "UTF-8");
     testOutbound.send(org.springframework.messaging.support.MessageBuilder.withPayload(testMessage).build());
 
     Message<?> message = activeMQDLQXml.receive(RECEIVE_TIMEOUT);
@@ -146,7 +146,7 @@ public class ActionExportReceiverITCase {
     Date now = new Date();
     long startXmlInvalid = now.getTime();
 
-    String testMessage = FileUtils.readFileToString(provideTempFile("/xmlSampleFiles/invalidActionInstruction.xml"), "UTF-8");
+    String testMessage = FileUtils.readFileToString(provideTempFile("/xmlSampleFiles/invalidActionInstruction.xml.txt"), "UTF-8");
 
     instructionXml.send(org.springframework.messaging.support.MessageBuilder.withPayload(testMessage).build());
 
@@ -177,7 +177,7 @@ public class ActionExportReceiverITCase {
     doAnswer(countsDownLatch(serviceInvoked)).when(actionExportService).acceptInstruction(any());
 
     // Send message
-    String testMessage = FileUtils.readFileToString(provideTempFile("/xmlSampleFiles/validActionInstruction.xml"), "UTF-8");
+    String testMessage = FileUtils.readFileToString(provideTempFile("/xmlSampleFiles/validActionInstruction.xml.txt"), "UTF-8");
     testOutbound.send(org.springframework.messaging.support.MessageBuilder.withPayload(testMessage).build());
 
     // Await synchronisation with the asynchronous message call

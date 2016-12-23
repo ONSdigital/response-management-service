@@ -5,7 +5,10 @@ import static junit.framework.TestCase.assertNull;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Matchers.anyList;
+import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.reset;
+import static org.mockito.Mockito.verify;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -34,8 +37,8 @@ import org.springframework.jms.connection.CachingConnectionFactory;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
 import org.springframework.oxm.jaxb.Jaxb2Marshaller;
-
 import org.springframework.test.context.junit4.SpringRunner;
+
 import uk.gov.ons.ctp.common.message.JmsHelper;
 import uk.gov.ons.ctp.response.action.service.CaseNotificationService;
 
@@ -93,7 +96,7 @@ public class CaseNotificationReceiverITCase {
 
   @Test
   public void testReceivingCaseNotificationInvalidXml() throws IOException, JMSException {
-    String testMessage = FileUtils.readFileToString(provideTempFile("/xmlSampleFiles/invalidCaseNotification.xml"), "UTF-8");
+    String testMessage = FileUtils.readFileToString(provideTempFile("/xmlSampleFiles/invalidCaseNotification.xml.txt"), "UTF-8");
 
     caseLifecycleEventsXml.send(org.springframework.messaging.support.MessageBuilder.withPayload(testMessage).build());
 
@@ -106,7 +109,7 @@ public class CaseNotificationReceiverITCase {
 
   @Test
   public void testReceivingCaseNotificationXmlBadlyFormed() throws IOException, JMSException {
-    String testMessage = FileUtils.readFileToString(provideTempFile("/xmlSampleFiles/badlyFormedCaseNotification.xml"), "UTF-8");
+    String testMessage = FileUtils.readFileToString(provideTempFile("/xmlSampleFiles/badlyFormedCaseNotification.xml.txt"), "UTF-8");
     testOutbound.send(org.springframework.messaging.support.MessageBuilder.withPayload(testMessage).build());
 
     // TODO The below works in an IDE but fails on the command line.
@@ -125,6 +128,7 @@ public class CaseNotificationReceiverITCase {
     assertEquals(0, finalCounter - initialCounter);
   }
 
+  @SuppressWarnings("unchecked")
   @Test
   public void testReceivingCaseNotificationValidXml() throws InterruptedException, IOException, JMSException {
     // Set up CountDownLatch for synchronisation with async call
@@ -132,7 +136,7 @@ public class CaseNotificationReceiverITCase {
     // Release all waiting threads when mock caseNotificationService.acceptFeedback method is called
     doAnswer(countsDownLatch(caseNotificationServiceInvoked)).when(caseNotificationService).acceptNotification(anyList());
 
-    String testMessage = FileUtils.readFileToString(provideTempFile("/xmlSampleFiles/validCaseNotification.xml"), "UTF-8");
+    String testMessage = FileUtils.readFileToString(provideTempFile("/xmlSampleFiles/validCaseNotification.xml.txt"), "UTF-8");
     testOutbound.send(org.springframework.messaging.support.MessageBuilder.withPayload(testMessage).build());
 
     // Await synchronisation with the asynchronous message call
@@ -156,6 +160,7 @@ public class CaseNotificationReceiverITCase {
     verify(caseNotificationService).acceptNotification(anyList());
   }
 
+  @SuppressWarnings("unchecked")
   @Test
   public void testReceivingCaseNotificationValidXmlExceptionThrownInProcessing()
           throws InterruptedException, IOException, JMSException {
@@ -166,7 +171,7 @@ public class CaseNotificationReceiverITCase {
 
     Mockito.doThrow(new RuntimeException()).when(caseNotificationService).acceptNotification(anyList());
 
-    String testMessage = FileUtils.readFileToString(provideTempFile("/xmlSampleFiles/validCaseNotification.xml"), "UTF-8");
+    String testMessage = FileUtils.readFileToString(provideTempFile("/xmlSampleFiles/validCaseNotification.xml.txt"), "UTF-8");
     testOutbound.send(org.springframework.messaging.support.MessageBuilder.withPayload(testMessage).build());
 
     // Await synchronisation with the asynchronous message call

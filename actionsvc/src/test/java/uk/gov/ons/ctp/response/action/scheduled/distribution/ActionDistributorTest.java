@@ -129,7 +129,6 @@ public class ActionDistributorTest {
    *
    * @throws Exception oops
    */
-  @SuppressWarnings("unchecked")
   @Test
   public void testFailGetActionType() throws Exception {
 
@@ -166,7 +165,6 @@ public class ActionDistributorTest {
    * carry on trying and successfully deal with the actions/cases we can retrieve
    * @throws Exception oops
    */
-  @SuppressWarnings("unchecked")
   @Test
   public void testFailCaseGet() throws Exception {
 
@@ -251,7 +249,6 @@ public class ActionDistributorTest {
    * calls to publish
    * @throws Exception oops
    */
-  @SuppressWarnings("unchecked")
   @Test
   public void testBlueSky() throws Exception {
 

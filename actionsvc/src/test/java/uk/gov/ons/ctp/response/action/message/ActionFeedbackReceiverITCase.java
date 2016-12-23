@@ -93,7 +93,7 @@ public class ActionFeedbackReceiverITCase {
 
   @Test
   public void testReceivingActionFeedbackInvalidXml() throws IOException, JMSException {
-    String testMessage = FileUtils.readFileToString(provideTempFile("/xmlSampleFiles/invalidActionFeedback.xml"), "UTF-8");
+    String testMessage = FileUtils.readFileToString(provideTempFile("/xmlSampleFiles/invalidActionFeedback.xml.txt"), "UTF-8");
 
     actionFeedbackXml.send(org.springframework.messaging.support.MessageBuilder.withPayload(testMessage).build());
 
@@ -106,7 +106,7 @@ public class ActionFeedbackReceiverITCase {
 
   @Test
   public void testReceivingActionFeedbackXmlBadlyFormed() throws IOException, JMSException {
-    String testMessage = FileUtils.readFileToString(provideTempFile("/xmlSampleFiles/badlyFormedActionFeedback.xml"), "UTF-8");
+    String testMessage = FileUtils.readFileToString(provideTempFile("/xmlSampleFiles/badlyFormedActionFeedback.xml.txt"), "UTF-8");
     testOutbound.send(org.springframework.messaging.support.MessageBuilder.withPayload(testMessage).build());
 
     // TODO This test passes inside IntelliJ but fails on the Jenkins server.
@@ -131,7 +131,7 @@ public class ActionFeedbackReceiverITCase {
     // Release all waiting threads when mock feedbackService.acceptFeedback method is called
     doAnswer(countsDownLatch(feedbackServiceInvoked)).when(feedbackService).acceptFeedback(any(ActionFeedback.class));
 
-    String testMessage = FileUtils.readFileToString(provideTempFile("/xmlSampleFiles/validActionFeedback.xml"), "UTF-8");
+    String testMessage = FileUtils.readFileToString(provideTempFile("/xmlSampleFiles/validActionFeedback.xml.txt"), "UTF-8");
     testOutbound.send(org.springframework.messaging.support.MessageBuilder.withPayload(testMessage).build());
 
     // Await synchronisation with the asynchronous message call
@@ -166,7 +166,7 @@ public class ActionFeedbackReceiverITCase {
 
     Mockito.doThrow(new RuntimeException()).when(feedbackService).acceptFeedback(any(ActionFeedback.class));
 
-    String testMessage = FileUtils.readFileToString(provideTempFile("/xmlSampleFiles/validActionFeedback.xml"), "UTF-8");
+    String testMessage = FileUtils.readFileToString(provideTempFile("/xmlSampleFiles/validActionFeedback.xml.txt"), "UTF-8");
     testOutbound.send(org.springframework.messaging.support.MessageBuilder.withPayload(testMessage).build());
 
     // Await synchronisation with the asynchronous message call
