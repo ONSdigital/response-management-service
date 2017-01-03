@@ -27,6 +27,7 @@ public class CsvLine {
   private static final int LOCALITY_MAX_LEN = 35;
   private static final int ACTION_PLAN_MAX_LEN = 100;
   private static final int QUESTION_SET_MAX_LEN = 10;
+  private static final String LADCODE_RE = "[EW][0-9]{8}";
   private static final String POSTCODE_RE = "^[A-Z]{1,2}[0-9R][0-9A-Z]? [0-9][ABD-HJLNP-UW-Z]{2}$";
   private static final String IAC_RE_SEG = "[bcdfghjklmnpqrstvwxyz23456789]{4}";
   private static final String IAC_RE = IAC_RE_SEG + " " + IAC_RE_SEG + " " + IAC_RE_SEG;
@@ -98,6 +99,9 @@ public class CsvLine {
 
   @Pattern(regexp = POSTCODE_RE)
   private String postcode;
+
+  @Pattern(regexp = LADCODE_RE)
+  private String ladCode;
 
   @Pattern(regexp = NON_BLANK_FLOAT_RE)
   private String latitude;

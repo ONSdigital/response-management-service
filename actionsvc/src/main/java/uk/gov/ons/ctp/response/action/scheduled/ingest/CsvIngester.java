@@ -81,6 +81,7 @@ public class CsvIngester extends CsvToBean<CsvLine> {
   private static final String LINE2 = "line2";
   private static final String TOWN_NAME = "townName";
   private static final String POSTCODE = "postcode";
+  private static final String LADCODE = "ladCode";
   private static final String LATITUDE = "latitude";
   private static final String LONGITUDE = "longitude";
   private static final String UPRN = "uprn";
@@ -96,8 +97,9 @@ public class CsvIngester extends CsvToBean<CsvLine> {
   private static final String TELEPHONE = "telephoneNumber";
 
   private static final String[] COLUMNS = new String[] {HANDLER, ACTION_TYPE, INSTRUCTION_TYPE, ADDRESS_TYPE,
-      ESTAB_TYPE, LOCALITY, ORGANISATION_NAME, CATEGORY, LINE1, LINE2, TOWN_NAME, POSTCODE,
-      LATITUDE, LONGITUDE, UPRN, CASE_ID, CASE_REF, PRIORITY, IAC, EVENTS, ACTION_PLAN, QUESTION_SET, TITLE, FORENAME, SURNAME, EMAIL, TELEPHONE};
+      ESTAB_TYPE, LOCALITY, ORGANISATION_NAME, CATEGORY, LINE1, LINE2, TOWN_NAME, POSTCODE, LADCODE, LATITUDE,
+          LONGITUDE, UPRN, CASE_ID, CASE_REF, PRIORITY, IAC, EVENTS, ACTION_PLAN, QUESTION_SET, TITLE, FORENAME,
+          SURNAME, EMAIL, TELEPHONE};
 
   /**
    * Inner class to encapsulate the request and cancel data as they do not have
@@ -288,6 +290,7 @@ public class CsvIngester extends CsvToBean<CsvLine> {
         .withLocality(csvLine.getLocality())
         .withOrganisationName(csvLine.getOrganisationName())
         .withPostcode(csvLine.getPostcode())
+        .withLadCode(csvLine.getLadCode())
         .withTownName(csvLine.getTownName())
         .withType(csvLine.getAddressType())
         .end()
