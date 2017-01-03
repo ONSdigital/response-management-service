@@ -78,7 +78,7 @@
 				maxOccurs="1" />
 			<xs:element name="postcode" type="xs:string" minOccurs="1"
 				maxOccurs="1" />
-			<xs:element name="ladCode" type="xs:string" minOccurs="0"
+			<xs:element name="ladCode" type="xs:string" minOccurs="1"
 						maxOccurs="1" />
 			<xs:element name="latitude" type="xs:decimal" minOccurs="1"
 				maxOccurs="1" />
