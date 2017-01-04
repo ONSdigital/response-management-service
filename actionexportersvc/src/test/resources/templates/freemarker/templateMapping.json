@@ -170,11 +170,6 @@
     "file": "I1_OR"
   },
   {
-    "actionType": "I1_OR",
-    "template": "initialPrint", 
-    "file": "I1_OR"
-  },
-  {
     "actionType": "H1S_OR",
     "template": "initialPrint", 
     "file": "H1S_OR"
@@ -233,5 +228,25 @@
     "actionType": "ICLHR1_2003",
     "template": "initialPrint", 
     "file": "ICLHR1_2003"
+  },
+  {
+    "actionType": "ICLB1_2003",
+    "template": "initialPrint", 
+    "file": "ICLB1_2003"
+  },
+  {
+    "actionType": "1RLB1_0504",
+    "template": "initialPrint", 
+    "file": "1RLB1_0504"
+  },
+  {
+    "actionType": "2RLB1_1804",
+    "template": "initialPrint", 
+    "file": "2RLB1_1804"
+  },
+  {
+    "actionType": "3RLB1_2604",
+    "template": "initialPrint", 
+    "file": "3RLB1_2604"
   }
 ]
