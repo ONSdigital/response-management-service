@@ -29,8 +29,7 @@ public class CsvLine {
   private static final int QUESTION_SET_MAX_LEN = 10;
   private static final String LADCODE_RE = "[EW][0-9]{8}";
   private static final String POSTCODE_RE = "^[A-Z]{1,2}[0-9R][0-9A-Z]? [0-9][ABD-HJLNP-UW-Z]{2}$";
-  private static final String IAC_RE_SEG = "[bcdfghjklmnpqrstvwxyz23456789]{4}";
-  private static final String IAC_RE = IAC_RE_SEG + " " + IAC_RE_SEG + " " + IAC_RE_SEG;
+  private static final String IAC_RE = "[bcdfghjklmnpqrstvwxyz23456789]{12}";
   private static final String NON_BLANK_ALPHANUM_RE = "[\\w]+";
   private static final String NON_BLANK_INTEGER_RE = "[+-]?[\\d]+";
   private static final String NON_BLANK_FLOAT_RE = "[+-]?[\\d]+\\.?[\\d]*";
