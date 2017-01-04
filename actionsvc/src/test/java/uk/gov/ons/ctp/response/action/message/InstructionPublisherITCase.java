@@ -165,6 +165,7 @@ public class InstructionPublisherITCase {
     actionAddress.setLongitude(BigDecimal.TEN);
     actionRequest.setAddress(actionAddress);
     actionRequest.setEvents(new ActionEvent());
+    actionAddress.setLadCode(TEST);
     return actionRequest;
   }
 

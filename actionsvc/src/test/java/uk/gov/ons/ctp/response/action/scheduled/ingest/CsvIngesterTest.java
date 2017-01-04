@@ -375,6 +375,22 @@ public class CsvIngesterTest {
     verifyErrorFileExists(testFile, ".error_LINE_2_COLUMN_uprn");
   }
 
+  /**
+   * Test ...
+   *
+   * @throws Exception oops
+   */
+  @Test
+  public void testLadCode() throws Exception {
+    File testFile = getTestFile("invalid-ladCode.csv");
+    csvIngester.ingest(testFile);
+
+    verify(instructionPublisher, times(0)).sendInstructions(anyString(), anyListOf(ActionRequest.class),
+            anyListOf(ActionCancel.class));
+
+    verifyErrorFileExists(testFile, ".error_LINE_2_COLUMN_ladCode");
+  }
+
    /**
    * Test ...
    *
