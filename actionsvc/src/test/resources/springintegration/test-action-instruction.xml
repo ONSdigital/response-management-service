@@ -19,5 +19,18 @@
 
   <bean id="myMessageListener" class="uk.gov.ons.ctp.response.action.utility.ActionMessageListener"/>
 
+    <bean id="fieldInstructionQueue" class="org.apache.activemq.command.ActiveMQQueue">
+        <constructor-arg value="Action.Field" />
+    </bean>
+    <bean id="printerInstructionQueue" class="org.apache.activemq.command.ActiveMQQueue">
+        <constructor-arg value="Action.Printer" />
+    </bean>
+    <bean id="notifyInstructionQueue" class="org.apache.activemq.command.ActiveMQQueue">
+        <constructor-arg value="Action.Notify" />
+    </bean>
+    <bean id="invalidActionInstructionQueue" class="org.apache.activemq.command.ActiveMQQueue">
+        <constructor-arg value="Action.InvalidActionInstructions"/>
+    </bean>
+
 </beans>
 
