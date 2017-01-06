@@ -17,8 +17,10 @@
     </bean>
     <int-jms:outbound-channel-adapter id="invalidActionFeedbackJmsOut" destination="invalidActionFeedbackQueue" channel="actionFeedbackXmlInvalid"/>
 
-    <bean id="actionFeedbackQueue" class="org.apache.activemq.command.ActiveMQQueue">
-        <constructor-arg value="Action.Feedback"/>
+    <bean id="actionFeedbackQueue" class="com.rabbitmq.jms.admin.RMQDestination">
+        <constructor-arg name="destName" value="Action.Feedback"/>
+        <constructor-arg name="isQueue" value="true"/>
+        <constructor-arg name="isTemporary" value="false"/>
     </bean>
 
 

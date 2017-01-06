@@ -28,8 +28,10 @@
     <int-jms:message-driven-channel-adapter id="jmsIn" container="instructionListenerContainer" channel="instructionXml" />
 
     <int:channel id="instructionXmlInvalid" />
-    <bean id="invalidActionInstructionQueue" class="org.apache.activemq.command.ActiveMQQueue">
-        <constructor-arg value="Action.InvalidActionInstructions"/>
+    <bean id="invalidActionInstructionQueue" class="com.rabbitmq.jms.admin.RMQDestination">
+        <constructor-arg name="destName" value="Action.InvalidActionInstructions"/>
+        <constructor-arg name="isQueue" value="true"/>
+        <constructor-arg name="isTemporary" value="false"/>
     </bean>
     <int-jms:outbound-channel-adapter id="invalidActionInstructionJmsOut" destination="invalidActionInstructionQueue" channel="instructionXmlInvalid"/>
 
