@@ -10,6 +10,7 @@ info:
 logging:
   level:
     uk.gov.ons.ctp: DEBUG
+    com.rabbitmq: DEBUG
 
 liquibase:
   user: actionsvc

@@ -68,10 +68,6 @@ spring:
   application:
     name: ONS ActionExporterSvc
 
-  activemq:
-    broker-url: tcp://localhost:53445
-    pooled: true
-
   data:
     mongodb.uri: mongodb://localhost:27017/actionExport
 
@@ -108,3 +104,8 @@ redelivery-policy:
   maxRedeliveries: 10
   initialRedeliveryDelay: 1000
   redeliveryDelay: 1000
+
+RABBITMQ_USERNAME: guest
+RABBITMQ_PASSWORD: guest
+RABBITMQ_HOST: localhost
+RABBITMQ_VIRTUALHOST: /
