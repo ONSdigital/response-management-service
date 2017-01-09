@@ -1,4 +1,4 @@
-package uk.gov.ons.ctp.response.iac;
+package uk.gov.ons.ctp.response.party;
 
 import javax.inject.Named;
 
@@ -7,14 +7,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cache.annotation.EnableCaching;
-import org.springframework.context.annotation.Bean;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
-import uk.gov.ons.ctp.common.jaxrs.CTPMessageBodyReader;
 import uk.gov.ons.ctp.common.jaxrs.JAXRSRegister;
-import uk.gov.ons.ctp.common.rest.RestClient;
-import uk.gov.ons.ctp.response.party.config.AppConfig;
-import uk.gov.ons.ctp.response.party.endpoint.PartyEndpoint;
 
 /**
  * The main entry point into the IAC Service SpringBoot Application.
@@ -24,18 +19,9 @@ import uk.gov.ons.ctp.response.party.endpoint.PartyEndpoint;
 @EnableCaching
 public class PartySvcApplication {
 
-  @Autowired
-  private AppConfig appConfig;
+//  @Autowired
+//  private AppConfig appConfig;
 
-  /**
-   * Bean used to access case frame service through REST calls
-   * @return the service client
-   */
-  @Bean
-  public RestClient caseClient() {
-    RestClient restHelper = new RestClient(appConfig.getCaseSvc().getConnectionConfig());
-    return restHelper;
-  }
 
   /**
    * To register classes in the JAX-RS world.
@@ -49,12 +35,12 @@ public class PartySvcApplication {
 
       JAXRSRegister.listCommonTypes().forEach(t->register(t));
       
-      register(InternetAccessCodeEndpoint.class);
-      register(new CTPMessageBodyReader<CreateInternetAccessCodeDTO>(CreateInternetAccessCodeDTO.class) {
-      });
-      register(new CTPMessageBodyReader<UpdateInternetAccessCodeDTO>(UpdateInternetAccessCodeDTO.class) {
-      });
-
+//      register(InternetAccessCodeEndpoint.class);
+//      register(new CTPMessageBodyReader<CreateInternetAccessCodeDTO>(CreateInternetAccessCodeDTO.class) {
+//      });
+//      register(new CTPMessageBodyReader<UpdateInternetAccessCodeDTO>(UpdateInternetAccessCodeDTO.class) {
+//      });
+//
       System.setProperty("ma.glasnost.orika.writeSourceFiles", "false");
       System.setProperty("ma.glasnost.orika.writeClassFiles", "false");
     }
@@ -66,6 +52,6 @@ public class PartySvcApplication {
    * @param args These are the optional command line arguments
    */
   public static void main(final String[] args) {
-    SpringApplication.run(InternetAccessCodeSvcApplication.class, args);
+    SpringApplication.run(PartySvcApplication.class, args);
   }
 }

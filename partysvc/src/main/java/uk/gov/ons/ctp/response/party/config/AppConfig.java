@@ -1,4 +1,4 @@
-package uk.gov.ons.ctp.response.iac.config;
+package uk.gov.ons.ctp.response.party.config;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;

@@ -1,4 +1,4 @@
-package uk.gov.ons.ctp.response.iac.endpoint;
+package uk.gov.ons.ctp.response.party.endpoint;
 
 import java.util.List;
 

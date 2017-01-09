@@ -1,4 +1,4 @@
-package uk.gov.ons.ctp.response.iac.domain.repository;
+package uk.gov.ons.ctp.response.party.domain.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
