@@ -1,0 +1,11 @@
+databaseChangeLog:
+
+  - changeSet:
+      id: 9.32.0-1
+      author: Sarah Radford
+      changes:
+        - sqlFile:
+            comment: Amend actiontype names
+            path: actiontype_name_changes_V14.sql
+            relativeToChangelogFile: true
+            splitStatements: false
