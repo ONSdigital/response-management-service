@@ -9,3 +9,13 @@ databaseChangeLog:
             path: actiontype_name_changes_V14.sql
             relativeToChangelogFile: true
             splitStatements: false
+
+  - changeSet:
+      id: 9.32.0-2
+      author: Sarah Radford
+      changes:
+        - sqlFile:
+            comment: Tidy capitalisation of descriptions
+            path: tidy_descriptions_V15.sql
+            relativeToChangelogFile: true
+            splitStatements: false
