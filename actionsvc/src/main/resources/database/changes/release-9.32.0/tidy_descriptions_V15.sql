@@ -12,13 +12,14 @@ UPDATE action.actionplan
 SET  description = replace(description,'english','English');
 
 UPDATE action.actionplan
-SET  description = replace(description,'id','ID');
+SET  description = replace(description,'sexual id','sexual ID');
 
 UPDATE action.actionplan
-SET  description = replace(description,'Bilingual','Bi-Lingual');
+SET  description = replace(description,'Bi-Lingual','Bilingual');
 
 UPDATE action.actionplan
-SET description = replace(description,'bilingual','Bi-Lingual');
+SET  description = replace(description,'bilingual','Bilingual');
+
 
 
 UPDATE action.actiontype
@@ -28,13 +29,13 @@ UPDATE action.actiontype
 SET  description = replace(description,'english','English');
 
 UPDATE action.actiontype
-SET  description = replace(description,'id','ID');
+SET  description = replace(description,'sexual id','sexual ID');
 
 UPDATE action.actiontype
-SET  description = replace(description,'Bilingual','Bi-Lingual');
+SET  description = replace(description,'Bi-Lingual','Bilingual');
 
 UPDATE action.actiontype
-SET description = replace(description,'bilingual','Bi-Lingual');
+SET  description = replace(description,'bilingual','Bilingual');
 
 
 
@@ -45,10 +46,10 @@ UPDATE action.actionrule
 SET  description = replace(description,'english','English');
 
 UPDATE action.actionrule
-SET  description = replace(description,'id','ID');
+SET  description = replace(description,'sexual id','sexual ID');
 
 UPDATE action.actionrule
-SET  description = replace(description,'Bilingual','Bi-Lingual');
+SET  description = replace(description,'Bi-Lingual','Bilingual');
 
 UPDATE action.actionrule
-SET description = replace(description,'bilingual','Bi-Lingual');
+SET  description = replace(description,'bilingual','Bilingual');
