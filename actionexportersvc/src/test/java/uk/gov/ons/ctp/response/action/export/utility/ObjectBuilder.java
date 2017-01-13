@@ -1,11 +1,11 @@
 package uk.gov.ons.ctp.response.action.export.utility;
 
-import uk.gov.ons.ctp.response.action.export.domain.ActionRequestDocument;
-import uk.gov.ons.ctp.response.action.message.instruction.ActionAddress;
-
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
+
+import uk.gov.ons.ctp.response.action.export.domain.ActionRequestDocument;
+import uk.gov.ons.ctp.response.action.export.domain.Address;
 
 /**
  * Utility class to build objects required in tests
@@ -28,12 +28,12 @@ public class ObjectBuilder {
     return result;
   }
 
-  private static ActionAddress buildActionAddress() {
-    ActionAddress actionAddress = new ActionAddress();
-    actionAddress.setLine1("1 High Street");
-    actionAddress.setTownName("Southampton");
-    actionAddress.setPostcode("SO16 0AS");
-    return actionAddress;
+  private static Address buildActionAddress() {
+    Address address = new Address();
+    address.setLine1("1 High Street");
+    address.setTownName("Southampton");
+    address.setPostcode("SO16 0AS");
+    return address;
   }
 
 }

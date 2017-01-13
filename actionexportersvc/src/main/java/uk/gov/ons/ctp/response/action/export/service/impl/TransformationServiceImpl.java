@@ -1,7 +1,5 @@
 package uk.gov.ons.ctp.response.action.export.service.impl;
 
-import static uk.gov.ons.ctp.response.action.export.service.impl.TemplateMappingServiceImpl.TEMPLATE_MAPPING;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -14,7 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import uk.gov.ons.ctp.common.error.CTPException;
 import uk.gov.ons.ctp.response.action.export.domain.ActionRequestDocument;
 import uk.gov.ons.ctp.response.action.export.domain.ExportMessage;
-import uk.gov.ons.ctp.response.action.export.domain.TemplateMapping;
+import uk.gov.ons.ctp.response.action.export.domain.TemplateMappingDocument;
 import uk.gov.ons.ctp.response.action.export.service.TemplateMappingService;
 import uk.gov.ons.ctp.response.action.export.service.TemplateService;
 import uk.gov.ons.ctp.response.action.export.service.TransformationService;
@@ -52,7 +50,7 @@ public class TransformationServiceImpl implements TransformationService {
    * ExportMessage passed in to be built, if are already present will be
    * replaced.
    *
-   * @param ExportMessage to build
+   * @param message to build
    * @param actionRequestDocumentList the list to be processed
    * @return ExportMessage with stream objects and list of ActionRequest Ids.
    * @throws CTPException if cannot retrieve TemplateMapping.
@@ -65,8 +63,8 @@ public class TransformationServiceImpl implements TransformationService {
       return message;
     }
 
-    Map<String, TemplateMapping> mapping = templateMappingService
-        .retrieveTemplateMappingByActionType(TEMPLATE_MAPPING);
+    Map<String, TemplateMappingDocument> mapping = templateMappingService
+        .retrieveTemplateMappingByActionType();
     Map<String, List<ActionRequestDocument>> templateRequests = actionRequestDocumentList.stream()
         .collect(Collectors.groupingBy(ActionRequestDocument::getActionType));
     templateRequests.forEach((actionType, actionRequests) -> {

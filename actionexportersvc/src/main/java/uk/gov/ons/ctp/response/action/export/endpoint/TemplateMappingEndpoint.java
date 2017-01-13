@@ -45,7 +45,7 @@ public class TemplateMappingEndpoint {
 
   /**
    * To retrieve all TemplateMappings
-   * 
+   *
    * @return a list of TemplateMappings
    */
   @GET
@@ -61,41 +61,38 @@ public class TemplateMappingEndpoint {
 
   /**
    * To retrieve a specific TemplateMapping
-   * 
-   * @param templateMappingName for the specific TemplateMapping to retrieve
+   *
+   * @param actionType for the specific TemplateMapping to retrieve
    * @return the specific TemplateMapping
    * @throws CTPException if no TemplateMapping found
    */
   @GET
-  @Path("/{templateMappingName}")
+  @Path("/{actionType}")
   public TemplateMappingDocumentDTO findTemplateMapping(
-      @PathParam("templateMappingName") final String templateMappingName) throws CTPException {
-    log.debug("Entering findTemplateMapping with {}", templateMappingName);
-    TemplateMappingDocument result = templateMappingService.retrieveTemplateMappingDocument(templateMappingName);
+      @PathParam("actionType") final String actionType) throws CTPException {
+    log.debug("Entering findTemplateMapping with {}", actionType);
+    TemplateMappingDocument result = templateMappingService.retrieveTemplateMappingDocument(actionType);
     return mapperFacade.map(result, TemplateMappingDocumentDTO.class);
   }
 
   /**
-   * To store a TemplateMapping
-   * 
-   * @param templateMappingName the TemplateMapping name
+   * To store TemplateMappings
+   *
    * @param fileContents the TemplateMapping content
    * @return 201 if created
    * @throws CTPException if the TemplateMapping can't be stored
    */
   @POST
-  @Path("/{templateMappingName}")
+  @Path("/")
   @Consumes(MediaType.MULTIPART_FORM_DATA)
-  public Response storeTemplateMapping(@PathParam("templateMappingName") final String templateMappingName,
-      @FormDataParam("file") InputStream fileContents) throws CTPException {
-    log.debug("Entering storeTemplateMapping with templateMappingName {}", templateMappingName);
-    TemplateMappingDocument templateMappingDocument = templateMappingService.storeTemplateMappingDocument(
-        templateMappingName, fileContents);
+  public Response storeTemplateMapping(@FormDataParam("file") InputStream fileContents) throws CTPException {
+    log.debug("Entering storeTemplateMapping");
+    List<TemplateMappingDocument> mappings = templateMappingService.storeTemplateMappingDocument(fileContents);
 
     UriBuilder ub = uriInfo.getAbsolutePathBuilder();
     URI templateMappingDocumentUri = ub.build();
-    TemplateMappingDocumentDTO templateMappingDocumentDTO = mapperFacade.map(templateMappingDocument,
+    List<TemplateMappingDocumentDTO> results = mapperFacade.mapAsList(mappings,
         TemplateMappingDocumentDTO.class);
-    return Response.created(templateMappingDocumentUri).entity(templateMappingDocumentDTO).build();
+    return Response.created(templateMappingDocumentUri).entity(results).build();
   }
 }

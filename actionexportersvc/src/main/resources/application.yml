@@ -11,6 +11,13 @@ logging:
   level:
     uk.gov.ons.ctp: INFO
 
+liquibase:
+  user: actionexportsvc
+  password: actionexportsvc
+  default-schema: actionexport
+  url: jdbc:postgresql://localhost:5432/postgres
+  changeLog: classpath:/database/changelog-master.yml
+
 security:
   basic:
     enabled: true
@@ -72,8 +79,23 @@ spring:
     broker-url: tcp://localhost:53445
     pooled: true
 
-  data:
-    mongodb.uri: mongodb://localhost:27017/actionExport
+  datasource:
+    url: jdbc:postgresql://localhost:5432/postgres
+    username: actionexportsvc
+    password: actionexportsvc
+    driverClassName: org.postgresql.Driver
+    tomcat:
+      initial-size: 5
+      max-active: 10
+      max-idle: 5
+      min-idle: 3
+
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    show-sql: false
+    properties:
+      hibernate:
+        ddl-auto: update
 
   sleuth:
     sampler:

@@ -45,5 +45,5 @@ public interface ActionRequestService {
    *
    * @return a list of actionTypes.
    */
-  List<String> retieveActionTypes();
+  List<String> retrieveActionTypes();
 }

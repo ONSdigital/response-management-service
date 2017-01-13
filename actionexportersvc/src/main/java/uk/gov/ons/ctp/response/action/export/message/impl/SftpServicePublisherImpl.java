@@ -2,8 +2,8 @@ package uk.gov.ons.ctp.response.action.export.message.impl;
 
 import java.io.ByteArrayOutputStream;
 import java.math.BigInteger;
+import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -19,6 +19,7 @@ import org.springframework.messaging.support.ErrorMessage;
 import org.springframework.messaging.support.GenericMessage;
 
 import lombok.extern.slf4j.Slf4j;
+import uk.gov.ons.ctp.common.time.DateTimeUtil;
 import uk.gov.ons.ctp.response.action.export.domain.ActionRequestDocument;
 import uk.gov.ons.ctp.response.action.export.message.ActionFeedbackPublisher;
 import uk.gov.ons.ctp.response.action.export.message.SftpServicePublisher;
@@ -62,7 +63,7 @@ public class SftpServicePublisherImpl implements SftpServicePublisher {
   @ServiceActivator(inputChannel = "sftpSuccessProcess")
   public void sftpSuccessProcess(GenericMessage<GenericMessage<byte[]>> message) {
     List<String> actionIds = (List<String>) message.getPayload().getHeaders().get(ACTION_LIST);
-    Date now = new Date();
+    Timestamp now = DateTimeUtil.nowUTC();
     String timeStamp = new SimpleDateFormat(DATE_FORMAT).format(now);
     actionIds.forEach((actionId) -> {
       ActionRequestDocument actionRequest = actionRequestService

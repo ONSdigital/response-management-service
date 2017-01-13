@@ -1,42 +1,73 @@
 package uk.gov.ons.ctp.response.action.export.domain;
 
 import java.math.BigInteger;
-import java.util.Date;
+import java.sql.Timestamp;
 
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
+import javax.persistence.Table;
 
-import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import uk.gov.ons.ctp.response.action.message.instruction.ActionAddress;
-import uk.gov.ons.ctp.response.action.message.instruction.ActionContact;
-import uk.gov.ons.ctp.response.action.message.instruction.ActionEvent;
 import uk.gov.ons.ctp.response.action.message.instruction.Priority;
 
 /**
- * Mongo repository domain entity representing an ActionRequest
+ * Domain model object.
  */
+@Entity
 @Data
 @AllArgsConstructor
-@NoArgsConstructor(access = AccessLevel.PUBLIC)
-@Document(collection = "actionRequest")
+@NoArgsConstructor
+@Table(name = "actionrequest", schema = "actionexport")
 public class ActionRequestDocument {
 
   @Id
+  @Column(name = "actionid")
   private BigInteger actionId;
+
+  @Column(name = "responserequired")
   private boolean responseRequired;
+
+  @Column(name = "actionplan")
   private String actionPlan;
+
+  @Column(name = "actiontype")
   private String actionType;
+
+  @Column(name = "questionset")
   private String questionSet;
-  private ActionContact contact;
-  private ActionAddress address;
+
+  @OneToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+  @JoinColumn(name = "contactid", referencedColumnName = "contactid")
+  private Contact contact;
+
+  @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+  @JoinColumn(name = "uprn", referencedColumnName = "uprn")
+  private Address address;
+
+  @Column(name = "caseid")
   private BigInteger caseId;
+
+  @Enumerated(EnumType.STRING)
   private Priority priority;
+
+  @Column(name = "caseref")
   private String caseRef;
+
   private String iac;
-  private ActionEvent events;
-  private Date dateStored;
-  private Date dateSent;
+
+  @Column(name = "datestored")
+  private Timestamp dateStored;
+
+  @Column(name = "datesent")
+  private Timestamp dateSent;
+
 }

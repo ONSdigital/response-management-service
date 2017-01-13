@@ -1,22 +1,23 @@
 package uk.gov.ons.ctp.response.action.export.templating.freemarker.config;
 
+import java.io.IOException;
+import java.io.Reader;
+import java.io.StringReader;
+
+import javax.inject.Inject;
+import javax.inject.Named;
+
 import freemarker.cache.TemplateLoader;
 import lombok.extern.slf4j.Slf4j;
 import uk.gov.ons.ctp.response.action.export.domain.TemplateDocument;
 import uk.gov.ons.ctp.response.action.export.repository.TemplateRepository;
-
-import javax.inject.Inject;
-import javax.inject.Named;
-import java.io.IOException;
-import java.io.Reader;
-import java.io.StringReader;
 
 /**
  * TemplateLoader to load templates stored in MongopDB
  */
 @Slf4j
 @Named
-public class MongoTemplateLoader implements TemplateLoader {
+public class FreeMarkerTemplateLoader implements TemplateLoader {
 
   @Inject
   private TemplateRepository templateRepository;
