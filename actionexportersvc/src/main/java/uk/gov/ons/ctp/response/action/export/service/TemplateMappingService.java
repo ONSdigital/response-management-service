@@ -5,10 +5,10 @@ import java.util.List;
 import java.util.Map;
 
 import uk.gov.ons.ctp.common.error.CTPException;
-import uk.gov.ons.ctp.response.action.export.domain.TemplateMappingDocument;
+import uk.gov.ons.ctp.response.action.export.domain.TemplateMapping;
 
 /**
- * Service responsible for dealing with stored TemplateMappingDocuments.
+ * Service responsible for dealing with stored TemplateMappings.
  *
  */
 public interface TemplateMappingService {
@@ -16,45 +16,45 @@ public interface TemplateMappingService {
   /**
    * To store TemplateMappings
    *
-   * @param fileContents the TemplateMappingDocument content
-   * @return the stored TemplateMappingDocument
-   * @throws CTPException if the TemplateMappingDocument content is empty or error storing mapping
+   * @param fileContents the TemplateMappings content to be stored
+   * @return the stored TemplateMappings
+   * @throws CTPException if error storing TemplateMappings
    */
-  List<TemplateMappingDocument> storeTemplateMappingDocument(InputStream fileContents)
+  List<TemplateMapping> storeTemplateMappings(InputStream fileContents)
       throws CTPException;
 
   /**
-   * To retrieve a given TemplateMappingDocument
+   * To retrieve a given TemplateMapping
    *
-   * @param templateMappingName the TemplateMappingDocument name to be retrieved
-   * @return the given TemplateMappingDocument
-   * @throws CTPException if the TemplateMappingDocument is not found.
+   * @param actionType for which to retrieve the TemplateMapping
+   * @return the given TemplateMapping
+   * @throws CTPException if the TemplateMapping is not found.
    */
-  TemplateMappingDocument retrieveTemplateMappingDocument(String templateMappingName) throws CTPException;
+  TemplateMapping retrieveTemplateMappingByActionType(String actionType) throws CTPException;
 
   /**
    * To retrieve all TemplateMappings
    *
-   * @return a list of TemplateMappingDocuments
+   * @return a list of TemplateMappings
    */
-  List<TemplateMappingDocument> retrieveAllTemplateMappingDocuments();
+  List<TemplateMapping> retrieveAllTemplateMappings();
 
   /**
    * To retrieve a Map of TemplateMappings by filename.
    *
-   * @return the Map of TemplateMappingDocuments by filename.
+   * @return the Map of TemplateMappings by filename.
    */
-  Map<String, List<TemplateMappingDocument>> retrieveTemplateMappingByFilename();
+  Map<String, List<TemplateMapping>> retrieveAllTemplateMappingsByFilename();
 
   /**
    * To retrieve a Map of TemplateMappings by actionType.
    *
-   * @return the Map of TemplateMappingDocuments by actionType.
+   * @return the Map of TemplateMappings by actionType.
    */
-  Map<String, TemplateMappingDocument> retrieveTemplateMappingByActionType();
+  Map<String, TemplateMapping> retrieveAllTemplateMappingsByActionType();
 
   /**
-   * Return a list of distinct actionTypes in collection
+   * Return a list of distinct actionTypes in the collection
    *
    * @return a list of actionTypes.
    */

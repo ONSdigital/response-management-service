@@ -15,7 +15,7 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import uk.gov.ons.ctp.common.error.CTPException;
-import uk.gov.ons.ctp.response.action.export.domain.TemplateMappingDocument;
+import uk.gov.ons.ctp.response.action.export.domain.TemplateMapping;
 import uk.gov.ons.ctp.response.action.export.repository.TemplateMappingRepository;
 import uk.gov.ons.ctp.response.action.export.service.impl.TemplateMappingServiceImpl;
 
@@ -35,21 +35,21 @@ public class TemplateMappingServiceImplTest {
   public void testStoreNullTemplateMapping() {
     boolean exceptionThrown = false;
     try {
-      templateMappingService.storeTemplateMappingDocument(null);
+      templateMappingService.storeTemplateMappings(null);
     } catch (CTPException e) {
       exceptionThrown = true;
       assertEquals(CTPException.Fault.SYSTEM_ERROR, e.getFault());
       assertEquals(EXCEPTION_STORE_TEMPLATE_MAPPING, e.getMessage());
     }
     assertTrue(exceptionThrown);
-    verify(repository, times(0)).save(any(TemplateMappingDocument.class));
+    verify(repository, times(0)).save(any(TemplateMapping.class));
   }
 
   @Test
   public void testStoreEmptyTemplateMapping() {
     boolean exceptionThrown = false;
     try {
-      templateMappingService.storeTemplateMappingDocument(
+      templateMappingService.storeTemplateMappings(
           getClass().getResourceAsStream("/templates/freemarker/empty_template_mapping.json"));
     } catch (CTPException e) {
       exceptionThrown = true;
@@ -57,14 +57,14 @@ public class TemplateMappingServiceImplTest {
       assertEquals(EXCEPTION_STORE_TEMPLATE_MAPPING, e.getMessage());
     }
     assertTrue(exceptionThrown);
-    verify(repository, times(0)).save(any(TemplateMappingDocument.class));
+    verify(repository, times(0)).save(any(TemplateMapping.class));
   }
 
   @Test
   public void testStoreValidTemplateMapping() throws CTPException {
-    templateMappingService.storeTemplateMappingDocument(
+    templateMappingService.storeTemplateMappings(
         getClass().getResourceAsStream("/templates/freemarker/valid_template_mapping.json"));
-    verify(repository, times(1)).save(anyListOf(TemplateMappingDocument.class));
+    verify(repository, times(1)).save(anyListOf(TemplateMapping.class));
   }
   /*
    * @Test public void testRetrieveMapFromNonExistingTemplateMappingDocument() {

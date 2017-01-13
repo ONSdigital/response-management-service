@@ -14,7 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import uk.gov.ons.ctp.common.time.DateTimeUtil;
-import uk.gov.ons.ctp.response.action.export.domain.ActionRequestDocument;
+import uk.gov.ons.ctp.response.action.export.domain.ActionRequestInstruction;
 import uk.gov.ons.ctp.response.action.export.message.ActionFeedbackPublisher;
 import uk.gov.ons.ctp.response.action.export.repository.ActionRequestRepository;
 import uk.gov.ons.ctp.response.action.export.service.ActionExportService;
@@ -68,7 +68,7 @@ public class ActionExportServiceImpl implements ActionExportService {
    */
   private void processActionRequests(List<ActionRequest> actionRequests) {
     log.debug("Saving {} actionRequests", actionRequests.size());
-    List<ActionRequestDocument> actionRequestDocs = mapperFacade.mapAsList(actionRequests, ActionRequestDocument.class);
+    List<ActionRequestInstruction> actionRequestDocs = mapperFacade.mapAsList(actionRequests, ActionRequestInstruction.class);
     Timestamp now = DateTimeUtil.nowUTC();
     actionRequestDocs.forEach(actionRequestDoc -> {
       actionRequestDoc.setDateStored(now);
@@ -94,7 +94,7 @@ public class ActionExportServiceImpl implements ActionExportService {
     String timeStamp = new SimpleDateFormat(DATE_FORMAT).format(new Date());
     boolean cancelled = false;
     for (ActionCancel actionCancel : actionCancels) {
-      ActionRequestDocument actionRequest = actionRequestRepo.findOne(actionCancel.getActionId());
+      ActionRequestInstruction actionRequest = actionRequestRepo.findOne(actionCancel.getActionId());
       if (actionRequest != null && actionRequest.getDateSent() == null) {
         actionRequestRepo.delete(actionCancel.getActionId());
         cancelled = true;

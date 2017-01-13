@@ -20,7 +20,7 @@ import org.springframework.messaging.support.GenericMessage;
 
 import lombok.extern.slf4j.Slf4j;
 import uk.gov.ons.ctp.common.time.DateTimeUtil;
-import uk.gov.ons.ctp.response.action.export.domain.ActionRequestDocument;
+import uk.gov.ons.ctp.response.action.export.domain.ActionRequestInstruction;
 import uk.gov.ons.ctp.response.action.export.message.ActionFeedbackPublisher;
 import uk.gov.ons.ctp.response.action.export.message.SftpServicePublisher;
 import uk.gov.ons.ctp.response.action.export.scheduled.ExportInfo;
@@ -66,12 +66,12 @@ public class SftpServicePublisherImpl implements SftpServicePublisher {
     Timestamp now = DateTimeUtil.nowUTC();
     String timeStamp = new SimpleDateFormat(DATE_FORMAT).format(now);
     actionIds.forEach((actionId) -> {
-      ActionRequestDocument actionRequest = actionRequestService
-          .retrieveActionRequestDocument(new BigInteger(actionId));
+      ActionRequestInstruction actionRequest = actionRequestService
+          .retrieveActionRequest(new BigInteger(actionId));
       actionRequest.setDateSent(now);
-      ActionRequestDocument saved = actionRequestService.save(actionRequest);
+      ActionRequestInstruction saved = actionRequestService.save(actionRequest);
       if (saved == null) {
-        log.error("ActionRequestDocument {} failed to update DateSent", actionRequest.getActionId());
+        log.error("ActionRequest {} failed to update DateSent", actionRequest.getActionId());
       } else {
         if (saved.isResponseRequired()) {
           ActionFeedback actionFeedback = new ActionFeedback(saved.getActionId(),

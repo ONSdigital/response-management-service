@@ -6,19 +6,19 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
-import uk.gov.ons.ctp.response.action.export.domain.TemplateMappingDocument;
+import uk.gov.ons.ctp.response.action.export.domain.TemplateMapping;
 
 /**
  * JPA repository for TemplateMapping entities
  */
 @Repository
-public interface TemplateMappingRepository extends JpaRepository<TemplateMappingDocument, String> {
+public interface TemplateMappingRepository extends JpaRepository<TemplateMapping, String> {
 
   /**
    * Retrieve a list of actionTypes
    *
    * @return List of distinct actionTypes
    */
-  @Query("SELECT DISTINCT(t.actionType) FROM TemplateMappingDocument t")
+  @Query("SELECT DISTINCT(t.actionType) FROM TemplateMapping t")
   List<String> findAllActionType();
 }

@@ -9,7 +9,7 @@ import javax.inject.Named;
 
 import freemarker.cache.TemplateLoader;
 import lombok.extern.slf4j.Slf4j;
-import uk.gov.ons.ctp.response.action.export.domain.TemplateDocument;
+import uk.gov.ons.ctp.response.action.export.domain.TemplateExpression;
 import uk.gov.ons.ctp.response.action.export.repository.TemplateRepository;
 
 /**
@@ -30,7 +30,7 @@ public class FreeMarkerTemplateLoader implements TemplateLoader {
 
   @Override
   public long getLastModified(Object templateSource) {
-    TemplateDocument template = (TemplateDocument) templateSource;
+    TemplateExpression template = (TemplateExpression) templateSource;
     String name = template.getName();
     log.debug("Retrieving last modified time for template with name {}", name);
     template = templateRepository.findOne(name);
@@ -40,7 +40,7 @@ public class FreeMarkerTemplateLoader implements TemplateLoader {
   @Override
   public Reader getReader(Object templateSource, String encoding) throws IOException {
     // TODO encoding will be UTF-8 - do we need to do anything with it?
-    return new StringReader(((TemplateDocument) templateSource).getContent());
+    return new StringReader(((TemplateExpression) templateSource).getContent());
   }
 
   @Override

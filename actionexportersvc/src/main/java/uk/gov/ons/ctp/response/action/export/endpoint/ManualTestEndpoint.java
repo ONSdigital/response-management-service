@@ -21,7 +21,7 @@ import org.springframework.util.StringUtils;
 
 import lombok.extern.slf4j.Slf4j;
 import uk.gov.ons.ctp.common.error.CTPException;
-import uk.gov.ons.ctp.response.action.export.domain.ActionRequestDocument;
+import uk.gov.ons.ctp.response.action.export.domain.ActionRequestInstruction;
 import uk.gov.ons.ctp.response.action.export.domain.Address;
 import uk.gov.ons.ctp.response.action.export.service.TemplateService;
 
@@ -53,7 +53,7 @@ public class ManualTestEndpoint {
   public final Response testingFreeMarkerTemplating(@PathParam("templateName") final String templateName)
           throws CTPException, UnsupportedEncodingException {
     log.debug("Entering testingFreeMarkerTemplating ...");
-    ByteArrayOutputStream result = templateService.stream(buildMeListOfActionRequestDocuments(), templateName);
+    ByteArrayOutputStream result = templateService.stream(buildMeListOfActionRequests(), templateName);
     String resultString = result.toString(UTF8.name());
     log.debug("resultString = {}", resultString);
 
@@ -68,10 +68,10 @@ public class ManualTestEndpoint {
    * To build a list of ActionRequests
    * @return a list of ActionRequests
    */
-  private static List<ActionRequestDocument> buildMeListOfActionRequestDocuments() {
-    List<ActionRequestDocument> result = new ArrayList<>();
+  private static List<ActionRequestInstruction> buildMeListOfActionRequests() {
+    List<ActionRequestInstruction> result = new ArrayList<>();
     for (int i = 1; i < ACTION_REQUEST_NUMBER; i++) {
-      result.add(buildAMeActionRequestDocument(i));
+      result.add(buildAMeActionRequest(i));
     }
     return result;
   }
@@ -81,8 +81,8 @@ public class ManualTestEndpoint {
    * @param i the action id for the ActionRequest
    * @return an ActionRequest
    */
-  private static ActionRequestDocument buildAMeActionRequestDocument(int i) {
-    ActionRequestDocument result =  new ActionRequestDocument();
+  private static ActionRequestInstruction buildAMeActionRequest(int i) {
+    ActionRequestInstruction result =  new ActionRequestInstruction();
     result.setActionId(new BigInteger(new Integer(i).toString()));
     result.setActionType("testActionType");
     result.setIac("testIac");

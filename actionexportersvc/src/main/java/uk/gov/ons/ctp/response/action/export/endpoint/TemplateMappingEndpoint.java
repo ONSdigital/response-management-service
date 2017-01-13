@@ -23,8 +23,8 @@ import org.springframework.util.CollectionUtils;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import uk.gov.ons.ctp.common.error.CTPException;
-import uk.gov.ons.ctp.response.action.export.domain.TemplateMappingDocument;
-import uk.gov.ons.ctp.response.action.export.representation.TemplateMappingDocumentDTO;
+import uk.gov.ons.ctp.response.action.export.domain.TemplateMapping;
+import uk.gov.ons.ctp.response.action.export.representation.TemplateMappingDTO;
 import uk.gov.ons.ctp.response.action.export.service.TemplateMappingService;
 
 /**
@@ -50,12 +50,12 @@ public class TemplateMappingEndpoint {
    */
   @GET
   @Path("/")
-  public List<TemplateMappingDocumentDTO> findAllTemplateMappings() {
+  public List<TemplateMappingDTO> findAllTemplateMappings() {
     log.debug("Entering findAllTemplateMappings ...");
-    List<TemplateMappingDocument> templateMappingDocuments = templateMappingService
-        .retrieveAllTemplateMappingDocuments();
-    List<TemplateMappingDocumentDTO> results = mapperFacade.mapAsList(templateMappingDocuments,
-        TemplateMappingDocumentDTO.class);
+    List<TemplateMapping> templateMappings = templateMappingService
+        .retrieveAllTemplateMappings();
+    List<TemplateMappingDTO> results = mapperFacade.mapAsList(templateMappings,
+        TemplateMappingDTO.class);
     return CollectionUtils.isEmpty(results) ? null : results;
   }
 
@@ -68,11 +68,11 @@ public class TemplateMappingEndpoint {
    */
   @GET
   @Path("/{actionType}")
-  public TemplateMappingDocumentDTO findTemplateMapping(
+  public TemplateMappingDTO findTemplateMapping(
       @PathParam("actionType") final String actionType) throws CTPException {
     log.debug("Entering findTemplateMapping with {}", actionType);
-    TemplateMappingDocument result = templateMappingService.retrieveTemplateMappingDocument(actionType);
-    return mapperFacade.map(result, TemplateMappingDocumentDTO.class);
+    TemplateMapping result = templateMappingService.retrieveTemplateMappingByActionType(actionType);
+    return mapperFacade.map(result, TemplateMappingDTO.class);
   }
 
   /**
@@ -87,12 +87,12 @@ public class TemplateMappingEndpoint {
   @Consumes(MediaType.MULTIPART_FORM_DATA)
   public Response storeTemplateMapping(@FormDataParam("file") InputStream fileContents) throws CTPException {
     log.debug("Entering storeTemplateMapping");
-    List<TemplateMappingDocument> mappings = templateMappingService.storeTemplateMappingDocument(fileContents);
+    List<TemplateMapping> mappings = templateMappingService.storeTemplateMappings(fileContents);
 
     UriBuilder ub = uriInfo.getAbsolutePathBuilder();
-    URI templateMappingDocumentUri = ub.build();
-    List<TemplateMappingDocumentDTO> results = mapperFacade.mapAsList(mappings,
-        TemplateMappingDocumentDTO.class);
-    return Response.created(templateMappingDocumentUri).entity(results).build();
+    URI templateMappingUri = ub.build();
+    List<TemplateMappingDTO> results = mapperFacade.mapAsList(mappings,
+        TemplateMappingDTO.class);
+    return Response.created(templateMappingUri).entity(results).build();
   }
 }

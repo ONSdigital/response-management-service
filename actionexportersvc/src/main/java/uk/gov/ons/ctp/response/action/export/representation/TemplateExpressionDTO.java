@@ -10,16 +10,14 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * Representation of TemplateMappingDocument
+ * Representation of a Template
  */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PUBLIC)
-public class TemplateMappingDocumentDTO {
-
+public class TemplateExpressionDTO {
   @NotNull
-  private String actionType;
-  private String template;
-  private String file;
+  private String name;
+  private String content;
   private Date dateModified;
 }

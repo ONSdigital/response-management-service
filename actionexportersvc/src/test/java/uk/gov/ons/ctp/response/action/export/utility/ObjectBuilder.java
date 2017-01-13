@@ -4,23 +4,23 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
-import uk.gov.ons.ctp.response.action.export.domain.ActionRequestDocument;
+import uk.gov.ons.ctp.response.action.export.domain.ActionRequestInstruction;
 import uk.gov.ons.ctp.response.action.export.domain.Address;
 
 /**
  * Utility class to build objects required in tests
  */
 public class ObjectBuilder {
-  public static List<ActionRequestDocument> buildListOfActionRequestDocuments() {
-    List<ActionRequestDocument> result = new ArrayList<>();
+  public static List<ActionRequestInstruction> buildListOfActionRequests() {
+    List<ActionRequestInstruction> result = new ArrayList<>();
     for (int i = 1; i < 51; i++) {
-      result.add(buildActionRequestDocument(i));
+      result.add(buildActionRequest(i));
     }
     return result;
   }
 
-  private static ActionRequestDocument buildActionRequestDocument(int i) {
-    ActionRequestDocument result =  new ActionRequestDocument();
+  private static ActionRequestInstruction buildActionRequest(int i) {
+    ActionRequestInstruction result =  new ActionRequestInstruction();
     result.setActionId(new BigInteger(new Integer(i).toString()));
     result.setActionType("testActionType");
     result.setIac("testIac");

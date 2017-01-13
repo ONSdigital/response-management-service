@@ -7,7 +7,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import lombok.extern.slf4j.Slf4j;
-import uk.gov.ons.ctp.response.action.export.domain.ActionRequestDocument;
+import uk.gov.ons.ctp.response.action.export.domain.ActionRequestInstruction;
 import uk.gov.ons.ctp.response.action.export.repository.ActionRequestRepository;
 import uk.gov.ons.ctp.response.action.export.service.ActionRequestService;
 
@@ -22,23 +22,23 @@ public class ActionRequestServiceImpl implements ActionRequestService {
   private ActionRequestRepository repository;
 
   @Override
-  public List<ActionRequestDocument> retrieveAllActionRequestDocuments() {
+  public List<ActionRequestInstruction> retrieveAllActionRequests() {
     return repository.findAll();
   }
 
   @Override
-  public ActionRequestDocument retrieveActionRequestDocument(BigInteger actionId) {
+  public ActionRequestInstruction retrieveActionRequest(BigInteger actionId) {
     return repository.findOne(actionId);
   }
 
   @Override
-  public ActionRequestDocument save(final ActionRequestDocument actionRequest) {
-    log.debug("Saving ActionRequestDocument {}", actionRequest.getActionId());
+  public ActionRequestInstruction save(final ActionRequestInstruction actionRequest) {
+    log.debug("Saving ActionRequest {}", actionRequest.getActionId());
     return repository.save(actionRequest);
   }
 
   @Override
-  public List<ActionRequestDocument> findByDateSentIsNullAndActionType(String actionType) {
+  public List<ActionRequestInstruction> findByDateSentIsNullAndActionType(String actionType) {
     return repository.findByDateSentIsNullAndActionType(actionType);
   }
 

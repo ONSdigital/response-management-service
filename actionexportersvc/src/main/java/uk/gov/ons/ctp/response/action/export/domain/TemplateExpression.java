@@ -20,7 +20,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PUBLIC)
 @Table(name = "template", schema = "actionexport")
-public class TemplateDocument {
+public class TemplateExpression {
 
   @Id
   private String name;

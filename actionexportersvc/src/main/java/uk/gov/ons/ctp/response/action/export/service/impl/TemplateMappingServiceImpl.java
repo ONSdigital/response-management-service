@@ -23,7 +23,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import lombok.extern.slf4j.Slf4j;
 import uk.gov.ons.ctp.common.error.CTPException;
-import uk.gov.ons.ctp.response.action.export.domain.TemplateMappingDocument;
+import uk.gov.ons.ctp.response.action.export.domain.TemplateMapping;
 import uk.gov.ons.ctp.response.action.export.repository.TemplateMappingRepository;
 import uk.gov.ons.ctp.response.action.export.service.TemplateMappingService;
 
@@ -42,9 +42,9 @@ public class TemplateMappingServiceImpl implements TemplateMappingService {
   private TemplateMappingRepository repository;
 
   @Override
-  public List<TemplateMappingDocument> storeTemplateMappingDocument(InputStream fileContents)
+  public List<TemplateMapping> storeTemplateMappings(InputStream fileContents)
       throws CTPException {
-    List<TemplateMappingDocument> mapping = new ArrayList<TemplateMappingDocument>();
+    List<TemplateMapping> mapping = new ArrayList<TemplateMapping>();
     String stringValue = getStringFromInputStream(fileContents);
     if (StringUtils.isEmpty(stringValue)) {
       log.error(EXCEPTION_STORE_TEMPLATE_MAPPING);
@@ -52,7 +52,7 @@ public class TemplateMappingServiceImpl implements TemplateMappingService {
     }
     try {
       ObjectMapper mapper = new ObjectMapper();
-      mapping = mapper.readValue(stringValue, new TypeReference<List<TemplateMappingDocument>>() {
+      mapping = mapper.readValue(stringValue, new TypeReference<List<TemplateMapping>>() {
       });
     } catch (JsonParseException e) {
       log.error("JsonParseException thrown while parsing mapping...", e.getMessage());
@@ -71,8 +71,8 @@ public class TemplateMappingServiceImpl implements TemplateMappingService {
   }
 
   @Override
-  public TemplateMappingDocument retrieveTemplateMappingDocument(String actionType) throws CTPException {
-    TemplateMappingDocument templateMapping = repository.findOne(actionType);
+  public TemplateMapping retrieveTemplateMappingByActionType(String actionType) throws CTPException {
+    TemplateMapping templateMapping = repository.findOne(actionType);
     if (templateMapping == null) {
       log.error("No template mapping for actionType {} found.", actionType);
       throw new CTPException(CTPException.Fault.RESOURCE_NOT_FOUND,
@@ -82,20 +82,20 @@ public class TemplateMappingServiceImpl implements TemplateMappingService {
   }
 
   @Override
-  public List<TemplateMappingDocument> retrieveAllTemplateMappingDocuments() {
+  public List<TemplateMapping> retrieveAllTemplateMappings() {
     return repository.findAll();
   }
 
   @Override
-  public Map<String, List<TemplateMappingDocument>> retrieveTemplateMappingByFilename() {
-    return retrieveAllTemplateMappingDocuments().stream()
-        .collect(Collectors.groupingBy(TemplateMappingDocument::getFile));
+  public Map<String, List<TemplateMapping>> retrieveAllTemplateMappingsByFilename() {
+    return retrieveAllTemplateMappings().stream()
+        .collect(Collectors.groupingBy(TemplateMapping::getFile));
   }
 
   @Override
-  public Map<String, TemplateMappingDocument> retrieveTemplateMappingByActionType() {
-    Map<String, TemplateMappingDocument> mappings = new HashMap<String, TemplateMappingDocument>();
-    retrieveAllTemplateMappingDocuments().forEach((templateMapping) -> {
+  public Map<String, TemplateMapping> retrieveAllTemplateMappingsByActionType() {
+    Map<String, TemplateMapping> mappings = new HashMap<String, TemplateMapping>();
+    retrieveAllTemplateMappings().forEach((templateMapping) -> {
       mappings.put(templateMapping.getActionType(), templateMapping);
     });
     return mappings;

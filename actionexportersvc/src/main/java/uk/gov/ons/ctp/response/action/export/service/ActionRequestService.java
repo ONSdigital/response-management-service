@@ -3,42 +3,42 @@ package uk.gov.ons.ctp.response.action.export.service;
 import java.math.BigInteger;
 import java.util.List;
 
-import uk.gov.ons.ctp.response.action.export.domain.ActionRequestDocument;
+import uk.gov.ons.ctp.response.action.export.domain.ActionRequestInstruction;
 
 /**
  * Service responsible for dealing with ActionRequests stored in MongoDB
  */
 public interface ActionRequestService {
   /**
-   * To retrieve all ActionRequestDocuments
+   * To retrieve all ActionRequests
    *
-   * @return a list of ActionRequestDocuments
+   * @return a list of ActionRequests
    */
-  List<ActionRequestDocument> retrieveAllActionRequestDocuments();
+  List<ActionRequestInstruction> retrieveAllActionRequests();
 
   /**
-   * To retrieve a given ActionRequestDocument
+   * To retrieve a given ActionRequest
    *
-   * @param actionId the ActionRequestDocument actionId to be retrieved
-   * @return the given ActionRequestDocument
+   * @param actionId the ActionRequest actionId to be retrieved
+   * @return the given ActionRequest
    */
-  ActionRequestDocument retrieveActionRequestDocument(BigInteger actionId);
+  ActionRequestInstruction retrieveActionRequest(BigInteger actionId);
 
   /**
-   * Save a ActionRequestDocument
+   * Save an ActionRequest
    *
-   * @param actionRequest the ActionRequestDocument to save.
-   * @return the ActionRequestDocument saved.
+   * @param actionRequest the ActionRequest to save.
+   * @return the ActionRequest saved.
    */
-  ActionRequestDocument save(final ActionRequestDocument actionRequest);
+  ActionRequestInstruction save(final ActionRequestInstruction actionRequest);
 
   /**
    * Retrieve all action export requests not done for an actionType.
    * 
-   * @return List ActionRequestDocuments not sent to external services
+   * @return List ActionRequests not sent to external services
    *         previously for actionType.
    */
-  List<ActionRequestDocument> findByDateSentIsNullAndActionType(String actionType);
+  List<ActionRequestInstruction> findByDateSentIsNullAndActionType(String actionType);
 
   /**
    * Return a list of distinct actionTypes in collection

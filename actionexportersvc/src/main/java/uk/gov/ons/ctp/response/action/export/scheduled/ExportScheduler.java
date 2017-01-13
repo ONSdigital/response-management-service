@@ -18,7 +18,7 @@ import uk.gov.ons.ctp.common.distributed.DistributedInstanceManager;
 import uk.gov.ons.ctp.common.distributed.DistributedLatchManager;
 import uk.gov.ons.ctp.common.distributed.DistributedLockManager;
 import uk.gov.ons.ctp.common.error.CTPException;
-import uk.gov.ons.ctp.response.action.export.domain.ActionRequestDocument;
+import uk.gov.ons.ctp.response.action.export.domain.ActionRequestInstruction;
 import uk.gov.ons.ctp.response.action.export.domain.ExportMessage;
 import uk.gov.ons.ctp.response.action.export.message.SftpServicePublisher;
 import uk.gov.ons.ctp.response.action.export.service.ActionRequestService;
@@ -118,7 +118,7 @@ public class ExportScheduler implements HealthIndicator {
     String timeStamp = new SimpleDateFormat(DATE_FORMAT_IN_FILE_NAMES).format(Calendar.getInstance().getTime());
     actionExportLatchManager.setCountDownLatch(DISTRIBUTED_OBJECT_KEY_LATCH,
         actionExportInstanceManager.getInstanceCount(DISTRIBUTED_OBJECT_KEY_INSTANCE_COUNT));
-    templateMappingService.retrieveTemplateMappingByFilename()
+    templateMappingService.retrieveAllTemplateMappingsByFilename()
         .forEach((fileName, templatemappings) -> {
           log.info("Lock test {} {}", fileName, actionExportLockManager.isLocked(fileName));
           if (!actionExportLockManager.isLocked(fileName)) {
@@ -127,7 +127,7 @@ public class ExportScheduler implements HealthIndicator {
               ExportMessage message = new ExportMessage();
               // process Collection of templateMappings
               templatemappings.forEach((templateMapping) -> {
-                List<ActionRequestDocument> requests = actionRequestService
+                List<ActionRequestInstruction> requests = actionRequestService
                     .findByDateSentIsNullAndActionType(templateMapping.getActionType());
                 if (requests.isEmpty()) {
                   log.info("No requests for actionType {} to process", templateMapping.getActionType());

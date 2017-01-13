@@ -15,12 +15,12 @@ import uk.gov.ons.ctp.response.action.message.instruction.ActionEvent;
 import uk.gov.ons.ctp.response.action.message.instruction.Priority;
 
 /**
- * Representation of ActionRequestDocument
+ * Representation of an ActionRequest
  */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PUBLIC)
-public class ActionRequestDocumentDTO {
+public class ActionRequestInstructionDTO {
   @Id
   private BigInteger actionId;
   private boolean responseRequired;
