@@ -19,3 +19,13 @@ databaseChangeLog:
             path: tidy_descriptions_V15.sql
             relativeToChangelogFile: true
             splitStatements: false
+
+  - changeSet:
+      id: 9.32.0-3
+      author: Phil Whiles
+      changes:
+        - sqlFile:
+            comment: increase createdby column size
+            path: increase_createdby_col_width.sql
+            relativeToChangelogFile: true
+            splitStatements: false
