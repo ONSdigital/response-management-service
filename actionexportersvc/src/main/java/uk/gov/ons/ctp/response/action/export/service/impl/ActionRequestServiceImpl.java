@@ -1,7 +1,9 @@
 package uk.gov.ons.ctp.response.action.export.service.impl;
 
 import java.math.BigInteger;
+import java.sql.Timestamp;
 import java.util.List;
+import java.util.Set;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -45,5 +47,15 @@ public class ActionRequestServiceImpl implements ActionRequestService {
   @Override
   public List<String> retrieveActionTypes() {
     return repository.findAllActionType();
+  }
+
+  @Override
+  public int updateDateSentByActionId(Set<BigInteger> actionIds, Timestamp dateSent) {
+    return repository.updateDateSentByActionId(actionIds, dateSent);
+  }
+
+  @Override
+  public List<BigInteger> retrieveResponseRequiredByActionId(Set<BigInteger> actionIds) {
+    return repository.retrieveResponseRequiredByActionId(actionIds);
   }
 }
