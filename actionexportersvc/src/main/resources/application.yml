@@ -65,6 +65,10 @@ endpoints:
     sensitive: true
 
 spring:
+  output:
+    ansi:
+      enabled: never
+
   application:
     name: ONS ActionExporterSvc
 
