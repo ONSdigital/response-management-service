@@ -6,7 +6,7 @@ info:
     exports to be initiated for ActionRequests previously stored.
 
     Note that all of the endpoints this service provides are authenticated using HTTP basic authentication.
-  version: 9.28.0
+  version: 9.32.0
 schemes:
   - http
 basePath: /
@@ -132,18 +132,18 @@ paths:
             description: Unexpected error.
             schema:
               $ref: '#/definitions/Error'
-  /templatemappings/{templateMappingName}:
+  /templatemappings/{actionType}:
       get:
-        summary:  Gets the template mapping for the specified templateMappingName.
-        description: Returns details of the template mapping for the supplied templateMappingName.
+        summary:  Gets the template mapping for the specified actionType.
+        description: Returns details of the template mapping for the supplied actionType.
         parameters:
           - name: Accept
             in: header
             description: Response type, application/json.
             required: false
             type: string
-          - name: templateMappingName
-            description: Unique template mapping name
+          - name: actionType
+            description: Unique actionType name.
             in: path
             required: true
             type: string
@@ -151,11 +151,11 @@ paths:
           - Template
         responses:
           200:
-            description: Template mapping details for the supplied templateMappingName.
+            description: Template mapping details for the supplied actionType.
             schema:
               $ref: '#/definitions/TemplateMapping'
           404:
-            description: templateMappingName not found
+            description: actionType not found
             schema:
               $ref: '#/definitions/Error'
           default:
@@ -173,21 +173,21 @@ paths:
             description: Response type, application/json
             required: false
             type: string
-          - name: templateMappingName
+          - name: actionType
             in: path
             type: string
-            description: Unique template mapping name
+            description: Unique actionType name.
             required: true
           - name: file
             in: formData
             type: file
-            description: Template mapping file to store
+            description: Template mapping to store
             required: true
         tags:
           - Template
         responses:
           201:
-            description: Template mapping file stored
+            description: Template mapping stored
             schema:
               $ref: '#/definitions/TemplateMapping'
           400:
@@ -229,7 +229,7 @@ paths:
           schema:
             type: array
             items:
-              $ref: '#/definitions/ActionRequestDocument'
+              $ref: '#/definitions/ActionRequest'
         default:
           description: Unexpected error
           schema:
@@ -266,7 +266,7 @@ paths:
           schema:
             type: array
             items:
-              $ref: '#/definitions/ActionRequestDocument'
+              $ref: '#/definitions/ActionRequest'
         default:
           description: Unexpected error
           schema:
@@ -292,7 +292,7 @@ paths:
         200:
           description: actionRequest's details for the supplied action ID.
           schema:
-            $ref: '#/definitions/ActionRequestDocument'
+            $ref: '#/definitions/ActionRequest'
         404:
           description: ActionRequest not found
           schema:
@@ -321,7 +321,7 @@ paths:
         201:
           description: ActionRequest for the specified actionId exported successfully.
           schema:
-            $ref: '#/definitions/ActionRequestDocument'
+            $ref: '#/definitions/ActionRequest'
         404:
           description: ActionRequest not found
           schema:
@@ -364,6 +364,9 @@ definitions:
       postcode:
         type: string
         description: Postal Code.
+      ladCode:
+        type: string
+        description: Local Authority District Code.
       latitude:
         type: number
         description: Position North or South of Equator.
@@ -390,21 +393,25 @@ definitions:
   TemplateMapping:
     type: object
     required:
-      - name
-      - content
+      - actionType
+      - template
+      - file
       - dateModified
     properties:
-      name:
+      actionType:
         type: string
-        description: Unique name for the Template Mapping.
-      content:
+        description: ActionType name for which mapping applies.
+      template:
         type: string
-        description: Content of the Template Mapping.
+        description: Template to apply for actionType.
+      file:
+        type: string
+        description: File name prefix.      
       dateModified:
         type: string
         format: date-time
         description: Creation date-time.
-  ActionRequestDocument:
+  ActionRequest:
     type: object
     properties:
       actionId:

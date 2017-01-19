@@ -1,7 +1,5 @@
 package uk.gov.ons.ctp.response.action.export.message.impl;
 
-import java.util.stream.Collectors;
-
 import javax.inject.Inject;
 
 import org.springframework.integration.annotation.MessageEndpoint;
@@ -28,10 +26,6 @@ public class ActionExportReceiverImpl implements ActionExportReceiver {
   @Override
   @ServiceActivator(inputChannel = "instructionTransformed")
   public void acceptInstruction(ActionInstruction instruction) {
-    log.debug("Instructed with action requests for action ids : [{}]",
-        instruction.getActionRequests().getActionRequests().stream()
-            .map(a -> a.getActionId().toString())
-            .collect(Collectors.joining(",")));
     actionExportService.acceptInstruction(instruction);
   }
 }

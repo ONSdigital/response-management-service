@@ -1,24 +1,30 @@
 package uk.gov.ons.ctp.response.action.export.domain;
 
+import java.util.Date;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
-
-import java.util.Date;
 
 /**
- * Mongo repository domain entity representing a Template Mapping.
+ * Domain entity representing a Template.
  */
+@Entity
 @Data
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PUBLIC)
-@Document
-public class TemplateMappingDocument {
+@Table(name = "template", schema = "actionexport")
+public class TemplateExpression {
+
   @Id
   private String name;
   private String content;
+  @Column(name = "datemodified")
   private Date dateModified;
 }

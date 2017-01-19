@@ -3,7 +3,7 @@ package uk.gov.ons.ctp.response.action.export.service;
 import java.util.List;
 
 import uk.gov.ons.ctp.common.error.CTPException;
-import uk.gov.ons.ctp.response.action.export.domain.ActionRequestDocument;
+import uk.gov.ons.ctp.response.action.export.domain.ActionRequestInstruction;
 import uk.gov.ons.ctp.response.action.export.domain.ExportMessage;
 
 /**
@@ -22,17 +22,17 @@ public interface TransformationService {
    * @return ExportMessage with stream objects and list of ActionRequest Ids.
    * @throws CTPException if cannot retrieve TemplateMapping for ActionRequest.
    */
-  ExportMessage processActionRequests(ExportMessage message, List<ActionRequestDocument> requests) throws CTPException;
+  ExportMessage processActionRequests(ExportMessage message, List<ActionRequestInstruction> requests) throws CTPException;
 
   /**
    * This produces a stream for the given action request applying the template
    * mapped in the stored mapping document.
    * 
    * @param ExportMessage being built
-   * @param actionRequestDocument the given actionRequest
+   * @param actionRequest the given actionRequest
    * @return ExportMessage with stream object and the given ActionRequest Id.
    * @throws CTPException if cannot retrieve TemplateMapping for ActionRequest.
    */
-  ExportMessage processActionRequest(ExportMessage message, ActionRequestDocument actionRequestDocument)
+  ExportMessage processActionRequest(ExportMessage message, ActionRequestInstruction actionRequest)
       throws CTPException;
 }
