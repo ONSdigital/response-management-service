@@ -13,7 +13,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ImportResource;
-import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 import org.springframework.integration.annotation.IntegrationComponentScan;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
@@ -35,8 +34,6 @@ import uk.gov.ons.ctp.response.action.export.endpoint.TemplateMappingEndpoint;
 /**
  * The main entry point into the Action Service SpringBoot Application.
  */
-
-@EnableMongoRepositories(basePackages = "uk.gov.ons.ctp.response.action.export.repository")
 @SpringBootApplication
 @EnableTransactionManagement
 @IntegrationComponentScan

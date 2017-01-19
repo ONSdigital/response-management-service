@@ -1,7 +1,5 @@
 package uk.gov.ons.ctp.response.action.export.service.impl;
 
-import static uk.gov.ons.ctp.response.action.export.service.impl.TemplateMappingServiceImpl.TEMPLATE_MAPPING;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -12,7 +10,7 @@ import javax.inject.Named;
 
 import lombok.extern.slf4j.Slf4j;
 import uk.gov.ons.ctp.common.error.CTPException;
-import uk.gov.ons.ctp.response.action.export.domain.ActionRequestDocument;
+import uk.gov.ons.ctp.response.action.export.domain.ActionRequestInstruction;
 import uk.gov.ons.ctp.response.action.export.domain.ExportMessage;
 import uk.gov.ons.ctp.response.action.export.domain.TemplateMapping;
 import uk.gov.ons.ctp.response.action.export.service.TemplateMappingService;
@@ -33,16 +31,16 @@ public class TransformationServiceImpl implements TransformationService {
   private TemplateMappingService templateMappingService;
 
   @Override
-  public ExportMessage processActionRequests(ExportMessage message, List<ActionRequestDocument> requests)
+  public ExportMessage processActionRequests(ExportMessage message, List<ActionRequestInstruction> requests)
       throws CTPException {
     return buildExportMessage(message, requests);
   }
 
   @Override
-  public ExportMessage processActionRequest(ExportMessage message, ActionRequestDocument actionRequestDocument)
+  public ExportMessage processActionRequest(ExportMessage message, ActionRequestInstruction actionRequest)
       throws CTPException {
-    List<ActionRequestDocument> requests = new ArrayList<>();
-    requests.add(actionRequestDocument);
+    List<ActionRequestInstruction> requests = new ArrayList<>();
+    requests.add(actionRequest);
     return buildExportMessage(message, requests);
   }
 
@@ -52,23 +50,23 @@ public class TransformationServiceImpl implements TransformationService {
    * ExportMessage passed in to be built, if are already present will be
    * replaced.
    *
-   * @param ExportMessage to build
-   * @param actionRequestDocumentList the list to be processed
+   * @param message to build
+   * @param actionRequestList the list to be processed
    * @return ExportMessage with stream objects and list of ActionRequest Ids.
    * @throws CTPException if cannot retrieve TemplateMapping.
    */
   private ExportMessage buildExportMessage(ExportMessage message,
-      List<ActionRequestDocument> actionRequestDocumentList) throws CTPException {
+      List<ActionRequestInstruction> actionRequestList) throws CTPException {
 
     // if nothing to process return ExportMessage
-    if (actionRequestDocumentList.isEmpty()) {
+    if (actionRequestList.isEmpty()) {
       return message;
     }
 
     Map<String, TemplateMapping> mapping = templateMappingService
-        .retrieveTemplateMappingByActionType(TEMPLATE_MAPPING);
-    Map<String, List<ActionRequestDocument>> templateRequests = actionRequestDocumentList.stream()
-        .collect(Collectors.groupingBy(ActionRequestDocument::getActionType));
+        .retrieveAllTemplateMappingsByActionType();
+    Map<String, List<ActionRequestInstruction>> templateRequests = actionRequestList.stream()
+        .collect(Collectors.groupingBy(ActionRequestInstruction::getActionType));
     templateRequests.forEach((actionType, actionRequests) -> {
       if (mapping.containsKey(actionType)) {
         try {

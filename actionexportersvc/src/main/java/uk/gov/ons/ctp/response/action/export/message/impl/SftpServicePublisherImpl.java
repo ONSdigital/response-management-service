@@ -2,9 +2,11 @@ package uk.gov.ons.ctp.response.action.export.message.impl;
 
 import java.io.ByteArrayOutputStream;
 import java.math.BigInteger;
+import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -18,8 +20,10 @@ import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.messaging.support.ErrorMessage;
 import org.springframework.messaging.support.GenericMessage;
 
+import com.google.common.collect.Lists;
+
 import lombok.extern.slf4j.Slf4j;
-import uk.gov.ons.ctp.response.action.export.domain.ActionRequestDocument;
+import uk.gov.ons.ctp.common.time.DateTimeUtil;
 import uk.gov.ons.ctp.response.action.export.message.ActionFeedbackPublisher;
 import uk.gov.ons.ctp.response.action.export.message.SftpServicePublisher;
 import uk.gov.ons.ctp.response.action.export.scheduled.ExportInfo;
@@ -39,6 +43,7 @@ public class SftpServicePublisherImpl implements SftpServicePublisher {
 
   private static final String DATE_FORMAT = "dd/MM/yyyy HH:mm";
   private static final String ACTION_LIST = "list_actionIds";
+  private static final int BATCH_SIZE = 10000;
 
   @Inject
   private ActionRequestService actionRequestService;
@@ -57,31 +62,38 @@ public class SftpServicePublisherImpl implements SftpServicePublisher {
     return stream.toByteArray();
   }
 
+  /**
+   * Using JPA entities to update repository for actionIds exported was slow.
+   * JPQL queries used for performance reasons. To increase performance updates
+   * batched with IN clause.
+   * 
+   * @param message Spring integration message sent
+   */
   @SuppressWarnings("unchecked")
   @Override
   @ServiceActivator(inputChannel = "sftpSuccessProcess")
   public void sftpSuccessProcess(GenericMessage<GenericMessage<byte[]>> message) {
-    List<String> actionIds = (List<String>) message.getPayload().getHeaders().get(ACTION_LIST);
-    Date now = new Date();
-    String timeStamp = new SimpleDateFormat(DATE_FORMAT).format(now);
-    actionIds.forEach((actionId) -> {
-      ActionRequestDocument actionRequest = actionRequestService
-          .retrieveActionRequestDocument(new BigInteger(actionId));
-      actionRequest.setDateSent(now);
-      ActionRequestDocument saved = actionRequestService.save(actionRequest);
-      if (saved == null) {
-        log.error("ActionRequestDocument {} failed to update DateSent", actionRequest.getActionId());
+    List<String> actionList = (List<String>) message.getPayload().getHeaders().get(ACTION_LIST);
+    Set<BigInteger> actionIds = new HashSet<BigInteger>();
+    Timestamp now = DateTimeUtil.nowUTC();
+    String dateStr = new SimpleDateFormat(DATE_FORMAT).format(now);
+    List<List<String>> subLists = Lists.partition(actionList, BATCH_SIZE);
+    subLists.forEach((batch) -> {
+      batch.forEach((actionId) -> {
+        actionIds.add(new BigInteger(actionId));
+      });
+      int saved = actionRequestService.updateDateSentByActionId(actionIds, now);
+      if (actionIds.size() == saved) {
+        sendFeedbackMessage(actionRequestService.retrieveResponseRequiredByActionId(actionIds), dateStr);
       } else {
-        if (saved.isResponseRequired()) {
-          ActionFeedback actionFeedback = new ActionFeedback(saved.getActionId(),
-              "ActionExport Sent: " + timeStamp, Outcome.REQUEST_COMPLETED);
-          actionFeedbackPubl.sendActionFeedback(actionFeedback);
-        }
+        log.error("ActionRequests {} failed to update DateSent", actionIds);
       }
+      actionIds.clear();
     });
+
     log.info("Sftp transfer complete for file {}", message.getPayload().getHeaders().get(FileHeaders.REMOTE_FILE));
     exportInfo.addOutcome((String) message.getPayload().getHeaders().get(FileHeaders.REMOTE_FILE) + " transferred with "
-        + Integer.toString(actionIds.size()) + " requests.");
+        + Integer.toString(actionList.size()) + " requests.");
   }
 
   @Override
@@ -95,4 +107,18 @@ public class SftpServicePublisherImpl implements SftpServicePublisher {
 
   }
 
+  /**
+   * Send ActionFeedback
+   *
+   * @param actionIds of ActionRequests for which to send ActionFeedback.
+   * @param dateStr when actioned.
+   */
+  private void sendFeedbackMessage(List<BigInteger> actionIds, String dateStr) {
+
+    actionIds.forEach((actionId) -> {
+      ActionFeedback actionFeedback = new ActionFeedback(actionId,
+          "ActionExport Sent: " + dateStr, Outcome.REQUEST_COMPLETED);
+      actionFeedbackPubl.sendActionFeedback(actionFeedback);
+    });
+  }
 }

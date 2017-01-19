@@ -5,7 +5,7 @@ import org.glassfish.hk2.api.Factory;
 import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
-import uk.gov.ons.ctp.response.action.export.domain.ActionRequestDocument;
+import uk.gov.ons.ctp.response.action.export.domain.ActionRequestInstruction;
 import uk.gov.ons.ctp.response.action.export.service.ActionRequestService;
 
 import java.math.BigInteger;
@@ -28,25 +28,25 @@ public class MockActionRequestServiceFactory implements Factory<ActionRequestSer
   public ActionRequestService provide() {
     final ActionRequestService mockedService = Mockito.mock(ActionRequestService.class);
 
-    Mockito.when(mockedService.retrieveAllActionRequestDocuments()).thenAnswer(new Answer<List<ActionRequestDocument>>() {
-      public List<ActionRequestDocument> answer(final InvocationOnMock invocation) throws Throwable {
-        List<ActionRequestDocument> result = new ArrayList<>();
+    Mockito.when(mockedService.retrieveAllActionRequests()).thenAnswer(new Answer<List<ActionRequestInstruction>>() {
+      public List<ActionRequestInstruction> answer(final InvocationOnMock invocation) throws Throwable {
+        List<ActionRequestInstruction> result = new ArrayList<>();
         for (int i = 0; i < 3; i++){
-          result.add(buildActionRequestDocument(i));
+          result.add(buildActionRequest(i));
         }
         return result;
       }
     });
 
-    Mockito.when(mockedService.retrieveActionRequestDocument(BigInteger.valueOf(NON_EXISTING_ACTION_ID))).thenAnswer(new Answer<ActionRequestDocument>() {
-      public ActionRequestDocument answer(final InvocationOnMock invocation) throws Throwable {
+    Mockito.when(mockedService.retrieveActionRequest(BigInteger.valueOf(NON_EXISTING_ACTION_ID))).thenAnswer(new Answer<ActionRequestInstruction>() {
+      public ActionRequestInstruction answer(final InvocationOnMock invocation) throws Throwable {
         return null;
       }
     });
 
-    Mockito.when(mockedService.retrieveActionRequestDocument(BigInteger.valueOf(EXISTING_ACTION_ID))).thenAnswer(new Answer<ActionRequestDocument>() {
-      public ActionRequestDocument answer(final InvocationOnMock invocation) throws Throwable {
-        return buildActionRequestDocument(EXISTING_ACTION_ID);
+    Mockito.when(mockedService.retrieveActionRequest(BigInteger.valueOf(EXISTING_ACTION_ID))).thenAnswer(new Answer<ActionRequestInstruction>() {
+      public ActionRequestInstruction answer(final InvocationOnMock invocation) throws Throwable {
+        return buildActionRequest(EXISTING_ACTION_ID);
       }
     });
 
@@ -61,9 +61,9 @@ public class MockActionRequestServiceFactory implements Factory<ActionRequestSer
   public void dispose(final ActionRequestService t) {
   }
 
-  private static ActionRequestDocument buildActionRequestDocument(int actionId) {
-    ActionRequestDocument actionRequestDocument = new ActionRequestDocument();
-    actionRequestDocument.setActionId(BigInteger.valueOf(actionId));
-    return actionRequestDocument;
+  private static ActionRequestInstruction buildActionRequest(int actionId) {
+    ActionRequestInstruction actionRequest = new ActionRequestInstruction();
+    actionRequest.setActionId(BigInteger.valueOf(actionId));
+    return actionRequest;
   }
 }

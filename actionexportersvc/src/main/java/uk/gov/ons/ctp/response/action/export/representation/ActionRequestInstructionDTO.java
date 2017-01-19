@@ -1,25 +1,26 @@
 package uk.gov.ons.ctp.response.action.export.representation;
 
+import java.math.BigInteger;
+import java.util.Date;
+
+import org.springframework.data.annotation.Id;
+
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.data.annotation.Id;
 import uk.gov.ons.ctp.response.action.message.instruction.ActionAddress;
 import uk.gov.ons.ctp.response.action.message.instruction.ActionContact;
 import uk.gov.ons.ctp.response.action.message.instruction.ActionEvent;
 import uk.gov.ons.ctp.response.action.message.instruction.Priority;
 
-import java.math.BigInteger;
-import java.util.Date;
-
 /**
- * Representation of ActionRequestDocument
+ * Representation of an ActionRequest
  */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PUBLIC)
-public class ActionRequestDocumentDTO {
+public class ActionRequestInstructionDTO {
   @Id
   private BigInteger actionId;
   private boolean responseRequired;
