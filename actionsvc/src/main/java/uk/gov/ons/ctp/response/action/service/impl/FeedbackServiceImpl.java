@@ -57,12 +57,16 @@ public class FeedbackServiceImpl implements FeedbackService {
       if (action != null) {
         ActionDTO.ActionEvent outcomeEvent = ActionDTO.ActionEvent.valueOf(feedback.getOutcome().name());
         
-        
         if (outcomeEvent != null) {
           String situation = feedback.getSituation();
 
-          ActionDTO.ActionState nextState = actionSvcStateTransitionManager.transition(action.getState(), outcomeEvent);
-          updateAction(action, nextState, situation);
+          try {
+            ActionDTO.ActionState nextState = actionSvcStateTransitionManager.transition(action.getState(), outcomeEvent);
+            updateAction(action, nextState, situation);
+          } catch (RuntimeException re) {
+            log.error("Feedback Service unable to effect state transition. Ignoring feedback. Reason: {}"+re.getMessage());
+            return;
+          }
 
           String handler = action.getActionType().getHandler();
           OutcomeHandlerId outcomeHandlerId = OutcomeHandlerId.builder().handler(handler).actionOutcome(outcomeEvent).build();

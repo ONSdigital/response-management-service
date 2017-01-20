@@ -1,5 +1,6 @@
 package uk.gov.ons.ctp.response.action.export.service.impl;
 
+import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -7,9 +8,13 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
-import uk.gov.ons.ctp.response.action.export.domain.ActionRequestDocument;
+import uk.gov.ons.ctp.common.time.DateTimeUtil;
+import uk.gov.ons.ctp.response.action.export.domain.ActionRequestInstruction;
 import uk.gov.ons.ctp.response.action.export.message.ActionFeedbackPublisher;
 import uk.gov.ons.ctp.response.action.export.repository.ActionRequestRepository;
 import uk.gov.ons.ctp.response.action.export.service.ActionExportService;
@@ -28,6 +33,8 @@ public class ActionExportServiceImpl implements ActionExportService {
 
   private static final String DATE_FORMAT = "dd/MM/yyyy HH:mm";
 
+  private static final int TRANSACTION_TIMEOUT = 30;
+
   @Inject
   private ActionFeedbackPublisher actionFeedbackPubl;
 
@@ -37,23 +44,17 @@ public class ActionExportServiceImpl implements ActionExportService {
   @Inject
   private ActionRequestRepository actionRequestRepo;
 
-  /**
-   * Mongo database does not support transactions. Where transaction integrity
-   * is important if failure occurs rollback must be manual or a single atomic
-   * operation on the database undertaken which will succeed or fail e.g.
-   * insertion of single document. Failure of operation will still result in
-   * failure of any calling SI transaction and message being considered poisoned
-   * bill and rejected to DLQ.
-   *
-   */
+  @Transactional(propagation = Propagation.REQUIRED, readOnly = false, timeout = TRANSACTION_TIMEOUT)
   @Override
   public void acceptInstruction(ActionInstruction instruction) {
-    if (instruction.getActionRequests().getActionRequests().size() > 0) {
+    if ((instruction.getActionRequests() != null) &&
+        (instruction.getActionRequests().getActionRequests().size() > 0)) {
       processActionRequests(instruction.getActionRequests().getActionRequests());
     } else {
       log.info("No ActionRequests to process");
     }
-    if (instruction.getActionCancels().getActionCancels().size() > 0) {
+    if ((instruction.getActionCancels() != null) &&
+        (instruction.getActionCancels().getActionCancels().size() > 0)) {
       processActionCancels(instruction.getActionCancels().getActionCancels());
     } else {
       log.info("No ActionCancels to process");
@@ -62,12 +63,13 @@ public class ActionExportServiceImpl implements ActionExportService {
 
   /**
    * To process a list of actionRequests
+   * 
    * @param actionRequests list to be processed
    */
   private void processActionRequests(List<ActionRequest> actionRequests) {
     log.debug("Saving {} actionRequests", actionRequests.size());
-    List<ActionRequestDocument> actionRequestDocs = mapperFacade.mapAsList(actionRequests, ActionRequestDocument.class);
-    Date now = new Date();
+    List<ActionRequestInstruction> actionRequestDocs = mapperFacade.mapAsList(actionRequests, ActionRequestInstruction.class);
+    Timestamp now = DateTimeUtil.nowUTC();
     actionRequestDocs.forEach(actionRequestDoc -> {
       actionRequestDoc.setDateStored(now);
     });
@@ -84,6 +86,7 @@ public class ActionExportServiceImpl implements ActionExportService {
 
   /**
    * To process a list of actionCancels
+   * 
    * @param actionCancels list to be processed
    */
   private void processActionCancels(List<ActionCancel> actionCancels) {
@@ -91,7 +94,7 @@ public class ActionExportServiceImpl implements ActionExportService {
     String timeStamp = new SimpleDateFormat(DATE_FORMAT).format(new Date());
     boolean cancelled = false;
     for (ActionCancel actionCancel : actionCancels) {
-      ActionRequestDocument actionRequest = actionRequestRepo.findOne(actionCancel.getActionId());
+      ActionRequestInstruction actionRequest = actionRequestRepo.findOne(actionCancel.getActionId());
       if (actionRequest != null && actionRequest.getDateSent() == null) {
         actionRequestRepo.delete(actionCancel.getActionId());
         cancelled = true;

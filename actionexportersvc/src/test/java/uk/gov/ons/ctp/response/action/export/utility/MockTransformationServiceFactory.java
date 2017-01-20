@@ -11,7 +11,7 @@ import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
 import uk.gov.ons.ctp.common.error.CTPException;
-import uk.gov.ons.ctp.response.action.export.domain.ActionRequestDocument;
+import uk.gov.ons.ctp.response.action.export.domain.ActionRequestInstruction;
 import uk.gov.ons.ctp.response.action.export.domain.ExportMessage;
 import uk.gov.ons.ctp.response.action.export.service.TransformationService;
 
@@ -29,7 +29,7 @@ public class MockTransformationServiceFactory implements Factory<TransformationS
     final TransformationService mockedService = Mockito.mock(TransformationService.class);
 
     try {
-      Mockito.when(mockedService.processActionRequest(any(ExportMessage.class), any(ActionRequestDocument.class)))
+      Mockito.when(mockedService.processActionRequest(any(ExportMessage.class), any(ActionRequestInstruction.class)))
           .thenAnswer(new Answer<ExportMessage>() {
             public ExportMessage answer(final InvocationOnMock invocation) throws Throwable {
               Object[] args = invocation.getArguments();

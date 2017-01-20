@@ -1,12 +1,12 @@
 package uk.gov.ons.ctp.response.action.export.endpoint;
 
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Controller;
-import org.springframework.util.StringUtils;
-import uk.gov.ons.ctp.common.error.CTPException;
-import uk.gov.ons.ctp.response.action.export.domain.ActionRequestDocument;
-import uk.gov.ons.ctp.response.action.export.service.TemplateService;
-import uk.gov.ons.ctp.response.action.message.instruction.ActionAddress;
+import static org.glassfish.jersey.message.internal.ReaderWriter.UTF8;
+
+import java.io.ByteArrayOutputStream;
+import java.io.UnsupportedEncodingException;
+import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.inject.Inject;
 import javax.ws.rs.GET;
@@ -15,16 +15,18 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.io.ByteArrayOutputStream;
-import java.io.UnsupportedEncodingException;
-import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.List;
 
-import static org.glassfish.jersey.message.internal.ReaderWriter.UTF8;
+import org.springframework.stereotype.Controller;
+import org.springframework.util.StringUtils;
+
+import lombok.extern.slf4j.Slf4j;
+import uk.gov.ons.ctp.common.error.CTPException;
+import uk.gov.ons.ctp.response.action.export.domain.ActionRequestInstruction;
+import uk.gov.ons.ctp.response.action.export.domain.Address;
+import uk.gov.ons.ctp.response.action.export.service.TemplateService;
 
 /**
- * Convenient endpoint to test manually our POC with FreeMarker templates pulled from the MongoDB
+ * Convenient endpoint to test manually our POC with FreeMarker templates
  *
  * Once integration tests work correctly, the endpoint will be removed.
  */
@@ -51,7 +53,7 @@ public class ManualTestEndpoint {
   public final Response testingFreeMarkerTemplating(@PathParam("templateName") final String templateName)
           throws CTPException, UnsupportedEncodingException {
     log.debug("Entering testingFreeMarkerTemplating ...");
-    ByteArrayOutputStream result = templateService.stream(buildMeListOfActionRequestDocuments(), templateName);
+    ByteArrayOutputStream result = templateService.stream(buildMeListOfActionRequests(), templateName);
     String resultString = result.toString(UTF8.name());
     log.debug("resultString = {}", resultString);
 
@@ -66,10 +68,10 @@ public class ManualTestEndpoint {
    * To build a list of ActionRequests
    * @return a list of ActionRequests
    */
-  private static List<ActionRequestDocument> buildMeListOfActionRequestDocuments() {
-    List<ActionRequestDocument> result = new ArrayList<>();
+  private static List<ActionRequestInstruction> buildMeListOfActionRequests() {
+    List<ActionRequestInstruction> result = new ArrayList<>();
     for (int i = 1; i < ACTION_REQUEST_NUMBER; i++) {
-      result.add(buildAMeActionRequestDocument(i));
+      result.add(buildAMeActionRequest(i));
     }
     return result;
   }
@@ -79,24 +81,24 @@ public class ManualTestEndpoint {
    * @param i the action id for the ActionRequest
    * @return an ActionRequest
    */
-  private static ActionRequestDocument buildAMeActionRequestDocument(int i) {
-    ActionRequestDocument result =  new ActionRequestDocument();
+  private static ActionRequestInstruction buildAMeActionRequest(int i) {
+    ActionRequestInstruction result =  new ActionRequestInstruction();
     result.setActionId(new BigInteger(new Integer(i).toString()));
     result.setActionType("testActionType");
     result.setIac("testIac");
-    result.setAddress(buildActionAddress());
+    result.setAddress(buildAddress());
     return result;
   }
 
   /**
-   * To build an ActionAddress
-   * @return an ActionAddress
+   * To build an Address
+   * @return an Address
    */
-  private static ActionAddress buildActionAddress() {
-    ActionAddress actionAddress = new ActionAddress();
-    actionAddress.setLine1("1 High Street");
-    actionAddress.setTownName("Southampton");
-    actionAddress.setPostcode("SO16 0AS");
-    return actionAddress;
+  private static Address buildAddress() {
+    Address address = new Address();
+    address.setLine1("1 High Street");
+    address.setTownName("Southampton");
+    address.setPostcode("SO16 0AS");
+    return address;
   }
 }

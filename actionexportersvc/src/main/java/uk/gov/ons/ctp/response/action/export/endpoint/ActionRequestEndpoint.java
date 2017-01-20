@@ -21,10 +21,10 @@ import org.springframework.util.CollectionUtils;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import uk.gov.ons.ctp.common.error.CTPException;
-import uk.gov.ons.ctp.response.action.export.domain.ActionRequestDocument;
+import uk.gov.ons.ctp.response.action.export.domain.ActionRequestInstruction;
 import uk.gov.ons.ctp.response.action.export.domain.ExportMessage;
 import uk.gov.ons.ctp.response.action.export.message.SftpServicePublisher;
-import uk.gov.ons.ctp.response.action.export.representation.ActionRequestDocumentDTO;
+import uk.gov.ons.ctp.response.action.export.representation.ActionRequestInstructionDTO;
 import uk.gov.ons.ctp.response.action.export.service.ActionRequestService;
 import uk.gov.ons.ctp.response.action.export.service.TransformationService;
 
@@ -62,11 +62,11 @@ public class ActionRequestEndpoint {
    */
   @GET
   @Path("/")
-  public List<ActionRequestDocumentDTO> findAllActionRequests() {
+  public List<ActionRequestInstructionDTO> findAllActionRequests() {
     log.debug("Entering findAllActionRequests ...");
-    List<ActionRequestDocument> actionRequestDocuments = actionRequestService.retrieveAllActionRequestDocuments();
-    List<ActionRequestDocumentDTO> results = mapperFacade.mapAsList(actionRequestDocuments,
-        ActionRequestDocumentDTO.class);
+    List<ActionRequestInstruction> actionRequests = actionRequestService.retrieveAllActionRequests();
+    List<ActionRequestInstructionDTO> results = mapperFacade.mapAsList(actionRequests,
+        ActionRequestInstructionDTO.class);
     return CollectionUtils.isEmpty(results) ? null : results;
   }
 
@@ -79,15 +79,15 @@ public class ActionRequestEndpoint {
    */
   @GET
   @Path("/{actionId}")
-  public ActionRequestDocumentDTO findActionRequest(@PathParam("actionId") final BigInteger actionId)
+  public ActionRequestInstructionDTO findActionRequest(@PathParam("actionId") final BigInteger actionId)
       throws CTPException {
     log.debug("Entering findActionRequest with {}", actionId);
-    ActionRequestDocument result = actionRequestService.retrieveActionRequestDocument(actionId);
+    ActionRequestInstruction result = actionRequestService.retrieveActionRequest(actionId);
     if (result == null) {
       throw new CTPException(CTPException.Fault.RESOURCE_NOT_FOUND,
           String.format("%s %d", ACTION_REQUEST_NOT_FOUND, actionId));
     }
-    return mapperFacade.map(result, ActionRequestDocumentDTO.class);
+    return mapperFacade.map(result, ActionRequestInstructionDTO.class);
   }
 
   /**
@@ -101,13 +101,13 @@ public class ActionRequestEndpoint {
   @Path("/{actionId}")
   public Response export(@PathParam("actionId") final BigInteger actionId) throws CTPException {
     log.debug("Entering export with actionId {}", actionId);
-    ActionRequestDocument actionRequestDocument = actionRequestService.retrieveActionRequestDocument(actionId);
-    if (actionRequestDocument == null) {
+    ActionRequestInstruction actionRequest = actionRequestService.retrieveActionRequest(actionId);
+    if (actionRequest == null) {
       throw new CTPException(CTPException.Fault.RESOURCE_NOT_FOUND,
           String.format("%s %d", ACTION_REQUEST_NOT_FOUND, actionId));
     }
     ExportMessage message = new ExportMessage();
-    transformationService.processActionRequest(message, actionRequestDocument);
+    transformationService.processActionRequest(message, actionRequest);
     if (message.isEmpty()) {
       throw new CTPException(CTPException.Fault.SYSTEM_ERROR,
           String.format("%s %d", ACTION_REQUEST_TRANSFORM_ERROR, actionId));
@@ -117,9 +117,9 @@ public class ActionRequestEndpoint {
     });
 
     UriBuilder ub = uriInfo.getAbsolutePathBuilder();
-    URI actionRequestDocumentUri = ub.build();
-    ActionRequestDocumentDTO actionRequestDocumentDTO = mapperFacade.map(actionRequestDocument,
-        ActionRequestDocumentDTO.class);
-    return Response.created(actionRequestDocumentUri).entity(actionRequestDocumentDTO).build();
+    URI actionRequestUri = ub.build();
+    ActionRequestInstructionDTO actionRequestDTO = mapperFacade.map(actionRequest,
+        ActionRequestInstructionDTO.class);
+    return Response.created(actionRequestUri).entity(actionRequestDTO).build();
   }
 }
