@@ -12,9 +12,9 @@ logging:
     uk.gov.ons.ctp: INFO
 
 liquibase:
-  user: actionexportsvc
-  password: actionexportsvc
-  default-schema: actionexport
+  user: actionexportersvc
+  password: actionexportersvc
+  default-schema: actionexporter
   url: jdbc:postgresql://localhost:5432/postgres
   changeLog: classpath:/database/changelog-master.yml
 
@@ -81,8 +81,8 @@ spring:
 
   datasource:
     url: jdbc:postgresql://localhost:5432/postgres
-    username: actionexportsvc
-    password: actionexportsvc
+    username: actionexportersvc
+    password: actionexportersvc
     driverClassName: org.postgresql.Driver
     tomcat:
       initial-size: 5
