@@ -3,6 +3,7 @@
   <jxb:bindings schemaLocation="actionInstruction.xsd" node="/xs:schema">
     <jxb:globalBindings>
       <xjc:simple />
+      <xjc:serializable uid="8297030705722814170"/>
     </jxb:globalBindings>
   </jxb:bindings>
 </jxb:bindings>
