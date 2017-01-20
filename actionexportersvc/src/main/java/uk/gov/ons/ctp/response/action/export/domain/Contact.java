@@ -17,7 +17,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "contact", schema = "actionexport")
+@Table(name = "contact", schema = "actionexporter")
 public class Contact {
 
   @Id

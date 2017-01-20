@@ -19,7 +19,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor(access = AccessLevel.PUBLIC)
 @NoArgsConstructor(access = AccessLevel.PUBLIC)
-@Table(name = "templatemapping", schema = "actionexport")
+@Table(name = "templatemapping", schema = "actionexporter")
 public class TemplateMapping {
 
   @Id
