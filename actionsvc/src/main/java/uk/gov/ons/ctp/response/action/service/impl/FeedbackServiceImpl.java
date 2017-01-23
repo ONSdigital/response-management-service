@@ -5,6 +5,7 @@ import java.math.BigInteger;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import org.springframework.amqp.rabbit.listener.RabbitListenerContainerFactory;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -56,7 +57,7 @@ public class FeedbackServiceImpl implements FeedbackService {
       Action action = actionRepo.findOne(actionId);
       if (action != null) {
         ActionDTO.ActionEvent outcomeEvent = ActionDTO.ActionEvent.valueOf(feedback.getOutcome().name());
-        
+
         if (outcomeEvent != null) {
           String situation = feedback.getSituation();
 
@@ -65,8 +66,9 @@ public class FeedbackServiceImpl implements FeedbackService {
             updateAction(action, nextState, situation);
           } catch (RuntimeException re) {
             log.error("Feedback Service unable to effect state transition. Ignoring feedback. Reason: {}"+re.getMessage());
-            return;
+            throw re;
           }
+
 
           String handler = action.getActionType().getHandler();
           OutcomeHandlerId outcomeHandlerId = OutcomeHandlerId.builder().handler(handler).actionOutcome(outcomeEvent).build();
@@ -78,10 +80,12 @@ public class FeedbackServiceImpl implements FeedbackService {
         } else {
           log.error("Feedback Service unable to decipher the outcome {} from feedback - ignoring this feedback",
               feedback.getOutcome());
+          throw new RuntimeException("Outcome " + feedback.getOutcome() + " unknown");
         }
       } else {
         log.error("Feedback Service unable to find action id {} from feedback - ignoring this feedback",
             feedback.getActionId());
+        throw new RuntimeException("ActionID " + feedback.getOutcome() + " unknown");
       }
     }
   }

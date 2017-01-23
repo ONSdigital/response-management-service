@@ -119,10 +119,8 @@ public class FeedbackServiceImplTest {
         .thenReturn(situationCats.get(0));
     Mockito.when(actionSvcStateTransitionManager.transition(ActionState.ACTIVE, ActionEvent.REQUEST_COMPLETED))
         .thenReturn(ActionState.COMPLETED);
-
     // Call method
     feedbackService.acceptFeedback(actionFeedbacks.get(2));
-
     // Verify calls made
     verify(actionRepo, times(1)).saveAndFlush(any(Action.class));
     verify(caseSvcClientService, times(1)).createNewCaseEvent(actions.get(2), CategoryDTO.CategoryType.ACTION_COMPLETED);
