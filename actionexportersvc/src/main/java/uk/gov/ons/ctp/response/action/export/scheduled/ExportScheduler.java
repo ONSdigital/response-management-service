@@ -152,7 +152,8 @@ public class ExportScheduler implements HealthIndicator {
     try {
       actionExportLatchManager.countDown(DISTRIBUTED_OBJECT_KEY_LATCH);
       if (!actionExportLatchManager.awaitCountDownLatch(DISTRIBUTED_OBJECT_KEY_LATCH)) {
-        log.error("Scheduled run error countdownlatch timed out, should be {} instances running");
+        log.error("Scheduled run error countdownlatch timed out, should be {} instances running",
+            actionExportInstanceManager.getInstanceCount(DISTRIBUTED_OBJECT_KEY_INSTANCE_COUNT));
       }
     } catch (InterruptedException e) {
       log.error("Scheduled run error waiting for countdownlatch: {}", e.getMessage());

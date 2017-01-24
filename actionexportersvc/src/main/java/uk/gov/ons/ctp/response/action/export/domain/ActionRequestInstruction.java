@@ -26,7 +26,7 @@ import uk.gov.ons.ctp.response.action.message.instruction.Priority;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "actionrequest", schema = "actionexport")
+@Table(name = "actionrequest", schema = "actionexporter")
 public class ActionRequestInstruction {
 
   @Id

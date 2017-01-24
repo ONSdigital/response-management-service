@@ -18,7 +18,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "address", schema = "actionexport")
+@Table(name = "address", schema = "actionexporter")
 public class Address {
 
   @Id

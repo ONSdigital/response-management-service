@@ -1,6 +1,6 @@
 --script to create all tables, functions and sequences for foundation for 2017
 
-SET SCHEMA 'actionexport';
+SET SCHEMA 'actionexporter';
 
 CREATE TABLE actionrequest (
   actionid bigint NOT NULL,
