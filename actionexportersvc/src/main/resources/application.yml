@@ -110,7 +110,6 @@ spring:
 
 data-grid:
   address: localhost:6379
-  password: redis
   lock-time-to-live-seconds: 1800
 
 export-schedule:
