@@ -1,0 +1,11 @@
+databaseChangeLog:
+
+  - changeSet:
+      id: 9.33.1-1
+      author: Martin Humphrey
+      changes:
+        - sqlFile:
+            comment: ActionExport actionrequest.actionplan drop not null
+            path: actionexport_2017_actionplan_null.sql
+            relativeToChangelogFile: true
+            splitStatements: false

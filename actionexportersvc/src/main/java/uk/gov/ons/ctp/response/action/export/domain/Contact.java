@@ -13,11 +13,11 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@SequenceGenerator(name = "actionexportseq_gen", sequenceName = "actionexport.contactidseq")
+@SequenceGenerator(name = "actionexportseq_gen", sequenceName = "actionexporter.contactidseq")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "contact", schema = "actionexport")
+@Table(name = "contact", schema = "actionexporter")
 public class Contact {
 
   @Id

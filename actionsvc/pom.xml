@@ -48,7 +48,7 @@
 		 </dependency>
 		 -->
 		
-		<dependency>
+    <dependency>
       <groupId>org.springframework.integration</groupId>
       <artifactId>spring-integration-stream</artifactId>
     </dependency>

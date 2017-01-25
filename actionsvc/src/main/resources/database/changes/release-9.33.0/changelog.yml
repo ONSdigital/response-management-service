@@ -1,0 +1,11 @@
+databaseChangeLog:
+
+  - changeSet:
+      id: 9.33.0-1
+      author: Sarah Radford
+      changes:
+        - sqlFile:
+            comment: Create a new survey and actionplan for DTM to use for testing
+            path: create_DTM_test_data.sql
+            relativeToChangelogFile: true
+            splitStatements: false
