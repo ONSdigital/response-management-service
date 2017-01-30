@@ -1,0 +1,11 @@
+databaseChangeLog:
+
+  - changeSet:
+      id: 9.33.3-1
+      author: Martin Humphrey
+      changes:
+        - sqlFile:
+            comment: ActionExport update of initialPrint template
+            path: actionexport_2017_update_initialprint.sql
+            relativeToChangelogFile: true
+            splitStatements: false
