@@ -32,9 +32,13 @@ management:
   security:
     roles: SUPERUSER
     enabled: true
+<<<<<<< HEAD
   health:
     rabbit:
       enabled: false
+=======
+
+>>>>>>> master
 server:
   port: 8151
   servlet-path: /
