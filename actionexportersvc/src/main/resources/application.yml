@@ -30,14 +30,14 @@ management:
   context-path: /mgmt
   security:
     role: SUPERUSER
-    enabled: false
+    enabled: true
   health:
     mongo:
       enabled: true
 
 server:
   port: 8141
-  servlet-path: /mgmt
+  servlet-path: /
 
 endpoints:
   autoconfig: 
@@ -106,7 +106,6 @@ spring:
 
 data-grid:
   address: localhost:6379
-  password: redis
   lock-time-to-live-seconds: 1800
 
 export-schedule:

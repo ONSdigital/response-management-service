@@ -30,11 +30,11 @@ management:
   context-path: /mgmt
   security:
     roles: SUPERUSER
-    enabled: false
+    enabled: true
 
 server:
   port: 8151
-  servlet-path: /mgmt
+  servlet-path: /
 
 endpoints:
   autoconfig: 
@@ -103,7 +103,6 @@ spring:
 
 data-grid:
   address: localhost:6379
-  password: redis
   list-time-to-live-seconds: 600
   lock-time-to-live-seconds: 600
 
