@@ -402,7 +402,7 @@ public class ActionDistributor {
     actionRequest.setActionType(action.getActionType().getName());
     actionRequest.setQuestionSet(caseTypeDTO.getQuestionSet());
     actionRequest.setResponseRequired(action.getActionType().getResponseRequired());
-    actionRequest.setCaseId(BigInteger.valueOf(action.getCaseId()));
+    actionRequest.setCaseId(Integer.valueOf(action.getCaseId()));
     ContactDTO contactDTO = caseDTO.getContact();
     if (contactDTO != null) {
       ActionContact actionContact = new ActionContact();

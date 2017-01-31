@@ -101,7 +101,7 @@
 					<xs:element name="contact" type="ActionContact"
 						minOccurs="0" maxOccurs="1" />
 					<xs:element name="address" type="ActionAddress" />
-					<xs:element name="caseId" type="xs:positiveInteger" />
+					<xs:element name="caseId" type="xs:int" minOccurs="0"/>
 					<xs:element name="priority" type="Priority" minOccurs="0"
 						maxOccurs="1" />
 					<xs:element name="caseRef" type="xs:string" />
@@ -159,7 +159,7 @@
 
 	<xs:complexType name="Action">
 		<xs:sequence>
-			<xs:element name="actionId" type="xs:positiveInteger" />
+			<xs:element name="actionId" type="xs:integer" />
 			<xs:element name="responseRequired" type="xs:boolean"></xs:element>
 		</xs:sequence>
 	</xs:complexType>
