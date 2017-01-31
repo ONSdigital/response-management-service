@@ -29,6 +29,7 @@
         <module>actionsvc</module>
         <module>casesvc-api</module>
         <module>casesvc</module>
+        <module>reportmodule</module>
         <module>actionexportersvc</module>
     </modules>
 

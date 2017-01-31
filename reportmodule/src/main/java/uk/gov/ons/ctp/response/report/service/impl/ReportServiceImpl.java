@@ -1,30 +1,29 @@
-package uk.gov.ons.ctp.response.casesvc.service.impl;
+package uk.gov.ons.ctp.response.report.service.impl;
 
 import java.util.List;
 
-import javax.inject.Inject;
-import javax.inject.Named;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import lombok.extern.slf4j.Slf4j;
-import uk.gov.ons.ctp.response.casesvc.domain.model.Report;
-import uk.gov.ons.ctp.response.casesvc.domain.model.ReportSummary;
-import uk.gov.ons.ctp.response.casesvc.domain.model.ReportType;
-import uk.gov.ons.ctp.response.casesvc.domain.repository.ReportRepository;
-import uk.gov.ons.ctp.response.casesvc.domain.repository.ReportTypeRepository;
-import uk.gov.ons.ctp.response.casesvc.representation.ReportDTO;
-import uk.gov.ons.ctp.response.casesvc.service.ReportService;
+import uk.gov.ons.ctp.response.report.domain.model.Report;
+import uk.gov.ons.ctp.response.report.domain.model.ReportSummary;
+import uk.gov.ons.ctp.response.report.domain.model.ReportType;
+import uk.gov.ons.ctp.response.report.domain.repository.ReportRepository;
+import uk.gov.ons.ctp.response.report.domain.repository.ReportTypeRepository;
+import uk.gov.ons.ctp.response.report.service.ReportService;
 
 @Slf4j
-@Named
+@Component
 public class ReportServiceImpl implements ReportService {
 
   /**
    * Spring Data Repository for CSV Report entities.
    */
-    @Inject
+    @Autowired
     private ReportRepository reportRepository;
 
-    @Inject
+    @Autowired
     private ReportTypeRepository reportTypeRepository;
     
     /**
@@ -44,9 +43,9 @@ public class ReportServiceImpl implements ReportService {
      * @return Report list object or null
      */
     @Override
-    public List<ReportSummary> getReportSummary(final ReportDTO.ReportType reportType) {
+    public List<ReportSummary> getReportSummary(final String reportType) {
       log.debug("Entering findReportDatesByReportType with {}", reportType);
-      return reportRepository.getReportSummary(ReportDTO.ReportType.valueOf(reportType.toString()));
+      return reportRepository.getReportSummary(reportType);
     }
 
     /**

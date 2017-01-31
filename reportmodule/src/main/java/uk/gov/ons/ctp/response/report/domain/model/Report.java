@@ -1,12 +1,10 @@
-package uk.gov.ons.ctp.response.casesvc.domain.model;
+package uk.gov.ons.ctp.response.report.domain.model;
 
 
 import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
@@ -14,7 +12,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import uk.gov.ons.ctp.response.casesvc.representation.ReportDTO;
 
 /**
  * Domain model object.
@@ -24,7 +21,7 @@ import uk.gov.ons.ctp.response.casesvc.representation.ReportDTO;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "reportrepository", schema = "casesvc")
+@Table(name = "report")
 public class Report {
 
   @Id
@@ -32,15 +29,14 @@ public class Report {
   private Integer reportId;
 
   @Column(name = "reporttype")
-  @Enumerated(EnumType.STRING)
-  private ReportDTO.ReportType reportType;
+  private String reportType;
 
   private String contents;
 
   @Column(name = "createddatetime")
   private Date createdDateTime;
 
-  public Report(int reportId, ReportDTO.ReportType reportType, Date createdDateTime){
+  public Report(int reportId, String reportType, Date createdDateTime) {
     this.reportId = reportId;
     this.reportType = reportType;
     this.createdDateTime = createdDateTime;    

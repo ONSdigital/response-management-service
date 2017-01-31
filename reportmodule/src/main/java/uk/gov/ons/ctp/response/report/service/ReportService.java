@@ -1,12 +1,11 @@
-package uk.gov.ons.ctp.response.casesvc.service;
+package uk.gov.ons.ctp.response.report.service;
 
 import java.util.List;
 
 import uk.gov.ons.ctp.common.service.CTPService;
-import uk.gov.ons.ctp.response.casesvc.domain.model.Report;
-import uk.gov.ons.ctp.response.casesvc.domain.model.ReportSummary;
-import uk.gov.ons.ctp.response.casesvc.domain.model.ReportType;
-import uk.gov.ons.ctp.response.casesvc.representation.ReportDTO;
+import uk.gov.ons.ctp.response.report.domain.model.Report;
+import uk.gov.ons.ctp.response.report.domain.model.ReportSummary;
+import uk.gov.ons.ctp.response.report.domain.model.ReportType;
 
 public interface ReportService extends CTPService {
 
@@ -23,7 +22,7 @@ public interface ReportService extends CTPService {
    * @param reportType String enum
    * @return Report list object or null
    */
-  List<ReportSummary> getReportSummary(ReportDTO.ReportType reportType);
+  List<ReportSummary> getReportSummary(String reportType);
 
   /**
    * Find Report entity by reportId.
