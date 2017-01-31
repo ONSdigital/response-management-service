@@ -24,10 +24,12 @@ import com.google.common.collect.Lists;
 
 import lombok.extern.slf4j.Slf4j;
 import uk.gov.ons.ctp.common.time.DateTimeUtil;
+import uk.gov.ons.ctp.response.action.export.domain.FileRowCount;
 import uk.gov.ons.ctp.response.action.export.message.ActionFeedbackPublisher;
 import uk.gov.ons.ctp.response.action.export.message.SftpServicePublisher;
 import uk.gov.ons.ctp.response.action.export.scheduled.ExportInfo;
 import uk.gov.ons.ctp.response.action.export.service.ActionRequestService;
+import uk.gov.ons.ctp.response.action.export.service.FileRowCountService;
 import uk.gov.ons.ctp.response.action.message.feedback.ActionFeedback;
 import uk.gov.ons.ctp.response.action.message.feedback.Outcome;
 
@@ -49,6 +51,9 @@ public class SftpServicePublisherImpl implements SftpServicePublisher {
   private ActionRequestService actionRequestService;
 
   @Inject
+  private FileRowCountService fileRowCountService;
+
+  @Inject
   private ActionFeedbackPublisher actionFeedbackPubl;
 
   @Inject
@@ -66,7 +71,7 @@ public class SftpServicePublisherImpl implements SftpServicePublisher {
    * Using JPA entities to update repository for actionIds exported was slow.
    * JPQL queries used for performance reasons. To increase performance updates
    * batched with IN clause.
-   * 
+   *
    * @param message Spring integration message sent
    */
   @SuppressWarnings("unchecked")
@@ -91,20 +96,27 @@ public class SftpServicePublisherImpl implements SftpServicePublisher {
       actionIds.clear();
     });
 
+    FileRowCount fileRowCount = new FileRowCount(
+        (String) message.getPayload().getHeaders().get(FileHeaders.REMOTE_FILE), actionList.size(), now, true, false);
+    fileRowCountService.save(fileRowCount);
+
     log.info("Sftp transfer complete for file {}", message.getPayload().getHeaders().get(FileHeaders.REMOTE_FILE));
     exportInfo.addOutcome((String) message.getPayload().getHeaders().get(FileHeaders.REMOTE_FILE) + " transferred with "
         + Integer.toString(actionList.size()) + " requests.");
   }
 
+  @SuppressWarnings("unchecked")
   @Override
   @ServiceActivator(inputChannel = "sftpFailedProcess")
   public void sftpFailedProcess(ErrorMessage message) {
-    log.error("Sftp transfer failed for file {} for action requests {}",
-        ((MessagingException) message.getPayload()).getFailedMessage().getHeaders().get(FileHeaders.REMOTE_FILE),
-        ((MessagingException) message.getPayload()).getFailedMessage().getHeaders().get(ACTION_LIST));
-    exportInfo.addOutcome((String) ((MessagingException) message.getPayload()).getFailedMessage().getHeaders()
-        .get(FileHeaders.REMOTE_FILE) + " failed to transfer.");
-
+    String fileName = (String) ((MessagingException) message.getPayload()).getFailedMessage()
+        .getHeaders().get(FileHeaders.REMOTE_FILE);
+    List<String> actionList = (List<String>) ((MessagingException) message.getPayload()).getFailedMessage().getHeaders()
+        .get(ACTION_LIST);
+    log.error("Sftp transfer failed for file {} for action requests {}", fileName, actionList);
+    exportInfo.addOutcome(fileName + " transfer failed with " + Integer.toString(actionList.size()) + " requests.");
+    FileRowCount fileRowCount = new FileRowCount(fileName, actionList.size(), DateTimeUtil.nowUTC(), false, false);
+    fileRowCountService.save(fileRowCount);
   }
 
   /**

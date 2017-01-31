@@ -8,7 +8,7 @@ import java.util.Set;
 import uk.gov.ons.ctp.response.action.export.domain.ActionRequestInstruction;
 
 /**
- * Service responsible for dealing with ActionRequests stored in MongoDB
+ * Service responsible for dealing with ActionRequests
  */
 public interface ActionRequestService {
   /**
