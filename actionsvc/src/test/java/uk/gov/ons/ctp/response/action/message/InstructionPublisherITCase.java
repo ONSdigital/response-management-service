@@ -155,7 +155,7 @@ public class InstructionPublisherITCase {
     actionRequest.setActionPlan(TEST);
     actionRequest.setActionType(TEST);
     actionRequest.setQuestionSet(TEST);
-    actionRequest.setCaseId(BigInteger.valueOf(1));
+    actionRequest.setCaseId(Integer.valueOf(1));
     actionRequest.setCaseRef(TEST);
     actionRequest.setIac(TEST);
     ActionAddress actionAddress = new ActionAddress();
