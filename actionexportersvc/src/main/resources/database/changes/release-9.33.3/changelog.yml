@@ -9,3 +9,13 @@ databaseChangeLog:
             path: actionexport_2017_update_initialprint.sql
             relativeToChangelogFile: true
             splitStatements: false
+
+  - changeSet:
+      id: 9.33.3-2
+      author: Sarah Radford
+      changes:
+        - sqlFile:
+            comment: Create all code needed to produce print volumes report
+            path: create_print_volumes_mi.sql
+            relativeToChangelogFile: true
+            splitStatements: false
