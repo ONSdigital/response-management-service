@@ -4,7 +4,6 @@ import java.io.Serializable;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -29,7 +28,6 @@ public class ActionRule implements Serializable {
   private static final long serialVersionUID = 4524689072566205066L;
 
   @Id
-  @GeneratedValue
   @Column(name = "actionruleid")
   private Integer actionRuleId;
 

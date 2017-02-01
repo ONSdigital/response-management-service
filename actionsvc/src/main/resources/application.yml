@@ -11,6 +11,8 @@ logging:
   level:
     uk.gov.ons.ctp: DEBUG
     com.rabbitmq: DEBUG
+    org.springframework.cloud.sleuth.instrument.messaging.MessagingSpanExtractor: ERROR
+    org.springframework.context.annotation.ConfigurationClassPostProcessor: ERROR
 
 liquibase:
   user: actionsvc
@@ -32,13 +34,9 @@ management:
   security:
     roles: SUPERUSER
     enabled: true
-<<<<<<< HEAD
   health:
     rabbit:
       enabled: false
-=======
-
->>>>>>> master
 server:
   port: 8151
   servlet-path: /
