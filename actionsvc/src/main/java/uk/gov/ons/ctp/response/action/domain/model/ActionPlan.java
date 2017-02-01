@@ -5,7 +5,6 @@ import java.sql.Timestamp;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
@@ -28,7 +27,6 @@ public class ActionPlan implements Serializable {
   private static final long serialVersionUID = 3621028547635970347L;
 
   @Id
-  @GeneratedValue
   @Column(name = "actionplanid")
   private Integer actionPlanId;
 
