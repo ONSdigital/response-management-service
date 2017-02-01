@@ -16,7 +16,7 @@
         <common.version>9.31.2-SNAPSHOT</common.version>
         <maven.compiler.plugin.version>3.5.1</maven.compiler.plugin.version>
         <java.version>1.8</java.version>
-        <springboot.version>1.4.2.RELEASE</springboot.version>
+        <springboot.version>1.4.4.RELEASE</springboot.version>
         <postgres.version>9.3-1104-jdbc4</postgres.version>
         <jersey.version>2.23.1</jersey.version>
 
