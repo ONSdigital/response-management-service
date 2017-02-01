@@ -33,7 +33,7 @@ public class ActionExportServiceImpl implements ActionExportService {
 
   private static final String DATE_FORMAT = "dd/MM/yyyy HH:mm";
 
-  private static final int TRANSACTION_TIMEOUT = 30;
+  private static final int TRANSACTION_TIMEOUT = 60;
 
   @Inject
   private ActionFeedbackPublisher actionFeedbackPubl;
