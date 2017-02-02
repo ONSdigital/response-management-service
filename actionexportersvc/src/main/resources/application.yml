@@ -95,6 +95,9 @@ spring:
       max-idle: 5
       min-idle: 3
 
+  freemarker:
+    checkTemplateLocation: false
+
   jpa:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
     show-sql: false
