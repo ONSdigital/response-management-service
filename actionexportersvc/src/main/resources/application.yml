@@ -10,6 +10,8 @@ info:
 logging:
   level:
     uk.gov.ons.ctp: INFO
+    org.springframework.cloud.sleuth.instrument.messaging.MessagingSpanExtractor: ERROR
+    org.springframework.context.annotation.ConfigurationClassPostProcessor: ERROR
 
 liquibase:
   user: actionexportersvc
@@ -30,14 +32,14 @@ management:
   context-path: /mgmt
   security:
     role: SUPERUSER
-    enabled: false
+    enabled: true
   health:
     mongo:
       enabled: true
 
 server:
   port: 8141
-  servlet-path: /mgmt
+  servlet-path: /
 
 endpoints:
   autoconfig: 
@@ -100,6 +102,7 @@ spring:
     properties:
       hibernate:
         ddl-auto: update
+        default_schema: actionexporter
 
   sleuth:
     sampler:
@@ -110,8 +113,7 @@ spring:
 
 data-grid:
   address: localhost:6379
-  password: redis
-  lock-time-to-live-seconds: 1800
+  lock-time-to-live-seconds: 3600
 
 export-schedule:
   cron-expression: "0 0/5 * * * ?"

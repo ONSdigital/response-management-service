@@ -1,5 +1,8 @@
-package uk.gov.ons.ctp.response.casesvc.representation;
+package uk.gov.ons.ctp.response.report.representation;
 
+
+
+import java.util.Date;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -12,14 +15,12 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PUBLIC)
-public class ReportTypeDTO {
-
-  private Integer reportTypeId;
+public class ReportSummaryDTO {
   
   private String reportType;
+
+  private Date createdDateTime;
   
-  private Integer orderId;
-  
-  private String displayName;
+  private Integer reportId;
   
 }

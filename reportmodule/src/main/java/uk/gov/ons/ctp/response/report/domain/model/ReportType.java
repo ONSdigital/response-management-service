@@ -1,10 +1,8 @@
-package uk.gov.ons.ctp.response.casesvc.domain.model;
+package uk.gov.ons.ctp.response.report.domain.model;
 
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
@@ -12,7 +10,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import uk.gov.ons.ctp.response.casesvc.representation.ReportDTO;
 
 /**
  * Domain model object.
@@ -22,7 +19,7 @@ import uk.gov.ons.ctp.response.casesvc.representation.ReportDTO;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "reporttype", schema = "casesvc")
+@Table(name = "reporttype")
 public class ReportType {
 
   @Id
@@ -30,8 +27,7 @@ public class ReportType {
   private Integer reportTypeId;
 
   @Column(name = "reporttype")
-  @Enumerated(EnumType.STRING)
-  private ReportDTO.ReportType reportType;
+  private String reportType;
 
   @Column(name = "orderid")
   private Integer orderId;

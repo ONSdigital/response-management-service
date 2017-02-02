@@ -294,7 +294,7 @@ public class CsvIngester extends CsvToBean<CsvLine> {
         .withTownName(csvLine.getTownName())
         .withType(csvLine.getAddressType())
         .end()
-        .withCaseId(new BigInteger(csvLine.getCaseId()))
+        .withCaseId(new Integer(csvLine.getCaseId()))
         .withIac(csvLine.getIac())
         .withPriority(
             Priority.fromValue(ActionPriority.valueOf(Integer.parseInt(csvLine.getPriority())).getName()))
