@@ -98,6 +98,7 @@ spring:
     properties:
       hibernate:
         ddl-auto: update
+        default_schema: actionexporter
 
   sleuth:
     sampler:
@@ -108,7 +109,7 @@ spring:
 
 data-grid:
   address: localhost:6379
-  lock-time-to-live-seconds: 1800
+  lock-time-to-live-seconds: 3600
 
 export-schedule:
   cron-expression: "0 0/5 * * * ?"

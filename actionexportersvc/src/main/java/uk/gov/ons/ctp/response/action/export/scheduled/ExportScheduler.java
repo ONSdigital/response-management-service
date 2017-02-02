@@ -20,8 +20,10 @@ import uk.gov.ons.ctp.common.distributed.DistributedLockManager;
 import uk.gov.ons.ctp.common.error.CTPException;
 import uk.gov.ons.ctp.response.action.export.domain.ActionRequestInstruction;
 import uk.gov.ons.ctp.response.action.export.domain.ExportMessage;
+import uk.gov.ons.ctp.response.action.export.domain.ExportReport;
 import uk.gov.ons.ctp.response.action.export.message.SftpServicePublisher;
 import uk.gov.ons.ctp.response.action.export.service.ActionRequestService;
+import uk.gov.ons.ctp.response.action.export.service.ExportReportService;
 import uk.gov.ons.ctp.response.action.export.service.TemplateMappingService;
 import uk.gov.ons.ctp.response.action.export.service.TransformationService;
 
@@ -34,8 +36,10 @@ import uk.gov.ons.ctp.response.action.export.service.TransformationService;
 public class ExportScheduler implements HealthIndicator {
 
   private static final String DATE_FORMAT_IN_FILE_NAMES = "ddMMyyyy_HHmm";
-  private static final String DISTRIBUTED_OBJECT_KEY_LATCH = "latch";
+  private static final String DISTRIBUTED_OBJECT_KEY_FILE_LATCH = "filelatch";
+  private static final String DISTRIBUTED_OBJECT_KEY_REPORT_LATCH = "reportlatch";
   private static final String DISTRIBUTED_OBJECT_KEY_INSTANCE_COUNT = "scheduler";
+  private static final String DISTRIBUTED_OBJECT_KEY_REPORT = "report";
 
   @Inject
   private TransformationService transformationService;
@@ -57,6 +61,9 @@ public class ExportScheduler implements HealthIndicator {
 
   @Inject
   private DistributedLatchManager actionExportLatchManager;
+
+  @Inject
+  private ExportReportService exportReportService;
 
   @Inject
   private ExportInfo exportInfo;
@@ -116,7 +123,7 @@ public class ExportScheduler implements HealthIndicator {
     // one file. Does not assume actionTypes in the same file use the same
     // template even so.
     String timeStamp = new SimpleDateFormat(DATE_FORMAT_IN_FILE_NAMES).format(Calendar.getInstance().getTime());
-    actionExportLatchManager.setCountDownLatch(DISTRIBUTED_OBJECT_KEY_LATCH,
+    actionExportLatchManager.setCountDownLatch(DISTRIBUTED_OBJECT_KEY_FILE_LATCH,
         actionExportInstanceManager.getInstanceCount(DISTRIBUTED_OBJECT_KEY_INSTANCE_COUNT));
     templateMappingService.retrieveAllTemplateMappingsByFilename()
         .forEach((fileName, templatemappings) -> {
@@ -150,8 +157,8 @@ public class ExportScheduler implements HealthIndicator {
         });
     // Wait for all instances to finish to synchronise the removal of locks
     try {
-      actionExportLatchManager.countDown(DISTRIBUTED_OBJECT_KEY_LATCH);
-      if (!actionExportLatchManager.awaitCountDownLatch(DISTRIBUTED_OBJECT_KEY_LATCH)) {
+      actionExportLatchManager.countDown(DISTRIBUTED_OBJECT_KEY_FILE_LATCH);
+      if (!actionExportLatchManager.awaitCountDownLatch(DISTRIBUTED_OBJECT_KEY_FILE_LATCH)) {
         log.error("Scheduled run error countdownlatch timed out, should be {} instances running",
             actionExportInstanceManager.getInstanceCount(DISTRIBUTED_OBJECT_KEY_INSTANCE_COUNT));
       }
@@ -159,10 +166,48 @@ public class ExportScheduler implements HealthIndicator {
       log.error("Scheduled run error waiting for countdownlatch: {}", e.getMessage());
     } finally {
       actionExportLockManager.unlockInstanceLocks();
-      actionExportLatchManager.deleteCountDownLatch(DISTRIBUTED_OBJECT_KEY_LATCH);
+      actionExportLatchManager.deleteCountDownLatch(DISTRIBUTED_OBJECT_KEY_FILE_LATCH);
+      if (!createReport()) {
+        log.error("Scheduled run error creating report");
+      }
       log.info("{} {} instance/s running",
           actionExportInstanceManager.getInstanceCount(DISTRIBUTED_OBJECT_KEY_INSTANCE_COUNT),
           DISTRIBUTED_OBJECT_KEY_INSTANCE_COUNT);
     }
+  }
+
+  /**
+   * Create an entry for the report service for exports created. Have to wait
+   * for all potential service instances to finish the scheduled run prior to
+   * calling this method to produce a report. Also have to synchronise all
+   * potential services creating report to ensure only one report created per
+   * scheduled run so need a latch for this purpose.
+   */
+  private boolean createReport() {
+    boolean result = false;
+    actionExportLatchManager.setCountDownLatch(DISTRIBUTED_OBJECT_KEY_REPORT_LATCH,
+        actionExportInstanceManager.getInstanceCount(DISTRIBUTED_OBJECT_KEY_INSTANCE_COUNT));
+    if (!actionExportLockManager.isLocked(DISTRIBUTED_OBJECT_KEY_REPORT)) {
+      if (actionExportLockManager.lock(DISTRIBUTED_OBJECT_KEY_REPORT)) {
+        result = exportReportService.createReport();
+      } else {
+        result = true;
+      }
+    } else {
+      result = true;
+    }
+    try {
+      actionExportLatchManager.countDown(DISTRIBUTED_OBJECT_KEY_REPORT_LATCH);
+      if (!actionExportLatchManager.awaitCountDownLatch(DISTRIBUTED_OBJECT_KEY_REPORT_LATCH)) {
+        log.error("Report run error countdownlatch timed out, should be {} instances running",
+            actionExportInstanceManager.getInstanceCount(DISTRIBUTED_OBJECT_KEY_INSTANCE_COUNT));
+      }
+    } catch (InterruptedException e) {
+      log.error("Report run error waiting for countdownlatch: {}", e.getMessage());
+    } finally {
+      actionExportLockManager.unlock(DISTRIBUTED_OBJECT_KEY_REPORT);
+      actionExportLatchManager.deleteCountDownLatch(DISTRIBUTED_OBJECT_KEY_REPORT_LATCH);
+    }
+    return result;
   }
 }
