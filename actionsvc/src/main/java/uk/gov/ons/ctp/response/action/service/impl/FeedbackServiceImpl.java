@@ -5,7 +5,6 @@ import java.math.BigInteger;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.springframework.amqp.rabbit.listener.RabbitListenerContainerFactory;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -62,16 +61,18 @@ public class FeedbackServiceImpl implements FeedbackService {
           String situation = feedback.getSituation();
 
           try {
-            ActionDTO.ActionState nextState = actionSvcStateTransitionManager.transition(action.getState(), outcomeEvent);
+            ActionDTO.ActionState nextState = actionSvcStateTransitionManager.transition(action.getState(),
+                outcomeEvent);
             updateAction(action, nextState, situation);
           } catch (RuntimeException re) {
-            log.error("Feedback Service unable to effect state transition. Ignoring feedback. Reason: {}"+re.getMessage());
+            log.error(
+                "Feedback Service unable to effect state transition. Ignoring feedback. Reason: {}" + re.getMessage());
             throw re;
           }
 
-
           String handler = action.getActionType().getHandler();
-          OutcomeHandlerId outcomeHandlerId = OutcomeHandlerId.builder().handler(handler).actionOutcome(outcomeEvent).build();
+          OutcomeHandlerId outcomeHandlerId = OutcomeHandlerId.builder().handler(handler).actionOutcome(outcomeEvent)
+              .build();
           OutcomeCategory outcomeCategory = outcomeCategoryRepository.findOne(outcomeHandlerId);
           if (outcomeCategory != null) {
             CategoryDTO.CategoryType category = CategoryDTO.CategoryType.valueOf(outcomeCategory.getEventCategory());
@@ -92,6 +93,7 @@ public class FeedbackServiceImpl implements FeedbackService {
 
   /**
    * Update the action
+   * 
    * @param action the action to update
    * @param nextState the state to transition to
    * @param situation the situation provided by the feedback

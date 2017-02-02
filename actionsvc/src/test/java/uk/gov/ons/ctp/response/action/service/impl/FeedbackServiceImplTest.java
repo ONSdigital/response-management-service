@@ -80,7 +80,6 @@ public class FeedbackServiceImplTest {
     verify(caseSvcClientService, times(0)).createNewCaseEvent(any(Action.class), any(CategoryDTO.CategoryType.class));
   }
 
-
   /**
    * Yep - another test
    */
