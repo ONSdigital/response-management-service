@@ -61,7 +61,6 @@ public class ActionRequestEndpoint {
    * @return a list of ActionRequests
    */
   @GET
-  @Path("/")
   public List<ActionRequestInstructionDTO> findAllActionRequests() {
     log.debug("Entering findAllActionRequests ...");
     List<ActionRequestInstruction> actionRequests = actionRequestService.retrieveAllActionRequests();
