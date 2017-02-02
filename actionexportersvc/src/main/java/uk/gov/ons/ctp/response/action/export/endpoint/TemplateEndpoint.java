@@ -49,7 +49,6 @@ public class TemplateEndpoint {
    * @return a list of Templates
    */
   @GET
-  @Path("/")
   public List<TemplateExpressionDTO> findAllTemplates() {
     log.debug("Entering findAllTemplates ...");
     List<TemplateExpression> templates = templateService.retrieveAllTemplates();
