@@ -54,12 +54,12 @@ public class DistributionScheduler implements HealthIndicator {
       }
     };
 
-    log.debug("Scheduling Action Distribution initial delay={}, subsequent delay={}",applicationConfig.getActionDistribution().getInitialDelaySeconds(),
-        applicationConfig.getActionDistribution().getSubsequentDelayMilliseconds(), MILLISECONDS);
+    log.debug("Scheduling Action Distribution initial delay={}, subsequent delay={}",applicationConfig.getActionDistribution().getInitialDelayMilliSeconds(),
+        applicationConfig.getActionDistribution().getSubsequentDelayMilliSeconds(), MILLISECONDS);
 
     ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
     scheduler.scheduleWithFixedDelay(distributorRunnable,
-        applicationConfig.getActionDistribution().getInitialDelaySeconds(),
-        applicationConfig.getActionDistribution().getSubsequentDelayMilliseconds(), MILLISECONDS);
+        applicationConfig.getActionDistribution().getInitialDelayMilliSeconds(),
+        applicationConfig.getActionDistribution().getSubsequentDelayMilliSeconds(), MILLISECONDS);
   }
 }

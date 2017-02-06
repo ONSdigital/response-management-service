@@ -9,7 +9,7 @@ info:
 # ie -Dlogging.level.org.springframework=DEBUG
 logging:
   level:
-    uk.gov.ons.ctp: WARN
+    uk.gov.ons.ctp: INFO
     org.springframework.cloud.sleuth.instrument.messaging.MessagingSpanExtractor: ERROR
     org.springframework.context.annotation.ConfigurationClassPostProcessor: ERROR
 
@@ -109,10 +109,11 @@ data-grid:
   lock-time-to-live-seconds: 600
 
 action-distribution:
-  instruction-max: 1
+  retrieval-max: 5
+  distribution-max: 1
   retry-sleep-seconds: 30
-  initial-delay-seconds: 10
-  subsequent-delay-milliseconds: 10
+  initial-delay-milli-seconds: 10000
+  subsequent-delay-milli-seconds: 100
 
 plan-execution:
   retry-sleep-seconds: 30
