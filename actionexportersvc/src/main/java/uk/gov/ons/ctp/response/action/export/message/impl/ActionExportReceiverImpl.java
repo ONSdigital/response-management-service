@@ -5,7 +5,6 @@ import javax.inject.Inject;
 import org.springframework.integration.annotation.MessageEndpoint;
 import org.springframework.integration.annotation.ServiceActivator;
 
-import lombok.extern.slf4j.Slf4j;
 import uk.gov.ons.ctp.response.action.export.message.ActionExportReceiver;
 import uk.gov.ons.ctp.response.action.export.service.ActionExportService;
 import uk.gov.ons.ctp.response.action.message.instruction.ActionInstruction;
@@ -17,7 +16,6 @@ import uk.gov.ons.ctp.response.action.message.instruction.ActionInstruction;
  *
  */
 @MessageEndpoint
-@Slf4j
 public class ActionExportReceiverImpl implements ActionExportReceiver {
 
   @Inject

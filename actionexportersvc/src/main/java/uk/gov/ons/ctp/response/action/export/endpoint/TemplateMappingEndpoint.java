@@ -49,7 +49,6 @@ public class TemplateMappingEndpoint {
    * @return a list of TemplateMappings
    */
   @GET
-  @Path("/")
   public List<TemplateMappingDTO> findAllTemplateMappings() {
     log.debug("Entering findAllTemplateMappings ...");
     List<TemplateMapping> templateMappings = templateMappingService
@@ -83,7 +82,6 @@ public class TemplateMappingEndpoint {
    * @throws CTPException if the TemplateMapping can't be stored
    */
   @POST
-  @Path("/")
   @Consumes(MediaType.MULTIPART_FORM_DATA)
   public Response storeTemplateMapping(@FormDataParam("file") InputStream fileContents) throws CTPException {
     log.debug("Entering storeTemplateMapping");
