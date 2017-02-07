@@ -181,6 +181,11 @@ public class ActionDistributor {
                   "Exception {} thrown processing action {}. Processing will be retried at next scheduled distribution",
                   e.getMessage(), action.getActionId());
             }
+            if ((actionRequests.size() + actionCancels.size()) == appConfig.getActionDistribution().getDistributionMax()) {
+              publishActions(actionType, actionRequests, actionCancels);
+              actionRequests.clear();
+              actionCancels.clear();
+            }
           });
 
           publishActions(actionType, actionRequests, actionCancels);
@@ -217,7 +222,7 @@ public class ActionDistributor {
         try {
           // send the list of requests for this action type to the
           // handler
-          log.debug("Publishing instruction");
+          log.info("Publishing {} requests and {} cancels", actionRequests.size(), actionCancels.size());
           instructionPublisher.sendInstructions(actionType.getHandler(), actionRequests, actionCancels);
           published = true;
         } catch (Exception e) {
@@ -247,7 +252,7 @@ public class ActionDistributor {
    * @return list of actions
    */
   private List<Action> retrieveActions(ActionType actionType, List<BigInteger> excludedActionIds) {
-    Pageable pageable = new PageRequest(0, appConfig.getActionDistribution().getInstructionMax(), new Sort(
+    Pageable pageable = new PageRequest(0, appConfig.getActionDistribution().getRetrievalMax(), new Sort(
         new Sort.Order(Direction.ASC, "updatedDateTime")));
 
     // DO NOT REMOVE THIS NEXT LINE

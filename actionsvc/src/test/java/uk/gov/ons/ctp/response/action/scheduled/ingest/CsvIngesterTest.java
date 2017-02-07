@@ -49,7 +49,7 @@ public class CsvIngesterTest {
   @Before
   public void setup() {
     ActionDistribution actionDistributionConfig = new ActionDistribution();
-    actionDistributionConfig.setInstructionMax(1);
+    actionDistributionConfig.setDistributionMax(1);
     appConfig.setActionDistribution(actionDistributionConfig);
 
     MockitoAnnotations.initMocks(this);

@@ -1,6 +1,6 @@
 package uk.gov.ons.ctp.response.action.scheduled.distribution;
 
-import static java.util.concurrent.TimeUnit.SECONDS;
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
 
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -54,12 +54,12 @@ public class DistributionScheduler implements HealthIndicator {
       }
     };
 
-    log.debug("Scheduling Action Distribution initial delay={}, subsequent delay={}",applicationConfig.getActionDistribution().getInitialDelaySeconds(),
-        applicationConfig.getActionDistribution().getSubsequentDelaySeconds(), SECONDS);
+    log.debug("Scheduling Action Distribution initial delay={}, subsequent delay={}",applicationConfig.getActionDistribution().getInitialDelayMilliSeconds(),
+        applicationConfig.getActionDistribution().getSubsequentDelayMilliSeconds(), MILLISECONDS);
 
     ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
     scheduler.scheduleWithFixedDelay(distributorRunnable,
-        applicationConfig.getActionDistribution().getInitialDelaySeconds(),
-        applicationConfig.getActionDistribution().getSubsequentDelaySeconds(), SECONDS);
+        applicationConfig.getActionDistribution().getInitialDelayMilliSeconds(),
+        applicationConfig.getActionDistribution().getSubsequentDelayMilliSeconds(), MILLISECONDS);
   }
 }
