@@ -9,3 +9,13 @@ databaseChangeLog:
             path: create_DTM_test_data.sql
             relativeToChangelogFile: true
             splitStatements: false
+
+  - changeSet:
+      id: 9.33.0-2
+      author: Sarah Radford
+      changes:
+        - sqlFile:
+            comment: Change offsets
+            path: Update_Rule_offset.sql
+            relativeToChangelogFile: true
+            splitStatements: false

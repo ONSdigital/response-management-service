@@ -20,7 +20,6 @@ import uk.gov.ons.ctp.common.distributed.DistributedLockManager;
 import uk.gov.ons.ctp.common.error.CTPException;
 import uk.gov.ons.ctp.response.action.export.domain.ActionRequestInstruction;
 import uk.gov.ons.ctp.response.action.export.domain.ExportMessage;
-import uk.gov.ons.ctp.response.action.export.domain.ExportReport;
 import uk.gov.ons.ctp.response.action.export.message.SftpServicePublisher;
 import uk.gov.ons.ctp.response.action.export.service.ActionRequestService;
 import uk.gov.ons.ctp.response.action.export.service.ExportReportService;
