@@ -1,0 +1,12 @@
+databaseChangeLog:
+
+  - changeSet:
+      id: 9.34.0-1
+      author: Narinder Birk
+      changes:
+        - sqlFile:
+            comment: add indexes to actionsvc
+            path: action_schema_indexes.sql
+            relativeToChangelogFile: true
+            splitStatements: false
+
