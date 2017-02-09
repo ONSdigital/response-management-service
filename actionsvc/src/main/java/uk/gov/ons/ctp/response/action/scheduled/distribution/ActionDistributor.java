@@ -23,6 +23,7 @@ import org.springframework.transaction.support.TransactionTemplate;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import uk.gov.ons.ctp.common.distributed.DistributedListManager;
+import uk.gov.ons.ctp.common.distributed.LockingException;
 import uk.gov.ons.ctp.common.state.StateTransitionManager;
 import uk.gov.ons.ctp.common.time.DateTimeUtil;
 import uk.gov.ons.ctp.response.action.config.AppConfig;
@@ -131,7 +132,6 @@ public class ActionDistributor {
     this.transactionTemplate = new TransactionTemplate(transactionManager);
   }
 
-
   /**
    * wake up on schedule and check for submitted actions, enrich and distribute
    * them to spring integration channels
@@ -146,27 +146,23 @@ public class ActionDistributor {
 
     try {
       actionTypeRepo.findAll().forEach(actionType -> {
-        List<BigInteger> distributedActionList = actionDistributionListManager.findListForAllInstances(actionType.getName());
         List<ActionRequest> actionRequests = new ArrayList<>();
         List<ActionCancel> actionCancels = new ArrayList<>();
 
         log.debug("Dealing with actionType {}", actionType.getName());
 
-        if (!distributedActionList.isEmpty()) {
-          log.debug("Excluding actions {}", distributedActionList);
+        List<Action> actions = null;
+        try {
+          actions = retrieveActions(actionType);
+        } catch (LockingException le) {
+          log.error(
+              "Failed to obtain lock on actions - safely aborting this attempt but underlying problem may remain");
         }
-
-        List<Action> actions = retrieveActions(actionType, distributedActionList);
-        if (!actions.isEmpty()) {
+        if (actions != null && !actions.isEmpty()) {
           log.debug("Dealing with actions {}",
               actions.stream()
                   .map(a -> a.getActionId().toString())
                   .collect(Collectors.joining(",")));
-
-          List<BigInteger> actionIds = actions.stream().map(a -> a.getActionId())
-              .collect(Collectors.toList());
-
-          actionDistributionListManager.saveList(actionType.getName(), actionIds);
 
           actions.forEach(action -> {
             try {
@@ -181,7 +177,8 @@ public class ActionDistributor {
                   "Exception {} thrown processing action {}. Processing will be retried at next scheduled distribution",
                   e.getMessage(), action.getActionId());
             }
-            if ((actionRequests.size() + actionCancels.size()) == appConfig.getActionDistribution().getDistributionMax()) {
+            if ((actionRequests.size() + actionCancels.size()) == appConfig.getActionDistribution()
+                .getDistributionMax()) {
               publishActions(actionType, actionRequests, actionCancels);
               actionRequests.clear();
               actionCancels.clear();
@@ -189,7 +186,12 @@ public class ActionDistributor {
           });
 
           publishActions(actionType, actionRequests, actionCancels);
-          actionDistributionListManager.deleteList(actionType.getName());
+          try {
+            actionDistributionListManager.deleteList(actionType.getName(), true);
+          } catch (LockingException e) {
+            log.error(
+                "Failed to remove the list of actions just processed from distributed list - actions distributed OK, but underlying problem may remain");
+          }
         }
         distInfo.getInstructionCounts().add(new InstructionCount(actionType.getName(),
             DistributionInfo.Instruction.REQUEST, actionRequests.size()));
@@ -245,25 +247,35 @@ public class ActionDistributor {
   }
 
   /**
-   * Get the oldest page of submitted actions by type
+   * Get the oldest page of submitted actions by type - but do not retrieve the
+   * same cases as other CaseSvc' in the cluster
    *
    * @param actionType the type
-   * @param excludedActionIds the list of action ids to exclude
    * @return list of actions
    */
-  private List<Action> retrieveActions(ActionType actionType, List<BigInteger> excludedActionIds) {
+  private List<Action> retrieveActions(ActionType actionType) throws LockingException {
+    List<Action> actions = new ArrayList<>();
+
     Pageable pageable = new PageRequest(0, appConfig.getActionDistribution().getRetrievalMax(), new Sort(
         new Sort.Order(Direction.ASC, "updatedDateTime")));
 
+    List<BigInteger> excludedActionIds = actionDistributionListManager.findList(actionType.getName(), false);
+    if (!excludedActionIds.isEmpty()) {
+      log.debug("Excluding actions {}", excludedActionIds);
+    }
     // DO NOT REMOVE THIS NEXT LINE
     excludedActionIds.add(BigInteger.valueOf(IMPOSSIBLE_ACTION_ID));
 
-    List<Action> actions = actionRepo
+    actions = actionRepo
         .findByActionTypeNameAndStateInAndActionIdNotIn(actionType.getName(),
             Arrays.asList(ActionState.SUBMITTED, ActionState.CANCEL_SUBMITTED), excludedActionIds, pageable);
     if (!actions.isEmpty()) {
       log.debug("RETRIEVED action ids {}", actions.stream().map(a -> a.getActionId().toString())
           .collect(Collectors.joining(",")));
+      // try and save our list to the distributed store
+      actionDistributionListManager.saveList(actionType.getName(), actions.stream()
+          .map(action -> action.getActionId())
+          .collect(Collectors.toList()), true);
     }
     return actions;
   }

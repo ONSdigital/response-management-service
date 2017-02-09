@@ -58,6 +58,7 @@ public class ActionSvcApplication {
   @Bean
   public DistributedListManager<BigInteger> actionDistributionListManager(RedissonClient redissonClient) {
     return new DistributedListManagerRedissonImpl<BigInteger>(ActionSvcApplication.ACTION_DISTRIBUTION_LIST, redissonClient,
+        appConfig.getDataGrid().getListTimeToWaitSeconds(),
         appConfig.getDataGrid().getListTimeToLiveSeconds());
   }
 

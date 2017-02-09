@@ -111,8 +111,7 @@ public class ActionDistributorTest {
   public void setup() {
     CaseSvc caseSvcConfig = new CaseSvc();
     ActionDistribution actionDistributionConfig = new ActionDistribution();
-    actionDistributionConfig.setInitialDelayMilliSeconds(I_HATE_CHECKSTYLE_TEN);
-    actionDistributionConfig.setSubsequentDelayMilliSeconds(I_HATE_CHECKSTYLE_TEN);
+    actionDistributionConfig.setDelayMilliSeconds(I_HATE_CHECKSTYLE_TEN);
     actionDistributionConfig.setRetrievalMax(I_HATE_CHECKSTYLE_TEN);
     actionDistributionConfig.setDistributionMax(I_HATE_CHECKSTYLE_TEN);
     actionDistributionConfig.setRetrySleepSeconds(I_HATE_CHECKSTYLE_TEN);
