@@ -22,7 +22,7 @@ liquibase:
 
 security:
   basic:
-    enabled: true
+    enabled: false
   user:
     name: actionexporter
     password: ctp
