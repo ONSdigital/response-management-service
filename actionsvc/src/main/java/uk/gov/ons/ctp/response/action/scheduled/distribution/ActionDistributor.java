@@ -344,16 +344,13 @@ public class ActionDistributor {
    *
    * @param action the action to change and persist
    * @param event the event to transition the action with
-   * @return the transitioned action
    */
-  private Action transitionAction(final Action action, final ActionDTO.ActionEvent event) {
-    Action updatedAction = null;
+  private void transitionAction(final Action action, final ActionDTO.ActionEvent event) {
     ActionDTO.ActionState nextState = actionSvcStateTransitionManager.transition(action.getState(), event);
     action.setState(nextState);
     action.setSituation(null);
     action.setUpdatedDateTime(DateTimeUtil.nowUTC());
-    updatedAction = actionRepo.saveAndFlush(action);
-    return updatedAction;
+    actionRepo.saveAndFlush(action);
   }
 
   /**
