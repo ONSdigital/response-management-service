@@ -29,7 +29,7 @@ public class PlanScheduler implements HealthIndicator {
    * the service layer method.
    *
    */
-  @Scheduled(fixedDelayString = "#{appConfig.planExecution.delayMilliSeconds}")
+  //@Scheduled(fixedDelayString = "#{appConfig.planExecution.delayMilliSeconds}")
   public void run() {
     log.info("Executing ActionPlans");
     try {

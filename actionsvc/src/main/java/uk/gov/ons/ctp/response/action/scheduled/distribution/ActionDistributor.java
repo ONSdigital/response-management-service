@@ -193,6 +193,12 @@ public class ActionDistributor {
                 "Failed to remove the list of actions just processed from distributed list - actions distributed OK, but underlying problem may remain");
           }
         }
+
+        try {
+          actionDistributionListManager.unlockContainer();
+        } catch (LockingException e) {
+          // oh well - it will unlock soon enough
+        }
         distInfo.getInstructionCounts().add(new InstructionCount(actionType.getName(),
             DistributionInfo.Instruction.REQUEST, actionRequests.size()));
         distInfo.getInstructionCounts().add(new InstructionCount(actionType.getName(),
