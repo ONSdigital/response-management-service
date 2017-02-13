@@ -206,7 +206,7 @@ public class ActionDistributor {
       });
     } catch (Exception e) {
       // something went wrong retrieving action types or actions
-      log.error("Failed to process actions because {}", e);
+      log.error("Failed to process actions because {}", e.getMessage());
       // we will be back after a short snooze
     }
     log.info("ActionDistributor going back to sleep");
@@ -240,7 +240,7 @@ public class ActionDistributor {
           log.warn("Failed to send cancels {}", actionCancels.stream().map(a -> a.getActionId().toString())
               .collect(Collectors.joining(",")));
           log.warn("Problem sending action instruction for preceeding ids to handler {} due to {}",
-              actionType, e);
+              actionType, e.getMessage());
           log.warn("ActionDistibution will sleep and retry publish");
           try {
             Thread.sleep(appConfig.getActionDistribution().getRetrySleepSeconds() * MILLISECONDS);
