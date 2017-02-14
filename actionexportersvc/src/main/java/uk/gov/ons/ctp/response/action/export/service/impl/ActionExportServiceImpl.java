@@ -17,6 +17,7 @@ import uk.gov.ons.ctp.common.time.DateTimeUtil;
 import uk.gov.ons.ctp.response.action.export.domain.ActionRequestInstruction;
 import uk.gov.ons.ctp.response.action.export.message.ActionFeedbackPublisher;
 import uk.gov.ons.ctp.response.action.export.repository.ActionRequestRepository;
+import uk.gov.ons.ctp.response.action.export.repository.AddressRepository;
 import uk.gov.ons.ctp.response.action.export.service.ActionExportService;
 import uk.gov.ons.ctp.response.action.message.feedback.ActionFeedback;
 import uk.gov.ons.ctp.response.action.message.feedback.Outcome;
@@ -44,6 +45,9 @@ public class ActionExportServiceImpl implements ActionExportService {
   @Inject
   private ActionRequestRepository actionRequestRepo;
 
+  @Inject
+  private AddressRepository addressRepo;
+
   @Transactional(propagation = Propagation.REQUIRED, readOnly = false, timeout = TRANSACTION_TIMEOUT)
   @Override
   public void acceptInstruction(ActionInstruction instruction) {
@@ -63,17 +67,29 @@ public class ActionExportServiceImpl implements ActionExportService {
 
   /**
    * To process a list of actionRequests
-   * 
+   *
    * @param actionRequests list to be processed
    */
   private void processActionRequests(List<ActionRequest> actionRequests) {
     log.debug("Saving {} actionRequests", actionRequests.size());
-    List<ActionRequestInstruction> actionRequestDocs = mapperFacade.mapAsList(actionRequests, ActionRequestInstruction.class);
+    List<ActionRequestInstruction> actionRequestDocs = mapperFacade.mapAsList(actionRequests,
+        ActionRequestInstruction.class);
     Timestamp now = DateTimeUtil.nowUTC();
     actionRequestDocs.forEach(actionRequestDoc -> {
       actionRequestDoc.setDateStored(now);
+      if (!addressRepo.tupleExists(actionRequestDoc.getAddress().getUprn())) {
+        // Address should never change so do not save if already exists
+        addressRepo.persist(actionRequestDoc.getAddress());
+      }
+//      if (actionRequestRepo.tupleExists(actionRequestDoc.getActionId())) {
+//        // ActionRequests should never be sent twice with same actionId but...
+//        log.warn("Key ActionId {} already exists", actionRequestDoc.getActionId());
+//        actionRequestRepo.save(actionRequestDoc);
+//      } else {
+        actionRequestRepo.persist(actionRequestDoc);
+//      }
     });
-    actionRequestRepo.save(actionRequestDocs);
+
     String timeStamp = new SimpleDateFormat(DATE_FORMAT).format(now);
     actionRequestDocs.forEach(actionRequestDoc -> {
       if (actionRequestDoc.isResponseRequired()) {
@@ -86,7 +102,7 @@ public class ActionExportServiceImpl implements ActionExportService {
 
   /**
    * To process a list of actionCancels
-   * 
+   *
    * @param actionCancels list to be processed
    */
   private void processActionCancels(List<ActionCancel> actionCancels) {
