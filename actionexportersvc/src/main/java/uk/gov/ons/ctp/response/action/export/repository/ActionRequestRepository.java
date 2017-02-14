@@ -7,7 +7,6 @@ import java.util.Set;
 
 import javax.transaction.Transactional;
 
-import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -20,7 +19,7 @@ import uk.gov.ons.ctp.response.action.export.domain.ActionRequestInstruction;
  *
  */
 @Repository
-public interface ActionRequestRepository extends JpaRepository<ActionRequestInstruction, BigInteger> {
+public interface ActionRequestRepository extends BaseRepository<ActionRequestInstruction, BigInteger> {
 
   /**
    * Retrieve all action export requests not done for an actionType.
@@ -61,4 +60,13 @@ public interface ActionRequestRepository extends JpaRepository<ActionRequestInst
   @Query("SELECT r.actionId FROM ActionRequestInstruction r WHERE r.responseRequired = TRUE AND r.actionId IN :actionIds")
   List<BigInteger> retrieveResponseRequiredByActionId(@Param("actionIds") Set<BigInteger> actionIds);
 
+  /**
+   * Check repository for actionId existence
+   * 
+   * @param actionId to check for existence
+   * @return boolean whether exists
+   */
+  @Query(value = "select exists(select 1 from actionexporter.actionrequest where actionid=:p_actionid)", nativeQuery = true)
+  boolean tupleExists(@Param("p_actionid") BigInteger actionId);
+  
 }

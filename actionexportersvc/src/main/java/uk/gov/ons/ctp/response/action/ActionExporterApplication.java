@@ -33,6 +33,7 @@ import uk.gov.ons.ctp.response.action.export.endpoint.ActionRequestEndpoint;
 import uk.gov.ons.ctp.response.action.export.endpoint.ManualTestEndpoint;
 import uk.gov.ons.ctp.response.action.export.endpoint.TemplateEndpoint;
 import uk.gov.ons.ctp.response.action.export.endpoint.TemplateMappingEndpoint;
+import uk.gov.ons.ctp.response.action.export.repository.impl.BaseRepositoryImpl;
 import uk.gov.ons.ctp.response.report.endpoint.ReportEndpoint;
 
 /**
@@ -42,7 +43,7 @@ import uk.gov.ons.ctp.response.report.endpoint.ReportEndpoint;
 @EnableTransactionManagement
 @IntegrationComponentScan
 @ComponentScan(basePackages = {"uk.gov.ons.ctp.response"})
-@EnableJpaRepositories(basePackages = {"uk.gov.ons.ctp.response"})
+@EnableJpaRepositories(basePackages = {"uk.gov.ons.ctp.response"}, repositoryBaseClass = BaseRepositoryImpl.class)
 @EntityScan("uk.gov.ons.ctp.response")
 @EnableAsync
 @EnableCaching

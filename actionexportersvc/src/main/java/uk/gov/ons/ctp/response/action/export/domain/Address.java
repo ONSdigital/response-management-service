@@ -35,10 +35,10 @@ public class Address {
   private String organisationName;
 
   @Column(name = "address_line1")
-  protected String line1;
+  private String line1;
 
   @Column(name = "address_line2")
-  protected String line2;
+  private String line2;
 
   private String locality;
 
