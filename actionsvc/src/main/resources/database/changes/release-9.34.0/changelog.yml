@@ -10,3 +10,14 @@ databaseChangeLog:
             relativeToChangelogFile: true
             splitStatements: false
 
+  - changeSet:
+      id: 9.34.0-2
+      author: Sarah Radford
+      changes:
+        - sqlFile:
+            comment: update responserequired and cancancel to false for print actiontypes
+            path: update_responserequired_cancancel_actiontype.sql
+            relativeToChangelogFile: true
+            splitStatements: false
+
+
