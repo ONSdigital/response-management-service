@@ -1,0 +1,10 @@
+handler,action_type,instruction_type,address_type,estab_type,locality,organisation_name,category,line1,line2,town_name,postcode,ladcode,latitude,longitude,uprn,case_id,case_ref,priority,iac,events,action_plan,question_set,title,forename,surname,email_address,telephone_number
+Field,HouseholdCreateVisit,Request,HH,RH02,,,,FLAT 1,33 CHURCH STREET,BARNSLEY,S70 2AH,E08000016,53.5549989,-1.4819606,10032780845,10,9999999999,3,bbbbbbbbbbbb,,APLAN,H1,,,,,
+Field,HouseholdCreateVisit,Request,HH,RD04,,,,,2 WESTERN MEWS,BARNSLEY,S70 2AY,E08000016,53.5572051,-1.488453,10022884622,11,9999999999,3,bbbbbbbbbbbb,,APLAN,H1S,,,,,
+Field,HouseholdCreateVisit,Request,HH,RD02,,,,,18 VICTORIA ROAD,BARNSLEY,S70 2BB,E08000016,53.5566552,-1.485636,100050667210,12,9999999999,3,bbbbbbbbbbbb,,APLAN,H1S,,,,,
+Field,HouseholdCreateVisit,Request,HH,RD03,,,,23A,VICTORIA ROAD,BARNSLEY,S70 2BB,E08000016,53.5569971,-1.4857073,100050667217,13,9999999999,3,bbbbbbbbbbbb,,APLAN,H1,,,,,
+Field,HouseholdCreateVisit,Request,HH,RD06,,,,FLAT 2 WINDSOR COURT,VICTORIA ROAD,BARNSLEY,S70 2BD,E08000016,53.5563141,-1.4878471,2007001386,14,9999999999,3,bbbbbbbbbbbb,,APLAN,H1,,,,,
+Field,HouseholdCreateVisit,Request,HH,RD06,,,,FLAT 7 WINDSOR COURT,VICTORIA ROAD,BARNSLEY,S70 2BD,E08000016,53.5563141,-1.4878471,2007001391,15,9999999999,3,bbbbbbbbbbbb,,APLAN,H1S,,,,,
+Field,HouseholdCreateVisit,Request,HH,RD06,,,,FLAT 2,22 VICTORIA ROAD,BARNSLEY,S70 2BG,E08000016,53.5565594,-1.4863617,100050667215,16,9999999999,3,bbbbbbbbbbbb,,APLAN,H1S,,,,,
+Field,HouseholdCreateVisit,Request,HH,RD06,,,,FLAT 3,24 VICTORIA ROAD,BARNSLEY,S70 2BG,E08000016,53.5565243,-1.4865584,100052111028,17,9999999999,3,bbbbbbbbbbbb,,APLAN,H1,,,,,
+Field,HouseholdCreateVisit,Request,HH,RD02,,,,,28 VICTORIA ROAD,BARNSLEY,S70 2BG,E08000016,53.5564981,-1.4867399,100050667221,18,9999999999,3,bbbbbbbbbbbb,,APLAN,H1,,,,,
