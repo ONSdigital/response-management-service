@@ -16,7 +16,7 @@ csv.each do |row|
   area_code = row[2].delete(' ')
   server    = ARGV[1]
 
-  RestClient.put("http://#{server}:8171/samples/#{sample_id}",
+  RestClient.put("https://#{server}:8171/samples/#{sample_id}",
                  { type: area_type, code: area_code }.to_json,
                  content_type: :json,
                  accept: :json) do |response, _request, _result, &_block|
