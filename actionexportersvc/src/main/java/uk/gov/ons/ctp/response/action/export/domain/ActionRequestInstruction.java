@@ -49,7 +49,7 @@ public class ActionRequestInstruction {
   @JoinColumn(name = "contactid", referencedColumnName = "contactid")
   private Contact contact;
 
-  @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+  @ManyToOne
   @JoinColumn(name = "uprn", referencedColumnName = "uprn")
   private Address address;
 
