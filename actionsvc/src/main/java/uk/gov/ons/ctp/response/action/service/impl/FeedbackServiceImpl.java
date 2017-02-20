@@ -86,7 +86,7 @@ public class FeedbackServiceImpl implements FeedbackService {
       } else {
         log.error("Feedback Service unable to find action id {} from feedback - ignoring this feedback",
             feedback.getActionId());
-        throw new RuntimeException("ActionID " + feedback.getOutcome() + " unknown");
+        throw new RuntimeException("ActionID " + feedback.getActionId() + " unknown");
       }
     }
   }
