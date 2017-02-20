@@ -127,10 +127,6 @@ sftp:
   password: "JLibV2&XD,"
   directory: Documents
 
-jms:
-  queue:
-    name: Action.Printer
-
 freemarker:
   delayfornewtemplates: 86400000  # ie 24 hours in milliseconds
 
@@ -144,3 +140,9 @@ rabbitmq:
   password: guest
   host: localhost
   virtualhost: /
+
+messaging:
+  consumingThreads: 1
+  maxAttempts: 1
+  prefetchCount: 10
+  txSize: 1

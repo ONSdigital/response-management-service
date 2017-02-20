@@ -21,16 +21,11 @@ import uk.gov.ons.ctp.response.action.message.instruction.ActionInstruction;
 public class ActionExportReceiverImpl implements ActionExportReceiver {
 
   @Inject
-  @Qualifier("instructionUnmarshaller")
-  Marshaller marshaller;
-  
-  @Inject
   private ActionExportService actionExportService;
 
   @Override
-  @ServiceActivator(inputChannel = "instructionTransformed")
+  @ServiceActivator(inputChannel = "actionInstructionTransformed", adviceChain = "actionInstructionRetryAdvice")
   public void acceptInstruction(ActionInstruction instruction) {
-    DeadLetterLogCommand<ActionInstruction> command = new DeadLetterLogCommand<ActionInstruction>(marshaller, instruction);
-    command.run((ActionInstruction x)->actionExportService.acceptInstruction(x));
+    actionExportService.acceptInstruction(instruction);
   }
 }
