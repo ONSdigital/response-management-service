@@ -17,6 +17,8 @@ tags:
     description: Management of templates
   - name: ActionRequest
     description: Management of action requests
+  - name: Reports
+    description: Management of reports
 paths:
   /templates:
     get:
@@ -330,6 +332,91 @@ paths:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'
+  /reports/types:
+    get:
+      summary: Get list of report types
+      description: Return a list of report types from the reporttype table
+      parameters:
+      - name: Accept
+        in: header
+        description: Response type, application/json.
+        required: false
+        type: string
+      tags:
+      - Reports
+      responses:
+        '200':
+          description: List of report types
+          schema:
+            $ref: '#/definitions/ReportTypeListRequest'
+        '404':
+          description: Report types not found
+          schema:
+            $ref: '#/definitions/Error'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+  /reports/types/{reportType}:
+    get:
+      summary: Get list of reports
+      description: Return a list of reports from the reporttype table ommitting the contents
+      parameters:
+      - name: Accept
+        in: header
+        description: Response type, application/json.
+        required: false
+        type: string
+      - name: reportType
+        in: path
+        description: response type used to search responserepository table .
+        required: true
+        type: string
+      tags:
+      - Reports
+      responses:
+        200:
+          description: List of reports
+          schema:
+            $ref: '#/definitions/ReportSummaryRequest'
+        404:
+          description: Report type not found
+          schema:
+            $ref: '#/definitions/Error'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'  
+  /reports/{reportId}:
+    get:
+      summary: Get report by Id
+      description: Return a report associated with specific Id
+      parameters:
+      - name: Accept
+        in: header
+        description: Response type, application/json.
+        required: false
+        type: string
+      - name: reportId
+        in: path
+        description: Id used to search for report
+        required: true
+        type: integer
+      tags:
+      - Reports
+      responses:
+        200:
+          description: Return contents of report
+          schema:
+            $ref: '#/definitions/ReportContentsRequest'
+        404:
+          description: Report type not found
+          schema:
+            $ref: '#/definitions/Error'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error' 
 definitions:
   Address:
     type: object
@@ -486,6 +573,48 @@ definitions:
       message:
         description: Error message
         type: string
+  ReportTypeListRequest:
+    type: object
+    properties:
+      reporttype:
+        type: string
+        description: Report Type
+      reporttypeid:
+        type: integer
+        description: Report Type Id
+      orderid:
+        type: integer
+        description: Order Id
+      displayname:
+        type: string
+        description: Report Type Display Name
+  ReportSummaryRequest:
+    type: object
+    properties:
+      reporttype:
+        type: string
+        description: Report Type
+      creatdedatetime:
+        type: string
+        description: Date created for report
+      reportid:
+        type: integer
+        description: id of the report
+  ReportContentsRequest:
+    type: object
+    properties:
+      reportId:
+        type: integer
+        description: Id associated with report.
+      reportType:
+        type: string
+        description: Type of report returned.
+      contents:
+        type: string
+        description: Content of report.
+      createdDateTime:
+        type: string
+        description: Date and time report was created.
 securityDefinitions:
   UserSecurity:
     type: basic
