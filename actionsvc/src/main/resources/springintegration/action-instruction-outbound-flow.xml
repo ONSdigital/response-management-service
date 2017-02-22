@@ -1,83 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xmlns:int="http://www.springframework.org/schema/integration"
-       xmlns:int-jms="http://www.springframework.org/schema/integration/jms"
-       xmlns:int-xml="http://www.springframework.org/schema/integration/xml"
+       xmlns:rabbit="http://www.springframework.org/schema/rabbit"
        xsi:schemaLocation="http://www.springframework.org/schema/beans
   http://www.springframework.org/schema/beans/spring-beans-4.2.xsd
-  http://www.springframework.org/schema/integration http://www.springframework.org/schema/integration/spring-integration.xsd
-  http://www.springframework.org/schema/integration/jms http://www.springframework.org/schema/integration/jms/spring-integration-jms.xsd
-  http://www.springframework.org/schema/integration/xml
-  http://www.springframework.org/schema/integration/xml/spring-integration-xml.xsd">
+  http://www.springframework.org/schema/rabbit
+  http://www.springframework.org/schema/rabbit/spring-rabbit-1.6.xsd">
 
-    <bean id="fieldInstructionQueue" class="com.rabbitmq.jms.admin.RMQDestination">
-        <constructor-arg name="destName" value="Action.Field"/>
-        <constructor-arg name="isQueue" value="true"/>
-        <constructor-arg name="isTemporary" value="false"/>
+    <bean id="actionInstructionMarshaller" class="org.springframework.oxm.jaxb.Jaxb2Marshaller">
+        <property name="contextPath" value="uk.gov.ons.ctp.response.action.message.instruction" />
     </bean>
 
-    <bean id="printerInstructionQueue" class="com.rabbitmq.jms.admin.RMQDestination">
-        <constructor-arg name="destName" value="Action.Printer"/>
-        <constructor-arg name="isQueue" value="true"/>
-        <constructor-arg name="isTemporary" value="false"/>
+    <bean id="actionInstructionMarshallingMessageConverter" class="org.springframework.amqp.support.converter.MarshallingMessageConverter">
+        <constructor-arg ref="actionInstructionMarshaller" />
+        <property name="contentType" value="text/xml" />
     </bean>
 
-    <bean id="notifyInstructionQueue" class="com.rabbitmq.jms.admin.RMQDestination">
-        <constructor-arg name="destName" value="Action.Notify"/>
-        <constructor-arg name="isQueue" value="true"/>
-        <constructor-arg name="isTemporary" value="false"/>
-    </bean>
-
-    <bean id="invalidActionInstructionQueue" class="com.rabbitmq.jms.admin.RMQDestination">
-        <constructor-arg name="destName" value="Action.InvalidActionInstructions"/>
-        <constructor-arg name="isQueue" value="true"/>
-        <constructor-arg name="isTemporary" value="false"/>
-    </bean>
-
-    <!-- setup the outbound channels - note each queue needs a channel -->
-    <int:channel id="instructionOutbound" />
-    <int:channel id="instructionXml" />
-    <int:channel id="instructionXmlInvalid" />
-    <int:channel id="instructionField" />
-    <int:channel id="instructionPrinter" />
-    <int:channel id="instructionFieldSupport" />
-    <int:filter id="instructionFieldSupportFilter" input-channel="instructionFieldSupport" output-channel="nullChannel" expression="true"/>
-    <int:channel id="instructionCensusSupport" />
-    <int:filter id="instructionCensusSupportFilter" input-channel="instructionCensusSupport" output-channel="nullChannel" expression="true"/>
-    <int:channel id="instructionNotify" />
-
-    <!-- the @Publisher sends to the marshalling-transformers input channel -->
-    <int-xml:marshalling-transformer
-            input-channel="instructionOutbound" output-channel="instructionXml"
-            marshaller="instructionMarshaller" result-transformer="instructionTransformer" />
-    <!-- the instructionMarshaller turns java objs into xml dom -->
-    <bean id="instructionMarshaller" class="org.springframework.oxm.jaxb.Jaxb2Marshaller">
-        <property name="contextPath"
-                  value="uk.gov.ons.ctp.response.action.message.instruction" />
-    </bean>
-
-    <!-- the instructionTransformer turns the xml dom into a string -->
-    <bean id="instructionTransformer"
-          class="org.springframework.integration.xml.transformer.ResultToStringTransformer" />
-
-    <int-xml:validating-filter id="instructionValidator"
-                               input-channel="instructionXml" output-channel="instructionXmlValid"
-                               schema-location="classpath:xsd/actionInstruction.xsd" discard-channel="instructionXmlInvalid" />
-    <int-jms:outbound-channel-adapter id="invalidActionInstructionJmsOut" destination="invalidActionInstructionQueue" channel="instructionXmlInvalid"/>
-
-    <!-- each channel adapter listens to one of our routed channels and adapts the SI message to a JMS message -->
-    <int-jms:outbound-channel-adapter id="jmsout.Field"
-                                      channel="instructionField" destination="fieldInstructionQueue" />
-
-    <int-jms:outbound-channel-adapter id="jmsout.Printer"
-                                      channel="instructionPrinter" destination="printerInstructionQueue" />
-
-    <int-jms:outbound-channel-adapter id="jmsout.Notify"
-                                      channel="instructionNotify" destination="notifyInstructionQueue" />
-
-    <!-- the router ... routes ... using the header 'HANDLER' set by the @Publisher -->
-    <!-- the SpEL constructs the channel name to send our xml string to -->
-    <int:router input-channel="instructionXmlValid" expression="'instruction'.concat(headers.HANDLER)" />
-
+    <rabbit:template id="actionInstructionRabbitTemplate" connection-factory="connectionFactory" exchange="action-outbound-exchange" message-converter="actionInstructionMarshallingMessageConverter" channel-transacted="true"/>
 </beans>

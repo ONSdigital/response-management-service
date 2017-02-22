@@ -171,4 +171,8 @@ rabbitmq:
   host: localhost
   virtualhost: /
   
-  
+messaging:
+  consumingThreads: 1
+  maxAttempts: 1
+  prefetchCount: 10
+  txSize: 1

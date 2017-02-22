@@ -2,9 +2,11 @@ package uk.gov.ons.ctp.response.action.message.impl;
 
 import java.util.List;
 
+import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.springframework.integration.annotation.Publisher;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.messaging.handler.annotation.Header;
 
 import uk.gov.ons.ctp.response.action.message.InstructionPublisher;
@@ -25,9 +27,14 @@ import uk.gov.ons.ctp.response.action.message.instruction.ActionRequests;
 @Named
 public class InstructionPublisherImpl implements InstructionPublisher {
 
-  @Override
-  @Publisher(channel = "instructionOutbound")
-  public ActionInstruction sendInstructions(@Header("HANDLER") String handler, List<ActionRequest> actionRequests,
+  @Qualifier("actionInstructionRabbitTemplate")
+  @Inject
+  private RabbitTemplate rabbitTemplate;
+
+  private static final String ACTION = "Action.";
+  private static final String BINDING = ".binding";
+
+  public void sendInstructions(@Header("HANDLER") String handler, List<ActionRequest> actionRequests,
       List<ActionCancel> actionCancels) {
     ActionInstruction instruction = new ActionInstruction();
 
@@ -43,7 +50,7 @@ public class InstructionPublisherImpl implements InstructionPublisher {
       instruction.setActionCancels(cancels);
     }
 
-    return instruction;
+    String routingKey = String.format("%s%s%s", ACTION, handler, BINDING);
+    rabbitTemplate.convertAndSend(routingKey, instruction);
   }
-
 }

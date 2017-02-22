@@ -1,31 +1,95 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:int="http://www.springframework.org/schema/integration"
-	xmlns:rabbit="http://www.springframework.org/schema/rabbit"
-	xmlns:int-jms="http://www.springframework.org/schema/integration/jms"
-	xmlns:int-amqp="http://www.springframework.org/schema/integration/amqp"
-	xmlns:int-xml="http://www.springframework.org/schema/integration/xml"
-	xsi:schemaLocation="http://www.springframework.org/schema/beans
+	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	   xmlns:rabbit="http://www.springframework.org/schema/rabbit"
+	   xsi:schemaLocation="http://www.springframework.org/schema/beans
   http://www.springframework.org/schema/beans/spring-beans-4.2.xsd
-  http://www.springframework.org/schema/integration http://www.springframework.org/schema/integration/spring-integration.xsd
-  http://www.springframework.org/schema/integration/jms http://www.springframework.org/schema/integration/jms/spring-integration-jms.xsd
-  http://www.springframework.org/schema/integration/amqp http://www.springframework.org/schema/integration/amqp/spring-integration-amqp.xsd
-  http://www.springframework.org/schema/rabbit http://www.springframework.org/schema/rabbit/spring-rabbit.xsd
-  http://www.springframework.org/schema/integration/xml
-  http://www.springframework.org/schema/integration/xml/spring-integration-xml.xsd">
+  http://www.springframework.org/schema/rabbit
+  http://www.springframework.org/schema/rabbit/spring-rabbit-1.6.xsd">
 
-	<!-- <rabbit:connection-factory id="connectionFactory" host="${rabbitmq.host}" 
-		username="${rabbitmq.username}" password="${rabbitmq.password}" virtual-host="${rabbitmq.virtualhost}"/> -->
-	<bean id="connectionFactory"
-		class="org.springframework.jms.connection.CachingConnectionFactory">
-		<property name="targetConnectionFactory">
-			<bean class="com.rabbitmq.jms.admin.RMQConnectionFactory">
-				<property name="username" value="${rabbitmq.username}" />
-				<property name="password" value="${rabbitmq.password}" />
-				<property name="host" value="${rabbitmq.host}" />
-				<property name="virtualHost" value="${rabbitmq.virtualhost}" />
-			</bean>
-		</property>
-		<property name="sessionCacheSize" value="10" />
-	</bean>
+	<rabbit:connection-factory id="connectionFactory" host="${rabbitmq.host}" />
+
+	<rabbit:template id="amqpTemplate" connection-factory="connectionFactory" />
+
+	<!-- Start of Queues -->
+	<rabbit:queue name="Action.Field" durable="true">
+		<rabbit:queue-arguments value-type="java.lang.String">
+			<entry key="x-dead-letter-exchange" value="action-deadletter-exchange" />
+			<entry key="x-dead-letter-routing-key" value="Action.Field.binding" />
+		</rabbit:queue-arguments>
+	</rabbit:queue>
+
+	<rabbit:queue name="Action.Printer" durable="true">
+		<rabbit:queue-arguments value-type="java.lang.String">
+			<entry key="x-dead-letter-exchange" value="action-deadletter-exchange" />
+			<entry key="x-dead-letter-routing-key" value="Action.Printer.binding" />
+		</rabbit:queue-arguments>
+	</rabbit:queue>
+
+	<rabbit:queue name="Action.Notify" durable="true">
+		<rabbit:queue-arguments value-type="java.lang.String">
+			<entry key="x-dead-letter-exchange" value="action-deadletter-exchange" />
+			<entry key="x-dead-letter-routing-key" value="Action.Notify.binding" />
+		</rabbit:queue-arguments>
+	</rabbit:queue>
+
+	<rabbit:queue name="Action.Feedback" durable="true">
+		<rabbit:queue-arguments value-type="java.lang.String">
+			<entry key="x-dead-letter-exchange" value="action-deadletter-exchange" />
+			<entry key="x-dead-letter-routing-key" value="Action.Feedback.binding" />
+		</rabbit:queue-arguments>
+	</rabbit:queue>
+
+	<rabbit:queue name="Action.InvalidActionFeedback" durable="true" />
+
+	<rabbit:queue name="Action.FeedbackDLQ" durable="true" />
+
+	<rabbit:queue name="Case.LifecycleEvents" durable="true">
+		<rabbit:queue-arguments value-type="java.lang.String">
+			<entry key="x-dead-letter-exchange" value="case-deadletter-exchange" />
+			<entry key="x-dead-letter-routing-key" value="Case.LifecycleEvents.binding" />
+		</rabbit:queue-arguments>
+	</rabbit:queue>
+
+	<rabbit:queue name="Case.InvalidCaseNotifications" durable="true" />
+
+	<rabbit:queue name="Case.LifecycleEventsDLQ" durable="true" />
+	<!-- End of Queues -->
+
+	<!-- Start of Exchanges -->
+	<rabbit:direct-exchange name="action-outbound-exchange">
+		<rabbit:bindings>
+			<rabbit:binding queue="Action.Field" key="Action.Field.binding" />
+			<rabbit:binding queue="Action.Printer" key="Action.Printer.binding" />
+			<rabbit:binding queue="Action.Notify" key="Action.Notify.binding" />
+		</rabbit:bindings>
+	</rabbit:direct-exchange>
+
+	<rabbit:direct-exchange name="action-deadletter-exchange">
+		<rabbit:bindings>
+			<rabbit:binding queue="Action.FeedbackDLQ" key="Action.Feedback.binding" />
+		</rabbit:bindings>
+	</rabbit:direct-exchange>
+
+	<rabbit:direct-exchange name="action-invalid-exchange">
+		<rabbit:bindings>
+			<rabbit:binding queue="Action.InvalidActionFeedback" key="Action.Feedback.binding" />
+		</rabbit:bindings>
+	</rabbit:direct-exchange>
+
+	<rabbit:direct-exchange name="case-deadletter-exchange">
+		<rabbit:bindings>
+			<rabbit:binding queue="Case.LifecycleEventsDLQ" key="Case.LifecycleEvents.binding" />
+		</rabbit:bindings>
+	</rabbit:direct-exchange>
+
+	<rabbit:direct-exchange name="case-invalid-exchange">
+		<rabbit:bindings>
+			<rabbit:binding queue="Case.InvalidCaseNotifications" key="Case.LifecycleEvents.binding" />
+		</rabbit:bindings>
+	</rabbit:direct-exchange>
+	<!-- End of Exchanges -->
+
 </beans>
+
+

@@ -2,54 +2,65 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:int="http://www.springframework.org/schema/integration"
-       xmlns:int-jms="http://www.springframework.org/schema/integration/jms"
+       xmlns:int-amqp="http://www.springframework.org/schema/integration/amqp"
        xmlns:int-xml="http://www.springframework.org/schema/integration/xml"
        xsi:schemaLocation="http://www.springframework.org/schema/beans
   http://www.springframework.org/schema/beans/spring-beans-4.2.xsd
   http://www.springframework.org/schema/integration http://www.springframework.org/schema/integration/spring-integration.xsd
-  http://www.springframework.org/schema/integration/jms http://www.springframework.org/schema/integration/jms/spring-integration-jms.xsd
+  http://www.springframework.org/schema/integration/amqp http://www.springframework.org/schema/integration/amqp/spring-integration-amqp.xsd
   http://www.springframework.org/schema/integration/xml
   http://www.springframework.org/schema/integration/xml/spring-integration-xml.xsd">
 
-    <bean id="actionFeedbackMessageListenerContainer"
-          class="org.springframework.jms.listener.DefaultMessageListenerContainer">
+    <bean id="transactionManager" class="org.springframework.integration.transaction.PseudoTransactionManager" />
+
+    <bean id="actionFeedbackListenerContainer" class="org.springframework.amqp.rabbit.listener.SimpleMessageListenerContainer">
         <property name="connectionFactory" ref="connectionFactory" />
-        <property name="destinationName" value="Action.Feedback" />
-        <property name="maxConcurrentConsumers" value="1" />
-        <property name="concurrentConsumers" value="1" />
-        <property name="receiveTimeout" value="5000" />
-        <property name="recoveryInterval" value="60000" />
-        <property name="autoStartup" value="true" />
-        <property name="sessionTransacted" value="true" />
+        <property name="queueNames" value="Action.Feedback" />
+        <property name="concurrentConsumers" value="${messaging.consumingThreads}" />
+        <property name="prefetchCount" value="${messaging.prefetchCount}" />
+        <property name="txSize" value="${messaging.txSize}" />
+        <property name="channelTransacted" value="true" />
+        <property name="transactionManager" ref="transactionManager" />
     </bean>
 
-    <!-- need an input channel defined for MQ adapter to input to -->
+    <!-- Xml msg is taken off the queue Action.Feedback and put on the channel actionFeedbackXml -->
     <int:channel id="actionFeedbackXml" />
+    <bean id="simpleMessageConverter" class="org.springframework.amqp.support.converter.SimpleMessageConverter" />
+    <int-amqp:inbound-channel-adapter id="actionFeedbackInboundAmqp" listener-container="actionFeedbackListenerContainer"
+                                      message-converter="simpleMessageConverter" channel="actionFeedbackXml" />
 
-    <!-- the MQ channel adapter reads from testQueue (see the container above) and inputs to feedback.xml -->
-    <int-jms:message-driven-channel-adapter id="jmsIn" container="actionFeedbackMessageListenerContainer" channel="actionFeedbackXml" />
-
-    <!-- First the SI message provided by the channel adapter is validated against the inbound schema -->
+    <!-- Xml validated against the inbound schema -->
+    <int:channel id="actionFeedbackInvalidXml" />
+    <int-amqp:outbound-channel-adapter id="invalidActionFeedbackOutboundAmqp" channel="actionFeedbackInvalidXml" exchange-name="action-invalid-exchange" routing-key="Action.Feedback.binding" />
     <!-- Option to be used in Debug/Test: throw-exception-on-rejection="true" -->
-    <int:channel id="actionFeedbackXmlInvalid" />
-    <bean id="invalidActionFeedbackQueue" class="com.rabbitmq.jms.admin.RMQDestination">
-        <constructor-arg name="destName" value="Action.InvalidActionFeedback"/>
-        <constructor-arg name="isQueue" value="true"/>
-        <constructor-arg name="isTemporary" value="false"/>
-    </bean>
-    <int-jms:outbound-channel-adapter id="invalidActionFeedbackJmsOut" destination="invalidActionFeedbackQueue" channel="actionFeedbackXmlInvalid"/>
     <int-xml:validating-filter id="actionFeedbackValidator" input-channel="actionFeedbackXml"
-                               output-channel="actionFeedbackXmlValid" schema-location="classpath:xsd/actionFeedback.xsd" discard-channel="actionFeedbackXmlInvalid"/>
+                               output-channel="actionFeedbackXmlValid" schema-location="classpath:xsd/actionFeedback.xsd" discard-channel="actionFeedbackInvalidXml"/>
 
-    <!-- Secondly the now validated xml is transformed into the jaxb generated object model -->
-    <int:channel id="actionFeedbackTransformed" datatype="uk.gov.ons.ctp.response.action.message.feedback.ActionFeedback">
-    </int:channel>
-    <int-xml:unmarshalling-transformer
-            input-channel="actionFeedbackXmlValid" output-channel="actionFeedbackTransformed"
-            unmarshaller="actionFeedbackUnmarshaller" />
-
-    <!-- The transformer uses this unmarshaller to do the heavy (un)lifting -->
-    <bean id="actionFeedbackUnmarshaller" class="org.springframework.oxm.jaxb.Jaxb2Marshaller">
+    <!-- The now validated xml is transformed into the jaxb generated object model -->
+    <bean id="actionFeedbackMarshaller" class="org.springframework.oxm.jaxb.Jaxb2Marshaller">
         <property name="contextPath" value="uk.gov.ons.ctp.response.action.message.feedback" />
     </bean>
+    <int:channel id="actionFeedbackTransformed" datatype="uk.gov.ons.ctp.response.action.message.feedback.ActionFeedback" />
+    <int-xml:unmarshalling-transformer
+            input-channel="actionFeedbackXmlValid" output-channel="actionFeedbackTransformed"
+            unmarshaller="actionFeedbackMarshaller" />
+
+    <!-- Finally see the @ServiceActivator(inputChannel="actionFeedbackTransformed") -->
+
+    <!-- Start of section to deal with retries and DLQ after max attempts -->
+    <int:channel id="actionFeedbackDlqChannel" />
+    <int:handler-retry-advice id="actionFeedbackRetryAdvice" recovery-channel="actionFeedbackDlqChannel" max-attempts="${messaging.maxAttempts}"/>
+
+    <int:channel id="actionFeedbackDlqInterimChannel" />
+    <int:transformer input-channel="actionFeedbackDlqChannel" output-channel="actionFeedbackDlqInterimChannel" expression="payload.failedMessage.payload" />
+
+    <int:channel id="actionFeedbackDlqChannelXml" />
+    <int-xml:marshalling-transformer
+            input-channel="actionFeedbackDlqInterimChannel" output-channel="actionFeedbackDlqChannelXml"
+            marshaller="actionFeedbackMarshaller"
+            result-transformer="actionFeedbackOutboundTransformer"/>
+    <bean id="actionFeedbackOutboundTransformer" class="org.springframework.integration.xml.transformer.ResultToStringTransformer" />
+
+    <int-amqp:outbound-channel-adapter id="actionFeedbackDlqAmqp" channel="actionFeedbackDlqChannelXml" exchange-name="action-deadletter-exchange" routing-key="Action.Feedback.binding" />
+    <!-- End of section to deal with retries and DLQ after max attempts -->
 </beans>
