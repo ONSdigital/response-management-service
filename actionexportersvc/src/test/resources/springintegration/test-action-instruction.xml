@@ -62,6 +62,11 @@
   <bean id="actionRequestRepository" class="org.mockito.Mockito" factory-method="mock"  >
     <constructor-arg value="uk.gov.ons.ctp.response.action.export.repository.ActionRequestRepository" />
   </bean>
+  
+  <!-- Mock addressRepository to inject into actionExportService  -->
+  <bean id="addressRepository" class="org.mockito.Mockito" factory-method="mock"  >
+    <constructor-arg value="uk.gov.ons.ctp.response.action.export.repository.AddressRepository" />
+  </bean>
 
 </beans>
 
