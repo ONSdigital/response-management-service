@@ -11,17 +11,28 @@
   http://www.springframework.org/schema/integration/xml
   http://www.springframework.org/schema/integration/xml/spring-integration-xml.xsd">
 
-    <bean id="fieldInstructionQueue" class="org.apache.activemq.command.ActiveMQQueue">
-        <constructor-arg value="Action.Field" />
+    <bean id="fieldInstructionQueue" class="com.rabbitmq.jms.admin.RMQDestination">
+        <constructor-arg name="destName" value="Action.Field"/>
+        <constructor-arg name="isQueue" value="true"/>
+        <constructor-arg name="isTemporary" value="false"/>
     </bean>
-    <bean id="printerInstructionQueue" class="org.apache.activemq.command.ActiveMQQueue">
-        <constructor-arg value="Action.Printer" />
+
+    <bean id="printerInstructionQueue" class="com.rabbitmq.jms.admin.RMQDestination">
+        <constructor-arg name="destName" value="Action.Printer"/>
+        <constructor-arg name="isQueue" value="true"/>
+        <constructor-arg name="isTemporary" value="false"/>
     </bean>
-    <bean id="notifyInstructionQueue" class="org.apache.activemq.command.ActiveMQQueue">
-        <constructor-arg value="Action.Notify" />
+
+    <bean id="notifyInstructionQueue" class="com.rabbitmq.jms.admin.RMQDestination">
+        <constructor-arg name="destName" value="Action.Notify"/>
+        <constructor-arg name="isQueue" value="true"/>
+        <constructor-arg name="isTemporary" value="false"/>
     </bean>
-    <bean id="invalidActionInstructionQueue" class="org.apache.activemq.command.ActiveMQQueue">
-        <constructor-arg value="Action.InvalidActionInstructions"/>
+
+    <bean id="invalidActionInstructionQueue" class="com.rabbitmq.jms.admin.RMQDestination">
+        <constructor-arg name="destName" value="Action.InvalidActionInstructions"/>
+        <constructor-arg name="isQueue" value="true"/>
+        <constructor-arg name="isTemporary" value="false"/>
     </bean>
 
     <!-- setup the outbound channels - note each queue needs a channel -->

@@ -6,7 +6,7 @@ info:
     exports to be initiated for ActionRequests previously stored.
 
     Note that all of the endpoints this service provides are authenticated using HTTP basic authentication.
-  version: 9.28.0
+  version: 9.32.0
 schemes:
   - http
 basePath: /
@@ -17,6 +17,8 @@ tags:
     description: Management of templates
   - name: ActionRequest
     description: Management of action requests
+  - name: Reports
+    description: Management of reports
 paths:
   /templates:
     get:
@@ -132,18 +134,18 @@ paths:
             description: Unexpected error.
             schema:
               $ref: '#/definitions/Error'
-  /templatemappings/{templateMappingName}:
+  /templatemappings/{actionType}:
       get:
-        summary:  Gets the template mapping for the specified templateMappingName.
-        description: Returns details of the template mapping for the supplied templateMappingName.
+        summary:  Gets the template mapping for the specified actionType.
+        description: Returns details of the template mapping for the supplied actionType.
         parameters:
           - name: Accept
             in: header
             description: Response type, application/json.
             required: false
             type: string
-          - name: templateMappingName
-            description: Unique template mapping name
+          - name: actionType
+            description: Unique actionType name.
             in: path
             required: true
             type: string
@@ -151,11 +153,11 @@ paths:
           - Template
         responses:
           200:
-            description: Template mapping details for the supplied templateMappingName.
+            description: Template mapping details for the supplied actionType.
             schema:
               $ref: '#/definitions/TemplateMapping'
           404:
-            description: templateMappingName not found
+            description: actionType not found
             schema:
               $ref: '#/definitions/Error'
           default:
@@ -173,21 +175,21 @@ paths:
             description: Response type, application/json
             required: false
             type: string
-          - name: templateMappingName
+          - name: actionType
             in: path
             type: string
-            description: Unique template mapping name
+            description: Unique actionType name.
             required: true
           - name: file
             in: formData
             type: file
-            description: Template mapping file to store
+            description: Template mapping to store
             required: true
         tags:
           - Template
         responses:
           201:
-            description: Template mapping file stored
+            description: Template mapping stored
             schema:
               $ref: '#/definitions/TemplateMapping'
           400:
@@ -229,7 +231,7 @@ paths:
           schema:
             type: array
             items:
-              $ref: '#/definitions/ActionRequestDocument'
+              $ref: '#/definitions/ActionRequest'
         default:
           description: Unexpected error
           schema:
@@ -266,7 +268,7 @@ paths:
           schema:
             type: array
             items:
-              $ref: '#/definitions/ActionRequestDocument'
+              $ref: '#/definitions/ActionRequest'
         default:
           description: Unexpected error
           schema:
@@ -292,7 +294,7 @@ paths:
         200:
           description: actionRequest's details for the supplied action ID.
           schema:
-            $ref: '#/definitions/ActionRequestDocument'
+            $ref: '#/definitions/ActionRequest'
         404:
           description: ActionRequest not found
           schema:
@@ -321,7 +323,7 @@ paths:
         201:
           description: ActionRequest for the specified actionId exported successfully.
           schema:
-            $ref: '#/definitions/ActionRequestDocument'
+            $ref: '#/definitions/ActionRequest'
         404:
           description: ActionRequest not found
           schema:
@@ -330,6 +332,91 @@ paths:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'
+  /reports/types:
+    get:
+      summary: Get list of report types
+      description: Return a list of report types from the reporttype table
+      parameters:
+      - name: Accept
+        in: header
+        description: Response type, application/json.
+        required: false
+        type: string
+      tags:
+      - Reports
+      responses:
+        '200':
+          description: List of report types
+          schema:
+            $ref: '#/definitions/ReportTypeListRequest'
+        '404':
+          description: Report types not found
+          schema:
+            $ref: '#/definitions/Error'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+  /reports/types/{reportType}:
+    get:
+      summary: Get list of reports
+      description: Return a list of reports from the reporttype table ommitting the contents
+      parameters:
+      - name: Accept
+        in: header
+        description: Response type, application/json.
+        required: false
+        type: string
+      - name: reportType
+        in: path
+        description: response type used to search responserepository table .
+        required: true
+        type: string
+      tags:
+      - Reports
+      responses:
+        200:
+          description: List of reports
+          schema:
+            $ref: '#/definitions/ReportSummaryRequest'
+        404:
+          description: Report type not found
+          schema:
+            $ref: '#/definitions/Error'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'  
+  /reports/{reportId}:
+    get:
+      summary: Get report by Id
+      description: Return a report associated with specific Id
+      parameters:
+      - name: Accept
+        in: header
+        description: Response type, application/json.
+        required: false
+        type: string
+      - name: reportId
+        in: path
+        description: Id used to search for report
+        required: true
+        type: integer
+      tags:
+      - Reports
+      responses:
+        200:
+          description: Return contents of report
+          schema:
+            $ref: '#/definitions/ReportContentsRequest'
+        404:
+          description: Report type not found
+          schema:
+            $ref: '#/definitions/Error'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error' 
 definitions:
   Address:
     type: object
@@ -364,6 +451,9 @@ definitions:
       postcode:
         type: string
         description: Postal Code.
+      ladCode:
+        type: string
+        description: Local Authority District Code.
       latitude:
         type: number
         description: Position North or South of Equator.
@@ -390,21 +480,25 @@ definitions:
   TemplateMapping:
     type: object
     required:
-      - name
-      - content
+      - actionType
+      - template
+      - file
       - dateModified
     properties:
-      name:
+      actionType:
         type: string
-        description: Unique name for the Template Mapping.
-      content:
+        description: ActionType name for which mapping applies.
+      template:
         type: string
-        description: Content of the Template Mapping.
+        description: Template to apply for actionType.
+      file:
+        type: string
+        description: File name prefix.      
       dateModified:
         type: string
         format: date-time
         description: Creation date-time.
-  ActionRequestDocument:
+  ActionRequest:
     type: object
     properties:
       actionId:
@@ -479,6 +573,48 @@ definitions:
       message:
         description: Error message
         type: string
+  ReportTypeListRequest:
+    type: object
+    properties:
+      reporttype:
+        type: string
+        description: Report Type
+      reporttypeid:
+        type: integer
+        description: Report Type Id
+      orderid:
+        type: integer
+        description: Order Id
+      displayname:
+        type: string
+        description: Report Type Display Name
+  ReportSummaryRequest:
+    type: object
+    properties:
+      reporttype:
+        type: string
+        description: Report Type
+      creatdedatetime:
+        type: string
+        description: Date created for report
+      reportid:
+        type: integer
+        description: id of the report
+  ReportContentsRequest:
+    type: object
+    properties:
+      reportId:
+        type: integer
+        description: Id associated with report.
+      reportType:
+        type: string
+        description: Type of report returned.
+      contents:
+        type: string
+        description: Content of report.
+      createdDateTime:
+        type: string
+        description: Date and time report was created.
 securityDefinitions:
   UserSecurity:
     type: basic

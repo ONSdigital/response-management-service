@@ -294,7 +294,7 @@ public class CsvIngester extends CsvToBean<CsvLine> {
         .withTownName(csvLine.getTownName())
         .withType(csvLine.getAddressType())
         .end()
-        .withCaseId(new BigInteger(csvLine.getCaseId()))
+        .withCaseId(new Integer(csvLine.getCaseId()))
         .withIac(csvLine.getIac())
         .withPriority(
             Priority.fromValue(ActionPriority.valueOf(Integer.parseInt(csvLine.getPriority())).getName()))
@@ -314,11 +314,11 @@ public class CsvIngester extends CsvToBean<CsvLine> {
   private void publishBuckets(Map<String, InstructionBucket> buckets) {
     buckets.forEach((handler, handlerInstructionBucket) -> {
       for (List<ActionRequest> partition : Lists.partition(handlerInstructionBucket.actionRequests,
-          appConfig.getActionDistribution().getInstructionMax())) {
+          appConfig.getActionDistribution().getDistributionMax())) {
         instructionPublisher.sendInstructions(handler, partition, null);
       }
       for (List<ActionCancel> partition : Lists.partition(handlerInstructionBucket.actionCancels,
-          appConfig.getActionDistribution().getInstructionMax())) {
+          appConfig.getActionDistribution().getDistributionMax())) {
         instructionPublisher.sendInstructions(handler, null, partition);
       }
     });

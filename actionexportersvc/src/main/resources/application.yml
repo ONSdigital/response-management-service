@@ -10,27 +10,39 @@ info:
 logging:
   level:
     uk.gov.ons.ctp: INFO
+    org.springframework.cloud.sleuth.instrument.messaging.MessagingSpanExtractor: ERROR
+    org.springframework.context.annotation.ConfigurationClassPostProcessor: ERROR
+
+liquibase:
+  user: actionexportersvc
+  password: actionexportersvc
+  default-schema: actionexporter
+  url: jdbc:postgresql://localhost:5432/postgres
+  changeLog: classpath:/database/changelog-master.yml
 
 security:
   basic:
-    enabled: true
+    enabled: false
   user:
     name: actionexporter
     password: ctp
+
 
 management:
   port: 8241
   context-path: /mgmt
   security:
     role: SUPERUSER
-    enabled: false
+    enabled: true
   health:
     mongo:
       enabled: true
+    rabbit:
+      enabled: false
 
 server:
   port: 8141
-  servlet-path: /mgmt
+  servlet-path: /
 
 endpoints:
   autoconfig: 
@@ -65,15 +77,34 @@ endpoints:
     sensitive: true
 
 spring:
+  output:
+    ansi:
+      enabled: never
+
   application:
     name: ONS ActionExporterSvc
 
-  activemq:
-    broker-url: tcp://localhost:53445
-    pooled: true
+  datasource:
+    url: jdbc:postgresql://localhost:5432/postgres
+    username: actionexportersvc
+    password: actionexportersvc
+    driverClassName: org.postgresql.Driver
+    tomcat:
+      initial-size: 5
+      max-active: 10
+      max-idle: 5
+      min-idle: 3
 
-  data:
-    mongodb.uri: mongodb://localhost:27017/actionExport
+  freemarker:
+    checkTemplateLocation: false
+
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    show-sql: false
+    properties:
+      hibernate:
+        ddl-auto: update
+        default_schema: actionexporter
 
   sleuth:
     sampler:
@@ -84,8 +115,7 @@ spring:
 
 data-grid:
   address: localhost:6379
-  password: redis
-  lock-time-to-live-seconds: 600
+  lock-time-to-live-seconds: 3600
 
 export-schedule:
   cron-expression: "0 0/5 * * * ?"
@@ -108,3 +138,9 @@ redelivery-policy:
   maxRedeliveries: 10
   initialRedeliveryDelay: 1000
   redeliveryDelay: 1000
+
+rabbitmq:
+  username: guest
+  password: guest
+  host: localhost
+  virtualhost: /

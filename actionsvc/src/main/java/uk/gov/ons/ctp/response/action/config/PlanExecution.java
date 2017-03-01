@@ -8,7 +8,5 @@ import lombok.Data;
  */
 @Data
 public class PlanExecution {
-  private Integer retrySleepSeconds;
-  private Integer initialDelaySeconds;
-  private Integer subsequentDelaySeconds;
+  private Long delayMilliSeconds;
 }

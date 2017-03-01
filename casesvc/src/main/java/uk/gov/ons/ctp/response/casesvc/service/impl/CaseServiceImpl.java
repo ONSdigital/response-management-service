@@ -1,5 +1,6 @@
 package uk.gov.ons.ctp.response.casesvc.service.impl;
 
+import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.List;
 
@@ -134,7 +135,19 @@ public class CaseServiceImpl implements CaseService {
   @Transactional(propagation = Propagation.REQUIRED, readOnly = false, timeout = TRANSACTION_TIMEOUT)
   @Override
   public CaseEvent createCaseEvent(final CaseEvent caseEvent, final Case newCase) {
+    return createCaseEvent(caseEvent, newCase, DateTimeUtil.nowUTC());
+  }
+
+  @Transactional(propagation = Propagation.REQUIRED, readOnly = false, timeout = TRANSACTION_TIMEOUT)
+  @Override
+  public CaseEvent createCaseEvent(CaseEvent caseEvent, Case newCase, Timestamp timestamp) {
     log.debug("Entering createCaseEvent with caseEvent {}", caseEvent);
+    log.info("SPLUNK: CaseEventCreation: caseId={}, category={}, subCategory={}, description={}, createdBy={}",
+        caseEvent.getCaseId(),
+        caseEvent.getCategory(),
+        caseEvent.getSubCategory(),
+        caseEvent.getDescription(),
+        caseEvent.getCreatedBy());
 
     CaseEvent createdCaseEvent = null;
     Case targetCase = caseRepo.findOne(caseEvent.getCaseId());
@@ -150,7 +163,7 @@ public class CaseServiceImpl implements CaseService {
       createdCaseEvent = caseEventRepo.save(caseEvent);
 
       // do we need to record a response?
-      recordCaseResponse(category, targetCase);
+      recordCaseResponse(category, targetCase, timestamp);
 
       // does the event transition the case?
       effectTargetCaseStateTransition(category, targetCase);
@@ -227,24 +240,25 @@ public class CaseServiceImpl implements CaseService {
    * 
    * @param category the category details of the event
    * @param targetCase the 'source' case the event is being created for
+   * @param timestamp timestamp the timestamp of the CaseResponse
    */
-  private void recordCaseResponse(Category category, Case targetCase) {
+  private void recordCaseResponse(Category category, Case targetCase, Timestamp timestamp) {
     InboundChannel channel = null;
     switch (category.getCategoryType()) {
-    case ONLINE_QUESTIONNAIRE_RESPONSE:
-      channel = InboundChannel.ONLINE;
-      break;
-    case PAPER_QUESTIONNAIRE_RESPONSE:
-      channel = InboundChannel.PAPER;
-      break;
-    default:
-      break;
+      case ONLINE_QUESTIONNAIRE_RESPONSE:
+        channel = InboundChannel.ONLINE;
+        break;
+      case PAPER_QUESTIONNAIRE_RESPONSE:
+        channel = InboundChannel.PAPER;
+        break;
+      default:
+        break;
     }
     if (channel != null) {
       Response response = Response.builder()
           .inboundChannel(channel)
           .caseId(targetCase.getCaseId())
-          .dateTime(DateTimeUtil.nowUTC()).build();
+          .dateTime(timestamp).build();
 
       targetCase.getResponses().add(response);
       caseRepo.save(targetCase);
@@ -279,6 +293,12 @@ public class CaseServiceImpl implements CaseService {
   private void effectTargetCaseStateTransition(Category category, Case targetCase) {
     CaseDTO.CaseEvent transitionEvent = category.getEventType();
     if (transitionEvent != null) {
+      // case might have transitioned from actionable to inactionable prev via deactivated
+      // so newstate == oldstate, but always want to disable iac if event is  disabled ie as the result
+      // of an online response after a refusal
+      if (transitionEvent == CaseDTO.CaseEvent.DISABLED) {
+        internetAccessCodeSvcClientService.disableIAC(targetCase.getIac());
+      }
       CaseDTO.CaseState oldState = targetCase.getState();
       CaseDTO.CaseState newState = null;
       // make the transition
@@ -288,9 +308,6 @@ public class CaseServiceImpl implements CaseService {
         targetCase.setState(newState);
         caseRepo.saveAndFlush(targetCase);
         notificationPublisher.sendNotifications(Arrays.asList(prepareCaseNotification(targetCase, transitionEvent)));
-        if (transitionEvent == CaseDTO.CaseEvent.DISABLED) {
-          internetAccessCodeSvcClientService.disableIAC(targetCase.getIac());
-        }
       }
     }
   }

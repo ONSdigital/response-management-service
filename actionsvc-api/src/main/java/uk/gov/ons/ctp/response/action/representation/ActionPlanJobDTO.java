@@ -18,7 +18,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PUBLIC)
 public class ActionPlanJobDTO {
 
-  private static final int CREATED_BY_MAX = 20;
+  private static final int CREATED_BY_MAX = 50;
   private static final int CREATED_BY_MIN = 2;
 
   /**

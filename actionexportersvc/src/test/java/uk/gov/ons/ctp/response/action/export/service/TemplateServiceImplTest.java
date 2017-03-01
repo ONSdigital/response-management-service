@@ -8,7 +8,7 @@ import static org.mockito.Mockito.verify;
 import static org.testng.Assert.assertNotNull;
 import static uk.gov.ons.ctp.response.action.export.service.impl.TemplateServiceImpl.ERROR_RETRIEVING_FREEMARKER_TEMPLATE;
 import static uk.gov.ons.ctp.response.action.export.service.impl.TemplateServiceImpl.EXCEPTION_STORE_TEMPLATE;
-import static uk.gov.ons.ctp.response.action.export.utility.ObjectBuilder.buildListOfActionRequestDocuments;
+import static uk.gov.ons.ctp.response.action.export.utility.ObjectBuilder.buildListOfActionRequests;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -25,7 +25,7 @@ import org.testng.Assert;
 import freemarker.template.Template;
 import junit.framework.TestCase;
 import uk.gov.ons.ctp.common.error.CTPException;
-import uk.gov.ons.ctp.response.action.export.domain.TemplateDocument;
+import uk.gov.ons.ctp.response.action.export.domain.TemplateExpression;
 import uk.gov.ons.ctp.response.action.export.repository.TemplateRepository;
 import uk.gov.ons.ctp.response.action.export.service.impl.TemplateServiceImpl;
 
@@ -50,14 +50,14 @@ public class TemplateServiceImplTest {
   public void testStoreNullTemplate() {
     boolean exceptionThrown = false;
     try {
-      templateService.storeTemplateDocument(TEMPLATE_NAME, null);
+      templateService.storeTemplate(TEMPLATE_NAME, null);
     } catch (CTPException e) {
       exceptionThrown = true;
       assertEquals(CTPException.Fault.SYSTEM_ERROR, e.getFault());
       assertEquals(EXCEPTION_STORE_TEMPLATE, e.getMessage());
     }
     assertTrue(exceptionThrown);
-    verify(repository, times(0)).save(any(TemplateDocument.class));
+    verify(repository, times(0)).save(any(TemplateExpression.class));
     verify(configuration, times(0)).clearTemplateCache();
   }
 
@@ -65,21 +65,21 @@ public class TemplateServiceImplTest {
   public void testStoreEmptyTemplate() {
     boolean exceptionThrown = false;
     try {
-      templateService.storeTemplateDocument(TEMPLATE_NAME,getClass().getResourceAsStream("/templates/freemarker/empty_template.ftl"));
+      templateService.storeTemplate(TEMPLATE_NAME,getClass().getResourceAsStream("/templates/freemarker/empty_template.ftl"));
     } catch (CTPException e) {
       exceptionThrown = true;
       assertEquals(CTPException.Fault.SYSTEM_ERROR, e.getFault());
       assertEquals(EXCEPTION_STORE_TEMPLATE, e.getMessage());
     }
     assertTrue(exceptionThrown);
-    verify(repository, times(0)).save(any(TemplateDocument.class));
+    verify(repository, times(0)).save(any(TemplateExpression.class));
     verify(configuration, times(0)).clearTemplateCache();
   }
 
   @Test
   public void testStoreValidTemplate() throws CTPException {
-    templateService.storeTemplateDocument(TEMPLATE_NAME, getClass().getResourceAsStream("/templates/freemarker/valid_template.ftl"));
-    verify(repository, times(1)).save(any(TemplateDocument.class));
+    templateService.storeTemplate(TEMPLATE_NAME, getClass().getResourceAsStream("/templates/freemarker/valid_template.ftl"));
+    verify(repository, times(1)).save(any(TemplateExpression.class));
     verify(configuration, times(1)).clearTemplateCache();
   }
 
@@ -88,7 +88,7 @@ public class TemplateServiceImplTest {
     Mockito.when(configuration.getTemplate(TEMPLATE_NAME)).thenThrow(new IOException());
     boolean exceptionThrown = false;
     try {
-      templateService.file(buildListOfActionRequestDocuments(), TEMPLATE_NAME, TEST_FILE_PATH);
+      templateService.file(buildListOfActionRequests(), TEMPLATE_NAME, TEST_FILE_PATH);
     } catch (CTPException e) {
       exceptionThrown = true;
       Assert.assertEquals(CTPException.Fault.SYSTEM_ERROR, e.getFault());
@@ -101,7 +101,7 @@ public class TemplateServiceImplTest {
     Mockito.when(configuration.getTemplate(TEMPLATE_NAME)).thenReturn(null);
     boolean exceptionThrown = false;
     try {
-      templateService.file(buildListOfActionRequestDocuments(), TEMPLATE_NAME, TEST_FILE_PATH);
+      templateService.file(buildListOfActionRequests(), TEMPLATE_NAME, TEST_FILE_PATH);
     } catch (CTPException e) {
       exceptionThrown = true;
       Assert.assertEquals(CTPException.Fault.SYSTEM_ERROR, e.getFault());
@@ -113,7 +113,7 @@ public class TemplateServiceImplTest {
   @Test
   public void testFile() throws CTPException, IOException {
     Mockito.when(configuration.getTemplate(TEMPLATE_NAME)).thenReturn(Mockito.mock(Template.class));
-    File result = templateService.file(buildListOfActionRequestDocuments(), TEMPLATE_NAME, TEST_FILE_PATH);
+    File result = templateService.file(buildListOfActionRequests(), TEMPLATE_NAME, TEST_FILE_PATH);
     assertNotNull(result);
   }
 
@@ -122,7 +122,7 @@ public class TemplateServiceImplTest {
     Mockito.when(configuration.getTemplate(TEMPLATE_NAME)).thenThrow(new IOException());
     boolean exceptionThrown = false;
     try {
-      templateService.stream(buildListOfActionRequestDocuments(), TEMPLATE_NAME);
+      templateService.stream(buildListOfActionRequests(), TEMPLATE_NAME);
     } catch (CTPException e) {
       exceptionThrown = true;
       Assert.assertEquals(CTPException.Fault.SYSTEM_ERROR, e.getFault());
@@ -135,7 +135,7 @@ public class TemplateServiceImplTest {
     Mockito.when(configuration.getTemplate(TEMPLATE_NAME)).thenReturn(null);
     boolean exceptionThrown = false;
     try {
-      templateService.stream(buildListOfActionRequestDocuments(), TEMPLATE_NAME);
+      templateService.stream(buildListOfActionRequests(), TEMPLATE_NAME);
     } catch (CTPException e) {
       exceptionThrown = true;
       Assert.assertEquals(CTPException.Fault.SYSTEM_ERROR, e.getFault());
@@ -147,7 +147,7 @@ public class TemplateServiceImplTest {
   @Test
   public void testStream() throws CTPException, IOException {
     Mockito.when(configuration.getTemplate(TEMPLATE_NAME)).thenReturn(Mockito.mock(Template.class));
-    ByteArrayOutputStream result = templateService.stream(buildListOfActionRequestDocuments(), TEMPLATE_NAME);
+    ByteArrayOutputStream result = templateService.stream(buildListOfActionRequests(), TEMPLATE_NAME);
     assertNotNull(result);
   }
 }

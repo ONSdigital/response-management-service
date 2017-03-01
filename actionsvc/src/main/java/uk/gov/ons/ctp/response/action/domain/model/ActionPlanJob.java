@@ -9,9 +9,9 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
-
+import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Parameter;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -31,7 +31,15 @@ public class ActionPlanJob {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "actionplanjobseq_gen")
-  @SequenceGenerator(name = "actionplanjobseq_gen", sequenceName = "action.actionplanjobseq")
+  @GenericGenerator(
+      name = "actionplanjobseq_gen",
+      strategy = "org.hibernate.id.enhanced.SequenceStyleGenerator",
+      parameters = {
+              @Parameter(name = "sequence_name", value = "action.actionplanjobseq"),
+              @Parameter(name = "initial_value", value = "0"),
+              @Parameter(name = "increment_size", value = "1")
+      }
+  )
   @Column(name = "actionplanjobid")
   private Integer actionPlanJobId;
 

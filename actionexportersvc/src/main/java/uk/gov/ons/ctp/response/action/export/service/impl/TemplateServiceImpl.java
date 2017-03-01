@@ -22,8 +22,8 @@ import freemarker.template.Template;
 import freemarker.template.TemplateException;
 import lombok.extern.slf4j.Slf4j;
 import uk.gov.ons.ctp.common.error.CTPException;
-import uk.gov.ons.ctp.response.action.export.domain.ActionRequestDocument;
-import uk.gov.ons.ctp.response.action.export.domain.TemplateDocument;
+import uk.gov.ons.ctp.response.action.export.domain.ActionRequestInstruction;
+import uk.gov.ons.ctp.response.action.export.domain.TemplateExpression;
 import uk.gov.ons.ctp.response.action.export.repository.TemplateRepository;
 import uk.gov.ons.ctp.response.action.export.service.TemplateService;
 
@@ -47,24 +47,24 @@ public class TemplateServiceImpl implements TemplateService {
   private freemarker.template.Configuration configuration;
 
   @Override
-  public TemplateDocument retrieveTemplateDocument(String templateName) {
+  public TemplateExpression retrieveTemplate(String templateName) {
     return repository.findOne(templateName);
   }
 
   @Override
-  public List<TemplateDocument> retrieveAllTemplateDocuments() {
+  public List<TemplateExpression> retrieveAllTemplates() {
     return repository.findAll();
   }
 
   @Override
-  public TemplateDocument storeTemplateDocument(String templateName, InputStream fileContents) throws CTPException {
+  public TemplateExpression storeTemplate(String templateName, InputStream fileContents) throws CTPException {
     String stringValue = getStringFromInputStream(fileContents);
     if (StringUtils.isEmpty(stringValue)) {
       log.error(EXCEPTION_STORE_TEMPLATE);
       throw new CTPException(CTPException.Fault.SYSTEM_ERROR, EXCEPTION_STORE_TEMPLATE);
     }
 
-    TemplateDocument template = new TemplateDocument();
+    TemplateExpression template = new TemplateExpression();
     template.setContent(stringValue);
     template.setName(templateName);
     template.setDateModified(new Date());
@@ -76,14 +76,14 @@ public class TemplateServiceImpl implements TemplateService {
   }
 
   @Override
-  public File file(List<ActionRequestDocument> actionRequestDocumentList, String templateName, String path)
+  public File file(List<ActionRequestInstruction> actionRequestList, String templateName, String path)
       throws CTPException {
     File resultFile = new File(path);
     Writer fileWriter = null;
     try {
       Template template = giveTemplate(templateName);
       fileWriter = new FileWriter(resultFile);
-      template.process(buildDataModel(actionRequestDocumentList), fileWriter);
+      template.process(buildDataModel(actionRequestList), fileWriter);
     } catch (IOException e) {
       log.error("IOException thrown while templating for file...", e.getMessage());
       throw new CTPException(CTPException.Fault.SYSTEM_ERROR, e.getMessage());
@@ -104,14 +104,14 @@ public class TemplateServiceImpl implements TemplateService {
   }
 
   @Override
-  public ByteArrayOutputStream stream(List<ActionRequestDocument> actionRequestDocumentList, String templateName)
+  public ByteArrayOutputStream stream(List<ActionRequestInstruction> actionRequestList, String templateName)
       throws CTPException {
     ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
     Writer outputStreamWriter = null;
     try {
       Template template = giveTemplate(templateName);
       outputStreamWriter = new OutputStreamWriter(outputStream);
-      template.process(buildDataModel(actionRequestDocumentList), outputStreamWriter);
+      template.process(buildDataModel(actionRequestList), outputStreamWriter);
       outputStreamWriter.close();
     } catch (IOException e) {
       log.error("IOException thrown while templating for stream... {}", e.getMessage());
@@ -153,12 +153,12 @@ public class TemplateServiceImpl implements TemplateService {
   /**
    * This builds the data model required by FreeMarker
    *
-   * @param actionRequestDocumentList the list of action requests
+   * @param actionRequestList the list of action requests
    * @return the data model map
    */
-  private Map<String, Object> buildDataModel(List<ActionRequestDocument> actionRequestDocumentList) {
+  private Map<String, Object> buildDataModel(List<ActionRequestInstruction> actionRequestList) {
     Map<String, Object> result = new HashMap<String, Object>();
-    result.put("actionRequests", actionRequestDocumentList);
+    result.put("actionRequests", actionRequestList);
     return result;
   }
 

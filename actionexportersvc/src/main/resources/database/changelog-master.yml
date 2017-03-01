@@ -1,0 +1,24 @@
+databaseChangeLog:
+
+  - preConditions:
+    - runningAs:
+        username: actionexportersvc
+
+  - include:
+      file: database/changes/release-9.32.0/changelog.yml
+
+  - include:
+      file: database/changes/release-9.33.0/changelog.yml
+
+  - include:
+      file: database/changes/release-9.33.1/changelog.yml
+
+  - include:
+      file: database/changes/release-9.33.2/changelog.yml
+
+  - include:
+      file: database/changes/release-9.33.3/changelog.yml
+
+
+  - include:
+      file: database/changes/release-9.34.0/changelog.yml

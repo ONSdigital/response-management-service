@@ -8,7 +8,7 @@
 
   <xs:complexType name="ActionFeedback">
     <xs:sequence>
-      <xs:element name="actionId" type="xs:positiveInteger"/>
+      <xs:element name="actionId" type="xs:integer"/>
       <xs:element name="situation">
         <xs:simpleType>
           <xs:restriction base="xs:string">

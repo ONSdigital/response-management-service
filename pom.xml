@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>uk.gov.ons.ctp.product</groupId>
     <artifactId>responsemanagement</artifactId>
-    <version>9.31.9-SNAPSHOT</version>
+    <version>9.34.0-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>CTP : ResponseManagement</name>
@@ -13,10 +13,10 @@
     <properties>
         <skip.integration.tests>true</skip.integration.tests>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <common.version>9.31.2-SNAPSHOT</common.version>
+        <common.version>9.34.0-SNAPSHOT</common.version>
         <maven.compiler.plugin.version>3.5.1</maven.compiler.plugin.version>
         <java.version>1.8</java.version>
-        <springboot.version>1.4.2.RELEASE</springboot.version>
+        <springboot.version>1.4.4.RELEASE</springboot.version>
         <postgres.version>9.3-1104-jdbc4</postgres.version>
         <jersey.version>2.23.1</jersey.version>
 
@@ -31,6 +31,7 @@
         <module>casesvc</module>
         <module>partysvc-api</module>
         <module>partysvc</module>
+        <module>reportmodule</module>
         <module>actionexportersvc</module>
     </modules>
 
@@ -46,7 +47,7 @@
             <dependency>
                 <groupId>org.springframework.cloud</groupId>
                 <artifactId>spring-cloud-dependencies</artifactId>
-                <version>Brixton.SR4</version>
+                <version>Camden.SR4</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -105,18 +106,12 @@
 
         <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-undertow</artifactId>
+            <artifactId>spring-boot-starter-jetty</artifactId>
         </dependency>
 
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.springframework.boot</groupId>
-                    <artifactId>spring-boot-starter-tomcat</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
 
         <dependency>
@@ -301,7 +296,7 @@
 
     <profiles>
         <profile>
-            <id>artifactory</id>
+            <id>artifactory-aws</id>
             <activation>
                 <activeByDefault>true</activeByDefault>
             </activation>
@@ -309,12 +304,30 @@
                 <repository>
                     <id>central</id>
                     <name>libs-release</name>
-                    <url>http://192.168.11.11:8081/artifactory/libs-release-local</url>
+                    <url>http://192.168.11.11:8081/artifactory/libs-release-local-aws</url>
                 </repository>
                 <snapshotRepository>
                     <id>snapshots</id>
                     <name>libs-snapshots</name>
-                    <url>http://192.168.11.11:8081/artifactory/libs-snapshot-local</url>
+                    <url>http://192.168.11.11:8081/artifactory/libs-snapshot-local-aws</url>
+                </snapshotRepository>
+            </distributionManagement>
+        </profile>
+        <profile>
+            <id>artifactory-aws-test</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <distributionManagement>
+                <repository>
+                    <id>central</id>
+                    <name>libs-release</name>
+                    <url>http://artifactory.ctpdev.local/artifactory/libs-release-local-aws-test</url>
+                </repository>
+                <snapshotRepository>
+                    <id>snapshots</id>
+                    <name>libs-snapshots</name>
+                    <url>http://artifactory.ctpdev.local/artifactory/libs-snapshot-local-aws-test</url>
                 </snapshotRepository>
             </distributionManagement>
         </profile>

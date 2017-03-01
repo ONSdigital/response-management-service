@@ -15,9 +15,9 @@
     "file": "ICL1_2703"
   },  
   {
-    "actionType": "ICLAD_2003",
+    "actionType": "ICLAD1_2003",
     "template": "initialPrint", 
-    "file": "ICLAD_2003"
+    "file": "ICLAD1_2003"
   },
   {
     "actionType": "1RL1_0504",
@@ -30,9 +30,9 @@
     "file": "1RL2W_0504"
   }, 
   {
-    "actionType": "1RLAD_0504",
+    "actionType": "1RLAD1_0504",
     "template": "initialPrint", 
-    "file": "1RLAD_0504"
+    "file": "1RLAD1_0504"
   },
   {
     "actionType": "2RL1_1804",
@@ -45,9 +45,9 @@
     "file": "2RL2W_1804"
   },  
   {
-    "actionType": "2RLAD_1804",
+    "actionType": "2RLAD1_1804",
     "template": "initialPrint", 
-    "file": "2RLAD_1804"
+    "file": "2RLAD1_1804"
   },
   {
     "actionType": "3RL1_2604",
@@ -60,9 +60,9 @@
     "file": "3RL2W_2604"
   },
   {
-    "actionType": "3RLAD_2604",
+    "actionType": "3RLAD1_2604",
     "template": "initialPrint", 
-    "file": "3RLAD_2604"
+    "file": "3RLAD1_2604"
   },
   {
     "actionType": "H1S_2003",
@@ -85,9 +85,9 @@
     "file": "H2_2003"
   },
   {
-    "actionType": "H1_2604Q4",
+    "actionType": "H1_2604QR",
     "template": "initialPrint", 
-    "file": "H1_2604Q4"
+    "file": "H1_2604QR"
   },
   {
     "actionType": "QGPOL",

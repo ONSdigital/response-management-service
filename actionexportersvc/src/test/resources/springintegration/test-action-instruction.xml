@@ -31,6 +31,9 @@
   <bean id="actionInstructionJMSQueue" class="org.apache.activemq.command.ActiveMQQueue">
     <constructor-arg value="Action.Printer"/>
   </bean>
+  <bean id="invalidActionInstructionQueue" class="org.apache.activemq.command.ActiveMQQueue">
+      <constructor-arg value="Action.InvalidActionInstructions"/>
+  </bean>
 
   <!-- action instruction jms queue which can be used for testing -->
   <int:channel id="testOutbound" />
@@ -62,6 +65,12 @@
   <bean id="actionRequestRepository" class="org.mockito.Mockito" factory-method="mock"  >
     <constructor-arg value="uk.gov.ons.ctp.response.action.export.repository.ActionRequestRepository" />
   </bean>
+  
+    <!-- Mock addressRepository to inject into actionExportService  -->
+  <bean id="addressRepository" class="org.mockito.Mockito" factory-method="mock"  >
+    <constructor-arg value="uk.gov.ons.ctp.response.action.export.repository.AddressRepository" />
+  </bean>
+  
 
 </beans>
 
