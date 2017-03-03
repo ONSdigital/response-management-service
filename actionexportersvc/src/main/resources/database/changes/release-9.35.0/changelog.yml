@@ -1,0 +1,12 @@
+databaseChangeLog:
+
+  - changeSet:
+      id: 9.35.0-1
+      author: Martin Humphrey
+      changes:
+        - sqlFile:
+            comment: Fix initialPrint template for organisationName
+            path: actionexporter_schema_initialPrint_organisationName.sql
+            relativeToChangelogFile: true
+            splitStatements: false
+
