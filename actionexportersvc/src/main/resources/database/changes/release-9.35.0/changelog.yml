@@ -10,3 +10,12 @@ databaseChangeLog:
             relativeToChangelogFile: true
             splitStatements: false
 
+  - changeSet:
+      id: 9.35.0-2
+      author: Martin Humphrey
+      changes:
+        - sqlFile:
+            comment: Fix translation template for organisationName
+            path: actionexporter_schema_translation_organisationName.sql
+            relativeToChangelogFile: true
+            splitStatements: false
