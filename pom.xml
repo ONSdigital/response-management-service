@@ -29,8 +29,8 @@
         <module>actionsvc</module>
         <module>casesvc-api</module>
         <module>casesvc</module>
-        <module>partysvc-api</module>
-        <module>partysvc</module>
+        <module>respondentsvc</module>
+        <module>respondentsvc-api</module>
         <module>reportmodule</module>
         <module>actionexportersvc</module>
     </modules>
