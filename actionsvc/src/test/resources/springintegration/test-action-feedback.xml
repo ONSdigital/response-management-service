@@ -32,6 +32,10 @@
         <constructor-arg value="Action.Feedback"/>
     </bean>
 
+    <bean id="invalidActionFeedbackQueue" class="org.apache.activemq.command.ActiveMQQueue">
+        <constructor-arg value="Action.InvalidActionFeedback"/>
+    </bean>
+
     <int:channel id="testOutbound" />
 
     <int-jms:outbound-channel-adapter id="jmsout" channel="testOutbound" destination="actionFeedbackJMSQueue"/>

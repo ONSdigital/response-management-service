@@ -66,7 +66,7 @@ public class ActionPlanJobServiceImplTest {
   @Before
   public void setup() throws Exception {    
     PlanExecution planExecution = new PlanExecution();
-    planExecution.setSubsequentDelaySeconds(5);
+    planExecution.setDelayMilliSeconds(5000L);
     appConfig.setPlanExecution(planExecution);
     MockitoAnnotations.initMocks(this);
 

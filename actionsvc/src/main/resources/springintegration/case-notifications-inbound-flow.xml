@@ -30,9 +30,13 @@
             id="jmsCase" container="caseLifecycleEventsMessageListenerContainer" channel="caseLifecycleEventsXml" />
 
     <int:channel id="caseLifecycleEventsXmlInvalid" />
-    <bean id="invalidCaseNotificationsQueue" class="org.apache.activemq.command.ActiveMQQueue">
-        <constructor-arg value="Case.InvalidCaseNotifications"/>
+
+    <bean id="invalidCaseNotificationsQueue" class="com.rabbitmq.jms.admin.RMQDestination">
+        <constructor-arg name="destName" value="Case.InvalidCaseNotifications"/>
+        <constructor-arg name="isQueue" value="true"/>
+        <constructor-arg name="isTemporary" value="false"/>
     </bean>
+
     <int-jms:outbound-channel-adapter id="invalidCaseNotificationsJmsOut" destination="invalidCaseNotificationsQueue" channel="caseLifecycleEventsXmlInvalid"/>
     <int-xml:validating-filter id="caseNotificationValidator" input-channel="caseLifecycleEventsXml"
                                output-channel="caseLifecycleEventsXmlValid" schema-location="classpath:xsd/caseNotification.xsd" discard-channel="caseLifecycleEventsXmlInvalid"/>

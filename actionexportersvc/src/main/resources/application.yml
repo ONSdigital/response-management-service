@@ -27,6 +27,7 @@ security:
     name: actionexporter
     password: ctp
 
+
 management:
   port: 8241
   context-path: /mgmt
@@ -36,6 +37,8 @@ management:
   health:
     mongo:
       enabled: true
+    rabbit:
+      enabled: false
 
 server:
   port: 8141
@@ -74,12 +77,12 @@ endpoints:
     sensitive: true
 
 spring:
+  output:
+    ansi:
+      enabled: never
+
   application:
     name: ONS ActionExporterSvc
-
-  activemq:
-    broker-url: tcp://localhost:53445
-    pooled: true
 
   datasource:
     url: jdbc:postgresql://localhost:5432/postgres
@@ -135,3 +138,9 @@ redelivery-policy:
   maxRedeliveries: 10
   initialRedeliveryDelay: 1000
   redeliveryDelay: 1000
+
+rabbitmq:
+  username: guest
+  password: guest
+  host: localhost
+  virtualhost: /

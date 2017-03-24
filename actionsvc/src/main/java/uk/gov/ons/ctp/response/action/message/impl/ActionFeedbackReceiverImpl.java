@@ -2,11 +2,14 @@ package uk.gov.ons.ctp.response.action.message.impl;
 
 import javax.inject.Inject;
 
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.integration.annotation.MessageEndpoint;
 import org.springframework.integration.annotation.ServiceActivator;
+import org.springframework.oxm.Marshaller;
 
 import lombok.extern.slf4j.Slf4j;
 import uk.gov.ons.ctp.common.error.CTPException;
+import uk.gov.ons.ctp.common.util.DeadLetterLogCommand;
 import uk.gov.ons.ctp.response.action.message.ActionFeedbackReceiver;
 import uk.gov.ons.ctp.response.action.message.feedback.ActionFeedback;
 import uk.gov.ons.ctp.response.action.service.FeedbackService;
@@ -22,13 +25,19 @@ import uk.gov.ons.ctp.response.action.service.FeedbackService;
 @MessageEndpoint
 @Slf4j
 public class ActionFeedbackReceiverImpl implements ActionFeedbackReceiver {
+
+  @Inject
+  @Qualifier("actionFeedbackUnmarshaller")
+  Marshaller marshaller;
+
   @Inject
   private FeedbackService feedbackService;
 
   @Override
   @ServiceActivator(inputChannel = "actionFeedbackTransformed")
   public void acceptFeedback(ActionFeedback feedback) throws CTPException {
-    log.debug("Accepting feedback {}", feedback);
-    feedbackService.acceptFeedback(feedback);
+    log.debug("processing action feedback {} for action id {}", feedback.getOutcome(), feedback.getActionId());
+    DeadLetterLogCommand<ActionFeedback> command = new DeadLetterLogCommand<ActionFeedback>(marshaller, feedback);
+    command.run((ActionFeedback x)->feedbackService.acceptFeedback(x));
   }
 }
