@@ -13,9 +13,9 @@ logging:
     uk.gov.ons.ctp: INFO
 
 liquibase:
-  user: partysvc
-  password: partysvc
-  default-schema: party
+  user: samplesvc
+  password: samplesvc
+  default-schema: sample
   url: jdbc:postgresql://localhost:5432/postgres
   changeLog: classpath:/database/changelog-master.yml
 
@@ -72,7 +72,7 @@ endpoints:
 
 spring:
   application:
-    name: ONS PartyService
+    name: ONS SampleService
 
   sleuth:
     sampler:
@@ -80,8 +80,8 @@ spring:
 
   datasource:
     url: jdbc:postgresql://localhost:5432/postgres
-    username: partysvc
-    password: partysvc
+    username: samplesvc
+    password: samplesvc
     driverClassName: org.postgresql.Driver
     tomcat:
       initial-size: 5
