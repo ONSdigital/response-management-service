@@ -1,18 +1,13 @@
 package uk.gov.ons.ctp.response.action.scheduled.plan;
 
-import static java.util.concurrent.TimeUnit.SECONDS;
-
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-
 import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.springframework.boot.actuate.health.Health;
 import org.springframework.boot.actuate.health.HealthIndicator;
+import org.springframework.scheduling.annotation.Scheduled;
 
 import lombok.extern.slf4j.Slf4j;
-import uk.gov.ons.ctp.response.action.config.AppConfig;
 import uk.gov.ons.ctp.response.action.service.ActionPlanJobService;
 
 /**
@@ -30,35 +25,19 @@ public class PlanScheduler implements HealthIndicator {
   private PlanExecutionInfo executionInfo = new PlanExecutionInfo();
 
   /**
-   * Create the scheduler for the Execution of Action Plans It is simply a
-   * scheduled trigger for the service layer method.
+   * schedule the Execution of Action Plans It is simply a scheduled trigger for
+   * the service layer method.
    *
-   * @param applicationConfig injected app config needs injecting as cannot use
-   *          the class appConfig - is not injected until this class created -
-   *          chicken meet egg
    */
-  @Inject
-  public PlanScheduler(AppConfig applicationConfig) {
-    log.debug("Creating PlanScheduler");
-    final Runnable planExecutionRunnable = new Runnable() {
-      public void run() {
-        try {
-          executionInfo = new PlanExecutionInfo();
-          executionInfo.setExecutedJobs(actionPlanJobServiceImpl.createAndExecuteAllActionPlanJobs());
-        } catch (Exception e) {
-          log.error("Exception in action plan scheduler", e);
-        }
-      }
-    };
-
-    log.debug("Scheduling Plan Execution initial delay={}, subsequent delay={}",
-        applicationConfig.getPlanExecution().getInitialDelaySeconds(),
-        applicationConfig.getPlanExecution().getSubsequentDelaySeconds(), SECONDS);
-
-    ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
-    scheduler.scheduleWithFixedDelay(planExecutionRunnable,
-        applicationConfig.getPlanExecution().getInitialDelaySeconds(),
-        applicationConfig.getPlanExecution().getSubsequentDelaySeconds(), SECONDS);
+  @Scheduled(fixedDelayString = "#{appConfig.planExecution.delayMilliSeconds}")
+  public void run() {
+    log.info("Executing ActionPlans");
+    try {
+      executionInfo = new PlanExecutionInfo();
+      executionInfo.setExecutedJobs(actionPlanJobServiceImpl.createAndExecuteAllActionPlanJobs());
+    } catch (Exception e) {
+      log.error("Exception in action plan scheduler", e);
+    }
   }
 
   @Override

@@ -72,5 +72,5 @@ public interface ActionRepository extends JpaRepository<Action, BigInteger> {
    * @return List<Action> returns all actions for state
    */
   List<Action> findByStateOrderByCreatedDateTimeDesc(ActionDTO.ActionState state);
-
+  
 }

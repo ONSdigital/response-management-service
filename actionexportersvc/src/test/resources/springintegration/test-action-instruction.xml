@@ -31,6 +31,9 @@
   <bean id="actionInstructionJMSQueue" class="org.apache.activemq.command.ActiveMQQueue">
     <constructor-arg value="Action.Printer"/>
   </bean>
+  <bean id="invalidActionInstructionQueue" class="org.apache.activemq.command.ActiveMQQueue">
+      <constructor-arg value="Action.InvalidActionInstructions"/>
+  </bean>
 
   <!-- action instruction jms queue which can be used for testing -->
   <int:channel id="testOutbound" />

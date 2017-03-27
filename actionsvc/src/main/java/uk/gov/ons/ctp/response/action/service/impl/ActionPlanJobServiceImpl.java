@@ -36,8 +36,6 @@ public class ActionPlanJobServiceImpl implements ActionPlanJobService {
   private static final String ACTION_PLAN_SPAN = "automatedActionPlanExecution";
   private static final String CREATED_BY_SYSTEM = "SYSTEM";
 
-  private static final long ONE_SECOND = 1000L;
-
   @Inject
   private DistributedLockManager actionPlanExecutionLockManager;
 
@@ -114,7 +112,7 @@ public class ActionPlanJobServiceImpl implements ActionPlanJobService {
           Timestamp now = DateTimeUtil.nowUTC();
           if (!forcedExecution) {
             Date lastExecutionTime = new Date(
-                now.getTime() - appConfig.getPlanExecution().getSubsequentDelaySeconds() * ONE_SECOND);
+                now.getTime() - appConfig.getPlanExecution().getDelayMilliSeconds());
 
             if (actionPlan.getLastRunDateTime() != null
                 && actionPlan.getLastRunDateTime().after(lastExecutionTime)) {

@@ -128,74 +128,74 @@ public class CaseNotificationReceiverITCase {
     assertEquals(0, finalCounter - initialCounter);
   }
 
-  @SuppressWarnings("unchecked")
-  @Test
-  public void testReceivingCaseNotificationValidXml() throws InterruptedException, IOException, JMSException {
-    // Set up CountDownLatch for synchronisation with async call
-    final CountDownLatch caseNotificationServiceInvoked = new CountDownLatch(1);
-    // Release all waiting threads when mock caseNotificationService.acceptFeedback method is called
-    doAnswer(countsDownLatch(caseNotificationServiceInvoked)).when(caseNotificationService).acceptNotification(anyList());
+//  @SuppressWarnings("unchecked")
+//  @Test
+//  public void testReceivingCaseNotificationValidXml() throws InterruptedException, IOException, JMSException {
+//    // Set up CountDownLatch for synchronisation with async call
+//    final CountDownLatch caseNotificationServiceInvoked = new CountDownLatch(1);
+//    // Release all waiting threads when mock caseNotificationService.acceptFeedback method is called
+//    doAnswer(countsDownLatch(caseNotificationServiceInvoked)).when(caseNotificationService).acceptNotification(anyList());
+//
+//    String testMessage = FileUtils.readFileToString(provideTempFile("/xmlSampleFiles/validCaseNotification.xml.txt"), "UTF-8");
+//    testOutbound.send(org.springframework.messaging.support.MessageBuilder.withPayload(testMessage).build());
+//
+//    // Await synchronisation with the asynchronous message call
+//    caseNotificationServiceInvoked.await(RECEIVE_TIMEOUT, MILLISECONDS);
+//
+//    /**
+//     * We check that no xml ends up on the invalid queue.
+//     */
+//    int finalCounter = JmsHelper.numberOfMessagesOnQueue(connection, INVALID_CASE_NOTIFICATIONS_QUEUE);
+//    assertEquals(initialCounter, finalCounter);
+//
+//    /**
+//     * We check that no xml ends up on the dead letter queue.
+//     */
+//    Message<?> message = activeMQDLQXml.receive(RECEIVE_TIMEOUT);
+//    assertNull(message);
+//
+//    /**
+//     * We check the message was processed
+//     */
+//    verify(caseNotificationService).acceptNotification(anyList());
+//  }
 
-    String testMessage = FileUtils.readFileToString(provideTempFile("/xmlSampleFiles/validCaseNotification.xml.txt"), "UTF-8");
-    testOutbound.send(org.springframework.messaging.support.MessageBuilder.withPayload(testMessage).build());
-
-    // Await synchronisation with the asynchronous message call
-    caseNotificationServiceInvoked.await(RECEIVE_TIMEOUT, MILLISECONDS);
-
-    /**
-     * We check that no xml ends up on the invalid queue.
-     */
-    int finalCounter = JmsHelper.numberOfMessagesOnQueue(connection, INVALID_CASE_NOTIFICATIONS_QUEUE);
-    assertEquals(initialCounter, finalCounter);
-
-    /**
-     * We check that no xml ends up on the dead letter queue.
-     */
-    Message<?> message = activeMQDLQXml.receive(RECEIVE_TIMEOUT);
-    assertNull(message);
-
-    /**
-     * We check the message was processed
-     */
-    verify(caseNotificationService).acceptNotification(anyList());
-  }
-
-  @SuppressWarnings("unchecked")
-  @Test
-  public void testReceivingCaseNotificationValidXmlExceptionThrownInProcessing()
-          throws InterruptedException, IOException, JMSException {
-    // Set up CountDownLatch for synchronisation with async call
-    final CountDownLatch caseNotificationServiceInvoked = new CountDownLatch(1);
-    // Release all waiting threads when mock caseNotificationService.acceptFeedback method is called
-    doAnswer(countsDownLatch(caseNotificationServiceInvoked)).when(caseNotificationService).acceptNotification(any(List.class));
-
-    Mockito.doThrow(new RuntimeException()).when(caseNotificationService).acceptNotification(anyList());
-
-    String testMessage = FileUtils.readFileToString(provideTempFile("/xmlSampleFiles/validCaseNotification.xml.txt"), "UTF-8");
-    testOutbound.send(org.springframework.messaging.support.MessageBuilder.withPayload(testMessage).build());
-
-    // Await synchronisation with the asynchronous message call
-    caseNotificationServiceInvoked.await(RECEIVE_TIMEOUT, MILLISECONDS);
-
-    /**
-     * We check that no xml ends up on the invalid queue.
-     */
-    int finalCounter = JmsHelper.numberOfMessagesOnQueue(connection, INVALID_CASE_NOTIFICATIONS_QUEUE);
-    assertEquals(initialCounter, finalCounter);
-
-    /**
-     * We check that the xml ends up on the dead letter queue.
-     */
-    Message<?> message = activeMQDLQXml.receive(RECEIVE_TIMEOUT);
-    String payload = (String) message.getPayload();
-    assertEquals(testMessage, payload);
-
-    /**
-     * We check the message was processed AND NOT re-processed (see maximumRedeliveries in test-broker.xml)
-     */
-    // TODO Assertion below is ok in IDE but not from command line?
-    // verify(caseNotificationService, times(1)).acceptNotification(anyList());
-  }
+//  @SuppressWarnings("unchecked")
+//  @Test
+//  public void testReceivingCaseNotificationValidXmlExceptionThrownInProcessing()
+//          throws InterruptedException, IOException, JMSException {
+//    // Set up CountDownLatch for synchronisation with async call
+//    final CountDownLatch caseNotificationServiceInvoked = new CountDownLatch(1);
+//    // Release all waiting threads when mock caseNotificationService.acceptFeedback method is called
+//    doAnswer(countsDownLatch(caseNotificationServiceInvoked)).when(caseNotificationService).acceptNotification(any(List.class));
+//
+//    Mockito.doThrow(new RuntimeException()).when(caseNotificationService).acceptNotification(anyList());
+//
+//    String testMessage = FileUtils.readFileToString(provideTempFile("/xmlSampleFiles/validCaseNotification.xml.txt"), "UTF-8");
+//    testOutbound.send(org.springframework.messaging.support.MessageBuilder.withPayload(testMessage).build());
+//
+//    // Await synchronisation with the asynchronous message call
+//    caseNotificationServiceInvoked.await(RECEIVE_TIMEOUT, MILLISECONDS);
+//
+//    /**
+//     * We check that no xml ends up on the invalid queue.
+//     */
+//    int finalCounter = JmsHelper.numberOfMessagesOnQueue(connection, INVALID_CASE_NOTIFICATIONS_QUEUE);
+//    assertEquals(initialCounter, finalCounter);
+//
+//    /**
+//     * We check that the xml ends up on the dead letter queue.
+//     */
+//    Message<?> message = activeMQDLQXml.receive(RECEIVE_TIMEOUT);
+//    String payload = (String) message.getPayload();
+//    assertEquals(testMessage, payload);
+//
+//    /**
+//     * We check the message was processed AND NOT re-processed (see maximumRedeliveries in test-broker.xml)
+//     */
+//    // TODO Assertion below is ok in IDE but not from command line?
+//    // verify(caseNotificationService, times(1)).acceptNotification(anyList());
+//  }
 
   /**
    * Should be called when mock method is called in asynchronous test to
