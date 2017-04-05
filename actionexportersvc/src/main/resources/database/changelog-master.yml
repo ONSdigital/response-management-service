@@ -22,3 +22,6 @@ databaseChangeLog:
 
   - include:
       file: database/changes/release-9.34.0/changelog.yml
+
+  - include:
+      file: database/changes/release-9.35.0/changelog.yml

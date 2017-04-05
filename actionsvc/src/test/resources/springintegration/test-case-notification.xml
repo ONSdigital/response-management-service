@@ -32,6 +32,10 @@
     <constructor-arg value="Case.LifecycleEvents"/>
   </bean>
 
+  <bean id="invalidCaseNotificationsQueue" class="org.apache.activemq.command.ActiveMQQueue">
+    <constructor-arg value="Case.InvalidCaseNotifications"/>
+  </bean>
+
   <int:channel id="testOutbound" />
 
   <int-jms:outbound-channel-adapter id="jmsout" channel="testOutbound" destination="caseNotificationJMSQueue"/>

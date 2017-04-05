@@ -9,10 +9,9 @@ info:
 # ie -Dlogging.level.org.springframework=DEBUG
 logging:
   level:
-    uk.gov.ons.ctp: DEBUG
+    uk.gov.ons.ctp: WARN
     org.springframework.cloud.sleuth.instrument.messaging.MessagingSpanExtractor: ERROR
     org.springframework.context.annotation.ConfigurationClassPostProcessor: ERROR
-    
 
 liquibase:
   user: actionsvc
@@ -34,7 +33,9 @@ management:
   security:
     roles: SUPERUSER
     enabled: true
-
+  health:
+    rabbit:
+      enabled: false
 server:
   port: 8151
   servlet-path: /
@@ -72,16 +73,14 @@ endpoints:
     sensitive: true
 
 spring:
+  output:
+    ansi:
+      enabled: never
   application:
     name: ONS ActionService
   sleuth:
     sampler:
       percentage: 10
-
-  activemq:
-    broker-url: tcp://localhost:53445
-    pool:
-      enabled: true
 
   datasource:
     url: jdbc:postgresql://localhost:5432/postgres
@@ -104,22 +103,34 @@ spring:
   zipkin:
     enabled: false
 
+ # all about redis
 data-grid:
+  # where is redis
   address: localhost:6379
+  # when we create a list of actions being distib, how long should the list remain in redis after app death
   list-time-to-live-seconds: 600
+  # when we try and create a list of ids being distrib how long should we wait to get the lock
+  list-time-to-wait-seconds: 600
+  #  after app death how long should the lock on all lists remain
   lock-time-to-live-seconds: 600
 
+# the thread that sends actions to handlers
 action-distribution:
-  instruction-max: 200
+  # how many actions should we read each time we wake
+  retrieval-max: 200
+  # how many of the retrieved actions should we send at a time
+  distribution-max: 10
+  # when we fail to send to rabbit how long should we pause for before retry
   retry-sleep-seconds: 30
-  initial-delay-seconds: 10
-  subsequent-delay-seconds: 60
+  # how long to pause after each distribution exercise 
+  delay-milli-seconds: 60000
 
+ # the thread that executes plans to create the  actions
 plan-execution:
-  retry-sleep-seconds: 30
-  initial-delay-seconds: 20
-  subsequent-delay-seconds: 90
+  # pause after each execution exercise 
+  delay-milli-seconds: 60000
 
+ # calling the case svc endpoints
 case-svc:
   case-group-path: /casegroups/{caseGroupId}
   case-by-case-get-path: /cases/{caseid}
@@ -131,20 +142,33 @@ case-svc:
     scheme: http
     host: localhost
     port: 8171
+    # how many times should we attempt connection on failure
     retry-attempts: 10
+    # sleep between retries
     retry-pause-milli-seconds: 5000
+    # time to estab connection
     connect-timeout-milli-seconds: 5000
+    # time to read response
     read-timeout-milli-seconds: 5000
 
+ # looking for the ingest file
 csv-ingest:
   directory: /tmp/csv
   file-pattern: '*.csv'
   #the poll-milliseconds property is not used at the moment due to a bug in spring context loading in integration tests
   poll-milliseconds: 10000
 
+ # queue related
 redelivery-policy:
   maxRedeliveries: -1
   initialRedeliveryDelay: 1000
   redeliveryDelay: 1000
 
-# Tag to verify latest code ends up in artifactory (zzz)
+ # queue service related
+rabbitmq:
+  username: guest
+  password: guest
+  host: localhost
+  virtualhost: /
+  
+  
