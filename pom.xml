@@ -29,8 +29,6 @@
         <module>actionsvc</module>
         <module>casesvc-api</module>
         <module>casesvc</module>
-        <module>samplesvc-api</module>
-        <module>samplesvc</module>
         <module>reportmodule</module>
         <module>actionexportersvc</module>
     </modules>
