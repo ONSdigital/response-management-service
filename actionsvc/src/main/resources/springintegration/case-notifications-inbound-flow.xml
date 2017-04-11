@@ -8,10 +8,7 @@
   http://www.springframework.org/schema/beans/spring-beans-4.2.xsd
   http://www.springframework.org/schema/integration http://www.springframework.org/schema/integration/spring-integration.xsd
   http://www.springframework.org/schema/integration/amqp http://www.springframework.org/schema/integration/amqp/spring-integration-amqp.xsd
-  http://www.springframework.org/schema/integration/xml
-  http://www.springframework.org/schema/integration/xml/spring-integration-xml.xsd">
-
-    <bean id="transactionManager" class="org.springframework.integration.transaction.PseudoTransactionManager" />
+  http://www.springframework.org/schema/integration/xml http://www.springframework.org/schema/integration/xml/spring-integration-xml.xsd">
 
     <bean id="caseLifecycleEventsListenerContainer" class="org.springframework.amqp.rabbit.listener.SimpleMessageListenerContainer">
         <property name="connectionFactory" ref="connectionFactory" />
@@ -20,7 +17,6 @@
         <property name="prefetchCount" value="${messaging.prefetchCount}" />
         <property name="txSize" value="${messaging.txSize}" />
         <property name="channelTransacted" value="true" />
-        <property name="transactionManager" ref="transactionManager" />
     </bean>
 
     <!-- Xml msg is taken off the queue Case.LifecycleEvents and put on the channel caseLifecycleEventsXml -->
@@ -31,7 +27,7 @@
 
     <!-- Xml validated against the inbound schema -->
     <int:channel id="caseLifecycleEventsInvalidXml" />
-    <int-amqp:outbound-channel-adapter id="invalidActionFeedbackOutboundAmqp" channel="actionFeedbackInvalidXml" exchange-name="action-invalid-exchange" routing-key="Action.Feedback.binding" />
+    <int-amqp:outbound-channel-adapter id="invalidCaseNotificationOutboundAmqp" channel="caseLifecycleEventsInvalidXml" exchange-name="case-invalid-exchange" routing-key="Case.LifecycleEvents.binding" />
     <!-- Option to be used in Debug/Test: throw-exception-on-rejection="true" -->
     <int-xml:validating-filter id="caseLifecycleEventsValidator" input-channel="caseLifecycleEventsXml"
                                output-channel="caseLifecycleEventsXmlValid" schema-location="classpath:xsd/caseNotification.xsd" discard-channel="caseLifecycleEventsInvalidXml"/>

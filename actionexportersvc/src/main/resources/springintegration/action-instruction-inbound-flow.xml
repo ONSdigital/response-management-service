@@ -8,11 +8,8 @@
   http://www.springframework.org/schema/beans/spring-beans-4.2.xsd
   http://www.springframework.org/schema/integration http://www.springframework.org/schema/integration/spring-integration.xsd
   http://www.springframework.org/schema/integration/amqp http://www.springframework.org/schema/integration/amqp/spring-integration-amqp.xsd
-  http://www.springframework.org/schema/integration/xml
-  http://www.springframework.org/schema/integration/xml/spring-integration-xml.xsd">
-
-    <bean id="transactionManager" class="org.springframework.integration.transaction.PseudoTransactionManager" />
-
+  http://www.springframework.org/schema/integration/xml http://www.springframework.org/schema/integration/xml/spring-integration-xml.xsd">
+    
     <bean id="actionInstructionListenerContainer" class="org.springframework.amqp.rabbit.listener.SimpleMessageListenerContainer">
         <property name="connectionFactory" ref="connectionFactory" />
         <property name="queueNames" value="Action.Printer" />
@@ -20,7 +17,6 @@
         <property name="prefetchCount" value="${messaging.prefetchCount}" />
         <property name="txSize" value="${messaging.txSize}" />
         <property name="channelTransacted" value="true" />
-        <property name="transactionManager" ref="transactionManager" />
     </bean>
 
     <int:channel id="actionInstructionXml" />
@@ -49,7 +45,7 @@
 
     <!-- Start of section to deal with retries and DLQ after max attempts -->
     <int:channel id="actionInstructionDlqChannel" />
-    <int:handler-retry-advice id="actionInstructionRetryAdvice" recovery-channel="actionInstructionDlqChannel" max-attempts="${messaging.maxAttempts}"/>
+    <int:handler-retry-advice id="actionInstructionRetryAdvice" recovery-channel="actionInstructionDlqChannel" max-attempts="${messaging.conMaxAttempts}"/>
 
     <int:channel id="actionInstructionDlqInterimChannel" />
     <int:transformer input-channel="actionInstructionDlqChannel" output-channel="actionInstructionDlqInterimChannel" expression="payload.failedMessage.payload" />
