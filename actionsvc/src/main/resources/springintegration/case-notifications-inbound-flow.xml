@@ -2,53 +2,61 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:int="http://www.springframework.org/schema/integration"
-       xmlns:int-jms="http://www.springframework.org/schema/integration/jms"
+       xmlns:int-amqp="http://www.springframework.org/schema/integration/amqp"
        xmlns:int-xml="http://www.springframework.org/schema/integration/xml"
        xsi:schemaLocation="http://www.springframework.org/schema/beans
   http://www.springframework.org/schema/beans/spring-beans-4.2.xsd
   http://www.springframework.org/schema/integration http://www.springframework.org/schema/integration/spring-integration.xsd
-  http://www.springframework.org/schema/integration/jms http://www.springframework.org/schema/integration/jms/spring-integration-jms.xsd
-  http://www.springframework.org/schema/integration/xml
-  http://www.springframework.org/schema/integration/xml/spring-integration-xml.xsd">
+  http://www.springframework.org/schema/integration/amqp http://www.springframework.org/schema/integration/amqp/spring-integration-amqp.xsd
+  http://www.springframework.org/schema/integration/xml http://www.springframework.org/schema/integration/xml/spring-integration-xml.xsd">
 
-
-    <bean id="caseLifecycleEventsMessageListenerContainer"
-          class="org.springframework.jms.listener.DefaultMessageListenerContainer">
+    <bean id="caseLifecycleEventsListenerContainer" class="org.springframework.amqp.rabbit.listener.SimpleMessageListenerContainer">
         <property name="connectionFactory" ref="connectionFactory" />
-        <property name="destinationName" value="Case.LifecycleEvents" />
-        <property name="maxConcurrentConsumers" value="1" />
-        <property name="concurrentConsumers" value="1" />
-        <property name="receiveTimeout" value="5000" />
-        <property name="recoveryInterval" value="60000" />
-        <property name="autoStartup" value="true" />
-        <property name="sessionTransacted" value="true" />
+        <property name="queueNames" value="Case.LifecycleEvents" />
+        <property name="concurrentConsumers" value="${messaging.consumingThreads}" />
+        <property name="prefetchCount" value="${messaging.prefetchCount}" />
+        <property name="txSize" value="${messaging.txSize}" />
+        <property name="channelTransacted" value="true" />
     </bean>
 
+    <!-- Xml msg is taken off the queue Case.LifecycleEvents and put on the channel caseLifecycleEventsXml -->
     <int:channel id="caseLifecycleEventsXml" />
+    <bean id="simpleMessageConverter" class="org.springframework.amqp.support.converter.SimpleMessageConverter" />
+    <int-amqp:inbound-channel-adapter id="caseLifecycleEventsInboundAmqp" listener-container="caseLifecycleEventsListenerContainer"
+                                      message-converter="simpleMessageConverter" channel="caseLifecycleEventsXml" />
 
-    <int-jms:message-driven-channel-adapter
-            id="jmsCase" container="caseLifecycleEventsMessageListenerContainer" channel="caseLifecycleEventsXml" />
+    <!-- Xml validated against the inbound schema -->
+    <int:channel id="caseLifecycleEventsInvalidXml" />
+    <int-amqp:outbound-channel-adapter id="invalidCaseNotificationOutboundAmqp" channel="caseLifecycleEventsInvalidXml" exchange-name="case-invalid-exchange" routing-key="Case.LifecycleEvents.binding" />
+    <!-- Option to be used in Debug/Test: throw-exception-on-rejection="true" -->
+    <int-xml:validating-filter id="caseLifecycleEventsValidator" input-channel="caseLifecycleEventsXml"
+                               output-channel="caseLifecycleEventsXmlValid" schema-location="classpath:xsd/caseNotification.xsd" discard-channel="caseLifecycleEventsInvalidXml"/>
 
-    <int:channel id="caseLifecycleEventsXmlInvalid" />
-
-    <bean id="invalidCaseNotificationsQueue" class="com.rabbitmq.jms.admin.RMQDestination">
-        <constructor-arg name="destName" value="Case.InvalidCaseNotifications"/>
-        <constructor-arg name="isQueue" value="true"/>
-        <constructor-arg name="isTemporary" value="false"/>
+    <!-- The now validated xml is transformed into the jaxb generated object model -->
+    <bean id="caseNotificationMarshaller" class="org.springframework.oxm.jaxb.Jaxb2Marshaller">
+        <property name="contextPath" value="uk.gov.ons.ctp.response.casesvc.message.notification" />
     </bean>
-
-    <int-jms:outbound-channel-adapter id="invalidCaseNotificationsJmsOut" destination="invalidCaseNotificationsQueue" channel="caseLifecycleEventsXmlInvalid"/>
-    <int-xml:validating-filter id="caseNotificationValidator" input-channel="caseLifecycleEventsXml"
-                               output-channel="caseLifecycleEventsXmlValid" schema-location="classpath:xsd/caseNotification.xsd" discard-channel="caseLifecycleEventsXmlInvalid"/>
-
-    <int:channel id="caseNotificationTransformed" datatype="uk.gov.ons.ctp.response.casesvc.message.notification.CaseNotifications"/>
+    <int:channel id="caseNotificationTransformed" datatype="uk.gov.ons.ctp.response.casesvc.message.notification.CaseNotifications" />
     <int-xml:unmarshalling-transformer
             input-channel="caseLifecycleEventsXmlValid" output-channel="caseNotificationTransformed"
-            unmarshaller="caseNotificationUnmarshaller" />
+            unmarshaller="caseNotificationMarshaller" />
 
-    <!-- The transformer uses this unmarshaller to do the heavy (un)lifting -->
-    <bean id="caseNotificationUnmarshaller" class="org.springframework.oxm.jaxb.Jaxb2Marshaller">
-        <property name="contextPath"
-                  value="uk.gov.ons.ctp.response.casesvc.message.notification" />
-    </bean>
+    <!-- Finally see the @ServiceActivator(inputChannel="caseNotificationTransformed") -->
+
+    <!-- Start of section to deal with retries and DLQ after max attempts -->
+    <int:channel id="caseLifecycleEventsDlqChannel" />
+    <int:handler-retry-advice id="caseNotificationRetryAdvice" recovery-channel="caseLifecycleEventsDlqChannel" max-attempts="${messaging.maxAttempts}"/>
+
+    <int:channel id="caseLifecycleEventsDlqInterimChannel" />
+    <int:transformer input-channel="caseLifecycleEventsDlqChannel" output-channel="caseLifecycleEventsDlqInterimChannel" expression="payload.failedMessage.payload" />
+
+    <int:channel id="caseLifecycleEventsDlqChannelXml" />
+    <int-xml:marshalling-transformer
+            input-channel="caseLifecycleEventsDlqInterimChannel" output-channel="caseLifecycleEventsDlqChannelXml"
+            marshaller="caseNotificationMarshaller"
+            result-transformer="caseLifecycleEventsOutboundTransformer"/>
+    <bean id="caseLifecycleEventsOutboundTransformer" class="org.springframework.integration.xml.transformer.ResultToStringTransformer" />
+
+    <int-amqp:outbound-channel-adapter id="caseLifecycleEventsDlqAmqp" channel="caseLifecycleEventsDlqChannelXml" exchange-name="case-deadletter-exchange" routing-key="Case.LifecycleEvents.binding" />
+    <!-- End of section to deal with retries and DLQ after max attempts -->
 </beans>
