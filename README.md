@@ -1,3 +1,6 @@
+Branch to remove jax-rs
+
+
 # Response Management Service
 Response Management is part of ONS's Survey Data Collection platform. It covers overall management of the survey (across all survey modes). It manages the survey sample, tracks responses and initiates required follow-up actions during the collection period.
 
