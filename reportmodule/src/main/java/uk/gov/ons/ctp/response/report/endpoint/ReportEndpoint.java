@@ -2,19 +2,14 @@ package uk.gov.ons.ctp.response.report.endpoint;
 
 import java.util.List;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.ResponseBuilder;
-import javax.ws.rs.core.Response.Status;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.CollectionUtils;
 
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import uk.gov.ons.ctp.common.endpoint.CTPEndpoint;
 import uk.gov.ons.ctp.common.error.CTPException;
 import uk.gov.ons.ctp.response.report.ReportBeanMapper;
@@ -28,14 +23,12 @@ import uk.gov.ons.ctp.response.report.service.ReportService;
 /**
  * The REST endpoint controller for CaseSvc Reports
  */
-@Path("/reports")
-@Produces({ "application/json" })
+@RequestMapping(value = "/reports", produces = "application/json")
 @Slf4j
 public final class ReportEndpoint implements CTPEndpoint {
 
   public static final String ERRORMSG_REPORTNOTFOUND = "Report not found for";
   public static final String ERRORMSG_REPORTSNOTFOUND = "Reports not found for";
-  public static final String ERRORMSG_REPORTLISTNOTFOUND = "Report Type List not found.";
 
   @Autowired
   private ReportService reportService;
@@ -48,9 +41,8 @@ public final class ReportEndpoint implements CTPEndpoint {
    * @return List of report types
    * @throws CTPException something went wrong
    */
-  @GET
-  @Path("/types")
-  public Response findReportTypes() throws CTPException {
+  @RequestMapping(value = "/types",  method = RequestMethod.GET)
+  public List<ReportType> findReportTypes() throws CTPException {
     log.info("Finding Report Types");
     List<ReportType> reportTypes = reportService.findTypes();
 
@@ -58,7 +50,7 @@ public final class ReportEndpoint implements CTPEndpoint {
       throw new CTPException(CTPException.Fault.RESOURCE_NOT_FOUND, "Report types not found");
     }
     
-    return Response.ok(reportTypes).build();
+    return reportTypes;
   }
 
   /**
@@ -68,9 +60,8 @@ public final class ReportEndpoint implements CTPEndpoint {
    * @return list of report dates by reportType
    * @throws CTPException something went wrong
    */
-  @GET
-  @Path("/types/{reportType}")
-  public Response findReportDatesByReportType(@PathParam("reportType") final String reportType) throws CTPException {
+  @RequestMapping(value = "/types/{reportType}",  method = RequestMethod.GET)
+  public List<ReportSummaryDTO> findReportDatesByReportType(@PathVariable("reportType") final String reportType) throws CTPException {
     log.info("Entering findReportDatesByReportType with {}", reportType);
 
     List<ReportSummary> reports = reportService.getReportSummary(reportType);
@@ -80,10 +71,8 @@ public final class ReportEndpoint implements CTPEndpoint {
       throw new CTPException(CTPException.Fault.RESOURCE_NOT_FOUND,
           String.format("%s report type %s", ERRORMSG_REPORTSNOTFOUND, reportType));
     }
-    
-    ResponseBuilder responseBuilder = Response.ok(CollectionUtils.isEmpty(reportList) ? null : reportList);
-    responseBuilder.status(CollectionUtils.isEmpty(reportList) ? Status.NO_CONTENT : Status.OK);
-    return responseBuilder.build();
+
+    return reportList;
   }
 
   /**
@@ -93,9 +82,8 @@ public final class ReportEndpoint implements CTPEndpoint {
    * @return the report found
    * @throws CTPException something went wrong
    */
-  @GET
-  @Path("/{reportId}")
-  public Response findReportByReportId(@PathParam("reportId") final int reportId) throws CTPException {
+  @RequestMapping(value = "/{reportId}",  method = RequestMethod.GET)
+  public ReportDTO findReportByReportId(@PathVariable("reportId") final int reportId) throws CTPException {
     log.info("Entering findReportByReportId with {}", reportId);
 
     Report report = reportService.findByReportId(reportId);
@@ -105,7 +93,7 @@ public final class ReportEndpoint implements CTPEndpoint {
       throw new CTPException(CTPException.Fault.RESOURCE_NOT_FOUND,
           String.format("%s report type %s", ERRORMSG_REPORTNOTFOUND, reportId));
     }
-    return Response.ok(reportDTO).build();
+    return reportDTO;
   }
 
 }
