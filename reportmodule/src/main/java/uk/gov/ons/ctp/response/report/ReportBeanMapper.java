@@ -2,6 +2,7 @@ package uk.gov.ons.ctp.response.report;
 
 import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.impl.ConfigurableMapper;
+import org.springframework.stereotype.Component;
 import uk.gov.ons.ctp.response.report.domain.model.ReportSummary;
 import uk.gov.ons.ctp.response.report.domain.model.ReportType;
 import uk.gov.ons.ctp.response.report.representation.ReportSummaryDTO;
@@ -11,6 +12,7 @@ import uk.gov.ons.ctp.response.report.representation.ReportTypeDTO;
  * The bean mapper that maps to/from DTOs and JPA entity types.
  *
  */
+@Component
 public class ReportBeanMapper extends ConfigurableMapper {
 
   /**

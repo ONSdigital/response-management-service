@@ -10,6 +10,7 @@ import ma.glasnost.orika.MapperFacade;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 import uk.gov.ons.ctp.common.endpoint.CTPEndpoint;
 import uk.gov.ons.ctp.common.error.CTPException;
 import uk.gov.ons.ctp.response.report.ReportBeanMapper;
@@ -23,6 +24,7 @@ import uk.gov.ons.ctp.response.report.service.ReportService;
 /**
  * The REST endpoint controller for CaseSvc Reports
  */
+@RestController
 @RequestMapping(value = "/reports", produces = "application/json")
 @Slf4j
 public final class ReportEndpoint implements CTPEndpoint {
@@ -41,7 +43,7 @@ public final class ReportEndpoint implements CTPEndpoint {
    * @return List of report types
    * @throws CTPException something went wrong
    */
-  @RequestMapping(value = "/types",  method = RequestMethod.GET)
+  @RequestMapping(value = "/types", method = RequestMethod.GET)
   public List<ReportType> findReportTypes() throws CTPException {
     log.info("Finding Report Types");
     List<ReportType> reportTypes = reportService.findTypes();
@@ -60,7 +62,7 @@ public final class ReportEndpoint implements CTPEndpoint {
    * @return list of report dates by reportType
    * @throws CTPException something went wrong
    */
-  @RequestMapping(value = "/types/{reportType}",  method = RequestMethod.GET)
+  @RequestMapping(value = "/types/{reportType}", method = RequestMethod.GET)
   public List<ReportSummaryDTO> findReportDatesByReportType(@PathVariable("reportType") final String reportType) throws CTPException {
     log.info("Entering findReportDatesByReportType with {}", reportType);
 
@@ -82,7 +84,7 @@ public final class ReportEndpoint implements CTPEndpoint {
    * @return the report found
    * @throws CTPException something went wrong
    */
-  @RequestMapping(value = "/{reportId}",  method = RequestMethod.GET)
+  @RequestMapping(value = "/{reportId}", method = RequestMethod.GET)
   public ReportDTO findReportByReportId(@PathVariable("reportId") final int reportId) throws CTPException {
     log.info("Entering findReportByReportId with {}", reportId);
 
