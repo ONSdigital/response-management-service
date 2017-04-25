@@ -3,9 +3,8 @@ package uk.gov.ons.ctp.response.action.service.impl;
 import java.util.Date;
 import java.util.List;
 
-import javax.inject.Inject;
-import javax.inject.Named;
-
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import lombok.extern.slf4j.Slf4j;
@@ -25,12 +24,12 @@ import uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO;
  *
  */
 @Slf4j
-@Named
+@Service
 public class CaseSvcClientServiceImpl implements CaseSvcClientService {
-  @Inject
+  @Autowired
   private AppConfig appConfig;
 
-  @Inject
+  @Autowired
   private RestClient caseSvcClient;
 
   @Override

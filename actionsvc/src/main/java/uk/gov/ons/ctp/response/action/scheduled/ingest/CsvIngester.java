@@ -15,12 +15,12 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import javax.inject.Inject;
 import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
 import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cloud.sleuth.Span;
 import org.springframework.cloud.sleuth.Tracer;
@@ -112,13 +112,13 @@ public class CsvIngester extends CsvToBean<CsvLine> {
     private List<ActionCancel> actionCancels = new ArrayList<>();
   }
 
-  @Inject
+  @Autowired
   private Tracer tracer;
 
-  @Inject
+  @Autowired
   private AppConfig appConfig;
 
-  @Inject
+  @Autowired
   private InstructionPublisher instructionPublisher;
 
   private ColumnPositionMappingStrategy<CsvLine> columnPositionMappingStrategy;

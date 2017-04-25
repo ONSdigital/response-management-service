@@ -6,11 +6,10 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
-import javax.inject.Inject;
-import javax.inject.Named;
-
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.sleuth.Span;
 import org.springframework.cloud.sleuth.Tracer;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,29 +28,29 @@ import uk.gov.ons.ctp.response.action.service.ActionPlanJobService;
 /**
  * Implementation
  */
-@Named
+@Service
 @Slf4j
 public class ActionPlanJobServiceImpl implements ActionPlanJobService {
 
   private static final String ACTION_PLAN_SPAN = "automatedActionPlanExecution";
   private static final String CREATED_BY_SYSTEM = "SYSTEM";
 
-  @Inject
+  @Autowired
   private DistributedLockManager actionPlanExecutionLockManager;
 
-  @Inject
+  @Autowired
   private Tracer tracer;
 
-  @Inject
+  @Autowired
   private AppConfig appConfig;
 
-  @Inject
+  @Autowired
   private ActionPlanRepository actionPlanRepo;
 
-  @Inject
+  @Autowired
   private ActionCaseRepository actionCaseRepo;
 
-  @Inject
+  @Autowired
   private ActionPlanJobRepository actionPlanJobRepo;
 
   @Override

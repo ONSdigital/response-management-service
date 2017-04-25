@@ -2,8 +2,7 @@ package uk.gov.ons.ctp.response.action.message.impl;
 
 import java.util.stream.Collectors;
 
-import javax.inject.Inject;
-
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.integration.annotation.MessageEndpoint;
 import org.springframework.integration.annotation.ServiceActivator;
 
@@ -19,7 +18,7 @@ import uk.gov.ons.ctp.response.casesvc.message.notification.CaseNotifications;
 @Slf4j
 public class CaseNotificationReceiverImpl implements CaseNotificationReceiver {
 
-  @Inject
+  @Autowired
   private CaseNotificationService caseNotificationService;
 
   @Override

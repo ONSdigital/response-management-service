@@ -2,9 +2,8 @@ package uk.gov.ons.ctp.response.action.service.impl;
 
 import java.math.BigInteger;
 
-import javax.inject.Inject;
-import javax.inject.Named;
-
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,23 +27,23 @@ import uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO;
  * Accept feedback from handlers
  */
 @Slf4j
-@Named
+@Service
 public class FeedbackServiceImpl implements FeedbackService {
 
   private static final BigInteger CSV_GENERATED_ID_BOUNDARY = BigInteger.valueOf(1_000_000_000L);
 
   private static final int TRANSACTION_TIMEOUT = 30;
 
-  @Inject
+  @Autowired
   private CaseSvcClientService caseSvcClientService;
 
-  @Inject
+  @Autowired
   private ActionRepository actionRepo;
 
-  @Inject
+  @Autowired
   private OutcomeCategoryRepository outcomeCategoryRepository;
 
-  @Inject
+  @Autowired
   private StateTransitionManager<ActionState, ActionDTO.ActionEvent> actionSvcStateTransitionManager;
 
   @Transactional(propagation = Propagation.REQUIRED, readOnly = false, timeout = TRANSACTION_TIMEOUT)

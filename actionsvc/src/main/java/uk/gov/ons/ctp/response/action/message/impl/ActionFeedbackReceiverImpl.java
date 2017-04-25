@@ -1,7 +1,6 @@
 package uk.gov.ons.ctp.response.action.message.impl;
 
-import javax.inject.Inject;
-
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.integration.annotation.MessageEndpoint;
 import org.springframework.integration.annotation.ServiceActivator;
 
@@ -23,7 +22,7 @@ import uk.gov.ons.ctp.response.action.service.FeedbackService;
 @Slf4j
 public class ActionFeedbackReceiverImpl implements ActionFeedbackReceiver {
 
-  @Inject
+  @Autowired
   private FeedbackService feedbackService;
 
   @Override

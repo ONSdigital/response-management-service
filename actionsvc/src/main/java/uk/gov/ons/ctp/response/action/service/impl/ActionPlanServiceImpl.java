@@ -4,10 +4,9 @@ import java.sql.Timestamp;
 import java.util.Date;
 import java.util.List;
 
-import javax.inject.Inject;
-import javax.inject.Named;
-
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import uk.gov.ons.ctp.response.action.domain.model.ActionPlan;
@@ -19,16 +18,16 @@ import uk.gov.ons.ctp.response.action.service.ActionPlanService;
 /**
  * Implementation
  */
-@Named
+@Service
 @Slf4j
 public class ActionPlanServiceImpl implements ActionPlanService {
 
   private static final int TRANSACTION_TIMEOUT = 30;
 
-  @Inject
+  @Autowired
   private ActionPlanRepository actionPlanRepo;
 
-  @Inject
+  @Autowired
   private ActionRuleRepository actionRuleRepository;
 
   @Override

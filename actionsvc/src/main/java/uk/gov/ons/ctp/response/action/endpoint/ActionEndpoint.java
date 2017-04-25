@@ -4,25 +4,13 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.inject.Inject;
 import javax.validation.Valid;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.ResponseBuilder;
-import javax.ws.rs.core.Response.Status;
 
-import org.springframework.util.CollectionUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
+import org.springframework.web.bind.annotation.*;
 import uk.gov.ons.ctp.common.endpoint.CTPEndpoint;
 import uk.gov.ons.ctp.common.error.CTPException;
 import uk.gov.ons.ctp.response.action.domain.model.Action;
@@ -35,19 +23,18 @@ import uk.gov.ons.ctp.response.action.service.ActionService;
 /**
  * The REST endpoint controller for Actions.
  */
-@Path("/actions")
-@Consumes({ MediaType.APPLICATION_JSON })
-@Produces({ MediaType.APPLICATION_JSON })
+@RestController
+@RequestMapping(value = "/actions", consumes = "application/json", produces = "application/json")
 @Slf4j
 public final class ActionEndpoint implements CTPEndpoint {
 
-  @Inject
+  @Autowired
   private ActionService actionService;
 
-  @Inject
+  @Autowired
   private ActionCaseService actionCaseService;
 
-  @Inject
+  @Autowired
   private MapperFacade mapperFacade;
 
   /**
@@ -57,10 +44,9 @@ public final class ActionEndpoint implements CTPEndpoint {
    * @param actionState Optional filter by Action state
    * @return List<ActionDTO> Actions for the specified filters
    */
-  @GET
-  public Response findActions(@QueryParam("actiontype") final String actionType,
-      @QueryParam("state") final ActionDTO.ActionState actionState) {
-
+  @RequestMapping(method = RequestMethod.GET)
+  public List<ActionDTO> findActions(@RequestParam("actiontype") final String actionType,
+      @RequestParam("state") final ActionDTO.ActionState actionState) {
     List<Action> actions = null;
 
     if (actionType != null) {
@@ -81,10 +67,7 @@ public final class ActionEndpoint implements CTPEndpoint {
       }
     }
 
-    List<ActionDTO> actionDTOs = mapperFacade.mapAsList(actions, ActionDTO.class);
-    ResponseBuilder responseBuilder = Response.ok(CollectionUtils.isEmpty(actionDTOs) ? null : actionDTOs);
-    responseBuilder.status(CollectionUtils.isEmpty(actionDTOs) ? Status.NO_CONTENT : Status.OK);
-    return responseBuilder.build();
+    return mapperFacade.mapAsList(actions, ActionDTO.class);
   }
 
   /**
@@ -95,11 +78,11 @@ public final class ActionEndpoint implements CTPEndpoint {
    * @return ActionDTO Created Action
    * @throws CTPException on failure to create Action
    */
-  @POST
-  public Response createAction(final @Valid ActionDTO actionDTO) throws CTPException {
+  @RequestMapping(method = RequestMethod.POST)
+  public ActionDTO createAction(final @Valid ActionDTO actionDTO) throws CTPException {
     log.info("Entering createAction with Action {}", actionDTO);
     Action action = actionService.createAction(mapperFacade.map(actionDTO, Action.class));
-    return Response.ok(mapperFacade.map(action, ActionDTO.class)).status(Status.CREATED).build();
+    return mapperFacade.map(action, ActionDTO.class);
   }
 
   /**
@@ -110,15 +93,14 @@ public final class ActionEndpoint implements CTPEndpoint {
    * @throws CTPException if no associated Action found for the specified action
    *           Id.
    */
-  @GET
-  @Path("/{actionid}")
-  public Response findActionByActionId(@PathParam("actionid") final BigInteger actionId) throws CTPException {
+  @RequestMapping(value = "/{actionid}", method = RequestMethod.GET)
+  public ActionDTO findActionByActionId(@PathVariable("actionid") final BigInteger actionId) throws CTPException {
     log.info("Entering findActionByActionId with {}", actionId);
     Action action = actionService.findActionByActionId(actionId);
     if (action == null) {
       throw new CTPException(CTPException.Fault.RESOURCE_NOT_FOUND, "Action not found for id %s", actionId);
     }
-    return Response.ok(mapperFacade.map(action, ActionDTO.class)).build();
+    return mapperFacade.map(action, ActionDTO.class);
   }
 
   /**
@@ -129,9 +111,8 @@ public final class ActionEndpoint implements CTPEndpoint {
    * @return ActionDTO Returns the updated Action details
    * @throws CTPException if update operation fails
    */
-  @PUT
-  @Path("/{actionid}")
-  public Response updateAction(@PathParam("actionid") final BigInteger actionId, final ActionDTO actionDTO)
+  @RequestMapping(value = "/{actionid}", method = RequestMethod.PUT)
+  public ActionDTO updateAction(@PathVariable("actionid") final BigInteger actionId, final ActionDTO actionDTO)
       throws CTPException {
     log.info("Updating Action with {} {}", actionId, actionDTO);
     actionDTO.setActionId(actionId);
@@ -139,7 +120,7 @@ public final class ActionEndpoint implements CTPEndpoint {
     if (action == null) {
       throw new CTPException(CTPException.Fault.RESOURCE_NOT_FOUND, "Action not updated for id %s", actionId);
     }
-    return Response.ok(mapperFacade.map(action, ActionDTO.class)).build();
+    return mapperFacade.map(action, ActionDTO.class);
   }
 
   /**
@@ -149,9 +130,8 @@ public final class ActionEndpoint implements CTPEndpoint {
    * @return List<ActionDTO> Returns a list of cancelled Actions
    * @throws CTPException if update operation fails
    */
-  @PUT
-  @Path("/case/{caseid}/cancel")
-  public Response cancelActions(@PathParam("caseid") final int caseId)
+  @RequestMapping(value = "/case/{caseid}/cancel", method = RequestMethod.PUT)
+  public List<ActionDTO> cancelActions(@PathVariable("caseid") final int caseId)
       throws CTPException {
     log.info("Cancelling Actions for {}", caseId);
   
@@ -163,9 +143,7 @@ public final class ActionEndpoint implements CTPEndpoint {
     List<Action> actions = actionService.cancelActions(caseId);
 
     List<ActionDTO> results = mapperFacade.mapAsList(actions, ActionDTO.class);
-    ResponseBuilder responseBuilder = Response.ok(CollectionUtils.isEmpty(results) ? null : results);
-    responseBuilder.status(CollectionUtils.isEmpty(results) ? Status.NO_CONTENT : Status.OK);
-    return responseBuilder.build();
+    return results;
   }
 
   /**
@@ -175,15 +153,12 @@ public final class ActionEndpoint implements CTPEndpoint {
    * @return List<ActionDTO> Returns the associated actions for the specified
    *         case id.
    */
-  @GET
-  @Path("/case/{caseid}")
-  public Response findActionsByCaseId(@PathParam("caseid") final Integer caseId) {
+  @RequestMapping(value = "/case/{caseid}", method = RequestMethod.GET)
+  public List<ActionDTO>  findActionsByCaseId(@PathVariable("caseid") final Integer caseId) {
     log.info("Entering findActionsByCaseId...");
     List<Action> actions = actionService.findActionsByCaseId(caseId);
     List<ActionDTO> actionDTOs = mapperFacade.mapAsList(actions, ActionDTO.class);
-    ResponseBuilder responseBuilder = Response.ok(CollectionUtils.isEmpty(actionDTOs) ? null : actionDTOs);
-    responseBuilder.status(CollectionUtils.isEmpty(actionDTOs) ? Status.NO_CONTENT : Status.OK);
-    return responseBuilder.build();
+    return actionDTOs;
   }
 
   /**
@@ -193,10 +168,8 @@ public final class ActionEndpoint implements CTPEndpoint {
    * @return the modified action
    * @throws CTPException oops
    */
-  @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-  @PUT
-  @Path("/{actionid}/feedback")
-  public Response feedbackAction(@PathParam("actionid") final int actionId, final ActionFeedback actionFeedback)
+  @RequestMapping(value = "/{actionid}/feedback", method = RequestMethod.PUT, consumes = {"application/xml", "application/json"})
+  public ActionDTO feedbackAction(@PathVariable("actionid") final int actionId, final ActionFeedback actionFeedback)
       throws CTPException {
     log.info("Feedback for Action {}", actionId);
     actionFeedback.setActionId(BigInteger.valueOf(actionId));
@@ -204,6 +177,6 @@ public final class ActionEndpoint implements CTPEndpoint {
     if (action == null) {
       throw new CTPException(CTPException.Fault.RESOURCE_NOT_FOUND, "Action not found for id %s", actionId);
     }
-    return Response.ok(mapperFacade.map(action, ActionDTO.class)).build();
+    return mapperFacade.map(action, ActionDTO.class);
   }
 }
