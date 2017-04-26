@@ -13,9 +13,11 @@ import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.CollectionUtils;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import uk.gov.ons.ctp.common.endpoint.CTPEndpoint;
 import uk.gov.ons.ctp.common.error.CTPException;
+import uk.gov.ons.ctp.common.error.InvalidRequestException;
 import uk.gov.ons.ctp.response.action.domain.model.Action;
 import uk.gov.ons.ctp.response.action.domain.model.ActionCase;
 import uk.gov.ons.ctp.response.action.message.feedback.ActionFeedback;
@@ -83,9 +85,13 @@ public final class ActionEndpoint implements CTPEndpoint {
    * @return ActionDTO Created Action
    * @throws CTPException on failure to create Action
    */
-  @RequestMapping(method = RequestMethod.POST)
-  public ResponseEntity<?> createAction(final @Valid ActionDTO actionDTO) throws CTPException {
+  @RequestMapping(method = RequestMethod.POST, consumes = "application/json")
+  public ResponseEntity<?> createAction(final @RequestBody @Valid ActionDTO actionDTO, BindingResult bindingResult)
+          throws CTPException {
     log.info("Entering createAction with Action {}", actionDTO);
+    if (bindingResult.hasErrors()) {
+      throw new InvalidRequestException("Binding errors for create action: ", bindingResult);
+    }
     Action action = actionService.createAction(mapperFacade.map(actionDTO, Action.class));
     return ResponseEntity.created(URI.create("TODO")).body(mapperFacade.map(action, ActionDTO.class));
   }
@@ -116,10 +122,15 @@ public final class ActionEndpoint implements CTPEndpoint {
    * @return ActionDTO Returns the updated Action details
    * @throws CTPException if update operation fails
    */
-  @RequestMapping(value = "/{actionid}", method = RequestMethod.PUT)
-  public ActionDTO updateAction(@PathVariable("actionid") final BigInteger actionId, final ActionDTO actionDTO)
+  @RequestMapping(value = "/{actionid}", method = RequestMethod.PUT, consumes = "application/json")
+  public ActionDTO updateAction(@PathVariable("actionid") final BigInteger actionId, @RequestBody final ActionDTO
+          actionDTO, BindingResult bindingResult)
       throws CTPException {
     log.info("Updating Action with {} {}", actionId, actionDTO);
+    if (bindingResult.hasErrors()) {
+      throw new InvalidRequestException("Binding errors for update action: ", bindingResult);
+    }
+
     actionDTO.setActionId(actionId);
     Action action = actionService.updateAction(mapperFacade.map(actionDTO, Action.class));
     if (action == null) {

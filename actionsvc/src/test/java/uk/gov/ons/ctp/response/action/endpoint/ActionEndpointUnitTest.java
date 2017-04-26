@@ -3,11 +3,14 @@ package uk.gov.ons.ctp.response.action.endpoint;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.Is.isA;
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.handler;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static uk.gov.ons.ctp.common.MvcHelper.getJson;
+import static uk.gov.ons.ctp.common.MvcHelper.postJson;
+import static uk.gov.ons.ctp.common.MvcHelper.putJson;
 import static uk.gov.ons.ctp.common.utility.MockMvcControllerAdviceHelper.mockAdviceFor;
 
 import ma.glasnost.orika.MapperFacade;
@@ -78,6 +81,7 @@ public final class ActionEndpointUnitTest {
 
   private static final BigInteger ACTIONID_1 = BigInteger.valueOf(1);
   private static final BigInteger ACTIONID_2 = BigInteger.valueOf(2);
+  private static final BigInteger UNCHECKED_EXCEPTION = BigInteger.valueOf(999);
 
   private static final Boolean ACTION1_ACTIONTYPECANCEL = true;
   private static final Boolean ACTION2_ACTIONTYPECANCEL = false;
@@ -100,6 +104,7 @@ public final class ActionEndpointUnitTest {
   private static final String ACTION_CREATEDBY = "Unit Tester";
   private static final String ACTION_CREATEDDATE_VALUE = "2016-02-26T18:30:00.000+0000";
   private static final String ACTION_NOTFOUND = "NotFound";
+  private static final String OUR_EXCEPTION_MESSAGE = "this is what we throw";
 
   private static final String ACTION_VALIDJSON = "{\"caseId\": " + ACTION_CASEID + ","
           + "\"actionPlanId\": " + ACTION2_PLANID + ","
@@ -331,61 +336,78 @@ public final class ActionEndpointUnitTest {
     // TODO
 //    actions.andExpect(jsonPath("$[*].createdDateTime", containsInAnyOrder(ACTION_CREATEDDATE_TIMESTAMP)));
   }
-//
-//  /**
-//   * Test requesting Actions by case Id not found.
-//   */
-//  @Test
-//  public void findActionByCaseIdNotFound() {
-//    with("/actions/case/%s", NON_EXISTING_ID)
-//        .assertResponseCodeIs(HttpStatus.NO_CONTENT)
-//        .assertResponseLengthIs(-1)
-//        .andClose();
-//  }
-//
-//  /**
-//   * Test updating action not found
-//   */
-//  @Test
-//  public void updateActionByActionIdNotFound() {
-//    with("/actions/%s", NON_EXISTING_ID).put(MediaType.APPLICATION_JSON_TYPE, ACTION_VALIDJSON)
-//        .assertResponseCodeIs(HttpStatus.NOT_FOUND)
-//        .assertFaultIs(CTPException.Fault.RESOURCE_NOT_FOUND)
-//        .andClose();
-//  }
-//
-//  /**
-//   * Test requesting an Action creating an Unchecked Exception.
-//   */
-//  @Test
-//  public void findActionByActionIdUnCheckedException() {
-//    with("/actions/%s", UNCHECKED_EXCEPTION)
-//        .assertResponseCodeIs(HttpStatus.INTERNAL_SERVER_ERROR)
-//        .assertFaultIs(CTPException.Fault.SYSTEM_ERROR)
-//        .assertTimestampExists()
-//        .assertMessageEquals(OUR_EXCEPTION_MESSAGE)
-//        .andClose();
-//  }
-//
-//  /**
-//   * Test creating an Action with valid JSON.
-//   */
-//  @Test
-//  public void createActionGoodJsonProvided() {
-//    with("/actions").post(MediaType.APPLICATION_JSON_TYPE, ACTION_VALIDJSON)
-//        .assertResponseCodeIs(HttpStatus.CREATED)
-//        .assertIntegerInBody("$.actionId", ACTIONID_2.intValue())
-//        .assertIntegerInBody("$.caseId", ACTION_CASEID)
-//        .assertIntegerInBody("$.actionPlanId", ACTION2_PLANID)
-//        .assertIntegerInBody("$.actionRuleId", ACTION2_RULEID)
-//        .assertStringInBody("$.actionTypeName", ACTION2_ACTIONTYPENAME)
-//        .assertStringInBody("$.createdBy", ACTION_CREATEDBY)
-//        .assertIntegerInBody("$.priority", ACTION2_PRIORITY)
-//        .assertStringInBody("$.situation", ACTION2_SITUATION)
-//        .assertStringInBody("$.state", ACTION2_ACTIONSTATE.toString())
-//        .assertStringInBody("$.createdDateTime", ACTION_CREATEDDATE_VALUE)
-//        .andClose();
-//  }
+
+  /**
+   * Test requesting Actions by case Id not found.
+   */
+  @Test
+  public void findActionByCaseIdNotFound() throws Exception {
+    ResultActions actions = mockMvc.perform(getJson(String.format("/actions/case/%s", NON_EXISTING_ID)));
+
+    actions.andExpect(status().isNoContent());
+    actions.andExpect(handler().handlerType(ActionEndpoint.class));
+    actions.andExpect(handler().methodName("findActionsByCaseId"));
+  }
+
+  /**
+   * Test updating action not found
+   */
+  @Test
+  public void updateActionByActionIdNotFound() throws Exception {
+    ResultActions actions = mockMvc.perform(putJson(String.format("/actions/%s", NON_EXISTING_ID), ACTION_VALIDJSON));
+
+    actions.andExpect(status().isNotFound());
+    actions.andExpect(handler().handlerType(ActionEndpoint.class));
+    actions.andExpect(handler().methodName("updateAction"));
+    actions.andExpect(jsonPath("$.error.code", is(CTPException.Fault.RESOURCE_NOT_FOUND.name())));
+  }
+
+  /**
+   * Test requesting an Action creating an Unchecked Exception.
+   */
+  @Test
+  public void findActionByActionIdUnCheckedException() throws Exception {
+    when(actionService.findActionByActionId(UNCHECKED_EXCEPTION)).thenThrow(new IllegalArgumentException(OUR_EXCEPTION_MESSAGE));
+
+    ResultActions actions = mockMvc.perform(getJson(String.format("/actions/%s", UNCHECKED_EXCEPTION)));
+
+    actions.andExpect(status().is5xxServerError());
+    actions.andExpect(handler().handlerType(ActionEndpoint.class));
+    actions.andExpect(handler().methodName("findActionByActionId"));
+    actions.andExpect(jsonPath("$.error.code", is(CTPException.Fault.SYSTEM_ERROR.name())));
+    actions.andExpect(jsonPath("$.error.message", is(OUR_EXCEPTION_MESSAGE)));
+    actions.andExpect(jsonPath("$.error.timestamp", isA(String.class)));
+  }
+
+  /**
+   * Test creating an Action with valid JSON.
+   */
+  @Test
+  public void createActionGoodJsonProvided() throws Exception {
+    ActionType actionType = new ActionType(1, ACTION2_ACTIONTYPENAME, ACTION2_ACTIONTYPEDESC,
+            ACTION2_ACTIONTYPEHANDLER, ACTION2_ACTIONTYPECANCEL, ACTION2_RESPONSEREQUIRED);
+    Action action = new Action(ACTIONID_2, ACTION_CASEID, ACTION2_PLANID, ACTION2_RULEID, ACTION_CREATEDBY,
+            ACTION2_MANUALLY_CREATED, actionType, ACTION2_PRIORITY, ACTION2_SITUATION,
+            ACTION2_ACTIONSTATE, ACTION_CREATEDDATE_TIMESTAMP, ACTION_UPDATEDDATE_TIMESTAMP, 0);
+    when(actionService.createAction(any(Action.class))).thenReturn(action);
+
+    ResultActions actions = mockMvc.perform(postJson("/actions", ACTION_VALIDJSON));
+
+    actions.andExpect(status().isCreated());
+    actions.andExpect(handler().handlerType(ActionEndpoint.class));
+    actions.andExpect(handler().methodName("createAction"));
+    actions.andExpect(jsonPath("$.actionId", is(ACTIONID_2.intValue())));
+    actions.andExpect(jsonPath("$.caseId", is(ACTION_CASEID)));
+    actions.andExpect(jsonPath("$.actionPlanId", is(ACTION2_PLANID)));
+    actions.andExpect(jsonPath("$.actionRuleId", is(ACTION2_RULEID)));
+    actions.andExpect(jsonPath("$.actionTypeName", is(ACTION2_ACTIONTYPENAME)));
+    actions.andExpect(jsonPath("$.createdBy", is(ACTION_CREATEDBY)));
+    actions.andExpect(jsonPath("$.priority", is(ACTION2_PRIORITY)));
+    actions.andExpect(jsonPath("$.situation", is(ACTION2_SITUATION)));
+    actions.andExpect(jsonPath("$.state", is(ACTION2_ACTIONSTATE.name())));
+    // TODO
+//    actions.andExpect(jsonPath("$[0].createdDateTime", is(ACTION_CREATEDDATE_TIMESTAMP)));
+  }
 //
 //  /**
 //   * Test creating an Action with invalid JSON Property.

@@ -15,6 +15,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 
+// TODO 1 ControllerAdvice in common across services?
 @ControllerAdvice
 @Slf4j
 public class RestExceptionHandler {
