@@ -27,7 +27,7 @@ import uk.gov.ons.ctp.response.action.service.ActionService;
  * The REST endpoint controller for Actions.
  */
 @RestController
-@RequestMapping(value = "/actions", consumes = "application/json", produces = "application/json")
+@RequestMapping(value = "/actions", produces = "application/json")
 @Slf4j
 public final class ActionEndpoint implements CTPEndpoint {
 

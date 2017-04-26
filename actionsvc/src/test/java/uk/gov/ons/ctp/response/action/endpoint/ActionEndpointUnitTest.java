@@ -1,11 +1,15 @@
 package uk.gov.ons.ctp.response.action.endpoint;
 
+import static org.hamcrest.core.Is.is;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.handler;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static uk.gov.ons.ctp.common.MvcHelper.getJson;
 import static uk.gov.ons.ctp.common.utility.MockMvcControllerAdviceHelper.mockAdviceFor;
 
 import ma.glasnost.orika.MapperFacade;
+import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
@@ -78,6 +82,7 @@ public final class ActionEndpointUnitTest {
   private static final String ACTION2_ACTIONTYPEHANDLER = "Field";
   private static final String ACTION2_SITUATION = "Sent";
   private static final String ACTION_CREATEDBY = "Unit Tester";
+  private static final String ACTION_CREATEDDATE_VALUE = "2016-02-26T18:30:00.000+0000";
   private static final String ACTION_VALIDJSON = "{\"caseId\": " + ACTION_CASEID + ","
           + "\"actionPlanId\": " + ACTION2_PLANID + ","
           + "\"actionRuleId\": " + ACTION2_RULEID + ","
@@ -117,21 +122,20 @@ public final class ActionEndpointUnitTest {
     ResultActions actions = mockMvc.perform(getJson(String.format("/actions?actiontype=%s&state=%s", ACTION2_ACTIONTYPENAME, ACTION2_ACTIONSTATE)));
 
     actions.andExpect(status().isOk());
-
-
-//    with("/actions?actiontype=%s&state=%s", ACTION2_ACTIONTYPENAME, ACTION2_ACTIONSTATE)
-//        .assertResponseCodeIs(HttpStatus.OK)
-//        .assertIntegerListInBody("$..actionId", ACTIONID_2.intValue())
-//        .assertIntegerListInBody("$..caseId", ACTION_CASEID)
-//        .assertIntegerListInBody("$..actionPlanId", ACTION2_PLANID)
-//        .assertIntegerListInBody("$..actionRuleId", ACTION2_RULEID)
-//        .assertStringListInBody("$..actionTypeName", ACTION2_ACTIONTYPENAME)
-//        .assertStringListInBody("$..createdBy", ACTION_CREATEDBY)
-//        .assertIntegerListInBody("$..priority", ACTION2_PRIORITY)
-//        .assertStringListInBody("$..situation", ACTION2_SITUATION)
-//        .assertStringListInBody("$..state", ACTION2_ACTIONSTATE.toString())
-//        .assertStringListInBody("$..createdDateTime", ACTION_CREATEDDATE_VALUE)
-//        .andClose();
+    actions.andExpect(handler().handlerType(ActionEndpoint.class));
+    actions.andExpect(handler().methodName("findActions"));
+    actions.andExpect(jsonPath("$", Matchers.hasSize(1)));
+    actions.andExpect(jsonPath("$[0].actionId", is(ACTIONID_2.intValue())));
+    actions.andExpect(jsonPath("$[0].caseId", is(ACTION_CASEID)));
+    actions.andExpect(jsonPath("$[0].actionPlanId", is(ACTION2_PLANID)));
+    actions.andExpect(jsonPath("$[0].actionRuleId", is(ACTION2_RULEID)));
+    actions.andExpect(jsonPath("$[0].actionTypeName", is(ACTION2_ACTIONTYPENAME)));
+    actions.andExpect(jsonPath("$[0].createdBy", is(ACTION_CREATEDBY)));
+    actions.andExpect(jsonPath("$[0].priority", is(ACTION2_PRIORITY)));
+    actions.andExpect(jsonPath("$[0].situation", is(ACTION2_SITUATION)));
+    actions.andExpect(jsonPath("$[0].state", is(ACTION2_ACTIONSTATE.name())));
+    // TODO
+//    actions.andExpect(jsonPath("$[0].createdDateTime", is(ACTION_CREATEDDATE_TIMESTAMP)));
   }
 
 //  /**

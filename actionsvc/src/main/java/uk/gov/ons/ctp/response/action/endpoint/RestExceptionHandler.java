@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import uk.gov.ons.ctp.common.error.CTPException;
+import uk.gov.ons.ctp.common.error.InvalidRequestException;
 
 import java.util.Iterator;
 import java.util.List;
@@ -85,3 +86,4 @@ public class RestExceptionHandler {
         return new ResponseEntity<>(ourException, HttpStatus.BAD_REQUEST);
 
     }
+}
