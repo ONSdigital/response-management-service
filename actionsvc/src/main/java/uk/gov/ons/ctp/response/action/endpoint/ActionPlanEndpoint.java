@@ -24,7 +24,7 @@ import uk.gov.ons.ctp.response.action.service.ActionPlanService;
  * The REST endpoint controller for ActionPlans.
  */
 @RestController
-@RequestMapping(value = "/actionplans", consumes = "application/json", produces = "application/json")
+@RequestMapping(value = "/actionplans", produces = "application/json")
 @Slf4j
 public class ActionPlanEndpoint implements CTPEndpoint {
 
@@ -75,7 +75,7 @@ public class ActionPlanEndpoint implements CTPEndpoint {
    * @return ActionPlanDTO This returns the updated action plan.
    * @throws CTPException if the json provided is incorrect or if the action plan id does not exist.
    */
-  @RequestMapping(value = "/{actionplanid}", method = RequestMethod.PUT)
+  @RequestMapping(value = "/{actionplanid}", method = RequestMethod.PUT, consumes = "application/json")
   public final ActionPlanDTO updateActionPlanByActionPlanId(@PathVariable("actionplanid") final Integer actionPlanId,
       final ActionPlanDTO requestObject) throws CTPException {
     log.info("UpdateActionPlanByActionPlanId with actionplanid {} - actionPlan {}", actionPlanId, requestObject);
