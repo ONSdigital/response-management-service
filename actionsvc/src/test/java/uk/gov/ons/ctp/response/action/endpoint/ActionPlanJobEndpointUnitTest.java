@@ -1,16 +1,20 @@
 package uk.gov.ons.ctp.response.action.endpoint;
 
+import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.Is.isA;
-import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.handler;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static uk.gov.ons.ctp.common.MvcHelper.getJson;
+import static uk.gov.ons.ctp.common.MvcHelper.postJson;
 import static uk.gov.ons.ctp.common.utility.MockMvcControllerAdviceHelper.mockAdviceFor;
+import static uk.gov.ons.ctp.response.action.endpoint.RestExceptionHandler.INVALID_JSON;
 
 import ma.glasnost.orika.MapperFacade;
+import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
@@ -27,6 +31,8 @@ import uk.gov.ons.ctp.response.action.representation.ActionPlanJobDTO;
 import uk.gov.ons.ctp.response.action.service.ActionPlanJobService;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 public class ActionPlanJobEndpointUnitTest {
@@ -34,7 +40,6 @@ public class ActionPlanJobEndpointUnitTest {
   private static final Integer ACTIONPLANJOBID = 1;
   private static final Integer ACTIONPLANJOBID_ACTIONPLANID = 1;
   private static final Integer ACTIONPLANID = 1;
-  private static final Integer ACTIONPLANID_WITHNOACTIONPLANJOB = 13;
   private static final Integer NON_EXISTING_ACTIONPLANJOBID = 998;
   private static final Integer UNCHECKED_EXCEPTION_ACTIONPLANJOBID = 999;
 
@@ -95,7 +100,6 @@ public class ActionPlanJobEndpointUnitTest {
 // TODO   actions.andExpect(jsonPath("$.updatedDateTime", is(UPDATED_DATE_TIME)));
   }
 
-
   /**
    * A Test
    */
@@ -130,64 +134,67 @@ public class ActionPlanJobEndpointUnitTest {
     actions.andExpect(jsonPath("$.error.timestamp", isA(String.class)));
   }
 
-//  /**
-//   * A Test
-//   */
-//  @Test
-//  public void findNoActionPlanJobForActionPlan() throws Exception {
-//    ResultActions actions = mockMvc.perform(getJson(String.format("/actionplans/jobs/%s", ACTIONPLANID_WITHNOACTIONPLANJOB)));
-//
-//    with("/actionplans/%s/jobs", ACTIONPLANID_WITHNOACTIONPLANJOB)
-//        .assertResponseCodeIs(HttpStatus.NO_CONTENT)
-//        .andClose();
-//  }
-//
-//  /**
-//   * A Test
-//   */
-//  @Test
-//  public void findActionPlanJobsForActionPlan() {
-//    with("/actionplans/%s/jobs", ACTIONPLANID)
-//        .assertResponseCodeIs(HttpStatus.OK)
-//        .assertArrayLengthInBodyIs(3)
-//        .assertIntegerListInBody("$..actionPlanJobId", 1, 2, 3)
-//        .assertIntegerListInBody("$..actionPlanId", ACTIONPLANID, ACTIONPLANID, ACTIONPLANID)
-//        .assertStringListInBody("$..createdBy", ACTIONPLANJOBID_CREATED_BY, ACTIONPLANJOBID_CREATED_BY,
-//            ACTIONPLANJOBID_CREATED_BY)
-//        .assertStringListInBody("$..createdDateTime", CREATED_DATE_TIME, CREATED_DATE_TIME, CREATED_DATE_TIME)
-//        .assertStringListInBody("$..updatedDateTime", UPDATED_DATE_TIME, UPDATED_DATE_TIME, UPDATED_DATE_TIME)
-//        .andClose();
-//  }
-//
-//  /**
-//   * A Test
-//   */
-//  @Test
-//  public void executeActionPlanBadJsonProvided() {
-//    with("/actionplans/%s/jobs", ACTIONPLANID)
-//        .post(MediaType.APPLICATION_JSON_TYPE, ACTIONPLANJOB_INVALIDJSON)
-//        .assertResponseCodeIs(HttpStatus.BAD_REQUEST)
-//        .assertFaultIs(CTPException.Fault.VALIDATION_FAILED)
-//        .assertTimestampExists()
-//        .assertMessageEquals(PROVIDED_JSON_INVALID)
-//        .andClose();
-//  }
-//
-//  /**
-//   * A Test
-//   */
-//  @Test
-//  public void executeActionPlanGoodJsonProvided() {
-//    with("/actionplans/%s/jobs", ACTIONPLANID)
-//        .post(MediaType.APPLICATION_JSON_TYPE, ACTIONPLANJOB_VALIDJSON)
-//        .assertResponseCodeIs(HttpStatus.CREATED)
-//        .assertIntegerInBody("$.actionPlanJobId", ACTIONPLANJOBID)
-//        .assertIntegerInBody("$.actionPlanId", ACTIONPLANJOBID_ACTIONPLANID)
-//        .assertStringInBody("$.createdBy", ACTIONPLANJOBID_CREATED_BY)
-//        .assertStringInBody("$.state", ACTIONPLANJOBID_STATE.name())
-//        .assertStringInBody("$.createdDateTime", CREATED_DATE_TIME)
-//        .assertStringInBody("$.updatedDateTime", UPDATED_DATE_TIME)
-//        .andClose();
-//  }
+  /**
+   * A Test
+   */
+  @Test
+  public void findActionPlanJobsForActionPlan() throws Exception {
+    List<ActionPlanJob> result = new ArrayList<>();
+    result.add(new ActionPlanJob(1, ACTIONPLANJOBID_ACTIONPLANID, ACTIONPLANJOBID_CREATED_BY,
+            ACTIONPLANJOBID_STATE, ACTIONPLANJOBID_CREATEDDATE_TIMESTAMP, ACTIONPLANJOBID_UPDATED_DATE_TIMESTAMP));
+    result.add(new ActionPlanJob(2, ACTIONPLANJOBID_ACTIONPLANID, ACTIONPLANJOBID_CREATED_BY,
+            ACTIONPLANJOBID_STATE, ACTIONPLANJOBID_CREATEDDATE_TIMESTAMP, ACTIONPLANJOBID_UPDATED_DATE_TIMESTAMP));
+    result.add(new ActionPlanJob(3, ACTIONPLANJOBID_ACTIONPLANID, ACTIONPLANJOBID_CREATED_BY,
+            ACTIONPLANJOBID_STATE, ACTIONPLANJOBID_CREATEDDATE_TIMESTAMP, ACTIONPLANJOBID_UPDATED_DATE_TIMESTAMP));
+    when(actionPlanJobService.findActionPlanJobsForActionPlan(ACTIONPLANID)).thenReturn(result);
+
+    ResultActions actions = mockMvc.perform(getJson(String.format("/actionplans/%s/jobs", ACTIONPLANID)));
+
+    actions.andExpect(status().isOk());
+    actions.andExpect(handler().handlerType(ActionPlanJobEndpoint.class));
+    actions.andExpect(handler().methodName("findAllActionPlanJobsByActionPlanId"));
+    actions.andExpect(jsonPath("$", Matchers.hasSize(3)));
+    actions.andExpect(jsonPath("$[*].actionPlanJobId", containsInAnyOrder(1, 2, 3)));
+    actions.andExpect(jsonPath("$[*].actionPlanId", containsInAnyOrder(ACTIONPLANID, ACTIONPLANID, ACTIONPLANID)));
+    actions.andExpect(jsonPath("$[*].createdBy", containsInAnyOrder(ACTIONPLANJOBID_CREATED_BY, ACTIONPLANJOBID_CREATED_BY, ACTIONPLANJOBID_CREATED_BY)));
+// TODO   actions.andExpect(jsonPath("$[*].createdDateTime", containsInAnyOrder(CREATED_DATE_TIME, CREATED_DATE_TIME, CREATED_DATE_TIME)));
+// TODO   actions.andExpect(jsonPath("$[*].updatedDateTime", containsInAnyOrder(UPDATED_DATE_TIME, UPDATED_DATE_TIME, UPDATED_DATE_TIME)));
+  }
+
+  /**
+   * A Test
+   */
+  @Test
+  public void executeActionPlanBadJsonProvided() throws Exception {
+    ResultActions actions = mockMvc.perform(postJson(String.format("/actionplans/%s/jobs", ACTIONPLANID), ACTIONPLANJOB_INVALIDJSON));
+
+    actions.andExpect(status().isBadRequest());
+    actions.andExpect(handler().handlerType(ActionPlanJobEndpoint.class));
+    actions.andExpect(handler().methodName("executeActionPlan"));
+    actions.andExpect(jsonPath("$.error.code", is(CTPException.Fault.BAD_REQUEST.name())));
+    actions.andExpect(jsonPath("$.error.message", is(INVALID_JSON)));
+    actions.andExpect(jsonPath("$.error.timestamp", isA(String.class)));
+  }
+
+  /**
+   * A Test
+   */
+  @Test
+  public void executeActionPlanGoodJsonProvided() throws Exception {
+    when(actionPlanJobService.createAndExecuteActionPlanJob(any(ActionPlanJob.class))).thenReturn(Optional.of(new ActionPlanJob(ACTIONPLANJOBID, ACTIONPLANJOBID_ACTIONPLANID, ACTIONPLANJOBID_CREATED_BY,
+            ACTIONPLANJOBID_STATE, ACTIONPLANJOBID_CREATEDDATE_TIMESTAMP, ACTIONPLANJOBID_UPDATED_DATE_TIMESTAMP)));
+
+    ResultActions actions = mockMvc.perform(postJson(String.format("/actionplans/%s/jobs", ACTIONPLANID), ACTIONPLANJOB_VALIDJSON));
+
+    actions.andExpect(status().isCreated());
+    actions.andExpect(handler().handlerType(ActionPlanJobEndpoint.class));
+    actions.andExpect(handler().methodName("executeActionPlan"));
+    actions.andExpect(jsonPath("$.actionPlanJobId", is(ACTIONPLANJOBID)));
+    actions.andExpect(jsonPath("$.actionPlanId", is(ACTIONPLANJOBID_ACTIONPLANID)));
+    actions.andExpect(jsonPath("$.createdBy", is(ACTIONPLANJOBID_CREATED_BY)));
+    actions.andExpect(jsonPath("$.state", is(ACTIONPLANJOBID_STATE.name())));
+// TODO   actions.andExpect(jsonPath("$.createdDateTime", is(CREATED_DATE_TIME)));
+// TODO   actions.andExpect(jsonPath("$.updatedDateTime", is(UPDATED_DATE_TIME)));
+  }
 
 }

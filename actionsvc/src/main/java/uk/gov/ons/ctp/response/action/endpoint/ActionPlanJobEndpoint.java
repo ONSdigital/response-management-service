@@ -1,5 +1,6 @@
 package uk.gov.ons.ctp.response.action.endpoint;
 
+import java.net.URI;
 import java.util.List;
 import java.util.Optional;
 
@@ -9,9 +10,11 @@ import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.CollectionUtils;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import uk.gov.ons.ctp.common.endpoint.CTPEndpoint;
 import uk.gov.ons.ctp.common.error.CTPException;
+import uk.gov.ons.ctp.common.error.InvalidRequestException;
 import uk.gov.ons.ctp.response.action.domain.model.ActionPlanJob;
 import uk.gov.ons.ctp.response.action.representation.ActionPlanJobDTO;
 import uk.gov.ons.ctp.response.action.service.ActionPlanJobService;
@@ -72,9 +75,13 @@ public class ActionPlanJobEndpoint implements CTPEndpoint {
    * @throws CTPException summats went wrong
    */
   @RequestMapping(value = "/{actionplanid}/jobs", method = RequestMethod.POST, consumes = "application/json")
-  public final ActionPlanJobDTO executeActionPlan(@PathVariable("actionplanid") final Integer actionPlanId,
-      final @RequestBody @Valid ActionPlanJobDTO actionPlanJobDTO) throws CTPException {
+  public final ResponseEntity<?> executeActionPlan(@PathVariable("actionplanid") final Integer actionPlanId,
+      final @RequestBody @Valid ActionPlanJobDTO actionPlanJobDTO, BindingResult bindingResult) throws CTPException {
     log.info("Entering executeActionPlan with {}", actionPlanId);
+
+    if (bindingResult.hasErrors()) {
+      throw new InvalidRequestException("Binding errors for execute action plan: ", bindingResult);
+    }
 
     if (actionPlanJobDTO == null) {
       throw new CTPException(CTPException.Fault.VALIDATION_FAILED, "Provided json is incorrect.");
@@ -83,7 +90,8 @@ public class ActionPlanJobEndpoint implements CTPEndpoint {
     ActionPlanJob job = mapperFacade.map(actionPlanJobDTO, ActionPlanJob.class);
     job.setActionPlanId(actionPlanId);
     Optional<ActionPlanJob> actionPlanJob = actionPlanJobService.createAndExecuteActionPlanJob(job);
-    return mapperFacade.map(actionPlanJob.orElseThrow(() -> new CTPException(CTPException.Fault.RESOURCE_NOT_FOUND,
-            "ActionPlan not found for id %s", actionPlanId)), ActionPlanJobDTO.class);
+    return ResponseEntity.created(URI.create("TODO")).body(
+            mapperFacade.map(actionPlanJob.orElseThrow(() -> new CTPException(CTPException.Fault.RESOURCE_NOT_FOUND,
+            "ActionPlan not found for id %s", actionPlanId)), ActionPlanJobDTO.class));
   }
 }
