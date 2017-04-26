@@ -28,6 +28,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import uk.gov.ons.ctp.common.error.CTPException;
 import uk.gov.ons.ctp.response.action.ActionBeanMapper;
 import uk.gov.ons.ctp.response.action.domain.model.Action;
+import uk.gov.ons.ctp.response.action.domain.model.ActionCase;
 import uk.gov.ons.ctp.response.action.domain.model.ActionType;
 import uk.gov.ons.ctp.response.action.representation.ActionDTO;
 import uk.gov.ons.ctp.response.action.service.ActionCaseService;
@@ -69,6 +70,7 @@ public final class ActionEndpointUnitTest {
 
   private static final ActionDTO.ActionState ACTION1_ACTIONSTATE = ActionDTO.ActionState.ACTIVE;
   private static final ActionDTO.ActionState ACTION2_ACTIONSTATE = ActionDTO.ActionState.COMPLETED;
+  private static final ActionDTO.ActionState ACTION3_ACTIONSTATE = ActionDTO.ActionState.CANCELLED;
 
   private static final Integer ACTION_CASEID = 124;
   private static final Integer ACTION1_PRIORITY = 1;
@@ -408,60 +410,85 @@ public final class ActionEndpointUnitTest {
     // TODO
 //    actions.andExpect(jsonPath("$[0].createdDateTime", is(ACTION_CREATEDDATE_TIMESTAMP)));
   }
-//
-//  /**
-//   * Test creating an Action with invalid JSON Property.
-//   */
-//  @Test
-//  public void createActionInvalidPropJsonProvided() {
-//    with("/actions").post(MediaType.APPLICATION_JSON_TYPE, ACTION_INVALIDJSON_PROP)
-//        .assertResponseCodeIs(HttpStatus.BAD_REQUEST)
-//        .assertFaultIs(CTPException.Fault.VALIDATION_FAILED)
-//        .assertTimestampExists()
-//        .assertMessageEquals("Provided json is incorrect.")
-//        .andClose();
-//  }
-//
-//  /**
-//   * Test creating an Action with missing JSON Property.
-//   */
-//  @Test
-//  public void createActionMissingPropJsonProvided() {
-//    with("/actions").post(MediaType.APPLICATION_JSON_TYPE, ACTION_INVALIDJSON_MISSING_PROP)
-//        .assertResponseCodeIs(HttpStatus.BAD_REQUEST)
-//        .assertFaultIs(CTPException.Fault.VALIDATION_FAILED)
-//        .assertTimestampExists()
-//        .assertMessageEquals("Provided json fails validation.")
-//        .andClose();
-//  }
-//
-//  /**
-//   * Test cancelling an Action.
-//   */
-//  @Test
-//  public void cancelActions() {
-//    with("/actions/case/%s/cancel", ACTION_CASEID).put(MediaType.APPLICATION_JSON_TYPE, "")
-//        .assertResponseCodeIs(HttpStatus.OK)
-//        .assertIntegerListInBody("$..actionId", ACTIONID_2.intValue())
-//        .assertIntegerListInBody("$..caseId", ACTION_CASEID)
-//        .assertIntegerListInBody("$..actionPlanId", ACTION2_PLANID)
-//        .assertIntegerListInBody("$..actionRuleId", ACTION2_RULEID)
-//        .assertStringListInBody("$..actionTypeName", ACTION2_ACTIONTYPENAME)
-//        .assertStringListInBody("$..createdBy", ACTION_CREATEDBY)
-//        .assertIntegerListInBody("$..priority", ACTION2_PRIORITY)
-//        .assertStringListInBody("$..situation", ACTION2_SITUATION)
-//        .assertStringListInBody("$..state", ACTION3_ACTIONSTATE.toString())
-//        .assertStringListInBody("$..createdDateTime", ACTION_CREATEDDATE_VALUE)
-//        .andClose();
-//  }
-//
-//  /**
-//   * Test cancelling an Action.
-//   */
-//  @Test
-//  public void cancelActionsCaseNotFound() {
-//    with("/actions/case/%s/cancel", NON_EXISTING_ID).put(MediaType.APPLICATION_JSON_TYPE, "")
-//        .assertResponseCodeIs(HttpStatus.NOT_FOUND)
-//        .andClose();
-//  }
+
+  /**
+   * Test creating an Action with invalid JSON Property.
+   */
+  @Test
+  public void createActionInvalidPropJsonProvided() throws Exception {
+    ResultActions actions = mockMvc.perform(postJson("/actions", ACTION_INVALIDJSON_PROP));
+
+    actions.andExpect(status().isBadRequest());
+    actions.andExpect(handler().handlerType(ActionEndpoint.class));
+    actions.andExpect(handler().methodName("createAction"));
+    actions.andExpect(jsonPath("$.error.code", is(CTPException.Fault.BAD_REQUEST.name())));
+    actions.andExpect(jsonPath("$.error.message", is("Provided json fails validation.")));
+    actions.andExpect(jsonPath("$.error.timestamp", isA(String.class)));
+  }
+
+
+  /**
+   * Test creating an Action with missing JSON Property.
+   */
+  @Test
+  public void createActionMissingPropJsonProvided() throws Exception {
+    ResultActions actions = mockMvc.perform(postJson("/actions", ACTION_INVALIDJSON_MISSING_PROP));
+
+    actions.andExpect(status().isBadRequest());
+    actions.andExpect(handler().handlerType(ActionEndpoint.class));
+    actions.andExpect(handler().methodName("createAction"));
+    actions.andExpect(jsonPath("$.error.code", is(CTPException.Fault.BAD_REQUEST.name())));
+    actions.andExpect(jsonPath("$.error.message", is("Provided json fails validation.")));
+    actions.andExpect(jsonPath("$.error.timestamp", isA(String.class)));
+  }
+
+  /**
+   * Test cancelling an Action.
+   */
+  @Test
+  public void cancelActions() throws Exception {
+    when(actionCaseService.findActionCase(ACTION_CASEID)).thenReturn(new ActionCase());
+
+
+    ActionType actionType = new ActionType(1, ACTION2_ACTIONTYPENAME, ACTION2_ACTIONTYPEDESC,
+            ACTION2_ACTIONTYPEHANDLER, ACTION2_ACTIONTYPECANCEL, ACTION2_RESPONSEREQUIRED);
+    Action action = new Action(ACTIONID_2, ACTION_CASEID, ACTION2_PLANID, ACTION2_RULEID, ACTION_CREATEDBY,
+            ACTION2_MANUALLY_CREATED, actionType, ACTION2_PRIORITY, ACTION2_SITUATION,
+            ACTION3_ACTIONSTATE, ACTION_CREATEDDATE_TIMESTAMP, ACTION_UPDATEDDATE_TIMESTAMP, 0);
+    List<Action> result = new ArrayList<>();
+    result.add(action);
+    when(actionService.cancelActions(ACTION_CASEID)).thenReturn(result);
+
+
+    ResultActions actions = mockMvc.perform(putJson(String.format("/actions/case/%s/cancel", ACTION_CASEID), ""));
+
+    actions.andExpect(status().isOk());
+    actions.andExpect(handler().handlerType(ActionEndpoint.class));
+    actions.andExpect(handler().methodName("cancelActions"));
+    actions.andExpect(jsonPath("$", Matchers.hasSize(1)));
+    actions.andExpect(jsonPath("$[0].actionId", is(ACTIONID_2.intValue())));
+    actions.andExpect(jsonPath("$[0].caseId", is(ACTION_CASEID)));
+    actions.andExpect(jsonPath("$[0].actionPlanId", is(ACTION2_PLANID)));
+    actions.andExpect(jsonPath("$[0].actionRuleId", is(ACTION2_RULEID)));
+    actions.andExpect(jsonPath("$[0].actionTypeName", is(ACTION2_ACTIONTYPENAME)));
+    actions.andExpect(jsonPath("$[0].createdBy", is(ACTION_CREATEDBY)));
+    actions.andExpect(jsonPath("$[0].priority", is(ACTION2_PRIORITY)));
+    actions.andExpect(jsonPath("$[0].situation", is(ACTION2_SITUATION)));
+    actions.andExpect(jsonPath("$[0].state", is(ACTION3_ACTIONSTATE.name())));
+    // TODO
+//    actions.andExpect(jsonPath("$[0].createdDateTime", is(ACTION_CREATEDDATE_TIMESTAMP)));
+  }
+
+  /**
+   * Test cancelling an Action.
+   */
+  @Test
+  public void cancelActionsCaseNotFound() throws Exception {
+    ResultActions actions = mockMvc.perform(putJson(String.format("/actions/case/%s/cancel", NON_EXISTING_ID), ""));
+
+    actions.andExpect(status().isNotFound());
+    actions.andExpect(handler().handlerType(ActionEndpoint.class));
+    actions.andExpect(handler().methodName("cancelActions"));
+    actions.andExpect(jsonPath("$.error.code", is(CTPException.Fault.RESOURCE_NOT_FOUND.name())));
+  }
 }

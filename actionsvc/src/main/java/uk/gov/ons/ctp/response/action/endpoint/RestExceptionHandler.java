@@ -74,7 +74,7 @@ public class RestExceptionHandler {
         }
 
         log.error("logMsg is '{}' - responseMsg is '{}'", logMsg.toString(), responseMsg.toString());
-        CTPException ourException = new CTPException(CTPException.Fault.BAD_REQUEST, responseMsg.toString());
+        CTPException ourException = new CTPException(CTPException.Fault.BAD_REQUEST, "Provided json fails validation.");
         return new ResponseEntity<>(ourException, HttpStatus.BAD_REQUEST);
     }
 

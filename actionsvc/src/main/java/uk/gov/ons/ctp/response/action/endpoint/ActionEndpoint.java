@@ -146,7 +146,7 @@ public final class ActionEndpoint implements CTPEndpoint {
    * @return List<ActionDTO> Returns a list of cancelled Actions
    * @throws CTPException if update operation fails
    */
-  @RequestMapping(value = "/case/{caseid}/cancel", method = RequestMethod.PUT)
+  @RequestMapping(value = "/case/{caseid}/cancel", method = RequestMethod.PUT, consumes = "application/json")
   public ResponseEntity<?> cancelActions(@PathVariable("caseid") final int caseId)
       throws CTPException {
     log.info("Cancelling Actions for {}", caseId);
