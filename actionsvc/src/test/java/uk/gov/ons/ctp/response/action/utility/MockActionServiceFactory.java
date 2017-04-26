@@ -7,7 +7,6 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.glassfish.hk2.api.Factory;
 import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
@@ -20,7 +19,7 @@ import uk.gov.ons.ctp.response.action.service.ActionService;
 /**
  * A MockActionServiceFactory
  */
-public final class MockActionServiceFactory implements Factory<ActionService> {
+public final class MockActionServiceFactory {
 
   public static final Integer ACTION_CASEID = 124;
   public static final Integer ACTION1_PLANID = 1;
@@ -58,7 +57,6 @@ public final class MockActionServiceFactory implements Factory<ActionService> {
   public static final String ACTION_NOTFOUND = "NotFound";
   public static final String OUR_EXCEPTION_MESSAGE = "this is what we throw";
 
-  @Override
   public ActionService provide() {
 
     final ActionService mockedService = Mockito.mock(ActionService.class);
@@ -185,9 +183,5 @@ public final class MockActionServiceFactory implements Factory<ActionService> {
     });
 
     return mockedService;
-  }
-
-  @Override
-  public void dispose(final ActionService t) {
   }
 }

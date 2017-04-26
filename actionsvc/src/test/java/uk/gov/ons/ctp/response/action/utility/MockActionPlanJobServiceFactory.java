@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import org.glassfish.hk2.api.Factory;
 import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
@@ -19,7 +18,7 @@ import uk.gov.ons.ctp.response.action.service.ActionPlanJobService;
 /**
  * Created by philippe.brossier on 3/15/16.
  */
-public class MockActionPlanJobServiceFactory implements Factory<ActionPlanJobService> {
+public class MockActionPlanJobServiceFactory {
   public static final Integer ACTIONPLANJOBID = 1;
   public static final Integer ACTIONPLANJOBID_ACTIONPLANID = 1;
   public static final String ACTIONPLANJOBID_CREATED_BY = "theTester";
@@ -97,12 +96,5 @@ public class MockActionPlanJobServiceFactory implements Factory<ActionPlanJobSer
         });
 
     return mockedService;
-  }
-
-  /**
-   * clean up
-   * @param t service to dispose of
-   */
-  public void dispose(ActionPlanJobService t) {
   }
 }

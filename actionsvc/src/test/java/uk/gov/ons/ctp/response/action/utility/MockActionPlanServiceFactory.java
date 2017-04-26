@@ -4,7 +4,6 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.glassfish.hk2.api.Factory;
 import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
@@ -19,7 +18,7 @@ import static org.mockito.Matchers.any;
 /**
  * A MockActionPlanServiceFactory
  */
-public class MockActionPlanServiceFactory implements Factory<ActionPlanService> {
+public class MockActionPlanServiceFactory {
 
   public static final String ACTIONTYPE_NAME = "Action Type Name";
   public static final String ACTIONTYPE_DESC = "Action Type Desc";
@@ -135,11 +134,4 @@ public class MockActionPlanServiceFactory implements Factory<ActionPlanService> 
     return mockedService;
   }
 
-  /**
-   * dispose of s*it
-   * 
-   * @param t the s*it to dispose
-   */
-  public void dispose(ActionPlanService t) {
-  }
 }
