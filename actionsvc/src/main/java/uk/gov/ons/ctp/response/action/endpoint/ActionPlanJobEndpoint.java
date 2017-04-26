@@ -9,10 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.CollectionUtils;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import uk.gov.ons.ctp.common.endpoint.CTPEndpoint;
 import uk.gov.ons.ctp.common.error.CTPException;
 import uk.gov.ons.ctp.response.action.domain.model.ActionPlanJob;
@@ -25,7 +22,7 @@ import javax.validation.Valid;
  * The REST endpoint controller for ActionPlanJobs.
  */
 @RestController
-@RequestMapping(value = "/actionplans", consumes = "application/json", produces = "application/json")
+@RequestMapping(value = "/actionplans", produces = "application/json")
 @Slf4j
 public class ActionPlanJobEndpoint implements CTPEndpoint {
 
@@ -74,9 +71,9 @@ public class ActionPlanJobEndpoint implements CTPEndpoint {
    * @return the created ActionPlanJobDTO
    * @throws CTPException summats went wrong
    */
-  @RequestMapping(value = "/{actionplanid}/jobs", method = RequestMethod.POST)
+  @RequestMapping(value = "/{actionplanid}/jobs", method = RequestMethod.POST, consumes = "application/json")
   public final ActionPlanJobDTO executeActionPlan(@PathVariable("actionplanid") final Integer actionPlanId,
-      final @Valid ActionPlanJobDTO actionPlanJobDTO) throws CTPException {
+      final @RequestBody @Valid ActionPlanJobDTO actionPlanJobDTO) throws CTPException {
     log.info("Entering executeActionPlan with {}", actionPlanId);
 
     if (actionPlanJobDTO == null) {
