@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
+import org.springframework.http.ResponseEntity;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -38,11 +40,12 @@ public class ActionPlanEndpoint implements CTPEndpoint {
    * @return List<ActionPlanDTO> This returns all action plans.
    */
   @RequestMapping(method = RequestMethod.GET)
-  public final List<ActionPlanDTO>  findActionPlans() {
+  public final ResponseEntity<?> findActionPlans() {
     log.info("Entering findActionPlans...");
     List<ActionPlan> actionPlans = actionPlanService.findActionPlans();
     List<ActionPlanDTO> actionPlanDTOs = mapperFacade.mapAsList(actionPlans, ActionPlanDTO.class);
-    return actionPlanDTOs;
+    return CollectionUtils.isEmpty(actionPlanDTOs) ?
+            ResponseEntity.noContent().build() : ResponseEntity.ok(actionPlanDTOs);
   }
 
   /**
@@ -92,7 +95,7 @@ public class ActionPlanEndpoint implements CTPEndpoint {
    * @throws CTPException summats went wrong
    */
   @RequestMapping(value = "/{actionplanid}/rules", method = RequestMethod.GET)
-  public final List<ActionRuleDTO>  returnActionRulesForActionPlanId(
+  public final ResponseEntity<?>  returnActionRulesForActionPlanId(
       @PathVariable("actionplanid") final Integer actionPlanId)
       throws CTPException {
     log.info("Entering returnActionRulesForActionPlanId with {}", actionPlanId);
@@ -103,7 +106,8 @@ public class ActionPlanEndpoint implements CTPEndpoint {
 
     List<ActionRule> actionRules = actionPlanService.findActionRulesForActionPlan(actionPlanId);
     List<ActionRuleDTO> actionRuleDTOs = mapperFacade.mapAsList(actionRules, ActionRuleDTO.class);
-    return actionRuleDTOs;
+    return CollectionUtils.isEmpty(actionRuleDTOs) ?
+            ResponseEntity.noContent().build() : ResponseEntity.ok(actionRuleDTOs);
   }
 
 }

@@ -1,6 +1,7 @@
 package uk.gov.ons.ctp.response.action.endpoint;
 
 import java.math.BigInteger;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,6 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
+import org.springframework.http.ResponseEntity;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
 import uk.gov.ons.ctp.common.endpoint.CTPEndpoint;
 import uk.gov.ons.ctp.common.error.CTPException;
@@ -45,8 +48,8 @@ public final class ActionEndpoint implements CTPEndpoint {
    * @return List<ActionDTO> Actions for the specified filters
    */
   @RequestMapping(method = RequestMethod.GET)
-  public List<ActionDTO> findActions(@RequestParam("actiontype") final String actionType,
-      @RequestParam("state") final ActionDTO.ActionState actionState) {
+  public ResponseEntity<?> findActions(@RequestParam("actiontype") final String actionType,
+                                       @RequestParam("state") final ActionDTO.ActionState actionState) {
     List<Action> actions = null;
 
     if (actionType != null) {
@@ -67,7 +70,9 @@ public final class ActionEndpoint implements CTPEndpoint {
       }
     }
 
-    return mapperFacade.mapAsList(actions, ActionDTO.class);
+    List<ActionDTO> actionsDTOs = mapperFacade.mapAsList(actions, ActionDTO.class);
+    return CollectionUtils.isEmpty(actionsDTOs) ?
+            ResponseEntity.noContent().build() : ResponseEntity.ok(actionsDTOs);
   }
 
   /**
@@ -79,10 +84,10 @@ public final class ActionEndpoint implements CTPEndpoint {
    * @throws CTPException on failure to create Action
    */
   @RequestMapping(method = RequestMethod.POST)
-  public ActionDTO createAction(final @Valid ActionDTO actionDTO) throws CTPException {
+  public ResponseEntity<?> createAction(final @Valid ActionDTO actionDTO) throws CTPException {
     log.info("Entering createAction with Action {}", actionDTO);
     Action action = actionService.createAction(mapperFacade.map(actionDTO, Action.class));
-    return mapperFacade.map(action, ActionDTO.class);
+    return ResponseEntity.created(URI.create("TODO")).body(mapperFacade.map(action, ActionDTO.class));
   }
 
   /**
@@ -131,7 +136,7 @@ public final class ActionEndpoint implements CTPEndpoint {
    * @throws CTPException if update operation fails
    */
   @RequestMapping(value = "/case/{caseid}/cancel", method = RequestMethod.PUT)
-  public List<ActionDTO> cancelActions(@PathVariable("caseid") final int caseId)
+  public ResponseEntity<?> cancelActions(@PathVariable("caseid") final int caseId)
       throws CTPException {
     log.info("Cancelling Actions for {}", caseId);
   
@@ -141,9 +146,9 @@ public final class ActionEndpoint implements CTPEndpoint {
     }
     
     List<Action> actions = actionService.cancelActions(caseId);
-
     List<ActionDTO> results = mapperFacade.mapAsList(actions, ActionDTO.class);
-    return results;
+    return CollectionUtils.isEmpty(results) ?
+            ResponseEntity.noContent().build() : ResponseEntity.ok(results);
   }
 
   /**
@@ -154,11 +159,12 @@ public final class ActionEndpoint implements CTPEndpoint {
    *         case id.
    */
   @RequestMapping(value = "/case/{caseid}", method = RequestMethod.GET)
-  public List<ActionDTO>  findActionsByCaseId(@PathVariable("caseid") final Integer caseId) {
+  public ResponseEntity<?> findActionsByCaseId(@PathVariable("caseid") final Integer caseId) {
     log.info("Entering findActionsByCaseId...");
     List<Action> actions = actionService.findActionsByCaseId(caseId);
     List<ActionDTO> actionDTOs = mapperFacade.mapAsList(actions, ActionDTO.class);
-    return actionDTOs;
+    return CollectionUtils.isEmpty(actionDTOs) ?
+            ResponseEntity.noContent().build() : ResponseEntity.ok(actionDTOs);
   }
 
   /**
