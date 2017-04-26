@@ -3,12 +3,15 @@ package uk.gov.ons.ctp.response.action.endpoint;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.Is.isA;
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.handler;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static uk.gov.ons.ctp.common.MvcHelper.getJson;
+import static uk.gov.ons.ctp.common.MvcHelper.putJson;
 import static uk.gov.ons.ctp.common.utility.MockMvcControllerAdviceHelper.mockAdviceFor;
+import static uk.gov.ons.ctp.response.action.endpoint.RestExceptionHandler.INVALID_JSON;
 
 
 import ma.glasnost.orika.MapperFacade;
@@ -26,6 +29,8 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import uk.gov.ons.ctp.common.error.CTPException;
 import uk.gov.ons.ctp.response.action.ActionBeanMapper;
 import uk.gov.ons.ctp.response.action.domain.model.ActionPlan;
+import uk.gov.ons.ctp.response.action.domain.model.ActionRule;
+import uk.gov.ons.ctp.response.action.domain.model.ActionType;
 import uk.gov.ons.ctp.response.action.service.ActionPlanService;
 
 import java.sql.Timestamp;
@@ -36,8 +41,14 @@ import java.util.List;
  * Unit tests for ActionPlan endpoint
  */
 public class ActionPlanEndpointUnitTest {
+  private static final boolean ACTIONTYPE_CANCANCEL = true;
+  private static final boolean ACTIONTYPE_RESPONSEREQUIRED = true;
+
   private static final Integer ACTIONPLANID = 3;
   private static final Integer ACTIONPLAN_SURVEYID = 1;
+  private static final Integer ACTIONRULE_PRIORITY = 1;
+  private static final Integer ACTIONRULE_SURVEYDATEDAYSOFFSET = 1;
+  private static final Integer ACTIONPLANID_WITHNOACTIONRULE = 13;
   private static final Integer NON_EXISTING_ACTIONPLANID = 998;
   private static final Integer UNCHECKED_EXCEPTION = 999;
 
@@ -47,6 +58,12 @@ public class ActionPlanEndpointUnitTest {
   private static final String ACTIONPLAN1_DESC = "Household Action Plan 1";
   private static final String ACTIONPLAN2_DESC = "Hotel and Guest House Action Plan 1";
   private static final String ACTIONPLAN3_DESC = "Care Home Action Plan 1";
+  private static final String ACTIONRULE_ACTIONTYPENAME = "Action Type Name";
+  private static final String ACTIONRULE_DESCRIPTION = "This is a Test Action Rule";
+  private static final String ACTIONRULE_NAME = "Test Action Rule";
+  private static final String ACTIONTYPE_NAME = "Action Type Name";
+  private static final String ACTIONTYPE_DESC = "Action Type Desc";
+  private static final String ACTIONTYPE_HANDLER = "Field";
   private static final String CREATED_BY = "whilep1";
   private static final String LAST_RUN_DATE_TIME = "2016-03-09T11:15:48.023+0000";
   private static final String OUR_EXCEPTION_MESSAGE = "this is what we throw";
@@ -161,80 +178,107 @@ public class ActionPlanEndpointUnitTest {
     actions.andExpect(jsonPath("$.error.message", is(OUR_EXCEPTION_MESSAGE)));
     actions.andExpect(jsonPath("$.error.timestamp", isA(String.class)));
   }
-//
-//  /**
-//   * A Test
-//   */
-//  @Test
-//  public void findActionRulesForActionPlanFound() {
-//    with("/actionplans/%s/rules", ACTIONPLANID)
-//        .assertResponseCodeIs(HttpStatus.OK)
-//        .assertArrayLengthInBodyIs(3)
-//        .assertIntegerListInBody("$..actionRuleId", 1, 2, 3)
-//        .assertIntegerListInBody("$..actionPlanId", ACTIONPLANID, ACTIONPLANID, ACTIONPLANID)
-//        .assertIntegerListInBody("$..priority", ACTIONRULE_PRIORITY, ACTIONRULE_PRIORITY, ACTIONRULE_PRIORITY)
-//        .assertIntegerListInBody("$..surveyDateDaysOffset", ACTIONRULE_SURVEYDATEDAYSOFFSET,
-//            ACTIONRULE_SURVEYDATEDAYSOFFSET, ACTIONRULE_SURVEYDATEDAYSOFFSET)
-//        .assertStringListInBody("$..actionTypeName", ACTIONRULE_ACTIONTYPENAME, ACTIONRULE_ACTIONTYPENAME,
-//            ACTIONRULE_ACTIONTYPENAME)
-//        .assertStringListInBody("$..name", ACTIONRULE_NAME, ACTIONRULE_NAME, ACTIONRULE_NAME)
-//        .assertStringListInBody("$..description", ACTIONRULE_DESCRIPTION, ACTIONRULE_DESCRIPTION,
-//            ACTIONRULE_DESCRIPTION)
-//        .andClose();
-//  }
-//
-//  /**
-//   * A Test
-//   */
-//  @Test
-//  public void findNoActionRulesForActionPlan() {
-//    with("/actionplans/%s/rules", ACTIONPLANID_WITHNOACTIONRULE)
-//        .assertResponseCodeIs(HttpStatus.NO_CONTENT)
-//        .andClose();
-//  }
-//
-//  /**
-//   * A Test
-//   */
-//  @Test
-//  public void findActionRulesForNonExistingActionPlan() {
-//    with("/actionplans/%s/rules", NON_EXISTING_ACTIONPLANID)
-//        .assertResponseCodeIs(HttpStatus.NOT_FOUND)
-//        .assertFaultIs(CTPException.Fault.RESOURCE_NOT_FOUND)
-//        .assertTimestampExists()
-//        .andClose();
-//  }
-//
-//
-//
-//  /**
-//   * A Test
-//   */
-//  @Test
-//  public void updateActionPlanNegativeScenarioInvalidJsonProvided() {
-//    with("/actionplans/%s", ACTIONPLANID)
-//        .put(MediaType.APPLICATION_JSON_TYPE, ACTIONPLAN_INVALIDJSON)
-//        .assertResponseCodeIs(HttpStatus.BAD_REQUEST)
-//        .assertFaultIs(CTPException.Fault.VALIDATION_FAILED)
-//        .assertTimestampExists()
-//        .assertMessageEquals(PROVIDED_JSON_INCORRECT)
-//        .andClose();
-//  }
-//
-//  /**
-//   * A Test
-//   */
-//  @Test
-//  public void updateActionPlanHappyScenario() {
-//    with("/actionplans/%s", ACTIONPLANID).put(MediaType.APPLICATION_JSON_TYPE, ACTIONPLAN_JSON)
-//        .assertResponseCodeIs(HttpStatus.OK)
-//        .assertIntegerInBody("$.actionPlanId", ACTIONPLANID)
-//        .assertIntegerInBody("$.surveyId", ACTIONPLAN_SURVEYID)
-//        .assertStringInBody("$.name", ACTIONPLAN3_NAME)
-//        .assertStringInBody("$.description", ACTIONPLAN3_DESC)
-//        .assertStringInBody("$.createdBy", CREATED_BY)
-//        .assertStringInBody("$.lastRunDateTime", LAST_RUN_DATE_TIME)
-//        .andClose();
-//  }
+
+  /**
+   * A Test
+   */
+  @Test
+  public void findActionRulesForActionPlanFound() throws Exception {
+    when(actionPlanService.findActionPlan(ACTIONPLANID)).thenReturn(new ActionPlan(ACTIONPLANID, ACTIONPLAN_SURVEYID, ACTIONPLAN3_NAME, ACTIONPLAN3_DESC, CREATED_BY,
+            ACTIONPLAN_LAST_GOOD_RUN_DATE_TIMESTAMP));
+
+    ActionType actionType = new ActionType(1, ACTIONTYPE_NAME, ACTIONTYPE_DESC, ACTIONTYPE_HANDLER,
+            ACTIONTYPE_CANCANCEL, ACTIONTYPE_RESPONSEREQUIRED);
+    List<ActionRule> result = new ArrayList<>();
+    result.add(new ActionRule(1, ACTIONPLANID, ACTIONRULE_PRIORITY, ACTIONRULE_SURVEYDATEDAYSOFFSET,
+            actionType, ACTIONRULE_NAME, ACTIONRULE_DESCRIPTION));
+    result.add(new ActionRule(2, ACTIONPLANID, ACTIONRULE_PRIORITY, ACTIONRULE_SURVEYDATEDAYSOFFSET,
+            actionType, ACTIONRULE_NAME, ACTIONRULE_DESCRIPTION));
+    result.add(new ActionRule(3, ACTIONPLANID, ACTIONRULE_PRIORITY, ACTIONRULE_SURVEYDATEDAYSOFFSET,
+            actionType, ACTIONRULE_NAME, ACTIONRULE_DESCRIPTION));
+    when(actionPlanService.findActionRulesForActionPlan(ACTIONPLANID)).thenReturn(result);
+
+    ResultActions actions = mockMvc.perform(getJson(String.format("/actionplans/%s/rules", ACTIONPLANID)));
+
+    actions.andExpect(status().isOk());
+    actions.andExpect(handler().handlerType(ActionPlanEndpoint.class));
+    actions.andExpect(handler().methodName("returnActionRulesForActionPlanId"));
+    actions.andExpect(jsonPath("$", Matchers.hasSize(3)));
+    actions.andExpect(jsonPath("$[*].actionRuleId", containsInAnyOrder(1, 2, 3)));
+    actions.andExpect(jsonPath("$[*].actionPlanId", containsInAnyOrder(ACTIONPLANID, ACTIONPLANID, ACTIONPLANID)));
+    actions.andExpect(jsonPath("$[*].priority", containsInAnyOrder(ACTIONRULE_PRIORITY, ACTIONRULE_PRIORITY, ACTIONRULE_PRIORITY)));
+    actions.andExpect(jsonPath("$[*].surveyDateDaysOffset", containsInAnyOrder(ACTIONRULE_SURVEYDATEDAYSOFFSET,
+            ACTIONRULE_SURVEYDATEDAYSOFFSET, ACTIONRULE_SURVEYDATEDAYSOFFSET)));
+    actions.andExpect(jsonPath("$[*].actionTypeName", containsInAnyOrder(ACTIONRULE_ACTIONTYPENAME, ACTIONRULE_ACTIONTYPENAME, ACTIONRULE_ACTIONTYPENAME)));
+    actions.andExpect(jsonPath("$[*].name", containsInAnyOrder(ACTIONRULE_NAME, ACTIONRULE_NAME, ACTIONRULE_NAME)));
+
+    actions.andExpect(jsonPath("$[*].description", containsInAnyOrder(ACTIONRULE_DESCRIPTION, ACTIONRULE_DESCRIPTION, ACTIONRULE_DESCRIPTION)));
+  }
+
+  /**
+   * A Test
+   */
+  @Test
+  public void findNoActionRulesForActionPlan() throws Exception {
+    when(actionPlanService.findActionPlan(ACTIONPLANID_WITHNOACTIONRULE)).thenReturn(new ActionPlan(ACTIONPLANID, ACTIONPLAN_SURVEYID, ACTIONPLAN3_NAME, ACTIONPLAN3_DESC, CREATED_BY,
+            ACTIONPLAN_LAST_GOOD_RUN_DATE_TIMESTAMP));
+
+    ResultActions actions = mockMvc.perform(getJson(String.format("/actionplans/%s/rules", ACTIONPLANID_WITHNOACTIONRULE)));
+
+    actions.andExpect(status().isNoContent());
+    actions.andExpect(handler().handlerType(ActionPlanEndpoint.class));
+    actions.andExpect(handler().methodName("returnActionRulesForActionPlanId"));
+  }
+
+  /**
+   * A Test
+   */
+  @Test
+  public void findActionRulesForNonExistingActionPlan() throws Exception {
+    ResultActions actions = mockMvc.perform(getJson(String.format("/actionplans/%s/rules", NON_EXISTING_ACTIONPLANID)));
+
+    actions.andExpect(status().isNotFound());
+    actions.andExpect(handler().handlerType(ActionPlanEndpoint.class));
+    actions.andExpect(handler().methodName("returnActionRulesForActionPlanId"));
+    actions.andExpect(jsonPath("$.error.code", is(CTPException.Fault.RESOURCE_NOT_FOUND.name())));
+    actions.andExpect(jsonPath("$.error.message", isA(String.class)));
+    actions.andExpect(jsonPath("$.error.timestamp", isA(String.class)));
+  }
+
+  /**
+   * A Test
+   */
+  @Test
+  public void updateActionPlanNegativeScenarioInvalidJsonProvided() throws Exception {
+    ResultActions actions = mockMvc.perform(putJson(String.format("/actionplans/%s", ACTIONPLANID), ACTIONPLAN_INVALIDJSON));
+
+    actions.andExpect(status().isBadRequest());
+    actions.andExpect(handler().handlerType(ActionPlanEndpoint.class));
+    actions.andExpect(handler().methodName("updateActionPlanByActionPlanId"));
+    actions.andExpect(jsonPath("$.error.code", is(CTPException.Fault.BAD_REQUEST.name())));
+    actions.andExpect(jsonPath("$.error.message", is(INVALID_JSON)));
+    actions.andExpect(jsonPath("$.error.timestamp", isA(String.class)));
+  }
+
+  /**
+   * A Test
+   */
+  @Test
+  public void updateActionPlanHappyScenario() throws Exception {
+    when(actionPlanService.updateActionPlan(any(Integer.class), any(ActionPlan.class))).thenReturn(new ActionPlan(ACTIONPLANID, ACTIONPLAN_SURVEYID, ACTIONPLAN3_NAME, ACTIONPLAN3_DESC, CREATED_BY,
+            ACTIONPLAN_LAST_GOOD_RUN_DATE_TIMESTAMP));
+
+    ResultActions actions = mockMvc.perform(putJson(String.format("/actionplans/%s", ACTIONPLANID), ACTIONPLAN_JSON));
+
+    actions.andExpect(status().isOk());
+    actions.andExpect(handler().handlerType(ActionPlanEndpoint.class));
+    actions.andExpect(handler().methodName("updateActionPlanByActionPlanId"));
+    actions.andExpect(jsonPath("$.actionPlanId", is(ACTIONPLANID)));
+    actions.andExpect(jsonPath("$.surveyId", is(ACTIONPLAN_SURVEYID)));
+    actions.andExpect(jsonPath("$.name", is(ACTIONPLAN3_NAME)));
+    actions.andExpect(jsonPath("$.description", is(ACTIONPLAN3_DESC)));
+    actions.andExpect(jsonPath("$.createdBy", is(CREATED_BY)));
+    // TODO actions.andExpect(jsonPath("$.lastRunDateTime", is(LAST_RUN_DATE_TIME)));
+  }
 
 }

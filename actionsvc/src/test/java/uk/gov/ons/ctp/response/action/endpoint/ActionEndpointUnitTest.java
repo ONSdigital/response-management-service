@@ -12,6 +12,7 @@ import static uk.gov.ons.ctp.common.MvcHelper.getJson;
 import static uk.gov.ons.ctp.common.MvcHelper.postJson;
 import static uk.gov.ons.ctp.common.MvcHelper.putJson;
 import static uk.gov.ons.ctp.common.utility.MockMvcControllerAdviceHelper.mockAdviceFor;
+import static uk.gov.ons.ctp.response.action.endpoint.RestExceptionHandler.INVALID_JSON;
 
 import ma.glasnost.orika.MapperFacade;
 import org.hamcrest.Matchers;
@@ -422,7 +423,7 @@ public final class ActionEndpointUnitTest {
     actions.andExpect(handler().handlerType(ActionEndpoint.class));
     actions.andExpect(handler().methodName("createAction"));
     actions.andExpect(jsonPath("$.error.code", is(CTPException.Fault.BAD_REQUEST.name())));
-    actions.andExpect(jsonPath("$.error.message", is("Provided json fails validation.")));
+    actions.andExpect(jsonPath("$.error.message", is(INVALID_JSON)));
     actions.andExpect(jsonPath("$.error.timestamp", isA(String.class)));
   }
 
@@ -438,7 +439,7 @@ public final class ActionEndpointUnitTest {
     actions.andExpect(handler().handlerType(ActionEndpoint.class));
     actions.andExpect(handler().methodName("createAction"));
     actions.andExpect(jsonPath("$.error.code", is(CTPException.Fault.BAD_REQUEST.name())));
-    actions.andExpect(jsonPath("$.error.message", is("Provided json fails validation.")));
+    actions.andExpect(jsonPath("$.error.message", is(INVALID_JSON)));
     actions.andExpect(jsonPath("$.error.timestamp", isA(String.class)));
   }
 

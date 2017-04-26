@@ -8,17 +8,18 @@ import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.CollectionUtils;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.*;
 import uk.gov.ons.ctp.common.endpoint.CTPEndpoint;
 import uk.gov.ons.ctp.common.error.CTPException;
+import uk.gov.ons.ctp.common.error.InvalidRequestException;
 import uk.gov.ons.ctp.response.action.domain.model.ActionPlan;
 import uk.gov.ons.ctp.response.action.domain.model.ActionRule;
 import uk.gov.ons.ctp.response.action.representation.ActionPlanDTO;
 import uk.gov.ons.ctp.response.action.representation.ActionRuleDTO;
 import uk.gov.ons.ctp.response.action.service.ActionPlanService;
+
+import javax.validation.Valid;
 
 /**
  * The REST endpoint controller for ActionPlans.
@@ -77,8 +78,12 @@ public class ActionPlanEndpoint implements CTPEndpoint {
    */
   @RequestMapping(value = "/{actionplanid}", method = RequestMethod.PUT, consumes = "application/json")
   public final ActionPlanDTO updateActionPlanByActionPlanId(@PathVariable("actionplanid") final Integer actionPlanId,
-      final ActionPlanDTO requestObject) throws CTPException {
+                                                            @RequestBody @Valid final ActionPlanDTO requestObject,
+                                                            BindingResult bindingResult) throws CTPException {
     log.info("UpdateActionPlanByActionPlanId with actionplanid {} - actionPlan {}", actionPlanId, requestObject);
+    if (bindingResult.hasErrors()) {
+      throw new InvalidRequestException("Binding errors for update action plan: ", bindingResult);
+    }
 
     ActionPlan actionPlan = actionPlanService.updateActionPlan(actionPlanId,
         mapperFacade.map(requestObject, ActionPlan.class));

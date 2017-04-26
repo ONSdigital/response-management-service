@@ -19,6 +19,9 @@ import java.util.Locale;
 @ControllerAdvice
 @Slf4j
 public class RestExceptionHandler {
+
+    public static final String INVALID_JSON = "Provided json fails validation.";
+
     @ExceptionHandler(CTPException.class)
     public ResponseEntity<?> handleCTPException(CTPException exception) {
         log.error("handleCTPException {}", exception);
