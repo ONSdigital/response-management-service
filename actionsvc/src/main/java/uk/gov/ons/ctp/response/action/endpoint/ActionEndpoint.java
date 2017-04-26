@@ -48,8 +48,8 @@ public final class ActionEndpoint implements CTPEndpoint {
    * @return List<ActionDTO> Actions for the specified filters
    */
   @RequestMapping(method = RequestMethod.GET)
-  public ResponseEntity<?> findActions(@RequestParam("actiontype") final String actionType,
-                                       @RequestParam("state") final ActionDTO.ActionState actionState) {
+  public ResponseEntity<?> findActions(@RequestParam(value = "actiontype", required = false) final String actionType,
+                                       @RequestParam(value = "state", required = false) final ActionDTO.ActionState actionState) {
     List<Action> actions = null;
 
     if (actionType != null) {
