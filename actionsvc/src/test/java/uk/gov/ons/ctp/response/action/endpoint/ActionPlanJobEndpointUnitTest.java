@@ -47,7 +47,7 @@ public class ActionPlanJobEndpointUnitTest {
   private static final String ACTIONPLANJOB_INVALIDJSON = "{\"createdBy\":\"\"}";
   private static final String ACTIONPLANJOB_VALIDJSON = "{\"createdBy\":\"unittest\"}";
   private static final String CREATED_DATE_TIME = "2016-03-09T11:15:48.023+0000";
-  private static final String UPDATED_DATE_TIME = "2016-04-09T11:15:48.023+0000";
+  private static final String UPDATED_DATE_TIME = "2016-04-09T10:15:48.023+0000";
   private static final String OUR_EXCEPTION_MESSAGE = "this is what we throw";
 
   private static final ActionPlanJobDTO.ActionPlanJobState
@@ -96,8 +96,8 @@ public class ActionPlanJobEndpointUnitTest {
     actions.andExpect(jsonPath("$.actionPlanId", is(ACTIONPLANJOBID_ACTIONPLANID)));
     actions.andExpect(jsonPath("$.createdBy", is(ACTIONPLANJOBID_CREATED_BY)));
     actions.andExpect(jsonPath("$.state", is(ACTIONPLANJOBID_STATE.name())));
-// TODO   actions.andExpect(jsonPath("$.createdDateTime", is(CREATED_DATE_TIME)));
-// TODO   actions.andExpect(jsonPath("$.updatedDateTime", is(UPDATED_DATE_TIME)));
+    actions.andExpect(jsonPath("$.createdDateTime", is(CREATED_DATE_TIME)));
+    actions.andExpect(jsonPath("$.updatedDateTime", is(UPDATED_DATE_TIME)));
   }
 
   /**
@@ -157,8 +157,8 @@ public class ActionPlanJobEndpointUnitTest {
     actions.andExpect(jsonPath("$[*].actionPlanJobId", containsInAnyOrder(1, 2, 3)));
     actions.andExpect(jsonPath("$[*].actionPlanId", containsInAnyOrder(ACTIONPLANID, ACTIONPLANID, ACTIONPLANID)));
     actions.andExpect(jsonPath("$[*].createdBy", containsInAnyOrder(ACTIONPLANJOBID_CREATED_BY, ACTIONPLANJOBID_CREATED_BY, ACTIONPLANJOBID_CREATED_BY)));
-// TODO   actions.andExpect(jsonPath("$[*].createdDateTime", containsInAnyOrder(CREATED_DATE_TIME, CREATED_DATE_TIME, CREATED_DATE_TIME)));
-// TODO   actions.andExpect(jsonPath("$[*].updatedDateTime", containsInAnyOrder(UPDATED_DATE_TIME, UPDATED_DATE_TIME, UPDATED_DATE_TIME)));
+    actions.andExpect(jsonPath("$[*].createdDateTime", containsInAnyOrder(CREATED_DATE_TIME, CREATED_DATE_TIME, CREATED_DATE_TIME)));
+    actions.andExpect(jsonPath("$[*].updatedDateTime", containsInAnyOrder(UPDATED_DATE_TIME, UPDATED_DATE_TIME, UPDATED_DATE_TIME)));
   }
 
   /**
@@ -193,8 +193,8 @@ public class ActionPlanJobEndpointUnitTest {
     actions.andExpect(jsonPath("$.actionPlanId", is(ACTIONPLANJOBID_ACTIONPLANID)));
     actions.andExpect(jsonPath("$.createdBy", is(ACTIONPLANJOBID_CREATED_BY)));
     actions.andExpect(jsonPath("$.state", is(ACTIONPLANJOBID_STATE.name())));
-// TODO   actions.andExpect(jsonPath("$.createdDateTime", is(CREATED_DATE_TIME)));
-// TODO   actions.andExpect(jsonPath("$.updatedDateTime", is(UPDATED_DATE_TIME)));
+    actions.andExpect(jsonPath("$.createdDateTime", is(CREATED_DATE_TIME)));
+    actions.andExpect(jsonPath("$.updatedDateTime", is(UPDATED_DATE_TIME)));
   }
 
 }

@@ -122,7 +122,7 @@ public class ActionPlanEndpointUnitTest {
     actions.andExpect(jsonPath("$[*].name", containsInAnyOrder(ACTIONPLAN1_NAME, ACTIONPLAN2_NAME, ACTIONPLAN3_NAME)));
     actions.andExpect(jsonPath("$[*].description", containsInAnyOrder(ACTIONPLAN1_DESC, ACTIONPLAN2_DESC, ACTIONPLAN3_DESC)));
     actions.andExpect(jsonPath("$[*].createdBy", containsInAnyOrder(CREATED_BY, CREATED_BY, CREATED_BY)));
-//    TODO actions.andExpect(jsonPath("$[*].lastRunDateTime", containsInAnyOrder( LAST_RUN_DATE_TIME, LAST_RUN_DATE_TIME, LAST_RUN_DATE_TIME)));
+    actions.andExpect(jsonPath("$[*].lastRunDateTime", containsInAnyOrder(LAST_RUN_DATE_TIME, LAST_RUN_DATE_TIME, LAST_RUN_DATE_TIME)));
   }
 
   /**
@@ -143,7 +143,7 @@ public class ActionPlanEndpointUnitTest {
     actions.andExpect(jsonPath("$.name", is(ACTIONPLAN3_NAME)));
     actions.andExpect(jsonPath("$.description", is(ACTIONPLAN3_DESC)));
     actions.andExpect(jsonPath("$.createdBy", is(CREATED_BY)));
-    // TODO actions.andExpect(jsonPath("$.lastRunDateTime", is(LAST_RUN_DATE_TIME)));
+    actions.andExpect(jsonPath("$.lastRunDateTime", is(LAST_RUN_DATE_TIME)));
   }
 
   /**
@@ -278,7 +278,6 @@ public class ActionPlanEndpointUnitTest {
     actions.andExpect(jsonPath("$.name", is(ACTIONPLAN3_NAME)));
     actions.andExpect(jsonPath("$.description", is(ACTIONPLAN3_DESC)));
     actions.andExpect(jsonPath("$.createdBy", is(CREATED_BY)));
-    // TODO actions.andExpect(jsonPath("$.lastRunDateTime", is(LAST_RUN_DATE_TIME)));
+    actions.andExpect(jsonPath("$.lastRunDateTime", is(LAST_RUN_DATE_TIME)));
   }
-
 }

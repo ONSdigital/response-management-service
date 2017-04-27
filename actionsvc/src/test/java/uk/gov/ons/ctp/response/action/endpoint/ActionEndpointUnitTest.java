@@ -160,8 +160,7 @@ public final class ActionEndpointUnitTest {
     actions.andExpect(jsonPath("$[0].priority", is(ACTION2_PRIORITY)));
     actions.andExpect(jsonPath("$[0].situation", is(ACTION2_SITUATION)));
     actions.andExpect(jsonPath("$[0].state", is(ACTION2_ACTIONSTATE.name())));
-    // TODO
-//    actions.andExpect(jsonPath("$[0].createdDateTime", is(ACTION_CREATEDDATE_TIMESTAMP)));
+    actions.andExpect(jsonPath("$[0].createdDateTime", is(ACTION_CREATEDDATE_VALUE)));
   }
 
   /**
@@ -207,8 +206,7 @@ public final class ActionEndpointUnitTest {
     actions.andExpect(jsonPath("$[0].priority", is(ACTION2_PRIORITY)));
     actions.andExpect(jsonPath("$[0].situation", is(ACTION2_SITUATION)));
     actions.andExpect(jsonPath("$[0].state", is(ACTION2_ACTIONSTATE.name())));
-    // TODO
-//    actions.andExpect(jsonPath("$[0].createdDateTime", is(ACTION_CREATEDDATE_TIMESTAMP)));
+    actions.andExpect(jsonPath("$[0].createdDateTime", is(ACTION_CREATEDDATE_VALUE)));
   }
 
 
@@ -254,8 +252,7 @@ public final class ActionEndpointUnitTest {
     actions.andExpect(jsonPath("$[0].priority", is(ACTION2_PRIORITY)));
     actions.andExpect(jsonPath("$[0].situation", is(ACTION2_SITUATION)));
     actions.andExpect(jsonPath("$[0].state", is(ACTION2_ACTIONSTATE.name())));
-    // TODO
-//    actions.andExpect(jsonPath("$[0].createdDateTime", is(ACTION_CREATEDDATE_TIMESTAMP)));
+    actions.andExpect(jsonPath("$[0].createdDateTime", is(ACTION_CREATEDDATE_VALUE)));
   }
 
   /**
@@ -284,8 +281,7 @@ public final class ActionEndpointUnitTest {
     actions.andExpect(jsonPath("$.priority", is(ACTION2_PRIORITY)));
     actions.andExpect(jsonPath("$.situation", is(ACTION2_SITUATION)));
     actions.andExpect(jsonPath("$.state", is(ACTION2_ACTIONSTATE.name())));
-    // TODO
-//    actions.andExpect(jsonPath("$[0].createdDateTime", is(ACTION_CREATEDDATE_TIMESTAMP)));
+    actions.andExpect(jsonPath("$.createdDateTime", is(ACTION_CREATEDDATE_VALUE)));
   }
 
   /**
@@ -336,8 +332,7 @@ public final class ActionEndpointUnitTest {
     actions.andExpect(jsonPath("$[*].priority", containsInAnyOrder(ACTION1_PRIORITY, ACTION2_PRIORITY)));
     actions.andExpect(jsonPath("$[*].situation", containsInAnyOrder(ACTION1_SITUATION, ACTION2_SITUATION)));
     actions.andExpect(jsonPath("$[*].state", containsInAnyOrder(ACTION1_ACTIONSTATE.name(), ACTION2_ACTIONSTATE.name())));
-    // TODO
-//    actions.andExpect(jsonPath("$[*].createdDateTime", containsInAnyOrder(ACTION_CREATEDDATE_TIMESTAMP)));
+    actions.andExpect(jsonPath("$[*].createdDateTime", containsInAnyOrder(ACTION_CREATEDDATE_VALUE, ACTION_CREATEDDATE_VALUE)));
   }
 
   /**
@@ -408,8 +403,7 @@ public final class ActionEndpointUnitTest {
     actions.andExpect(jsonPath("$.priority", is(ACTION2_PRIORITY)));
     actions.andExpect(jsonPath("$.situation", is(ACTION2_SITUATION)));
     actions.andExpect(jsonPath("$.state", is(ACTION2_ACTIONSTATE.name())));
-    // TODO
-//    actions.andExpect(jsonPath("$[0].createdDateTime", is(ACTION_CREATEDDATE_TIMESTAMP)));
+    actions.andExpect(jsonPath("$.createdDateTime", is(ACTION_CREATEDDATE_VALUE)));
   }
 
   /**
@@ -476,8 +470,7 @@ public final class ActionEndpointUnitTest {
     actions.andExpect(jsonPath("$[0].priority", is(ACTION2_PRIORITY)));
     actions.andExpect(jsonPath("$[0].situation", is(ACTION2_SITUATION)));
     actions.andExpect(jsonPath("$[0].state", is(ACTION3_ACTIONSTATE.name())));
-    // TODO
-//    actions.andExpect(jsonPath("$[0].createdDateTime", is(ACTION_CREATEDDATE_TIMESTAMP)));
+    actions.andExpect(jsonPath("$[0].createdDateTime", is(ACTION_CREATEDDATE_VALUE)));
   }
 
   /**
