@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.CollectionUtils;
 import org.springframework.validation.BindingResult;
@@ -39,6 +40,7 @@ public final class ActionEndpoint implements CTPEndpoint {
   @Autowired
   private ActionCaseService actionCaseService;
 
+  @Qualifier("actionBeanMapper")
   @Autowired
   private MapperFacade mapperFacade;
 
