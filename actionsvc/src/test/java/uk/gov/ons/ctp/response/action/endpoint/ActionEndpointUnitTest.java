@@ -416,7 +416,7 @@ public final class ActionEndpointUnitTest {
     actions.andExpect(status().isBadRequest());
     actions.andExpect(handler().handlerType(ActionEndpoint.class));
     actions.andExpect(handler().methodName("createAction"));
-    actions.andExpect(jsonPath("$.error.code", is(CTPException.Fault.BAD_REQUEST.name())));
+    actions.andExpect(jsonPath("$.error.code", is(CTPException.Fault.VALIDATION_FAILED.name())));
     actions.andExpect(jsonPath("$.error.message", is(INVALID_JSON)));
     actions.andExpect(jsonPath("$.error.timestamp", isA(String.class)));
   }
@@ -432,7 +432,7 @@ public final class ActionEndpointUnitTest {
     actions.andExpect(status().isBadRequest());
     actions.andExpect(handler().handlerType(ActionEndpoint.class));
     actions.andExpect(handler().methodName("createAction"));
-    actions.andExpect(jsonPath("$.error.code", is(CTPException.Fault.BAD_REQUEST.name())));
+    actions.andExpect(jsonPath("$.error.code", is(CTPException.Fault.VALIDATION_FAILED.name())));
     actions.andExpect(jsonPath("$.error.message", is(INVALID_JSON)));
     actions.andExpect(jsonPath("$.error.timestamp", isA(String.class)));
   }
