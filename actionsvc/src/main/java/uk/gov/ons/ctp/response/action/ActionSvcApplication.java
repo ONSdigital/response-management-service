@@ -1,6 +1,7 @@
 package uk.gov.ons.ctp.response.action;
 
 import java.math.BigInteger;
+import java.text.SimpleDateFormat;
 
 import org.redisson.Redisson;
 import org.redisson.api.RedissonClient;
@@ -11,6 +12,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ImportResource;
+import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 import org.springframework.integration.annotation.IntegrationComponentScan;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
@@ -96,6 +98,16 @@ public class ActionSvcApplication {
   @Bean
   public RestExceptionHandler restExceptionHandler() {
     return new RestExceptionHandler();
+  }
+
+  // TODO Move this to Common
+  // TODO Read https://spring.io/blog/2014/12/02/latest-jackson-integration-improvements-in-spring to verify it is the right approach
+  private static final String DATE_FORMAT_IN_JSON = "yyyy-MM-dd'T'HH:mm:ss.SSSZ";
+  @Bean
+  public Jackson2ObjectMapperBuilder jackson2ObjectMapperBuilder() {
+    Jackson2ObjectMapperBuilder b = new Jackson2ObjectMapperBuilder();
+    b.indentOutput(true).dateFormat(new SimpleDateFormat(DATE_FORMAT_IN_JSON));
+    return b;
   }
 
   /**
