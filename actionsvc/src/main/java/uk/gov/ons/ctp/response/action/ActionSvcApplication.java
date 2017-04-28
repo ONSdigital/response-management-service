@@ -20,6 +20,7 @@ import uk.gov.ons.ctp.common.distributed.DistributedListManager;
 import uk.gov.ons.ctp.common.distributed.DistributedListManagerRedissonImpl;
 import uk.gov.ons.ctp.common.distributed.DistributedLockManager;
 import uk.gov.ons.ctp.common.distributed.DistributedLockManagerRedissonImpl;
+import uk.gov.ons.ctp.common.error.RestExceptionHandler;
 import uk.gov.ons.ctp.common.rest.RestClient;
 import uk.gov.ons.ctp.common.state.StateTransitionManager;
 import uk.gov.ons.ctp.common.state.StateTransitionManagerFactory;
@@ -90,6 +91,11 @@ public class ActionSvcApplication {
   public StateTransitionManager<ActionDTO.ActionState, ActionDTO.ActionEvent> actionSvcStateTransitionManager() {
     return actionSvcStateTransitionManagerFactory.getStateTransitionManager(
         ActionSvcStateTransitionManagerFactory.ACTION_ENTITY);
+  }
+
+  @Bean
+  public RestExceptionHandler restExceptionHandler() {
+    return new RestExceptionHandler();
   }
 
   /**
