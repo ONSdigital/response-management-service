@@ -101,14 +101,15 @@ public class ActionSvcApplication {
   }
 
   // TODO Move this to Common
-  // TODO Read https://spring.io/blog/2014/12/02/latest-jackson-integration-improvements-in-spring to verify it is the right approach
-  private static final String DATE_FORMAT_IN_JSON = "yyyy-MM-dd'T'HH:mm:ss.SSSZ";
-  @Bean
-  public Jackson2ObjectMapperBuilder jackson2ObjectMapperBuilder() {
-    Jackson2ObjectMapperBuilder b = new Jackson2ObjectMapperBuilder();
-    b.indentOutput(true).dateFormat(new SimpleDateFormat(DATE_FORMAT_IN_JSON));
-    return b;
-  }
+  // TODO Read https://spring.io/blog/2014/12/02/latest-jackson-integration-improvements-in-spring to verify what it is the best approach
+  // TODO See spring.jackson.* props in yml
+//  private static final String DATE_FORMAT_IN_JSON = "yyyy-MM-dd'T'HH:mm:ss.SSSZ";
+//  @Bean
+//  public Jackson2ObjectMapperBuilder jackson2ObjectMapperBuilder() {
+//    Jackson2ObjectMapperBuilder b = new Jackson2ObjectMapperBuilder();
+//    b.indentOutput(true).dateFormat(new SimpleDateFormat(DATE_FORMAT_IN_JSON));
+//    return b;
+//  }
 
   /**
    * This method is the entry point to the Spring Boot application.
