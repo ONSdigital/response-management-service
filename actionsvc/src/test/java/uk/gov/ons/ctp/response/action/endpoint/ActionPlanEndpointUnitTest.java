@@ -8,6 +8,7 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.handler;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static uk.gov.ons.ctp.common.error.RestExceptionHandler.INVALID_JSON;
 import static uk.gov.ons.ctp.common.MvcHelper.getJson;
 import static uk.gov.ons.ctp.common.MvcHelper.putJson;
 import static uk.gov.ons.ctp.common.utility.MockMvcControllerAdviceHelper.mockAdviceFor;
@@ -247,18 +248,17 @@ public class ActionPlanEndpointUnitTest {
   /**
    * A Test
    */
-  // TODO fails on the command line - not in IDE?
-//  @Test
-//  public void updateActionPlanNegativeScenarioInvalidJsonProvided() throws Exception {
-//    ResultActions actions = mockMvc.perform(putJson(String.format("/actionplans/%s", ACTIONPLANID), ACTIONPLAN_INVALIDJSON));
-//
-//    actions.andExpect(status().isBadRequest());
-//    actions.andExpect(handler().handlerType(ActionPlanEndpoint.class));
-//    actions.andExpect(handler().methodName("updateActionPlanByActionPlanId"));
-//    actions.andExpect(jsonPath("$.error.code", is(CTPException.Fault.BAD_REQUEST.name())));
-//    actions.andExpect(jsonPath("$.error.message", is(INVALID_JSON)));
-//    actions.andExpect(jsonPath("$.error.timestamp", isA(String.class)));
-//  }
+  @Test
+  public void updateActionPlanNegativeScenarioInvalidJsonProvided() throws Exception {
+    ResultActions actions = mockMvc.perform(putJson(String.format("/actionplans/%s", ACTIONPLANID), ACTIONPLAN_INVALIDJSON));
+
+    actions.andExpect(status().isBadRequest());
+    actions.andExpect(handler().handlerType(ActionPlanEndpoint.class));
+    actions.andExpect(handler().methodName("updateActionPlanByActionPlanId"));
+    actions.andExpect(jsonPath("$.error.code", is(CTPException.Fault.VALIDATION_FAILED.name())));
+    actions.andExpect(jsonPath("$.error.message", is(INVALID_JSON)));
+    actions.andExpect(jsonPath("$.error.timestamp", isA(String.class)));
+  }
 
   /**
    * A Test
