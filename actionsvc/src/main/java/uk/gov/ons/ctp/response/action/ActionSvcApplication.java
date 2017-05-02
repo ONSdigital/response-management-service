@@ -12,6 +12,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ImportResource;
+import org.springframework.context.annotation.Primary;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 import org.springframework.integration.annotation.IntegrationComponentScan;
 import org.springframework.scheduling.annotation.EnableAsync;
@@ -23,6 +24,7 @@ import uk.gov.ons.ctp.common.distributed.DistributedListManagerRedissonImpl;
 import uk.gov.ons.ctp.common.distributed.DistributedLockManager;
 import uk.gov.ons.ctp.common.distributed.DistributedLockManagerRedissonImpl;
 import uk.gov.ons.ctp.common.error.RestExceptionHandler;
+import uk.gov.ons.ctp.common.jackson.CustomObjectMapper;
 import uk.gov.ons.ctp.common.rest.RestClient;
 import uk.gov.ons.ctp.common.state.StateTransitionManager;
 import uk.gov.ons.ctp.common.state.StateTransitionManagerFactory;
@@ -100,16 +102,10 @@ public class ActionSvcApplication {
     return new RestExceptionHandler();
   }
 
-  // TODO Move this to Common
-  // TODO Read https://spring.io/blog/2014/12/02/latest-jackson-integration-improvements-in-spring to verify what it is the best approach
-  // TODO See spring.jackson.* props in yml
-//  private static final String DATE_FORMAT_IN_JSON = "yyyy-MM-dd'T'HH:mm:ss.SSSZ";
-//  @Bean
-//  public Jackson2ObjectMapperBuilder jackson2ObjectMapperBuilder() {
-//    Jackson2ObjectMapperBuilder b = new Jackson2ObjectMapperBuilder();
-//    b.indentOutput(true).dateFormat(new SimpleDateFormat(DATE_FORMAT_IN_JSON));
-//    return b;
-//  }
+  @Bean @Primary
+  public CustomObjectMapper CustomObjectMapper() {
+    return new CustomObjectMapper();
+  }
 
   /**
    * This method is the entry point to the Spring Boot application.

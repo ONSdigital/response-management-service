@@ -21,11 +21,13 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.Spy;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import uk.gov.ons.ctp.common.error.CTPException;
 import uk.gov.ons.ctp.common.error.RestExceptionHandler;
+import uk.gov.ons.ctp.common.jackson.CustomObjectMapper;
 import uk.gov.ons.ctp.response.action.ActionBeanMapper;
 import uk.gov.ons.ctp.response.action.domain.model.ActionPlanJob;
 import uk.gov.ons.ctp.response.action.representation.ActionPlanJobDTO;
@@ -77,6 +79,7 @@ public class ActionPlanJobEndpointUnitTest {
     this.mockMvc = MockMvcBuilders
             .standaloneSetup(actionPlanJobEndpoint)
             .setHandlerExceptionResolvers(mockAdviceFor(RestExceptionHandler.class))
+            .setMessageConverters(new MappingJackson2HttpMessageConverter(new CustomObjectMapper()))
             .build();
   }
 

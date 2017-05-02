@@ -13,6 +13,7 @@ import static uk.gov.ons.ctp.common.MvcHelper.postJson;
 import static uk.gov.ons.ctp.common.MvcHelper.putJson;
 import static uk.gov.ons.ctp.common.utility.MockMvcControllerAdviceHelper.mockAdviceFor;
 import static uk.gov.ons.ctp.common.error.RestExceptionHandler.INVALID_JSON;
+import static uk.gov.ons.ctp.common.error.RestExceptionHandler.PROVIDED_JSON_INCORRECT;
 
 import ma.glasnost.orika.MapperFacade;
 import org.hamcrest.Matchers;
@@ -23,11 +24,13 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.Spy;
 
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import uk.gov.ons.ctp.common.error.CTPException;
 import uk.gov.ons.ctp.common.error.RestExceptionHandler;
+import uk.gov.ons.ctp.common.jackson.CustomObjectMapper;
 import uk.gov.ons.ctp.response.action.ActionBeanMapper;
 import uk.gov.ons.ctp.response.action.domain.model.Action;
 import uk.gov.ons.ctp.response.action.domain.model.ActionCase;
@@ -67,6 +70,7 @@ public final class ActionEndpointUnitTest {
     this.mockMvc = MockMvcBuilders
             .standaloneSetup(actionEndpoint)
             .setHandlerExceptionResolvers(mockAdviceFor(RestExceptionHandler.class))
+            .setMessageConverters(new MappingJackson2HttpMessageConverter(new CustomObjectMapper()))
             .build();
   }
 
@@ -418,7 +422,7 @@ public final class ActionEndpointUnitTest {
     actions.andExpect(handler().handlerType(ActionEndpoint.class));
     actions.andExpect(handler().methodName("createAction"));
     actions.andExpect(jsonPath("$.error.code", is(CTPException.Fault.VALIDATION_FAILED.name())));
-    actions.andExpect(jsonPath("$.error.message", is(INVALID_JSON)));
+    actions.andExpect(jsonPath("$.error.message", is(PROVIDED_JSON_INCORRECT)));
     actions.andExpect(jsonPath("$.error.timestamp", isA(String.class)));
   }
 

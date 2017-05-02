@@ -8,7 +8,7 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.handler;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static uk.gov.ons.ctp.common.error.RestExceptionHandler.INVALID_JSON;
+import static uk.gov.ons.ctp.common.error.RestExceptionHandler.PROVIDED_JSON_INCORRECT;
 import static uk.gov.ons.ctp.common.MvcHelper.getJson;
 import static uk.gov.ons.ctp.common.MvcHelper.putJson;
 import static uk.gov.ons.ctp.common.utility.MockMvcControllerAdviceHelper.mockAdviceFor;
@@ -23,11 +23,13 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.Spy;
 
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import uk.gov.ons.ctp.common.error.CTPException;
 import uk.gov.ons.ctp.common.error.RestExceptionHandler;
+import uk.gov.ons.ctp.common.jackson.CustomObjectMapper;
 import uk.gov.ons.ctp.response.action.ActionBeanMapper;
 import uk.gov.ons.ctp.response.action.domain.model.ActionPlan;
 import uk.gov.ons.ctp.response.action.domain.model.ActionRule;
@@ -95,6 +97,7 @@ public class ActionPlanEndpointUnitTest {
     this.mockMvc = MockMvcBuilders
             .standaloneSetup(actionPlanEndpoint)
             .setHandlerExceptionResolvers(mockAdviceFor(RestExceptionHandler.class))
+            .setMessageConverters(new MappingJackson2HttpMessageConverter(new CustomObjectMapper()))
             .build();
   }
 
@@ -256,7 +259,7 @@ public class ActionPlanEndpointUnitTest {
     actions.andExpect(handler().handlerType(ActionPlanEndpoint.class));
     actions.andExpect(handler().methodName("updateActionPlanByActionPlanId"));
     actions.andExpect(jsonPath("$.error.code", is(CTPException.Fault.VALIDATION_FAILED.name())));
-    actions.andExpect(jsonPath("$.error.message", is(INVALID_JSON)));
+    actions.andExpect(jsonPath("$.error.message", is(PROVIDED_JSON_INCORRECT)));
     actions.andExpect(jsonPath("$.error.timestamp", isA(String.class)));
   }
 

@@ -103,11 +103,6 @@ spring:
   zipkin:
     enabled: false
 
-  jackson:
-    date-format: 'yyyy-MM-dd''T''HH:mm:ss.SSSZ'
-    serialization:
-      indent_output: true
-
  # all about redis
 data-grid:
   # where is redis
