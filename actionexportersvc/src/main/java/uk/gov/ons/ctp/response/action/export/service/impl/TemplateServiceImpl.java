@@ -13,9 +13,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.inject.Inject;
-import javax.inject.Named;
-
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import freemarker.template.Template;
@@ -33,17 +32,17 @@ import static uk.gov.ons.ctp.common.util.InputStreamUtils.getStringFromInputStre
  * The implementation of the TemplateService TODO Specific to FreeMarker at the
  * moment with freemarker.template.Configuration, clearTemplateCache, etc.
  */
-@Named
+@Service
 @Slf4j
 public class TemplateServiceImpl implements TemplateService {
 
   public static final String ERROR_RETRIEVING_FREEMARKER_TEMPLATE = "Could not find FreeMarker template.";
   public static final String EXCEPTION_STORE_TEMPLATE = "Issue storing template. It appears to be empty.";
 
-  @Inject
+  @Autowired
   private TemplateRepository repository;
 
-  @Inject
+  @Autowired
   private freemarker.template.Configuration configuration;
 
   @Override

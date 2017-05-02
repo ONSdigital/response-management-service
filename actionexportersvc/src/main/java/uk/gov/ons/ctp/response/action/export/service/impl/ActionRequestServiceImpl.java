@@ -5,10 +5,9 @@ import java.sql.Timestamp;
 import java.util.List;
 import java.util.Set;
 
-import javax.inject.Inject;
-import javax.inject.Named;
-
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import uk.gov.ons.ctp.response.action.export.domain.ActionRequestInstruction;
 import uk.gov.ons.ctp.response.action.export.repository.ActionRequestRepository;
 import uk.gov.ons.ctp.response.action.export.service.ActionRequestService;
@@ -16,11 +15,11 @@ import uk.gov.ons.ctp.response.action.export.service.ActionRequestService;
 /**
  * The implementation of ActionRequestService
  */
-@Named
+@Service
 @Slf4j
 public class ActionRequestServiceImpl implements ActionRequestService {
 
-  @Inject
+  @Autowired
   private ActionRequestRepository repository;
 
   @Override

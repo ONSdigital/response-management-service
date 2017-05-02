@@ -8,9 +8,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import javax.inject.Inject;
-import javax.inject.Named;
-
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.integration.annotation.MessageEndpoint;
 import org.springframework.integration.annotation.Publisher;
 import org.springframework.integration.annotation.ServiceActivator;
@@ -38,7 +36,6 @@ import uk.gov.ons.ctp.response.action.message.feedback.Outcome;
  * via sftp. See Spring Integration flow for details of sftp outbound channel.
  *
  */
-@Named
 @MessageEndpoint
 @Slf4j
 public class SftpServicePublisherImpl implements SftpServicePublisher {
@@ -47,16 +44,16 @@ public class SftpServicePublisherImpl implements SftpServicePublisher {
   private static final String ACTION_LIST = "list_actionIds";
   private static final int BATCH_SIZE = 10000;
 
-  @Inject
+  @Autowired
   private ActionRequestService actionRequestService;
 
-  @Inject
+  @Autowired
   private ExportReportService exportReportService;
 
-  @Inject
+  @Autowired
   private ActionFeedbackPublisher actionFeedbackPubl;
 
-  @Inject
+  @Autowired
   private ExportInfo exportInfo;
 
   @Override

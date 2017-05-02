@@ -4,24 +4,13 @@ import java.io.InputStream;
 import java.net.URI;
 import java.util.List;
 
-import javax.inject.Inject;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.UriBuilder;
-import javax.ws.rs.core.UriInfo;
-
-import org.glassfish.jersey.media.multipart.FormDataParam;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.util.CollectionUtils;
 
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
+import org.springframework.web.bind.annotation.*;
 import uk.gov.ons.ctp.common.error.CTPException;
 import uk.gov.ons.ctp.response.action.export.domain.TemplateMapping;
 import uk.gov.ons.ctp.response.action.export.representation.TemplateMappingDTO;
@@ -30,25 +19,22 @@ import uk.gov.ons.ctp.response.action.export.service.TemplateMappingService;
 /**
  * The REST endpoint controller for TemplateMappings.
  */
-@Path("/templatemappings")
-@Produces(MediaType.APPLICATION_JSON)
+@RestController
+@RequestMapping(value = "/templatemappings", produces = "application/json")
 @Slf4j
 public class TemplateMappingEndpoint {
-  @Inject
+  @Autowired
   private TemplateMappingService templateMappingService;
 
-  @Inject
+  @Autowired
   private MapperFacade mapperFacade;
-
-  @Context
-  private UriInfo uriInfo;
 
   /**
    * To retrieve all TemplateMappings
    *
    * @return a list of TemplateMappings
    */
-  @GET
+  @RequestMapping(method = RequestMethod.GET)
   public List<TemplateMappingDTO> findAllTemplateMappings() {
     log.debug("Entering findAllTemplateMappings ...");
     List<TemplateMapping> templateMappings = templateMappingService
@@ -65,10 +51,9 @@ public class TemplateMappingEndpoint {
    * @return the specific TemplateMapping
    * @throws CTPException if no TemplateMapping found
    */
-  @GET
-  @Path("/{actionType}")
+  @RequestMapping(value = "/{actionType}", method = RequestMethod.GET)
   public TemplateMappingDTO findTemplateMapping(
-      @PathParam("actionType") final String actionType) throws CTPException {
+      @PathVariable("actionType") final String actionType) throws CTPException {
     log.debug("Entering findTemplateMapping with {}", actionType);
     TemplateMapping result = templateMappingService.retrieveTemplateMappingByActionType(actionType);
     return mapperFacade.map(result, TemplateMappingDTO.class);
@@ -81,16 +66,14 @@ public class TemplateMappingEndpoint {
    * @return 201 if created
    * @throws CTPException if the TemplateMapping can't be stored
    */
-  @POST
-  @Consumes(MediaType.MULTIPART_FORM_DATA)
-  public Response storeTemplateMapping(@FormDataParam("file") InputStream fileContents) throws CTPException {
+  @RequestMapping(method = RequestMethod.POST, consumes = "multipart/form-data")
+  public ResponseEntity<?> storeTemplateMapping(@RequestParam("file")  InputStream fileContents) throws CTPException {
+    // TODO Test and maybe InputStream fileContents should be MultipartFile file
+
     log.debug("Entering storeTemplateMapping");
     List<TemplateMapping> mappings = templateMappingService.storeTemplateMappings(fileContents);
 
-    UriBuilder ub = uriInfo.getAbsolutePathBuilder();
-    URI templateMappingUri = ub.build();
-    List<TemplateMappingDTO> results = mapperFacade.mapAsList(mappings,
-        TemplateMappingDTO.class);
-    return Response.created(templateMappingUri).entity(results).build();
+    List<TemplateMappingDTO> results = mapperFacade.mapAsList(mappings, TemplateMappingDTO.class);
+    return ResponseEntity.created(URI.create("TODO")).body(results);
   }
 }

@@ -11,9 +11,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import javax.inject.Inject;
-import javax.inject.Named;
-
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import com.fasterxml.jackson.core.JsonParseException;
@@ -30,7 +29,7 @@ import uk.gov.ons.ctp.response.action.export.service.TemplateMappingService;
 /**
  * The implementation of the TemplateMappingService
  */
-@Named
+@Service
 @Slf4j
 public class TemplateMappingServiceImpl implements TemplateMappingService {
 
@@ -38,7 +37,7 @@ public class TemplateMappingServiceImpl implements TemplateMappingService {
 
   public static final String EXCEPTION_RETRIEVING_TEMPLATE_MAPPING = "TemplateMapping not found.";
 
-  @Inject
+  @Autowired
   private TemplateMappingRepository repository;
 
   @Override

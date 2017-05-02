@@ -2,16 +2,15 @@ package uk.gov.ons.ctp.response.action.export.scheduled;
 
 import java.util.LinkedList;
 
-import javax.inject.Named;
-
 import lombok.Data;
+import org.springframework.stereotype.Component;
 
 /**
  * Info returned to Spring boot actuator available at health endpoint as
  * configured in application under management e.g. /mgmt/health
  *
  */
-@Named
+@Component
 @Data
 public class ExportInfo {
 

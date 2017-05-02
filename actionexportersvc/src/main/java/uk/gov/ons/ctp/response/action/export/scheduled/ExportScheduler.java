@@ -6,14 +6,14 @@ import java.util.List;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
-import javax.inject.Inject;
-import javax.inject.Named;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.actuate.health.Health;
 import org.springframework.boot.actuate.health.HealthIndicator;
 import org.springframework.scheduling.annotation.Scheduled;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
 import uk.gov.ons.ctp.common.distributed.DistributedInstanceManager;
 import uk.gov.ons.ctp.common.distributed.DistributedLatchManager;
 import uk.gov.ons.ctp.common.distributed.DistributedLockManager;
@@ -30,7 +30,7 @@ import uk.gov.ons.ctp.response.action.export.service.TransformationService;
  * This class will be responsible for the scheduling of export actions
  *
  */
-@Named
+@Component
 @Slf4j
 public class ExportScheduler implements HealthIndicator {
 
@@ -40,31 +40,31 @@ public class ExportScheduler implements HealthIndicator {
   private static final String DISTRIBUTED_OBJECT_KEY_INSTANCE_COUNT = "scheduler";
   private static final String DISTRIBUTED_OBJECT_KEY_REPORT = "report";
 
-  @Inject
+  @Autowired
   private TransformationService transformationService;
 
-  @Inject
+  @Autowired
   private TemplateMappingService templateMappingService;
 
-  @Inject
+  @Autowired
   private SftpServicePublisher sftpService;
 
-  @Inject
+  @Autowired
   private ActionRequestService actionRequestService;
 
-  @Inject
+  @Autowired
   private DistributedLockManager actionExportLockManager;
 
-  @Inject
+  @Autowired
   private DistributedInstanceManager actionExportInstanceManager;
 
-  @Inject
+  @Autowired
   private DistributedLatchManager actionExportLatchManager;
 
-  @Inject
+  @Autowired
   private ExportReportService exportReportService;
 
-  @Inject
+  @Autowired
   private ExportInfo exportInfo;
 
   @Override
