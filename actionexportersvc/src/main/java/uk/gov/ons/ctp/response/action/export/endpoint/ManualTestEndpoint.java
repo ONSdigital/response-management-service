@@ -1,25 +1,21 @@
 package uk.gov.ons.ctp.response.action.export.endpoint;
 
-import static org.glassfish.jersey.message.internal.ReaderWriter.UTF8;
-
 import java.io.ByteArrayOutputStream;
 import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.inject.Inject;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-
-import org.springframework.stereotype.Controller;
+import org.eclipse.jetty.http.HttpStatus;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.util.StringUtils;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 import uk.gov.ons.ctp.common.error.CTPException;
 import uk.gov.ons.ctp.response.action.export.domain.ActionRequestInstruction;
 import uk.gov.ons.ctp.response.action.export.domain.Address;
@@ -30,15 +26,14 @@ import uk.gov.ons.ctp.response.action.export.service.TemplateService;
  *
  * Once integration tests work correctly, the endpoint will be removed.
  */
-@Controller
-@Path("/manualtest")
-@Produces(MediaType.APPLICATION_JSON)
+@RestController
+@RequestMapping(value = "/manualtest", produces = "application/json")
 @Slf4j
 public class ManualTestEndpoint {
 
   private static final int ACTION_REQUEST_NUMBER = 51;
 
-  @Inject
+  @Autowired
   private TemplateService templateService;
 
   /**
@@ -48,19 +43,18 @@ public class ManualTestEndpoint {
    * @throws CTPException if issue encountered during the FreeMarker templating
    * @throws UnsupportedEncodingException if issue encountered during the FreeMarker templating
    */
-  @GET
-  @Path("/{templateName}")
-  public final Response testingFreeMarkerTemplating(@PathParam("templateName") final String templateName)
+  @RequestMapping(value = "/{templateName}", method = RequestMethod.GET)
+  public final ResponseEntity<?> testingFreeMarkerTemplating(@PathVariable("templateName") final String templateName)
           throws CTPException, UnsupportedEncodingException {
     log.debug("Entering testingFreeMarkerTemplating ...");
     ByteArrayOutputStream result = templateService.stream(buildMeListOfActionRequests(), templateName);
-    String resultString = result.toString(UTF8.name());
+    String resultString = result.toString("UTF8");
     log.debug("resultString = {}", resultString);
 
     if (!StringUtils.isEmpty(resultString)) {
-      return Response.status(Response.Status.OK).build();
+      return ResponseEntity.ok().build();
     } else {
-      return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+      return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR_500).build();
     }
   }
 
