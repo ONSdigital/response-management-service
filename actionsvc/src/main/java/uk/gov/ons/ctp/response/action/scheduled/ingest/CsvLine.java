@@ -6,7 +6,6 @@ import javax.validation.constraints.Size;
 
 import lombok.Data;
 import lombok.Getter;
-import uk.gov.ons.ctp.response.casesvc.representation.ContactDTO;
 
 /**
  * Each line in the ingested CSV is initially mapped to this POJO, whose primary
@@ -39,6 +38,15 @@ public class CsvLine {
   private static final String INSTRUCTION_TYPE_RE = "Request|Cancel";
   private static final String HANDLER_TYPE_RE = "HotelSurvey|HHSurvey|Printer|Field|CensusSupport";
 
+  // TODO BRES - can we incorporate these into PartySvc API somehow - can PartySvc tell us these?
+  // either at runtime or with some sort of XSD definition about Party attributes?
+  // the following were all lifted from the old ContactDTO ? how do we determine these now with PartySvc?
+  public static final String EMAIL_RE = "^$|[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})";
+  public static final String TELEPHONE_RE = "[\\d]{0,11}";
+  public static final int TITLE_MAX_LEN = 20;
+  public static final int FORENAME_MAX_LEN = 35;
+  public static final int SURNAME_MAX_LEN = 35;
+  
   @Pattern(regexp = HANDLER_TYPE_RE)
   private String handler;
 
@@ -78,19 +86,19 @@ public class CsvLine {
   @Size(min = 0, max = LINE2_MAX_LEN)
   private String line2;
 
-  @Size(min = 0, max = ContactDTO.TITLE_MAX_LEN)
+  @Size(min = 0, max = TITLE_MAX_LEN)
   private String title;
   
-  @Size(min = 0, max = ContactDTO.FORENAME_MAX_LEN)
+  @Size(min = 0, max = FORENAME_MAX_LEN)
   private String forename;
   
-  @Size(min = 0, max = ContactDTO.SURNAME_MAX_LEN)
+  @Size(min = 0, max = SURNAME_MAX_LEN)
   private String surname;
   
-  @Pattern(regexp = ContactDTO.EMAIL_RE)
+  @Pattern(regexp = EMAIL_RE)
   private String emailAddress;
   
-  @Pattern(regexp = ContactDTO.TELEPHONE_RE)
+  @Pattern(regexp = TELEPHONE_RE)
   private String telephoneNumber;
 
   @Size(min = 0, max = TOWN_MAX_LEN)

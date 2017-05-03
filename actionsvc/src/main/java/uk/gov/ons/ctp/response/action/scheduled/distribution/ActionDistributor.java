@@ -44,13 +44,11 @@ import uk.gov.ons.ctp.response.action.message.instruction.Priority;
 import uk.gov.ons.ctp.response.action.representation.ActionDTO;
 import uk.gov.ons.ctp.response.action.representation.ActionDTO.ActionState;
 import uk.gov.ons.ctp.response.action.service.CaseSvcClientService;
-import uk.gov.ons.ctp.response.casesvc.representation.AddressDTO;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseDTO;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseEventDTO;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseGroupDTO;
-import uk.gov.ons.ctp.response.casesvc.representation.CaseTypeDTO;
 import uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO;
-import uk.gov.ons.ctp.response.casesvc.representation.ContactDTO;
+import uk.gov.ons.ctp.response.party.representation.PartyDTO;
 
 /**
  * This is the 'service' class that distributes actions to downstream services
@@ -374,12 +372,15 @@ public class ActionDistributor {
     ActionPlan actionPlan = (action.getActionPlanId() == null) ? null
         : actionPlanRepo.findOne(action.getActionPlanId());
     CaseDTO caseDTO = caseSvcClientService.getCase(action.getCaseId());
-    CaseTypeDTO caseTypeDTO = caseSvcClientService.getCaseType(caseDTO.getCaseTypeId());
+//    CaseTypeDTO caseTypeDTO = caseSvcClientService.getCaseType(caseDTO.getCaseTypeId());
     CaseGroupDTO caseGroupDTO = caseSvcClientService.getCaseGroup(caseDTO.getCaseGroupId());
-    AddressDTO addressDTO = caseSvcClientService.getAddress(caseGroupDTO.getUprn());
+
+//    AddressDTO addressDTO = caseSvcClientService.getAddress(caseGroupDTO.getUprn());
+    // TODO BRES replace use of AddressDTO with PartyDTO, by fetching latter from PartySvc
+    PartyDTO partyDTO = null;
     List<CaseEventDTO> caseEventDTOs = caseSvcClientService.getCaseEvents(action.getCaseId());
 
-    return createActionRequest(action, actionPlan, caseDTO, caseTypeDTO, addressDTO, caseEventDTOs);
+    return createActionRequest(action, actionPlan, caseDTO, partyDTO, caseEventDTOs);
   }
 
   /**
@@ -407,32 +408,34 @@ public class ActionDistributor {
    * @param action the persistent Action obj from the db
    * @param actionPlan the persistent ActionPlan obj from the db
    * @param caseDTO the Case representation from the CaseSvc
-   * @param caseTypeDTO the CaseType representation from the CaseSvc
-   * @param addressDTO the Address representation from the CaseSvc
+   * @param PartyDTO the Party containing the Address representation from the PartySvc
    * @param caseEventDTOs the list of CaseEvent represenations from the CaseSvc
    * @return the shiney new Action Request
    */
   private ActionRequest createActionRequest(final Action action, final ActionPlan actionPlan, final CaseDTO caseDTO,
-      final CaseTypeDTO caseTypeDTO, final AddressDTO addressDTO,
+      final PartyDTO addressDTO,
       final List<CaseEventDTO> caseEventDTOs) {
     ActionRequest actionRequest = new ActionRequest();
     // populate the request
     actionRequest.setActionId(action.getActionId());
     actionRequest.setActionPlan((actionPlan == null) ? null : actionPlan.getName());
     actionRequest.setActionType(action.getActionType().getName());
-    actionRequest.setQuestionSet(caseTypeDTO.getQuestionSet());
+    // TODO BRES where does questionSet come from now?!
+//    actionRequest.setQuestionSet(caseTypeDTO.getQuestionSet());
     actionRequest.setResponseRequired(action.getActionType().getResponseRequired());
     actionRequest.setCaseId(Integer.valueOf(action.getCaseId()));
-    ContactDTO contactDTO = caseDTO.getContact();
-    if (contactDTO != null) {
-      ActionContact actionContact = new ActionContact();
-      actionContact.setTitle(contactDTO.getTitle());
-      actionContact.setForename(contactDTO.getForename());
-      actionContact.setSurname(contactDTO.getSurname());
-      actionContact.setPhoneNumber(contactDTO.getPhoneNumber());
-      actionContact.setEmailAddress(contactDTO.getEmailAddress());
-      actionRequest.setContact(actionContact);
-    }
+
+    // TODO BRES contact guff needs to be picked out of PartyDTO
+//    ContactDTO contactDTO = caseDTO.getContact();
+//    if (contactDTO != null) {
+//      ActionContact actionContact = new ActionContact();
+//      actionContact.setTitle(contactDTO.getTitle());
+//      actionContact.setForename(contactDTO.getForename());
+//      actionContact.setSurname(contactDTO.getSurname());
+//      actionContact.setPhoneNumber(contactDTO.getPhoneNumber());
+//      actionContact.setEmailAddress(contactDTO.getEmailAddress());
+//      actionRequest.setContact(actionContact);
+//    }
     ActionEvent actionEvent = new ActionEvent();
     caseEventDTOs.forEach((caseEventDTO) -> actionEvent.getEvents().add(formatCaseEvent(caseEventDTO)));
     actionRequest.setEvents(actionEvent);

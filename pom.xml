@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>uk.gov.ons.ctp.product</groupId>
     <artifactId>responsemanagement</artifactId>
-    <version>9.34.0-SNAPSHOT</version>
+    <version>10.37.0-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>CTP : ResponseManagement</name>
@@ -25,12 +25,16 @@
     </properties>
 
     <modules>
+      <!--
         <module>actionsvc-api</module>
         <module>actionsvc</module>
+        -->
         <module>casesvc-api</module>
         <module>casesvc</module>
         <module>reportmodule</module>
+        <!--
         <module>actionexportersvc</module>
+        -->
     </modules>
 
     <dependencyManagement>
