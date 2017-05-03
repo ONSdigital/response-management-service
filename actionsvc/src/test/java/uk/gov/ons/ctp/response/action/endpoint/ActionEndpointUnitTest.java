@@ -152,20 +152,20 @@ public final class ActionEndpointUnitTest {
 
     ResultActions actions = mockMvc.perform(getJson(String.format("/actions?actiontype=%s&state=%s", ACTION2_ACTIONTYPENAME, ACTION2_ACTIONSTATE)));
 
-    actions.andExpect(status().isOk());
-    actions.andExpect(handler().handlerType(ActionEndpoint.class));
-    actions.andExpect(handler().methodName("findActions"));
-    actions.andExpect(jsonPath("$", Matchers.hasSize(1)));
-    actions.andExpect(jsonPath("$[0].actionId", is(ACTIONID_2.intValue())));
-    actions.andExpect(jsonPath("$[0].caseId", is(ACTION_CASEID)));
-    actions.andExpect(jsonPath("$[0].actionPlanId", is(ACTION2_PLANID)));
-    actions.andExpect(jsonPath("$[0].actionRuleId", is(ACTION2_RULEID)));
-    actions.andExpect(jsonPath("$[0].actionTypeName", is(ACTION2_ACTIONTYPENAME)));
-    actions.andExpect(jsonPath("$[0].createdBy", is(ACTION_CREATEDBY)));
-    actions.andExpect(jsonPath("$[0].priority", is(ACTION2_PRIORITY)));
-    actions.andExpect(jsonPath("$[0].situation", is(ACTION2_SITUATION)));
-    actions.andExpect(jsonPath("$[0].state", is(ACTION2_ACTIONSTATE.name())));
-    actions.andExpect(jsonPath("$[0].createdDateTime", is(ACTION_CREATEDDATE_VALUE)));
+    actions.andExpect(status().isOk())
+            .andExpect(handler().handlerType(ActionEndpoint.class))
+            .andExpect(handler().methodName("findActions"))
+            .andExpect(jsonPath("$", Matchers.hasSize(1)))
+            .andExpect(jsonPath("$[0].actionId", is(ACTIONID_2.intValue())))
+            .andExpect(jsonPath("$[0].caseId", is(ACTION_CASEID)))
+            .andExpect(jsonPath("$[0].actionPlanId", is(ACTION2_PLANID)))
+            .andExpect(jsonPath("$[0].actionRuleId", is(ACTION2_RULEID)))
+            .andExpect(jsonPath("$[0].actionTypeName", is(ACTION2_ACTIONTYPENAME)))
+            .andExpect(jsonPath("$[0].createdBy", is(ACTION_CREATEDBY)))
+            .andExpect(jsonPath("$[0].priority", is(ACTION2_PRIORITY)))
+            .andExpect(jsonPath("$[0].situation", is(ACTION2_SITUATION)))
+            .andExpect(jsonPath("$[0].state", is(ACTION2_ACTIONSTATE.name())))
+            .andExpect(jsonPath("$[0].createdDateTime", is(ACTION_CREATEDDATE_VALUE)));
   }
 
   /**
@@ -178,9 +178,9 @@ public final class ActionEndpointUnitTest {
 
     ResultActions actions = mockMvc.perform(getJson(String.format("/actions?actiontype=%s&state=%s", ACTION_NOTFOUND, ACTION2_ACTIONSTATE)));
 
-    actions.andExpect(status().isNoContent());
-    actions.andExpect(handler().handlerType(ActionEndpoint.class));
-    actions.andExpect(handler().methodName("findActions"));
+    actions.andExpect(status().isNoContent())
+            .andExpect(handler().handlerType(ActionEndpoint.class))
+            .andExpect(handler().methodName("findActions"));
   }
 
   /**
@@ -198,20 +198,20 @@ public final class ActionEndpointUnitTest {
 
     ResultActions actions = mockMvc.perform(getJson(String.format("/actions?actiontype=%s", ACTION2_ACTIONTYPENAME)));
 
-    actions.andExpect(status().isOk());
-    actions.andExpect(handler().handlerType(ActionEndpoint.class));
-    actions.andExpect(handler().methodName("findActions"));
-    actions.andExpect(jsonPath("$", Matchers.hasSize(1)));
-    actions.andExpect(jsonPath("$[0].actionId", is(ACTIONID_2.intValue())));
-    actions.andExpect(jsonPath("$[0].caseId", is(ACTION_CASEID)));
-    actions.andExpect(jsonPath("$[0].actionPlanId", is(ACTION2_PLANID)));
-    actions.andExpect(jsonPath("$[0].actionRuleId", is(ACTION2_RULEID)));
-    actions.andExpect(jsonPath("$[0].actionTypeName", is(ACTION2_ACTIONTYPENAME)));
-    actions.andExpect(jsonPath("$[0].createdBy", is(ACTION_CREATEDBY)));
-    actions.andExpect(jsonPath("$[0].priority", is(ACTION2_PRIORITY)));
-    actions.andExpect(jsonPath("$[0].situation", is(ACTION2_SITUATION)));
-    actions.andExpect(jsonPath("$[0].state", is(ACTION2_ACTIONSTATE.name())));
-    actions.andExpect(jsonPath("$[0].createdDateTime", is(ACTION_CREATEDDATE_VALUE)));
+    actions.andExpect(status().isOk())
+            .andExpect(handler().handlerType(ActionEndpoint.class))
+            .andExpect(handler().methodName("findActions"))
+            .andExpect(jsonPath("$", Matchers.hasSize(1)))
+            .andExpect(jsonPath("$[0].actionId", is(ACTIONID_2.intValue())))
+            .andExpect(jsonPath("$[0].caseId", is(ACTION_CASEID)))
+            .andExpect(jsonPath("$[0].actionPlanId", is(ACTION2_PLANID)))
+            .andExpect(jsonPath("$[0].actionRuleId", is(ACTION2_RULEID)))
+            .andExpect(jsonPath("$[0].actionTypeName", is(ACTION2_ACTIONTYPENAME)))
+            .andExpect(jsonPath("$[0].createdBy", is(ACTION_CREATEDBY)))
+            .andExpect(jsonPath("$[0].priority", is(ACTION2_PRIORITY)))
+            .andExpect(jsonPath("$[0].situation", is(ACTION2_SITUATION)))
+            .andExpect(jsonPath("$[0].state", is(ACTION2_ACTIONSTATE.name())))
+            .andExpect(jsonPath("$[0].createdDateTime", is(ACTION_CREATEDDATE_VALUE)));
   }
 
 
@@ -224,9 +224,9 @@ public final class ActionEndpointUnitTest {
 
     ResultActions actions = mockMvc.perform(getJson(String.format("/actions?actiontype=%s", ACTION_NOTFOUND)));
 
-    actions.andExpect(status().isNoContent());
-    actions.andExpect(handler().handlerType(ActionEndpoint.class));
-    actions.andExpect(handler().methodName("findActions"));
+    actions.andExpect(status().isNoContent())
+            .andExpect(handler().handlerType(ActionEndpoint.class))
+            .andExpect(handler().methodName("findActions"));
   }
 
   /**
@@ -244,20 +244,20 @@ public final class ActionEndpointUnitTest {
 
     ResultActions actions = mockMvc.perform(getJson(String.format("/actions?state=%s", ACTION2_ACTIONSTATE.toString())));
 
-    actions.andExpect(status().isOk());
-    actions.andExpect(handler().handlerType(ActionEndpoint.class));
-    actions.andExpect(handler().methodName("findActions"));
-    actions.andExpect(jsonPath("$", Matchers.hasSize(1)));
-    actions.andExpect(jsonPath("$[0].actionId", is(ACTIONID_2.intValue())));
-    actions.andExpect(jsonPath("$[0].caseId", is(ACTION_CASEID)));
-    actions.andExpect(jsonPath("$[0].actionPlanId", is(ACTION2_PLANID)));
-    actions.andExpect(jsonPath("$[0].actionRuleId", is(ACTION2_RULEID)));
-    actions.andExpect(jsonPath("$[0].actionTypeName", is(ACTION2_ACTIONTYPENAME)));
-    actions.andExpect(jsonPath("$[0].createdBy", is(ACTION_CREATEDBY)));
-    actions.andExpect(jsonPath("$[0].priority", is(ACTION2_PRIORITY)));
-    actions.andExpect(jsonPath("$[0].situation", is(ACTION2_SITUATION)));
-    actions.andExpect(jsonPath("$[0].state", is(ACTION2_ACTIONSTATE.name())));
-    actions.andExpect(jsonPath("$[0].createdDateTime", is(ACTION_CREATEDDATE_VALUE)));
+    actions.andExpect(status().isOk())
+            .andExpect(handler().handlerType(ActionEndpoint.class))
+            .andExpect(handler().methodName("findActions"))
+            .andExpect(jsonPath("$", Matchers.hasSize(1)))
+            .andExpect(jsonPath("$[0].actionId", is(ACTIONID_2.intValue())))
+            .andExpect(jsonPath("$[0].caseId", is(ACTION_CASEID)))
+            .andExpect(jsonPath("$[0].actionPlanId", is(ACTION2_PLANID)))
+            .andExpect(jsonPath("$[0].actionRuleId", is(ACTION2_RULEID)))
+            .andExpect(jsonPath("$[0].actionTypeName", is(ACTION2_ACTIONTYPENAME)))
+            .andExpect(jsonPath("$[0].createdBy", is(ACTION_CREATEDBY)))
+            .andExpect(jsonPath("$[0].priority", is(ACTION2_PRIORITY)))
+            .andExpect(jsonPath("$[0].situation", is(ACTION2_SITUATION)))
+            .andExpect(jsonPath("$[0].state", is(ACTION2_ACTIONSTATE.name())))
+            .andExpect(jsonPath("$[0].createdDateTime", is(ACTION_CREATEDDATE_VALUE)));
   }
 
   /**
@@ -274,19 +274,19 @@ public final class ActionEndpointUnitTest {
 
     ResultActions actions = mockMvc.perform(getJson(String.format("/actions/%s", ACTIONID_2.intValue())));
 
-    actions.andExpect(status().isOk());
-    actions.andExpect(handler().handlerType(ActionEndpoint.class));
-    actions.andExpect(handler().methodName("findActionByActionId"));
-    actions.andExpect(jsonPath("$.actionId", is(ACTIONID_2.intValue())));
-    actions.andExpect(jsonPath("$.caseId", is(ACTION_CASEID)));
-    actions.andExpect(jsonPath("$.actionPlanId", is(ACTION2_PLANID)));
-    actions.andExpect(jsonPath("$.actionRuleId", is(ACTION2_RULEID)));
-    actions.andExpect(jsonPath("$.actionTypeName", is(ACTION2_ACTIONTYPENAME)));
-    actions.andExpect(jsonPath("$.createdBy", is(ACTION_CREATEDBY)));
-    actions.andExpect(jsonPath("$.priority", is(ACTION2_PRIORITY)));
-    actions.andExpect(jsonPath("$.situation", is(ACTION2_SITUATION)));
-    actions.andExpect(jsonPath("$.state", is(ACTION2_ACTIONSTATE.name())));
-    actions.andExpect(jsonPath("$.createdDateTime", is(ACTION_CREATEDDATE_VALUE)));
+    actions.andExpect(status().isOk())
+            .andExpect(handler().handlerType(ActionEndpoint.class))
+            .andExpect(handler().methodName("findActionByActionId"))
+            .andExpect(jsonPath("$.actionId", is(ACTIONID_2.intValue())))
+            .andExpect(jsonPath("$.caseId", is(ACTION_CASEID)))
+            .andExpect(jsonPath("$.actionPlanId", is(ACTION2_PLANID)))
+            .andExpect(jsonPath("$.actionRuleId", is(ACTION2_RULEID)))
+            .andExpect(jsonPath("$.actionTypeName", is(ACTION2_ACTIONTYPENAME)))
+            .andExpect(jsonPath("$.createdBy", is(ACTION_CREATEDBY)))
+            .andExpect(jsonPath("$.priority", is(ACTION2_PRIORITY)))
+            .andExpect(jsonPath("$.situation", is(ACTION2_SITUATION)))
+            .andExpect(jsonPath("$.state", is(ACTION2_ACTIONSTATE.name())))
+            .andExpect(jsonPath("$.createdDateTime", is(ACTION_CREATEDDATE_VALUE)));
   }
 
   /**
@@ -296,12 +296,12 @@ public final class ActionEndpointUnitTest {
   public void findActionByActionIdNotFound() throws Exception {
     ResultActions actions = mockMvc.perform(getJson(String.format("/actions/%s", NON_EXISTING_ID)));
 
-    actions.andExpect(status().isNotFound());
-    actions.andExpect(handler().handlerType(ActionEndpoint.class));
-    actions.andExpect(handler().methodName("findActionByActionId"));
-    actions.andExpect(jsonPath("$.error.code", is(CTPException.Fault.RESOURCE_NOT_FOUND.name())));
-    actions.andExpect(jsonPath("$.error.message", is(String.format("Action not found for id %s", NON_EXISTING_ID))));
-    actions.andExpect(jsonPath("$.error.timestamp", isA(String.class)));
+    actions.andExpect(status().isNotFound())
+            .andExpect(handler().handlerType(ActionEndpoint.class))
+            .andExpect(handler().methodName("findActionByActionId"))
+            .andExpect(jsonPath("$.error.code", is(CTPException.Fault.RESOURCE_NOT_FOUND.name())))
+            .andExpect(jsonPath("$.error.message", is(String.format("Action not found for id %s", NON_EXISTING_ID))))
+            .andExpect(jsonPath("$.error.timestamp", isA(String.class)));
   }
 
   /**
@@ -324,20 +324,19 @@ public final class ActionEndpointUnitTest {
 
     ResultActions actions = mockMvc.perform(getJson(String.format("/actions/case/%s", ACTION_CASEID)));
 
-    actions.andExpect(status().isOk());
-    actions.andExpect(handler().handlerType(ActionEndpoint.class));
-    actions.andExpect(handler().methodName("findActionsByCaseId"));
-    actions.andExpect(jsonPath("$", Matchers.hasSize(2)));
-    actions.andExpect(jsonPath("$[*].actionId", containsInAnyOrder(new Integer(1), new Integer(2))));
-    actions.andExpect(jsonPath("$[*].caseId", containsInAnyOrder(ACTION_CASEID, ACTION_CASEID)));
-    actions.andExpect(jsonPath("$[*].actionPlanId", containsInAnyOrder(ACTION1_PLANID, ACTION2_PLANID)));
-    actions.andExpect(jsonPath("$[*].actionRuleId", containsInAnyOrder(ACTION1_RULEID, ACTION2_RULEID)));
-    actions.andExpect(jsonPath("$[*].actionTypeName", containsInAnyOrder(ACTION1_ACTIONTYPENAME, ACTION2_ACTIONTYPENAME)));
-    actions.andExpect(jsonPath("$[*].createdBy", containsInAnyOrder(ACTION_CREATEDBY, ACTION_CREATEDBY)));
-    actions.andExpect(jsonPath("$[*].priority", containsInAnyOrder(ACTION1_PRIORITY, ACTION2_PRIORITY)));
-    actions.andExpect(jsonPath("$[*].situation", containsInAnyOrder(ACTION1_SITUATION, ACTION2_SITUATION)));
-    actions.andExpect(jsonPath("$[*].state", containsInAnyOrder(ACTION1_ACTIONSTATE.name(), ACTION2_ACTIONSTATE.name())));
-    actions.andExpect(jsonPath("$[*].createdDateTime", containsInAnyOrder(ACTION_CREATEDDATE_VALUE, ACTION_CREATEDDATE_VALUE)));
+    actions.andExpect(status().isOk())
+            .andExpect(handler().handlerType(ActionEndpoint.class))
+            .andExpect(handler().methodName("findActionsByCaseId"))
+            .andExpect(jsonPath("$", Matchers.hasSize(2)))
+            .andExpect(jsonPath("$[*].caseId", containsInAnyOrder(ACTION_CASEID, ACTION_CASEID)))
+            .andExpect(jsonPath("$[*].actionPlanId", containsInAnyOrder(ACTION1_PLANID, ACTION2_PLANID)))
+            .andExpect(jsonPath("$[*].actionRuleId", containsInAnyOrder(ACTION1_RULEID, ACTION2_RULEID)))
+            .andExpect(jsonPath("$[*].actionTypeName", containsInAnyOrder(ACTION1_ACTIONTYPENAME, ACTION2_ACTIONTYPENAME)))
+            .andExpect(jsonPath("$[*].createdBy", containsInAnyOrder(ACTION_CREATEDBY, ACTION_CREATEDBY)))
+            .andExpect(jsonPath("$[*].priority", containsInAnyOrder(ACTION1_PRIORITY, ACTION2_PRIORITY)))
+            .andExpect(jsonPath("$[*].situation", containsInAnyOrder(ACTION1_SITUATION, ACTION2_SITUATION)))
+            .andExpect(jsonPath("$[*].state", containsInAnyOrder(ACTION1_ACTIONSTATE.name(), ACTION2_ACTIONSTATE.name())))
+            .andExpect(jsonPath("$[*].createdDateTime", containsInAnyOrder(ACTION_CREATEDDATE_VALUE, ACTION_CREATEDDATE_VALUE)));
   }
 
   /**
@@ -347,9 +346,9 @@ public final class ActionEndpointUnitTest {
   public void findActionByCaseIdNotFound() throws Exception {
     ResultActions actions = mockMvc.perform(getJson(String.format("/actions/case/%s", NON_EXISTING_ID)));
 
-    actions.andExpect(status().isNoContent());
-    actions.andExpect(handler().handlerType(ActionEndpoint.class));
-    actions.andExpect(handler().methodName("findActionsByCaseId"));
+    actions.andExpect(status().isNoContent())
+            .andExpect(handler().handlerType(ActionEndpoint.class))
+            .andExpect(handler().methodName("findActionsByCaseId"));
   }
 
   /**
@@ -359,10 +358,10 @@ public final class ActionEndpointUnitTest {
   public void updateActionByActionIdNotFound() throws Exception {
     ResultActions actions = mockMvc.perform(putJson(String.format("/actions/%s", NON_EXISTING_ID), ACTION_VALIDJSON));
 
-    actions.andExpect(status().isNotFound());
-    actions.andExpect(handler().handlerType(ActionEndpoint.class));
-    actions.andExpect(handler().methodName("updateAction"));
-    actions.andExpect(jsonPath("$.error.code", is(CTPException.Fault.RESOURCE_NOT_FOUND.name())));
+    actions.andExpect(status().isNotFound())
+            .andExpect(handler().handlerType(ActionEndpoint.class))
+            .andExpect(handler().methodName("updateAction"))
+            .andExpect(jsonPath("$.error.code", is(CTPException.Fault.RESOURCE_NOT_FOUND.name())));
   }
 
   /**
@@ -374,12 +373,12 @@ public final class ActionEndpointUnitTest {
 
     ResultActions actions = mockMvc.perform(getJson(String.format("/actions/%s", UNCHECKED_EXCEPTION)));
 
-    actions.andExpect(status().is5xxServerError());
-    actions.andExpect(handler().handlerType(ActionEndpoint.class));
-    actions.andExpect(handler().methodName("findActionByActionId"));
-    actions.andExpect(jsonPath("$.error.code", is(CTPException.Fault.SYSTEM_ERROR.name())));
-    actions.andExpect(jsonPath("$.error.message", is(OUR_EXCEPTION_MESSAGE)));
-    actions.andExpect(jsonPath("$.error.timestamp", isA(String.class)));
+    actions.andExpect(status().is5xxServerError())
+            .andExpect(handler().handlerType(ActionEndpoint.class))
+            .andExpect(handler().methodName("findActionByActionId"))
+            .andExpect(jsonPath("$.error.code", is(CTPException.Fault.SYSTEM_ERROR.name())))
+            .andExpect(jsonPath("$.error.message", is(OUR_EXCEPTION_MESSAGE)))
+            .andExpect(jsonPath("$.error.timestamp", isA(String.class)));
   }
 
   /**
@@ -396,19 +395,19 @@ public final class ActionEndpointUnitTest {
 
     ResultActions actions = mockMvc.perform(postJson("/actions", ACTION_VALIDJSON));
 
-    actions.andExpect(status().isCreated());
-    actions.andExpect(handler().handlerType(ActionEndpoint.class));
-    actions.andExpect(handler().methodName("createAction"));
-    actions.andExpect(jsonPath("$.actionId", is(ACTIONID_2.intValue())));
-    actions.andExpect(jsonPath("$.caseId", is(ACTION_CASEID)));
-    actions.andExpect(jsonPath("$.actionPlanId", is(ACTION2_PLANID)));
-    actions.andExpect(jsonPath("$.actionRuleId", is(ACTION2_RULEID)));
-    actions.andExpect(jsonPath("$.actionTypeName", is(ACTION2_ACTIONTYPENAME)));
-    actions.andExpect(jsonPath("$.createdBy", is(ACTION_CREATEDBY)));
-    actions.andExpect(jsonPath("$.priority", is(ACTION2_PRIORITY)));
-    actions.andExpect(jsonPath("$.situation", is(ACTION2_SITUATION)));
-    actions.andExpect(jsonPath("$.state", is(ACTION2_ACTIONSTATE.name())));
-    actions.andExpect(jsonPath("$.createdDateTime", is(ACTION_CREATEDDATE_VALUE)));
+    actions.andExpect(status().isCreated())
+            .andExpect(handler().handlerType(ActionEndpoint.class))
+            .andExpect(handler().methodName("createAction"))
+            .andExpect(jsonPath("$.actionId", is(ACTIONID_2.intValue())))
+            .andExpect(jsonPath("$.caseId", is(ACTION_CASEID)))
+            .andExpect(jsonPath("$.actionPlanId", is(ACTION2_PLANID)))
+            .andExpect(jsonPath("$.actionRuleId", is(ACTION2_RULEID)))
+            .andExpect(jsonPath("$.actionTypeName", is(ACTION2_ACTIONTYPENAME)))
+            .andExpect(jsonPath("$.createdBy", is(ACTION_CREATEDBY)))
+            .andExpect(jsonPath("$.priority", is(ACTION2_PRIORITY)))
+            .andExpect(jsonPath("$.situation", is(ACTION2_SITUATION)))
+            .andExpect(jsonPath("$.state", is(ACTION2_ACTIONSTATE.name())))
+            .andExpect(jsonPath("$.createdDateTime", is(ACTION_CREATEDDATE_VALUE)));
   }
 
   /**
@@ -418,12 +417,12 @@ public final class ActionEndpointUnitTest {
   public void createActionInvalidPropJsonProvided() throws Exception {
     ResultActions actions = mockMvc.perform(postJson("/actions", ACTION_INVALIDJSON_PROP));
 
-    actions.andExpect(status().isBadRequest());
-    actions.andExpect(handler().handlerType(ActionEndpoint.class));
-    actions.andExpect(handler().methodName("createAction"));
-    actions.andExpect(jsonPath("$.error.code", is(CTPException.Fault.VALIDATION_FAILED.name())));
-    actions.andExpect(jsonPath("$.error.message", is(PROVIDED_JSON_INCORRECT)));
-    actions.andExpect(jsonPath("$.error.timestamp", isA(String.class)));
+    actions.andExpect(status().isBadRequest())
+            .andExpect(handler().handlerType(ActionEndpoint.class))
+            .andExpect(handler().methodName("createAction"))
+            .andExpect(jsonPath("$.error.code", is(CTPException.Fault.VALIDATION_FAILED.name())))
+            .andExpect(jsonPath("$.error.message", is(PROVIDED_JSON_INCORRECT)))
+            .andExpect(jsonPath("$.error.timestamp", isA(String.class)));
   }
 
 
@@ -434,12 +433,12 @@ public final class ActionEndpointUnitTest {
   public void createActionMissingPropJsonProvided() throws Exception {
     ResultActions actions = mockMvc.perform(postJson("/actions", ACTION_INVALIDJSON_MISSING_PROP));
 
-    actions.andExpect(status().isBadRequest());
-    actions.andExpect(handler().handlerType(ActionEndpoint.class));
-    actions.andExpect(handler().methodName("createAction"));
-    actions.andExpect(jsonPath("$.error.code", is(CTPException.Fault.VALIDATION_FAILED.name())));
-    actions.andExpect(jsonPath("$.error.message", is(INVALID_JSON)));
-    actions.andExpect(jsonPath("$.error.timestamp", isA(String.class)));
+    actions.andExpect(status().isBadRequest())
+            .andExpect(handler().handlerType(ActionEndpoint.class))
+            .andExpect(handler().methodName("createAction"))
+            .andExpect(jsonPath("$.error.code", is(CTPException.Fault.VALIDATION_FAILED.name())))
+            .andExpect(jsonPath("$.error.message", is(INVALID_JSON)))
+            .andExpect(jsonPath("$.error.timestamp", isA(String.class)));
   }
 
   /**
@@ -462,20 +461,20 @@ public final class ActionEndpointUnitTest {
 
     ResultActions actions = mockMvc.perform(putJson(String.format("/actions/case/%s/cancel", ACTION_CASEID), ""));
 
-    actions.andExpect(status().isOk());
-    actions.andExpect(handler().handlerType(ActionEndpoint.class));
-    actions.andExpect(handler().methodName("cancelActions"));
-    actions.andExpect(jsonPath("$", Matchers.hasSize(1)));
-    actions.andExpect(jsonPath("$[0].actionId", is(ACTIONID_2.intValue())));
-    actions.andExpect(jsonPath("$[0].caseId", is(ACTION_CASEID)));
-    actions.andExpect(jsonPath("$[0].actionPlanId", is(ACTION2_PLANID)));
-    actions.andExpect(jsonPath("$[0].actionRuleId", is(ACTION2_RULEID)));
-    actions.andExpect(jsonPath("$[0].actionTypeName", is(ACTION2_ACTIONTYPENAME)));
-    actions.andExpect(jsonPath("$[0].createdBy", is(ACTION_CREATEDBY)));
-    actions.andExpect(jsonPath("$[0].priority", is(ACTION2_PRIORITY)));
-    actions.andExpect(jsonPath("$[0].situation", is(ACTION2_SITUATION)));
-    actions.andExpect(jsonPath("$[0].state", is(ACTION3_ACTIONSTATE.name())));
-    actions.andExpect(jsonPath("$[0].createdDateTime", is(ACTION_CREATEDDATE_VALUE)));
+    actions.andExpect(status().isOk())
+            .andExpect(handler().handlerType(ActionEndpoint.class))
+            .andExpect(handler().methodName("cancelActions"))
+            .andExpect(jsonPath("$", Matchers.hasSize(1)))
+            .andExpect(jsonPath("$[0].actionId", is(ACTIONID_2.intValue())))
+            .andExpect(jsonPath("$[0].caseId", is(ACTION_CASEID)))
+            .andExpect(jsonPath("$[0].actionPlanId", is(ACTION2_PLANID)))
+            .andExpect(jsonPath("$[0].actionRuleId", is(ACTION2_RULEID)))
+            .andExpect(jsonPath("$[0].actionTypeName", is(ACTION2_ACTIONTYPENAME)))
+            .andExpect(jsonPath("$[0].createdBy", is(ACTION_CREATEDBY)))
+            .andExpect(jsonPath("$[0].priority", is(ACTION2_PRIORITY)))
+            .andExpect(jsonPath("$[0].situation", is(ACTION2_SITUATION)))
+            .andExpect(jsonPath("$[0].state", is(ACTION3_ACTIONSTATE.name())))
+            .andExpect(jsonPath("$[0].createdDateTime", is(ACTION_CREATEDDATE_VALUE)));
   }
 
   /**
@@ -485,9 +484,9 @@ public final class ActionEndpointUnitTest {
   public void cancelActionsCaseNotFound() throws Exception {
     ResultActions actions = mockMvc.perform(putJson(String.format("/actions/case/%s/cancel", NON_EXISTING_ID), ""));
 
-    actions.andExpect(status().isNotFound());
-    actions.andExpect(handler().handlerType(ActionEndpoint.class));
-    actions.andExpect(handler().methodName("cancelActions"));
-    actions.andExpect(jsonPath("$.error.code", is(CTPException.Fault.RESOURCE_NOT_FOUND.name())));
+    actions.andExpect(status().isNotFound())
+            .andExpect(handler().handlerType(ActionEndpoint.class))
+            .andExpect(handler().methodName("cancelActions"))
+            .andExpect(jsonPath("$.error.code", is(CTPException.Fault.RESOURCE_NOT_FOUND.name())));
   }
 }
