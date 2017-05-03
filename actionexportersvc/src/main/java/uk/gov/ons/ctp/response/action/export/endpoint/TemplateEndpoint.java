@@ -5,6 +5,7 @@ import java.net.URI;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.CollectionUtils;
 
@@ -26,6 +27,7 @@ public class TemplateEndpoint {
   @Autowired
   private TemplateService templateService;
 
+  @Qualifier("actionExporterBeanMapper")
   @Autowired
   private MapperFacade mapperFacade;
 
