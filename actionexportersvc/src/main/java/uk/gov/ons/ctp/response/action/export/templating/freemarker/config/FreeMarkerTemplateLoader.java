@@ -4,11 +4,10 @@ import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
 
-import javax.inject.Inject;
-import javax.inject.Named;
-
 import freemarker.cache.TemplateLoader;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import uk.gov.ons.ctp.response.action.export.domain.TemplateExpression;
 import uk.gov.ons.ctp.response.action.export.repository.TemplateRepository;
 
@@ -16,10 +15,10 @@ import uk.gov.ons.ctp.response.action.export.repository.TemplateRepository;
  * TemplateLoader to load templates stored in MongopDB
  */
 @Slf4j
-@Named
+@Component
 public class FreeMarkerTemplateLoader implements TemplateLoader {
 
-  @Inject
+  @Autowired
   private TemplateRepository templateRepository;
 
   @Override

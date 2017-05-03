@@ -6,15 +6,14 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import javax.inject.Inject;
-import javax.inject.Named;
-
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.sleuth.Span;
 import org.springframework.cloud.sleuth.Tracer;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
+import org.springframework.stereotype.Component;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.TransactionCallback;
@@ -76,7 +75,7 @@ import uk.gov.ons.ctp.response.party.representation.PartyDTO;
  * all been processed.
  *
  */
-@Named
+@Component
 @Slf4j
 public class ActionDistributor {
 
@@ -87,34 +86,34 @@ public class ActionDistributor {
 
   private static final long MILLISECONDS = 1000L;
 
-  @Inject
+  @Autowired
   private DistributedListManager<BigInteger> actionDistributionListManager;
 
-  @Inject
+  @Autowired
   private Tracer tracer;
 
-  @Inject
+  @Autowired
   private AppConfig appConfig;
 
-  @Inject
+  @Autowired
   private StateTransitionManager<ActionState, ActionDTO.ActionEvent> actionSvcStateTransitionManager;
 
-  @Inject
+  @Autowired
   private InstructionPublisher instructionPublisher;
 
-  @Inject
+  @Autowired
   private MapperFacade mapperFacade;
 
-  @Inject
+  @Autowired
   private ActionRepository actionRepo;
 
-  @Inject
+  @Autowired
   private ActionPlanRepository actionPlanRepo;
 
-  @Inject
+  @Autowired
   private CaseSvcClientService caseSvcClientService;
 
-  @Inject
+  @Autowired
   private ActionTypeRepository actionTypeRepo;
 
   // single TransactionTemplate shared amongst all methods in this instance
@@ -125,7 +124,7 @@ public class ActionDistributor {
    * 
    * @param transactionManager provided by Spring
    */
-  @Inject
+  @Autowired
   public ActionDistributor(final PlatformTransactionManager transactionManager) {
     this.transactionTemplate = new TransactionTemplate(transactionManager);
   }

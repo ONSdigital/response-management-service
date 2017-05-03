@@ -5,10 +5,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import javax.inject.Inject;
-import javax.inject.Named;
-
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import uk.gov.ons.ctp.common.error.CTPException;
 import uk.gov.ons.ctp.response.action.export.domain.ActionRequestInstruction;
 import uk.gov.ons.ctp.response.action.export.domain.ExportMessage;
@@ -20,14 +19,14 @@ import uk.gov.ons.ctp.response.action.export.service.TransformationService;
 /**
  * The implementation of TransformationService
  */
-@Named
+@Service
 @Slf4j
 public class TransformationServiceImpl implements TransformationService {
 
-  @Inject
+  @Autowired
   private TemplateService templateService;
 
-  @Inject
+  @Autowired
   private TemplateMappingService templateMappingService;
 
   @Override

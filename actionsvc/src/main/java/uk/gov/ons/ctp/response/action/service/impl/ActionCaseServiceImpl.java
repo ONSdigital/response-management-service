@@ -1,8 +1,7 @@
 package uk.gov.ons.ctp.response.action.service.impl;
 
-import javax.inject.Inject;
-import javax.inject.Named;
-
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import uk.gov.ons.ctp.response.action.domain.model.ActionCase;
 import uk.gov.ons.ctp.response.action.domain.repository.ActionCaseRepository;
 import uk.gov.ons.ctp.response.action.service.ActionCaseService;
@@ -12,10 +11,10 @@ import uk.gov.ons.ctp.response.action.service.ActionCaseService;
  * operating on the Action entity model.
  */
 
-@Named
+@Service
 public class ActionCaseServiceImpl implements ActionCaseService {
 
-  @Inject
+  @Autowired
   private ActionCaseRepository actionCaseRepo;
 
   @Override

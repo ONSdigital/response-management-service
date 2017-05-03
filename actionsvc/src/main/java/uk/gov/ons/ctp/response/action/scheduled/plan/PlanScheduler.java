@@ -1,13 +1,12 @@
 package uk.gov.ons.ctp.response.action.scheduled.plan;
 
-import javax.inject.Inject;
-import javax.inject.Named;
-
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.actuate.health.Health;
 import org.springframework.boot.actuate.health.HealthIndicator;
 import org.springframework.scheduling.annotation.Scheduled;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
 import uk.gov.ons.ctp.response.action.service.ActionPlanJobService;
 
 /**
@@ -15,11 +14,11 @@ import uk.gov.ons.ctp.response.action.service.ActionPlanJobService;
  * constructions. It will then schedule the running of the actionPlanJobService
  * createAndExecuteAllActionPlanJobs using details from the AppConfig
  */
-@Named
+@Component
 @Slf4j
 public class PlanScheduler implements HealthIndicator {
 
-  @Inject
+  @Autowired
   private ActionPlanJobService actionPlanJobServiceImpl;
 
   private PlanExecutionInfo executionInfo = new PlanExecutionInfo();

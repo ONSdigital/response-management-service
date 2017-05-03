@@ -1,10 +1,8 @@
 package uk.gov.ons.ctp.response.action;
 
 import java.math.BigInteger;
+import java.text.SimpleDateFormat;
 
-import javax.inject.Named;
-
-import org.glassfish.jersey.server.ResourceConfig;
 import org.redisson.Redisson;
 import org.redisson.api.RedissonClient;
 import org.redisson.config.Config;
@@ -14,6 +12,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ImportResource;
+import org.springframework.context.annotation.Primary;
+import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 import org.springframework.integration.annotation.IntegrationComponentScan;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
@@ -23,18 +23,13 @@ import uk.gov.ons.ctp.common.distributed.DistributedListManager;
 import uk.gov.ons.ctp.common.distributed.DistributedListManagerRedissonImpl;
 import uk.gov.ons.ctp.common.distributed.DistributedLockManager;
 import uk.gov.ons.ctp.common.distributed.DistributedLockManagerRedissonImpl;
-import uk.gov.ons.ctp.common.jaxrs.CTPMessageBodyReader;
-import uk.gov.ons.ctp.common.jaxrs.JAXRSRegister;
+import uk.gov.ons.ctp.common.error.RestExceptionHandler;
+import uk.gov.ons.ctp.common.jackson.CustomObjectMapper;
 import uk.gov.ons.ctp.common.rest.RestClient;
 import uk.gov.ons.ctp.common.state.StateTransitionManager;
 import uk.gov.ons.ctp.common.state.StateTransitionManagerFactory;
 import uk.gov.ons.ctp.response.action.config.AppConfig;
-import uk.gov.ons.ctp.response.action.endpoint.ActionEndpoint;
-import uk.gov.ons.ctp.response.action.endpoint.ActionPlanEndpoint;
-import uk.gov.ons.ctp.response.action.endpoint.ActionPlanJobEndpoint;
 import uk.gov.ons.ctp.response.action.representation.ActionDTO;
-import uk.gov.ons.ctp.response.action.representation.ActionPlanDTO;
-import uk.gov.ons.ctp.response.action.representation.ActionPlanJobDTO;
 import uk.gov.ons.ctp.response.action.state.ActionSvcStateTransitionManagerFactory;
 
 /**
@@ -102,33 +97,14 @@ public class ActionSvcApplication {
         ActionSvcStateTransitionManagerFactory.ACTION_ENTITY);
   }
 
-  /**
-   * To register classes in the JAX-RS world.
-   */
-  @Named
-  public static class JerseyConfig extends ResourceConfig {
-    /**
-     * Its public constructor.
-     */
-    public JerseyConfig() {
+  @Bean
+  public RestExceptionHandler restExceptionHandler() {
+    return new RestExceptionHandler();
+  }
 
-      JAXRSRegister.listCommonTypes().forEach(t -> register(t));
-
-      register(ActionEndpoint.class);
-      register(new CTPMessageBodyReader<ActionDTO>(ActionDTO.class) {
-      });
-
-      register(ActionPlanEndpoint.class);
-      register(new CTPMessageBodyReader<ActionPlanDTO>(ActionPlanDTO.class) {
-      });
-
-      register(ActionPlanJobEndpoint.class);
-      register(new CTPMessageBodyReader<ActionPlanJobDTO>(ActionPlanJobDTO.class) {
-      });
-
-      System.setProperty("ma.glasnost.orika.writeSourceFiles", "false");
-      System.setProperty("ma.glasnost.orika.writeClassFiles", "false");
-    }
+  @Bean @Primary
+  public CustomObjectMapper CustomObjectMapper() {
+    return new CustomObjectMapper();
   }
 
   /**

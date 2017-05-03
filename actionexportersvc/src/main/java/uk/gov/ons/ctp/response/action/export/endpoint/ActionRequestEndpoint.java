@@ -4,22 +4,16 @@ import java.math.BigInteger;
 import java.net.URI;
 import java.util.List;
 
-import javax.inject.Inject;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.UriBuilder;
-import javax.ws.rs.core.UriInfo;
-
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.util.CollectionUtils;
 
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 import uk.gov.ons.ctp.common.error.CTPException;
 import uk.gov.ons.ctp.response.action.export.domain.ActionRequestInstruction;
 import uk.gov.ons.ctp.response.action.export.domain.ExportMessage;
@@ -31,8 +25,8 @@ import uk.gov.ons.ctp.response.action.export.service.TransformationService;
 /**
  * The REST endpoint controller for ActionRequests.
  */
-@Path("/actionrequests")
-@Produces(MediaType.APPLICATION_JSON)
+@RestController
+@RequestMapping(value = "/actionrequests", produces = "application/json")
 @Slf4j
 public class ActionRequestEndpoint {
 
@@ -40,27 +34,24 @@ public class ActionRequestEndpoint {
 
   public static final String ACTION_REQUEST_TRANSFORM_ERROR = "Error transforming ActionRequest for actionId";
 
-  @Inject
+  @Autowired
   private ActionRequestService actionRequestService;
 
-  @Inject
+  @Autowired
   private TransformationService transformationService;
 
-  @Inject
+  @Autowired
   private SftpServicePublisher sftpService;
 
-  @Inject
+  @Autowired
   private MapperFacade mapperFacade;
-
-  @Context
-  private UriInfo uriInfo;
 
   /**
    * To retrieve all ActionRequests
    * 
    * @return a list of ActionRequests
    */
-  @GET
+  @RequestMapping(method = RequestMethod.GET)
   public List<ActionRequestInstructionDTO> findAllActionRequests() {
     log.debug("Entering findAllActionRequests ...");
     List<ActionRequestInstruction> actionRequests = actionRequestService.retrieveAllActionRequests();
@@ -76,9 +67,8 @@ public class ActionRequestEndpoint {
    * @return the specific ActionRequest
    * @throws CTPException if no ActionRequest found
    */
-  @GET
-  @Path("/{actionId}")
-  public ActionRequestInstructionDTO findActionRequest(@PathParam("actionId") final BigInteger actionId)
+  @RequestMapping(value = "/{actionId}", method = RequestMethod.GET)
+  public ActionRequestInstructionDTO findActionRequest(@PathVariable("actionId") final BigInteger actionId)
       throws CTPException {
     log.debug("Entering findActionRequest with {}", actionId);
     ActionRequestInstruction result = actionRequestService.retrieveActionRequest(actionId);
@@ -96,9 +86,8 @@ public class ActionRequestEndpoint {
    * @return 201 if successful
    * @throws CTPException if specific ActionRequest not found
    */
-  @POST
-  @Path("/{actionId}")
-  public Response export(@PathParam("actionId") final BigInteger actionId) throws CTPException {
+  @RequestMapping(value = "/{actionId}", method = RequestMethod.POST)
+  public ResponseEntity<?> export(@PathVariable("actionId") final BigInteger actionId) throws CTPException {
     log.debug("Entering export with actionId {}", actionId);
     ActionRequestInstruction actionRequest = actionRequestService.retrieveActionRequest(actionId);
     if (actionRequest == null) {
@@ -115,10 +104,7 @@ public class ActionRequestEndpoint {
       sftpService.sendMessage(fileName, message.getActionRequestIds(fileName), stream);
     });
 
-    UriBuilder ub = uriInfo.getAbsolutePathBuilder();
-    URI actionRequestUri = ub.build();
-    ActionRequestInstructionDTO actionRequestDTO = mapperFacade.map(actionRequest,
-        ActionRequestInstructionDTO.class);
-    return Response.created(actionRequestUri).entity(actionRequestDTO).build();
+    ActionRequestInstructionDTO actionRequestDTO = mapperFacade.map(actionRequest, ActionRequestInstructionDTO.class);
+    return ResponseEntity.created(URI.create("TODO")).body(actionRequestDTO);
   }
 }

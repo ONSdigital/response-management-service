@@ -2,9 +2,8 @@ package uk.gov.ons.ctp.response.action.service.impl;
 
 import java.util.List;
 
-import javax.inject.Inject;
-import javax.inject.Named;
-
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,22 +23,22 @@ import uk.gov.ons.ctp.response.casesvc.message.notification.CaseNotification;
  * case close life cycle events.
  *
  */
-@Named
+@Service
 @Slf4j
 public class CaseNotificationServiceImpl implements CaseNotificationService {
 
   private static final int TRANSACTION_TIMEOUT = 30;
 
-  @Inject
+  @Autowired
   private ActionCaseRepository actionCaseRepo;
 
-  @Inject
+  @Autowired
   private ActionPlanRepository actionPlanRepo;
-  
-  @Inject 
+
+  @Autowired
   private ActionService actionService;
-  
-  @Inject
+
+  @Autowired
   private SurveyRepository surveyRepo;
 
   @Override

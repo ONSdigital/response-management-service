@@ -1,8 +1,7 @@
 package uk.gov.ons.ctp.response.action.export.service.impl;
 
-import javax.inject.Inject;
-import javax.inject.Named;
-
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import uk.gov.ons.ctp.response.action.export.domain.ExportReport;
 import uk.gov.ons.ctp.response.action.export.repository.ExportReportRepository;
 import uk.gov.ons.ctp.response.action.export.service.ExportReportService;
@@ -10,10 +9,10 @@ import uk.gov.ons.ctp.response.action.export.service.ExportReportService;
 /**
  * The implementation of FileRowCountService
  */
-@Named
+@Service
 public class ExportReportServiceImpl implements ExportReportService {
 
-  @Inject
+  @Autowired
   private ExportReportRepository exportReportRepo;
 
   @Override

@@ -1,7 +1,5 @@
 package uk.gov.ons.ctp.response.action.export.templating.freemarker.config;
 
-import static org.glassfish.jersey.message.internal.ReaderWriter.UTF8;
-
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -37,7 +35,7 @@ public class FreeMarkerConfig {
     freemarker.template.Configuration configuration = new freemarker.template.Configuration(
         freemarker.template.Configuration.VERSION_2_3_25);
     configuration.setTemplateLoader(templateLoader());
-    configuration.setDefaultEncoding(UTF8.name());
+    configuration.setDefaultEncoding("UTF-8");
     configuration.setTemplateExceptionHandler(TemplateExceptionHandler.RETHROW_HANDLER);
     configuration.setLogTemplateExceptions(false);
     configuration.setTemplateUpdateDelayMilliseconds(delayForNewTemplates);

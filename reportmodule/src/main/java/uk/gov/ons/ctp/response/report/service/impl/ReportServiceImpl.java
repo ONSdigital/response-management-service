@@ -3,9 +3,9 @@ package uk.gov.ons.ctp.response.report.service.impl;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
 import uk.gov.ons.ctp.response.report.domain.model.Report;
 import uk.gov.ons.ctp.response.report.domain.model.ReportSummary;
 import uk.gov.ons.ctp.response.report.domain.model.ReportType;
@@ -14,7 +14,7 @@ import uk.gov.ons.ctp.response.report.domain.repository.ReportTypeRepository;
 import uk.gov.ons.ctp.response.report.service.ReportService;
 
 @Slf4j
-@Component
+@Service
 public class ReportServiceImpl implements ReportService {
 
   /**

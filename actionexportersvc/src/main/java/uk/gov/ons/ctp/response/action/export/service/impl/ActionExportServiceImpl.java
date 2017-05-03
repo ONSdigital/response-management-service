@@ -5,9 +5,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
-import javax.inject.Inject;
-import javax.inject.Named;
-
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,7 +27,7 @@ import uk.gov.ons.ctp.response.action.message.instruction.ActionRequest;
 /**
  * Service implementation responsible for persisting action export requests
  */
-@Named
+@Service
 @Slf4j
 public class ActionExportServiceImpl implements ActionExportService {
 
@@ -36,16 +35,16 @@ public class ActionExportServiceImpl implements ActionExportService {
 
   private static final int TRANSACTION_TIMEOUT = 60;
 
-  @Inject
+  @Autowired
   private ActionFeedbackPublisher actionFeedbackPubl;
 
-  @Inject
+  @Autowired
   private MapperFacade mapperFacade;
 
-  @Inject
+  @Autowired
   private ActionRequestRepository actionRequestRepo;
 
-  @Inject
+  @Autowired
   private AddressRepository addressRepo;
 
   @Transactional(propagation = Propagation.REQUIRED, readOnly = false, timeout = TRANSACTION_TIMEOUT)

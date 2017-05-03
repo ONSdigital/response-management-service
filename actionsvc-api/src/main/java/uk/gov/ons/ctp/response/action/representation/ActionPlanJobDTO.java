@@ -35,6 +35,8 @@ public class ActionPlanJobDTO {
   @Size(min = CREATED_BY_MIN, max = CREATED_BY_MAX)
   private String createdBy;
   private String state;
+
   private Date createdDateTime;
+
   private Date updatedDateTime;
 }

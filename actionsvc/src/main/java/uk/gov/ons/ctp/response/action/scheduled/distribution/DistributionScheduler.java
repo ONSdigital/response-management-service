@@ -1,20 +1,19 @@
 package uk.gov.ons.ctp.response.action.scheduled.distribution;
 
-import javax.inject.Inject;
-import javax.inject.Named;
-
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.actuate.health.Health;
 import org.springframework.boot.actuate.health.HealthIndicator;
 import org.springframework.scheduling.annotation.Scheduled;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
 
 /**
  * This bean will have the actionDistributor injected into it by spring on
  * constructions. It will then schedule the running of the distributor using
  * details from the AppConfig
  */
-@Named
+@Component
 @Slf4j
 public class DistributionScheduler implements HealthIndicator {
 
@@ -25,7 +24,7 @@ public class DistributionScheduler implements HealthIndicator {
         .build();
   }
 
-  @Inject
+  @Autowired
   private ActionDistributor actionDistributorImpl;
 
   private DistributionInfo distributionInfo = new DistributionInfo();
