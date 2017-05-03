@@ -8,8 +8,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.Spy;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
@@ -134,17 +132,11 @@ public class ActionRequestEndpointTest {
   @Test
   public void exportExistingActionRequest() throws Exception {
     when(actionRequestService.retrieveActionRequest(BigInteger.valueOf(EXISTING_ACTION_ID))).thenReturn(buildActionRequest(EXISTING_ACTION_ID));
-    when(transformationService.processActionRequest(any(ExportMessage.class), any(ActionRequestInstruction.class))).thenAnswer(new Answer<ExportMessage>() {
-      public ExportMessage answer(final InvocationOnMock invocation) throws Throwable {
-        Object[] args = invocation.getArguments();
-        return buildSftpMessage((ExportMessage) args[0]);
-      }
+    when(transformationService.processActionRequest(any(ExportMessage.class), any(ActionRequestInstruction.class))).thenAnswer(invocation -> {
+      Object[] args = invocation.getArguments();
+      return buildSftpMessage((ExportMessage) args[0]);
     });
-    when(sftpService.sendMessage(any(String.class), any(), any())).thenAnswer(new Answer<byte[]>() {
-      public byte[] answer(final InvocationOnMock invocation) throws Throwable {
-        return "Any string".getBytes();
-      }
-    });
+    when(sftpService.sendMessage(any(String.class), any(), any())).thenAnswer(invocation -> "Any string".getBytes());
 
     ResultActions actions = mockMvc.perform(postJson(String.format("/actionrequests/%s", EXISTING_ACTION_ID), ""));
 
