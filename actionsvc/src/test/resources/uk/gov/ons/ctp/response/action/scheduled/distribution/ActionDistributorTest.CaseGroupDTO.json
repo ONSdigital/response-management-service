@@ -1,22 +1,26 @@
 [
-{
-  "caseGroupId":"1",
-  "sampleId":"1",
-  "uprn":"1234"
-},
-{
-  "caseGroupId":"2",
-  "sampleId":"1",
-  "uprn":"1234"
-},
-{
-  "caseGroupId":"3",
-  "sampleId":"1",
-  "uprn":"1234"
-},
-{
-  "caseGroupId":"4",
-  "sampleId":"1",
-  "uprn":"1234"
-}
+	{
+		"caseGroupId": "1",
+		"sampleUnitType": "H",
+		"sampleUnitRef": "12345678",
+		"partyId": 1
+	},
+	{
+		"caseGroupId": "2",
+		"sampleUnitType": "H",
+		"sampleUnitRef": "12345678",
+		"partyId": 1
+	},
+	{
+		"caseGroupId": "3",
+		"sampleUnitType": "H",
+		"sampleUnitRef": "12345678",
+		"partyId": 1
+	},
+	{
+		"caseGroupId": "4",
+		"sampleUnitType": "H",
+		"sampleUnitRef": "12345678",
+		"partyId": 1
+	}
 ]

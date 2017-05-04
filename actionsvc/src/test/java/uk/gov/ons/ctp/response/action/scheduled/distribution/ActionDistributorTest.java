@@ -57,7 +57,6 @@ public class ActionDistributorTest {
 
   private static final int I_HATE_CHECKSTYLE_TEN = 10;
 
-  private static final long FAKE_UPRN = 1234L;
 
   @Spy
   private AppConfig appConfig = new AppConfig();

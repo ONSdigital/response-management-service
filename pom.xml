@@ -24,16 +24,12 @@
     </properties>
 
     <modules>
-      <!--
         <module>actionsvc-api</module>
         <module>actionsvc</module>
-        -->
         <module>casesvc-api</module>
         <module>casesvc</module>
         <module>reportmodule</module>
-        <!--
         <module>actionexportersvc</module>
-        -->
     </modules>
 
     <dependencyManagement>
