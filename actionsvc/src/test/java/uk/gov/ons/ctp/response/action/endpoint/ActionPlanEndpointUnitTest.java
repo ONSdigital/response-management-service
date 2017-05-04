@@ -70,10 +70,9 @@ public class ActionPlanEndpointUnitTest {
   private static final String CREATED_BY = "whilep1";
   private static final String LAST_RUN_DATE_TIME = "2016-03-09T11:15:48.023+0000";
   private static final String OUR_EXCEPTION_MESSAGE = "this is what we throw";
-
-  private static final String ACTIONPLAN_JSON = "{\"actionPlanId\":21,\"surveyId\":1,\"name\":\"HH\","
-      + "\"description\":\"philippetesting\",\"createdBy\":\"SYSTEM\","
-      + "\"lastRunDateTime\":null}";
+  
+  private static final String ACTIONPLAN_JSON = "{\"surveyId\":1,\"name\":\"HH\", \"description\":\"philippetesting\","
+      +"\"createdBy\":\"SYSTEM\", \"lastRunDateTime\":null}";
   private static final String ACTIONPLAN_INVALIDJSON = "{\"some\":\"joke\"}";
 
   private static final Timestamp ACTIONPLAN_LAST_GOOD_RUN_DATE_TIMESTAMP = Timestamp
