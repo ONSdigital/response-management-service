@@ -1,5 +1,6 @@
 package uk.gov.ons.ctp.response.action.export.endpoint;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.util.List;
@@ -12,6 +13,7 @@ import org.springframework.util.CollectionUtils;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import uk.gov.ons.ctp.common.error.CTPException;
 import uk.gov.ons.ctp.response.action.export.domain.TemplateMapping;
 import uk.gov.ons.ctp.response.action.export.representation.TemplateMappingDTO;
@@ -64,18 +66,20 @@ public class TemplateMappingEndpoint {
   /**
    * To store TemplateMappings
    *
-   * @param fileContents the TemplateMapping content
+   * @param file the TemplateMapping content
    * @return 201 if created
    * @throws CTPException if the TemplateMapping can't be stored
    */
   @RequestMapping(method = RequestMethod.POST, consumes = "multipart/form-data")
-  public ResponseEntity<?> storeTemplateMapping(@RequestParam("file")  InputStream fileContents) throws CTPException {
-    // TODO Test and maybe InputStream fileContents should be MultipartFile file
-
+  public ResponseEntity<?> storeTemplateMapping(@RequestParam("file") MultipartFile file) throws CTPException {
     log.debug("Entering storeTemplateMapping");
-    List<TemplateMapping> mappings = templateMappingService.storeTemplateMappings(fileContents);
+    try {
+      List<TemplateMapping> mappings = templateMappingService.storeTemplateMappings(file.getInputStream());
 
-    List<TemplateMappingDTO> results = mapperFacade.mapAsList(mappings, TemplateMappingDTO.class);
-    return ResponseEntity.created(URI.create("TODO")).body(results);
+      List<TemplateMappingDTO> results = mapperFacade.mapAsList(mappings, TemplateMappingDTO.class);
+      return ResponseEntity.created(URI.create("TODO")).body(results);
+    } catch (IOException e) {
+      throw new CTPException(CTPException.Fault.SYSTEM_ERROR, "Failed reading the provided template mapping file.");
+    }
   }
 }
