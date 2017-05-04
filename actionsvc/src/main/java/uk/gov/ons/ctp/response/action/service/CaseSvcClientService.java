@@ -3,12 +3,11 @@ package uk.gov.ons.ctp.response.action.service;
 import java.util.List;
 
 import uk.gov.ons.ctp.response.action.domain.model.Action;
-import uk.gov.ons.ctp.response.casesvc.representation.AddressDTO;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseDTO;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseEventDTO;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseGroupDTO;
-import uk.gov.ons.ctp.response.casesvc.representation.CaseTypeDTO;
 import uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO;
+import uk.gov.ons.ctp.response.party.representation.PartyDTO;
 
 /**
  * A Service which utilises the CaseSvc via RESTful client calls
@@ -25,13 +24,13 @@ public interface CaseSvcClientService {
   CaseEventDTO createNewCaseEvent(final Action action, CategoryDTO.CategoryType actionCategory);
 
   /**
-   * Call CaseSvc using REST to get the Address MAY throw a RuntimeException if
+   * Call PartySvc using REST to get the Party MAY throw a RuntimeException if
    * the call fails
    *
-   * @param uprn identifies the Address to fetch
-   * @return the Address we fetched
+   * @param partyId the PartySvc URN
+   * @return the Party we fetched!
    */
-  AddressDTO getAddress(final Long uprn);
+  PartyDTO getParty(final String partyId);
 
   /**
    * Call CaseSvc using REST to get the CaseGroups details MAY throw a
@@ -51,13 +50,6 @@ public interface CaseSvcClientService {
    */
   CaseDTO getCase(final Integer caseId);
   
-  /**
-   * Get a casetype by its id
-   * @param caseTypeId the id
-   * @return the casetype
-   */
-  CaseTypeDTO getCaseType(Integer caseTypeId);
-
   /**
    * Call CaseSvc using REST to get the CaseEvents for the Case MAY throw a
    * RuntimeException if the call fails

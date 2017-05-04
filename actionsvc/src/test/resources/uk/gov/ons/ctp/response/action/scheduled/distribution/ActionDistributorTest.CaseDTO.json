@@ -1,58 +1,64 @@
 [
-{  
-   "caseId":1,
-   "caseGroupId":1,
-   "state":"SAMPLED_INIT",
-   "caseTypeId":1,
-   "createdDateTime":1460732606544,
-   "createdBy":"me",
-   "iac":"bbbb cccc dddd",
-   "actionPlanMappingId":1,
-   "responses":[
-   ]
-},
-{  
-   "caseId":2,
-   "caseGroupId":1,
-   "state":"SAMPLED_INIT",
-   "caseTypeId":1,
-   "createdDateTime":1460732606544,
-   "createdBy":"me",
-   "iac": "cccc dddd ffff",
-   "actionPlanMappingId":2,
-   "responses":[
-   {
-   "dateTime":1460732606544,
-   "inboundChannel":"ONLINE"
-   }
-   ]
-},
-{  
-   "caseId":3,
-   "caseGroupId":1,
-   "state":"SAMPLED_INIT",
-   "caseTypeId":1,
-   "createdDateTime":1460732606544,
-   "createdBy":"me",
-   "iac": "dddd ffff gggg",
-   "actionPlanMappingId":3,
-   "responses":[
-   ]
-},
-{  
-   "caseId":4,
-   "caseGroupId":1,
-   "state":"SAMPLED_INIT",
-   "caseTypeId":1,
-   "createdDateTime":1460732606544,
-   "createdBy":"me",
-   "iac": "ffff gggg hhhh",
-   "actionPlanMappingId":4,
-   "responses":[
-   {
-   "dateTime":1460732606544,
-   "inboundChannel":"ONLINE"
-   }
-   ]
-}
+	{
+		"caseId": 1,
+		"caseGroupId": 1,
+		"sampleUnitType": "H",
+		"sampleUnitRef": "12345678",
+		"partyId": 1,
+		"state": "SAMPLED_INIT",
+		"createdDateTime": 1460732606544,
+		"createdBy": "me",
+		"iac": "bbbb cccc dddd",
+		"actionPlanId": 1,
+		"responses": []
+	},
+	{
+		"caseId": 2,
+		"caseGroupId": 1,
+		"sampleUnitType": "H",
+		"sampleUnitRef": "12345678",
+		"partyId": 1,
+		"state": "SAMPLED_INIT",
+		"createdDateTime": 1460732606544,
+		"createdBy": "me",
+		"iac": "cccc dddd ffff",
+		"actionPlanId": 2,
+		"responses": [
+			{
+				"dateTime": 1460732606544,
+				"inboundChannel": "ONLINE"
+			}
+		]
+	},
+	{
+		"caseId": 3,
+		"caseGroupId": 1,
+		"sampleUnitType": "H",
+		"sampleUnitRef": "12345678",
+		"partyId": 1,
+		"state": "SAMPLED_INIT",
+		"createdDateTime": 1460732606544,
+		"createdBy": "me",
+		"iac": "dddd ffff gggg",
+		"actionPlanId": 3,
+		"responses": []
+	},
+	{
+		"caseId": 4,
+		"caseGroupId": 1,
+		"sampleUnitType": "H",
+		"sampleUnitRef": "12345678",
+		"partyId": 1,
+		"state": "SAMPLED_INIT",
+		"createdDateTime": 1460732606544,
+		"createdBy": "me",
+		"iac": "ffff gggg hhhh",
+		"actionPlanId": 4,
+		"responses": [
+			{
+				"dateTime": 1460732606544,
+				"inboundChannel": "ONLINE"
+			}
+		]
+	}
 ]
