@@ -1,21 +1,27 @@
 databaseChangeLog:
 
   - changeSet:
-      id: 9.33.0-1
+      id: 10.37.0-1
       author: Sarah Radford
       changes:
         - sqlFile:
-            comment: Create a new survey and actionplan for DTM to use for testing
-            path: create_DTM_test_data.sql
+            comment: Action foundation schema
+            path: ACTION_foundation_schema.sql
             relativeToChangelogFile: true
             splitStatements: false
 
   - changeSet:
-      id: 9.33.0-2
+      id: 10.37.0-2
       author: Sarah Radford
       changes:
         - sqlFile:
-            comment: Change offsets
-            path: Update_Rule_offset.sql
+            comment: BRES Action seeddata
+            path: BRES_ACTION_seeddata.sql
             relativeToChangelogFile: true
             splitStatements: false
+      
+
+
+
+
+
