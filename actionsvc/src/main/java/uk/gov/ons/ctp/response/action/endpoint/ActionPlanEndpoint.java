@@ -20,8 +20,6 @@ import uk.gov.ons.ctp.response.action.representation.ActionPlanDTO;
 import uk.gov.ons.ctp.response.action.representation.ActionRuleDTO;
 import uk.gov.ons.ctp.response.action.service.ActionPlanService;
 
-import javax.validation.Valid;
-
 /**
  * The REST endpoint controller for ActionPlans.
  */
@@ -69,6 +67,7 @@ public class ActionPlanEndpoint implements CTPEndpoint {
     return mapperFacade.map(actionPlan, ActionPlanDTO.class);
   }
 
+  // TODO Make sense to have actionplanid in the path and not in json
   /**
    * This method returns the associated action plan after it has been updated. Note that only the description and
    * the lastGoodRunDatetime can be updated.
@@ -80,7 +79,7 @@ public class ActionPlanEndpoint implements CTPEndpoint {
    */
   @RequestMapping(value = "/{actionplanid}", method = RequestMethod.PUT, consumes = "application/json")
   public final ActionPlanDTO updateActionPlanByActionPlanId(@PathVariable("actionplanid") final Integer actionPlanId,
-                                                            @RequestBody @Valid final ActionPlanDTO requestObject,
+                                                            @RequestBody final ActionPlanDTO requestObject,
                                                             BindingResult bindingResult) throws CTPException {
     log.info("UpdateActionPlanByActionPlanId with actionplanid {} - actionPlan {}", actionPlanId, requestObject);
     if (bindingResult.hasErrors()) {

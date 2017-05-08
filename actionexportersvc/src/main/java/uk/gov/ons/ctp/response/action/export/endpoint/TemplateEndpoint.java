@@ -1,16 +1,19 @@
 package uk.gov.ons.ctp.response.action.export.endpoint;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.CollectionUtils;
 
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import uk.gov.ons.ctp.common.error.CTPException;
 import uk.gov.ons.ctp.response.action.export.domain.TemplateExpression;
 import uk.gov.ons.ctp.response.action.export.representation.TemplateExpressionDTO;
@@ -26,6 +29,7 @@ public class TemplateEndpoint {
   @Autowired
   private TemplateService templateService;
 
+  @Qualifier("actionExporterBeanMapper")
   @Autowired
   private MapperFacade mapperFacade;
 
@@ -60,18 +64,21 @@ public class TemplateEndpoint {
    * To store a Template
    * 
    * @param templateName the Template name
-   * @param fileContents the Template content
+   * @param file the Template content
    * @return 201 if created
    * @throws CTPException if the Template can't be stored
    */
   @RequestMapping(value = "/{templateName}", method = RequestMethod.POST, consumes = "multipart/form-data")
   public ResponseEntity<?> storeTemplate(@PathVariable("templateName") final String templateName,
-                                         @RequestParam("file") InputStream fileContents) throws CTPException {
-    // TODO Test and maybe InputStream fileContents should be MultipartFile file
+                                         @RequestParam("file") MultipartFile file) throws CTPException {
     log.debug("Entering storeTemplate with templateName {}", templateName);
-    TemplateExpression template = templateService.storeTemplate(templateName, fileContents);
+    try {
+      TemplateExpression template = templateService.storeTemplate(templateName, file.getInputStream());
 
-    TemplateExpressionDTO templateDTO = mapperFacade.map(template, TemplateExpressionDTO.class);
-    return ResponseEntity.created(URI.create("TODO")).body(templateDTO);
+      TemplateExpressionDTO templateDTO = mapperFacade.map(template, TemplateExpressionDTO.class);
+      return ResponseEntity.created(URI.create("TODO")).body(templateDTO);
+    } catch (IOException e) {
+      throw new CTPException(CTPException.Fault.SYSTEM_ERROR, "Failed reading the provided template file.");
+    }
   }
 }

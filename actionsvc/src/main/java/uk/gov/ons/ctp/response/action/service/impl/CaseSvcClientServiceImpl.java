@@ -12,12 +12,11 @@ import uk.gov.ons.ctp.common.rest.RestClient;
 import uk.gov.ons.ctp.response.action.config.AppConfig;
 import uk.gov.ons.ctp.response.action.domain.model.Action;
 import uk.gov.ons.ctp.response.action.service.CaseSvcClientService;
-import uk.gov.ons.ctp.response.casesvc.representation.AddressDTO;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseDTO;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseEventDTO;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseGroupDTO;
-import uk.gov.ons.ctp.response.casesvc.representation.CaseTypeDTO;
 import uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO;
+import uk.gov.ons.ctp.response.party.representation.PartyDTO;
 
 /**
  * Impl of the service that centralizes all REST calls to the Case service
@@ -33,18 +32,13 @@ public class CaseSvcClientServiceImpl implements CaseSvcClientService {
   private RestClient caseSvcClient;
 
   @Override
-  public AddressDTO getAddress(final Long uprn) {
-    AddressDTO caseDTO = caseSvcClient.getResource(appConfig.getCaseSvc().getAddressByUprnGetPath(),
-        AddressDTO.class, uprn);
-    return caseDTO;
-  }
+  public PartyDTO getParty(final String partyId) {
+    PartyDTO partyDTO = null;
 
-  @Override
-  public CaseTypeDTO getCaseType(final Integer caseTypeId) {
-    CaseTypeDTO caseTypeDTO = caseSvcClient.getResource(appConfig.getCaseSvc().getCaseTypeByIdPath(),
-        CaseTypeDTO.class, caseTypeId);
-    return caseTypeDTO;
-  } 
+//    AddressDTO addressDTO = caseSvcClient.getResource(appConfig.getCaseSvc().getAddressByUprnGetPath(),
+//        AddressDTO.class, uprn);
+    return partyDTO;
+  }
 
   @Override
   public CaseDTO getCase(final Integer caseId) {

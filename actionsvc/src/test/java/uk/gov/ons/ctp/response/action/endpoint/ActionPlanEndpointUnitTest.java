@@ -70,10 +70,9 @@ public class ActionPlanEndpointUnitTest {
   private static final String CREATED_BY = "whilep1";
   private static final String LAST_RUN_DATE_TIME = "2016-03-09T11:15:48.023+0000";
   private static final String OUR_EXCEPTION_MESSAGE = "this is what we throw";
-
-  private static final String ACTIONPLAN_JSON = "{\"actionPlanId\":21,\"surveyId\":1,\"name\":\"HH\","
-      + "\"description\":\"philippetesting\",\"createdBy\":\"SYSTEM\","
-      + "\"lastRunDateTime\":null}";
+  
+  private static final String ACTIONPLAN_JSON = "{\"surveyId\":1,\"name\":\"HH\", \"description\":\"philippetesting\","
+      +"\"createdBy\":\"SYSTEM\", \"lastRunDateTime\":null}";
   private static final String ACTIONPLAN_INVALIDJSON = "{\"some\":\"joke\"}";
 
   private static final Timestamp ACTIONPLAN_LAST_GOOD_RUN_DATE_TIMESTAMP = Timestamp
@@ -117,16 +116,16 @@ public class ActionPlanEndpointUnitTest {
 
     ResultActions actions = mockMvc.perform(getJson("/actionplans"));
 
-    actions.andExpect(status().isOk());
-    actions.andExpect(handler().handlerType(ActionPlanEndpoint.class));
-    actions.andExpect(handler().methodName("findActionPlans"));
-    actions.andExpect(jsonPath("$", Matchers.hasSize(3)));
-    actions.andExpect(jsonPath("$[*].actionPlanId", containsInAnyOrder(1, 2, 3)));
-    actions.andExpect(jsonPath("$[*].surveyId", containsInAnyOrder(ACTIONPLAN_SURVEYID, ACTIONPLAN_SURVEYID, ACTIONPLAN_SURVEYID)));
-    actions.andExpect(jsonPath("$[*].name", containsInAnyOrder(ACTIONPLAN1_NAME, ACTIONPLAN2_NAME, ACTIONPLAN3_NAME)));
-    actions.andExpect(jsonPath("$[*].description", containsInAnyOrder(ACTIONPLAN1_DESC, ACTIONPLAN2_DESC, ACTIONPLAN3_DESC)));
-    actions.andExpect(jsonPath("$[*].createdBy", containsInAnyOrder(CREATED_BY, CREATED_BY, CREATED_BY)));
-    actions.andExpect(jsonPath("$[*].lastRunDateTime", containsInAnyOrder(LAST_RUN_DATE_TIME, LAST_RUN_DATE_TIME, LAST_RUN_DATE_TIME)));
+    actions.andExpect(status().isOk())
+            .andExpect(handler().handlerType(ActionPlanEndpoint.class))
+            .andExpect(handler().methodName("findActionPlans"))
+            .andExpect(jsonPath("$", Matchers.hasSize(3)))
+            .andExpect(jsonPath("$[*].actionPlanId", containsInAnyOrder(1, 2, 3)))
+            .andExpect(jsonPath("$[*].surveyId", containsInAnyOrder(ACTIONPLAN_SURVEYID, ACTIONPLAN_SURVEYID, ACTIONPLAN_SURVEYID)))
+            .andExpect(jsonPath("$[*].name", containsInAnyOrder(ACTIONPLAN1_NAME, ACTIONPLAN2_NAME, ACTIONPLAN3_NAME)))
+            .andExpect(jsonPath("$[*].description", containsInAnyOrder(ACTIONPLAN1_DESC, ACTIONPLAN2_DESC, ACTIONPLAN3_DESC)))
+            .andExpect(jsonPath("$[*].createdBy", containsInAnyOrder(CREATED_BY, CREATED_BY, CREATED_BY)))
+            .andExpect(jsonPath("$[*].lastRunDateTime", containsInAnyOrder(LAST_RUN_DATE_TIME, LAST_RUN_DATE_TIME, LAST_RUN_DATE_TIME)));
   }
 
   /**
@@ -139,15 +138,15 @@ public class ActionPlanEndpointUnitTest {
 
     ResultActions actions = mockMvc.perform(getJson(String.format("/actionplans/%s", ACTIONPLANID)));
 
-    actions.andExpect(status().isOk());
-    actions.andExpect(handler().handlerType(ActionPlanEndpoint.class));
-    actions.andExpect(handler().methodName("findActionPlanByActionPlanId"));
-    actions.andExpect(jsonPath("$.actionPlanId", is(ACTIONPLANID)));
-    actions.andExpect(jsonPath("$.surveyId", is(ACTIONPLAN_SURVEYID)));
-    actions.andExpect(jsonPath("$.name", is(ACTIONPLAN3_NAME)));
-    actions.andExpect(jsonPath("$.description", is(ACTIONPLAN3_DESC)));
-    actions.andExpect(jsonPath("$.createdBy", is(CREATED_BY)));
-    actions.andExpect(jsonPath("$.lastRunDateTime", is(LAST_RUN_DATE_TIME)));
+    actions.andExpect(status().isOk())
+            .andExpect(handler().handlerType(ActionPlanEndpoint.class))
+            .andExpect(handler().methodName("findActionPlanByActionPlanId"))
+            .andExpect(jsonPath("$.actionPlanId", is(ACTIONPLANID)))
+            .andExpect(jsonPath("$.surveyId", is(ACTIONPLAN_SURVEYID)))
+            .andExpect(jsonPath("$.name", is(ACTIONPLAN3_NAME)))
+            .andExpect(jsonPath("$.description", is(ACTIONPLAN3_DESC)))
+            .andExpect(jsonPath("$.createdBy", is(CREATED_BY)))
+            .andExpect(jsonPath("$.lastRunDateTime", is(LAST_RUN_DATE_TIME)));
   }
 
   /**
@@ -157,12 +156,12 @@ public class ActionPlanEndpointUnitTest {
   public void findActionPlanNotFound() throws Exception {
     ResultActions actions = mockMvc.perform(getJson(String.format("/actionplans/%s", NON_EXISTING_ACTIONPLANID)));
 
-    actions.andExpect(status().isNotFound());
-    actions.andExpect(handler().handlerType(ActionPlanEndpoint.class));
-    actions.andExpect(handler().methodName("findActionPlanByActionPlanId"));
-    actions.andExpect(jsonPath("$.error.code", is(CTPException.Fault.RESOURCE_NOT_FOUND.name())));
-    actions.andExpect(jsonPath("$.error.message", isA(String.class)));
-    actions.andExpect(jsonPath("$.error.timestamp", isA(String.class)));
+    actions.andExpect(status().isNotFound())
+            .andExpect(handler().handlerType(ActionPlanEndpoint.class))
+            .andExpect(handler().methodName("findActionPlanByActionPlanId"))
+            .andExpect(jsonPath("$.error.code", is(CTPException.Fault.RESOURCE_NOT_FOUND.name())))
+            .andExpect(jsonPath("$.error.message", isA(String.class)))
+            .andExpect(jsonPath("$.error.timestamp", isA(String.class)));
   }
 
   /**
@@ -175,12 +174,12 @@ public class ActionPlanEndpointUnitTest {
 
     ResultActions actions = mockMvc.perform(getJson(String.format("/actionplans/%s", UNCHECKED_EXCEPTION)));
 
-    actions.andExpect(status().is5xxServerError());
-    actions.andExpect(handler().handlerType(ActionPlanEndpoint.class));
-    actions.andExpect(handler().methodName("findActionPlanByActionPlanId"));
-    actions.andExpect(jsonPath("$.error.code", is(CTPException.Fault.SYSTEM_ERROR.name())));
-    actions.andExpect(jsonPath("$.error.message", is(OUR_EXCEPTION_MESSAGE)));
-    actions.andExpect(jsonPath("$.error.timestamp", isA(String.class)));
+    actions.andExpect(status().is5xxServerError())
+            .andExpect(handler().handlerType(ActionPlanEndpoint.class))
+            .andExpect(handler().methodName("findActionPlanByActionPlanId"))
+            .andExpect(jsonPath("$.error.code", is(CTPException.Fault.SYSTEM_ERROR.name())))
+            .andExpect(jsonPath("$.error.message", is(OUR_EXCEPTION_MESSAGE)))
+            .andExpect(jsonPath("$.error.timestamp", isA(String.class)));
   }
 
   /**
@@ -204,18 +203,18 @@ public class ActionPlanEndpointUnitTest {
 
     ResultActions actions = mockMvc.perform(getJson(String.format("/actionplans/%s/rules", ACTIONPLANID)));
 
-    actions.andExpect(status().isOk());
-    actions.andExpect(handler().handlerType(ActionPlanEndpoint.class));
-    actions.andExpect(handler().methodName("returnActionRulesForActionPlanId"));
-    actions.andExpect(jsonPath("$", Matchers.hasSize(3)));
-    actions.andExpect(jsonPath("$[*].actionRuleId", containsInAnyOrder(1, 2, 3)));
-    actions.andExpect(jsonPath("$[*].actionPlanId", containsInAnyOrder(ACTIONPLANID, ACTIONPLANID, ACTIONPLANID)));
-    actions.andExpect(jsonPath("$[*].priority", containsInAnyOrder(ACTIONRULE_PRIORITY, ACTIONRULE_PRIORITY, ACTIONRULE_PRIORITY)));
-    actions.andExpect(jsonPath("$[*].surveyDateDaysOffset", containsInAnyOrder(ACTIONRULE_SURVEYDATEDAYSOFFSET,
-            ACTIONRULE_SURVEYDATEDAYSOFFSET, ACTIONRULE_SURVEYDATEDAYSOFFSET)));
-    actions.andExpect(jsonPath("$[*].actionTypeName", containsInAnyOrder(ACTIONRULE_ACTIONTYPENAME, ACTIONRULE_ACTIONTYPENAME, ACTIONRULE_ACTIONTYPENAME)));
-    actions.andExpect(jsonPath("$[*].name", containsInAnyOrder(ACTIONRULE_NAME, ACTIONRULE_NAME, ACTIONRULE_NAME)));
-    actions.andExpect(jsonPath("$[*].description", containsInAnyOrder(ACTIONRULE_DESCRIPTION, ACTIONRULE_DESCRIPTION, ACTIONRULE_DESCRIPTION)));
+    actions.andExpect(status().isOk())
+            .andExpect(handler().handlerType(ActionPlanEndpoint.class))
+            .andExpect(handler().methodName("returnActionRulesForActionPlanId"))
+            .andExpect(jsonPath("$", Matchers.hasSize(3)))
+            .andExpect(jsonPath("$[*].actionRuleId", containsInAnyOrder(1, 2, 3)))
+            .andExpect(jsonPath("$[*].actionPlanId", containsInAnyOrder(ACTIONPLANID, ACTIONPLANID, ACTIONPLANID)))
+            .andExpect(jsonPath("$[*].priority", containsInAnyOrder(ACTIONRULE_PRIORITY, ACTIONRULE_PRIORITY, ACTIONRULE_PRIORITY)))
+            .andExpect(jsonPath("$[*].surveyDateDaysOffset", containsInAnyOrder(ACTIONRULE_SURVEYDATEDAYSOFFSET,
+            ACTIONRULE_SURVEYDATEDAYSOFFSET, ACTIONRULE_SURVEYDATEDAYSOFFSET)))
+            .andExpect(jsonPath("$[*].actionTypeName", containsInAnyOrder(ACTIONRULE_ACTIONTYPENAME, ACTIONRULE_ACTIONTYPENAME, ACTIONRULE_ACTIONTYPENAME)))
+            .andExpect(jsonPath("$[*].name", containsInAnyOrder(ACTIONRULE_NAME, ACTIONRULE_NAME, ACTIONRULE_NAME)))
+            .andExpect(jsonPath("$[*].description", containsInAnyOrder(ACTIONRULE_DESCRIPTION, ACTIONRULE_DESCRIPTION, ACTIONRULE_DESCRIPTION)));
   }
 
   /**
@@ -228,9 +227,9 @@ public class ActionPlanEndpointUnitTest {
 
     ResultActions actions = mockMvc.perform(getJson(String.format("/actionplans/%s/rules", ACTIONPLANID_WITHNOACTIONRULE)));
 
-    actions.andExpect(status().isNoContent());
-    actions.andExpect(handler().handlerType(ActionPlanEndpoint.class));
-    actions.andExpect(handler().methodName("returnActionRulesForActionPlanId"));
+    actions.andExpect(status().isNoContent())
+            .andExpect(handler().handlerType(ActionPlanEndpoint.class))
+            .andExpect(handler().methodName("returnActionRulesForActionPlanId"));
   }
 
   /**
@@ -240,12 +239,12 @@ public class ActionPlanEndpointUnitTest {
   public void findActionRulesForNonExistingActionPlan() throws Exception {
     ResultActions actions = mockMvc.perform(getJson(String.format("/actionplans/%s/rules", NON_EXISTING_ACTIONPLANID)));
 
-    actions.andExpect(status().isNotFound());
-    actions.andExpect(handler().handlerType(ActionPlanEndpoint.class));
-    actions.andExpect(handler().methodName("returnActionRulesForActionPlanId"));
-    actions.andExpect(jsonPath("$.error.code", is(CTPException.Fault.RESOURCE_NOT_FOUND.name())));
-    actions.andExpect(jsonPath("$.error.message", isA(String.class)));
-    actions.andExpect(jsonPath("$.error.timestamp", isA(String.class)));
+    actions.andExpect(status().isNotFound())
+            .andExpect(handler().handlerType(ActionPlanEndpoint.class))
+            .andExpect(handler().methodName("returnActionRulesForActionPlanId"))
+            .andExpect(jsonPath("$.error.code", is(CTPException.Fault.RESOURCE_NOT_FOUND.name())))
+            .andExpect(jsonPath("$.error.message", isA(String.class)))
+            .andExpect(jsonPath("$.error.timestamp", isA(String.class)));
   }
 
   /**
@@ -255,12 +254,12 @@ public class ActionPlanEndpointUnitTest {
   public void updateActionPlanNegativeScenarioInvalidJsonProvided() throws Exception {
     ResultActions actions = mockMvc.perform(putJson(String.format("/actionplans/%s", ACTIONPLANID), ACTIONPLAN_INVALIDJSON));
 
-    actions.andExpect(status().isBadRequest());
-    actions.andExpect(handler().handlerType(ActionPlanEndpoint.class));
-    actions.andExpect(handler().methodName("updateActionPlanByActionPlanId"));
-    actions.andExpect(jsonPath("$.error.code", is(CTPException.Fault.VALIDATION_FAILED.name())));
-    actions.andExpect(jsonPath("$.error.message", is(PROVIDED_JSON_INCORRECT)));
-    actions.andExpect(jsonPath("$.error.timestamp", isA(String.class)));
+    actions.andExpect(status().isBadRequest())
+            .andExpect(handler().handlerType(ActionPlanEndpoint.class))
+            .andExpect(handler().methodName("updateActionPlanByActionPlanId"))
+            .andExpect(jsonPath("$.error.code", is(CTPException.Fault.VALIDATION_FAILED.name())))
+            .andExpect(jsonPath("$.error.message", is(PROVIDED_JSON_INCORRECT)))
+            .andExpect(jsonPath("$.error.timestamp", isA(String.class)));
   }
 
   /**
@@ -273,14 +272,14 @@ public class ActionPlanEndpointUnitTest {
 
     ResultActions actions = mockMvc.perform(putJson(String.format("/actionplans/%s", ACTIONPLANID), ACTIONPLAN_JSON));
 
-    actions.andExpect(status().isOk());
-    actions.andExpect(handler().handlerType(ActionPlanEndpoint.class));
-    actions.andExpect(handler().methodName("updateActionPlanByActionPlanId"));
-    actions.andExpect(jsonPath("$.actionPlanId", is(ACTIONPLANID)));
-    actions.andExpect(jsonPath("$.surveyId", is(ACTIONPLAN_SURVEYID)));
-    actions.andExpect(jsonPath("$.name", is(ACTIONPLAN3_NAME)));
-    actions.andExpect(jsonPath("$.description", is(ACTIONPLAN3_DESC)));
-    actions.andExpect(jsonPath("$.createdBy", is(CREATED_BY)));
-    actions.andExpect(jsonPath("$.lastRunDateTime", is(LAST_RUN_DATE_TIME)));
+    actions.andExpect(status().isOk())
+            .andExpect(handler().handlerType(ActionPlanEndpoint.class))
+            .andExpect(handler().methodName("updateActionPlanByActionPlanId"))
+            .andExpect(jsonPath("$.actionPlanId", is(ACTIONPLANID)))
+            .andExpect(jsonPath("$.surveyId", is(ACTIONPLAN_SURVEYID)))
+            .andExpect(jsonPath("$.name", is(ACTIONPLAN3_NAME)))
+            .andExpect(jsonPath("$.description", is(ACTIONPLAN3_DESC)))
+            .andExpect(jsonPath("$.createdBy", is(CREATED_BY)))
+            .andExpect(jsonPath("$.lastRunDateTime", is(LAST_RUN_DATE_TIME)));
   }
 }

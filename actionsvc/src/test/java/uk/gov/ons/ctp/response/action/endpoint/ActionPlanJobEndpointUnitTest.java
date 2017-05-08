@@ -93,15 +93,15 @@ public class ActionPlanJobEndpointUnitTest {
 
     ResultActions actions = mockMvc.perform(getJson(String.format("/actionplans/jobs/%s", ACTIONPLANJOBID)));
 
-    actions.andExpect(status().isOk());
-    actions.andExpect(handler().handlerType(ActionPlanJobEndpoint.class));
-    actions.andExpect(handler().methodName("findActionPlanJobById"));
-    actions.andExpect(jsonPath("$.actionPlanJobId", is(ACTIONPLANJOBID)));
-    actions.andExpect(jsonPath("$.actionPlanId", is(ACTIONPLANJOBID_ACTIONPLANID)));
-    actions.andExpect(jsonPath("$.createdBy", is(ACTIONPLANJOBID_CREATED_BY)));
-    actions.andExpect(jsonPath("$.state", is(ACTIONPLANJOBID_STATE.name())));
-    actions.andExpect(jsonPath("$.createdDateTime", is(CREATED_DATE_TIME)));
-    actions.andExpect(jsonPath("$.updatedDateTime", is(UPDATED_DATE_TIME)));
+    actions.andExpect(status().isOk())
+            .andExpect(handler().handlerType(ActionPlanJobEndpoint.class))
+            .andExpect(handler().methodName("findActionPlanJobById"))
+            .andExpect(jsonPath("$.actionPlanJobId", is(ACTIONPLANJOBID)))
+            .andExpect(jsonPath("$.actionPlanId", is(ACTIONPLANJOBID_ACTIONPLANID)))
+            .andExpect(jsonPath("$.createdBy", is(ACTIONPLANJOBID_CREATED_BY)))
+            .andExpect(jsonPath("$.state", is(ACTIONPLANJOBID_STATE.name())))
+            .andExpect(jsonPath("$.createdDateTime", is(CREATED_DATE_TIME)))
+            .andExpect(jsonPath("$.updatedDateTime", is(UPDATED_DATE_TIME)));
   }
 
   /**
@@ -113,12 +113,12 @@ public class ActionPlanJobEndpointUnitTest {
 
     ResultActions actions = mockMvc.perform(getJson(String.format("/actionplans/jobs/%s", NON_EXISTING_ACTIONPLANJOBID)));
 
-    actions.andExpect(status().isNotFound());
-    actions.andExpect(handler().handlerType(ActionPlanJobEndpoint.class));
-    actions.andExpect(handler().methodName("findActionPlanJobById"));
-    actions.andExpect(jsonPath("$.error.code", is(CTPException.Fault.RESOURCE_NOT_FOUND.name())));
-    actions.andExpect(jsonPath("$.error.message", isA(String.class)));
-    actions.andExpect(jsonPath("$.error.timestamp", isA(String.class)));
+    actions.andExpect(status().isNotFound())
+            .andExpect(handler().handlerType(ActionPlanJobEndpoint.class))
+            .andExpect(handler().methodName("findActionPlanJobById"))
+            .andExpect(jsonPath("$.error.code", is(CTPException.Fault.RESOURCE_NOT_FOUND.name())))
+            .andExpect(jsonPath("$.error.message", isA(String.class)))
+            .andExpect(jsonPath("$.error.timestamp", isA(String.class)));
   }
 
   /**
@@ -130,12 +130,12 @@ public class ActionPlanJobEndpointUnitTest {
 
     ResultActions actions = mockMvc.perform(getJson(String.format("/actionplans/jobs/%s", UNCHECKED_EXCEPTION_ACTIONPLANJOBID)));
 
-    actions.andExpect(status().is5xxServerError());
-    actions.andExpect(handler().handlerType(ActionPlanJobEndpoint.class));
-    actions.andExpect(handler().methodName("findActionPlanJobById"));
-    actions.andExpect(jsonPath("$.error.code", is(CTPException.Fault.SYSTEM_ERROR.name())));
-    actions.andExpect(jsonPath("$.error.message", is(OUR_EXCEPTION_MESSAGE)));
-    actions.andExpect(jsonPath("$.error.timestamp", isA(String.class)));
+    actions.andExpect(status().is5xxServerError())
+            .andExpect(handler().handlerType(ActionPlanJobEndpoint.class))
+            .andExpect(handler().methodName("findActionPlanJobById"))
+            .andExpect(jsonPath("$.error.code", is(CTPException.Fault.SYSTEM_ERROR.name())))
+            .andExpect(jsonPath("$.error.message", is(OUR_EXCEPTION_MESSAGE)))
+            .andExpect(jsonPath("$.error.timestamp", isA(String.class)));
   }
 
   /**
@@ -154,15 +154,15 @@ public class ActionPlanJobEndpointUnitTest {
 
     ResultActions actions = mockMvc.perform(getJson(String.format("/actionplans/%s/jobs", ACTIONPLANID)));
 
-    actions.andExpect(status().isOk());
-    actions.andExpect(handler().handlerType(ActionPlanJobEndpoint.class));
-    actions.andExpect(handler().methodName("findAllActionPlanJobsByActionPlanId"));
-    actions.andExpect(jsonPath("$", Matchers.hasSize(3)));
-    actions.andExpect(jsonPath("$[*].actionPlanJobId", containsInAnyOrder(1, 2, 3)));
-    actions.andExpect(jsonPath("$[*].actionPlanId", containsInAnyOrder(ACTIONPLANID, ACTIONPLANID, ACTIONPLANID)));
-    actions.andExpect(jsonPath("$[*].createdBy", containsInAnyOrder(ACTIONPLANJOBID_CREATED_BY, ACTIONPLANJOBID_CREATED_BY, ACTIONPLANJOBID_CREATED_BY)));
-    actions.andExpect(jsonPath("$[*].createdDateTime", containsInAnyOrder(CREATED_DATE_TIME, CREATED_DATE_TIME, CREATED_DATE_TIME)));
-    actions.andExpect(jsonPath("$[*].updatedDateTime", containsInAnyOrder(UPDATED_DATE_TIME, UPDATED_DATE_TIME, UPDATED_DATE_TIME)));
+    actions.andExpect(status().isOk())
+            .andExpect(handler().handlerType(ActionPlanJobEndpoint.class))
+            .andExpect(handler().methodName("findAllActionPlanJobsByActionPlanId"))
+            .andExpect(jsonPath("$", Matchers.hasSize(3)))
+            .andExpect(jsonPath("$[*].actionPlanJobId", containsInAnyOrder(1, 2, 3)))
+            .andExpect(jsonPath("$[*].actionPlanId", containsInAnyOrder(ACTIONPLANID, ACTIONPLANID, ACTIONPLANID)))
+            .andExpect(jsonPath("$[*].createdBy", containsInAnyOrder(ACTIONPLANJOBID_CREATED_BY, ACTIONPLANJOBID_CREATED_BY, ACTIONPLANJOBID_CREATED_BY)))
+            .andExpect(jsonPath("$[*].createdDateTime", containsInAnyOrder(CREATED_DATE_TIME, CREATED_DATE_TIME, CREATED_DATE_TIME)))
+            .andExpect(jsonPath("$[*].updatedDateTime", containsInAnyOrder(UPDATED_DATE_TIME, UPDATED_DATE_TIME, UPDATED_DATE_TIME)));
   }
 
   /**
@@ -172,12 +172,12 @@ public class ActionPlanJobEndpointUnitTest {
   public void executeActionPlanBadJsonProvided() throws Exception {
     ResultActions actions = mockMvc.perform(postJson(String.format("/actionplans/%s/jobs", ACTIONPLANID), ACTIONPLANJOB_INVALIDJSON));
 
-    actions.andExpect(status().isBadRequest());
-    actions.andExpect(handler().handlerType(ActionPlanJobEndpoint.class));
-    actions.andExpect(handler().methodName("executeActionPlan"));
-    actions.andExpect(jsonPath("$.error.code", is(CTPException.Fault.VALIDATION_FAILED.name())));
-    actions.andExpect(jsonPath("$.error.message", is(INVALID_JSON)));
-    actions.andExpect(jsonPath("$.error.timestamp", isA(String.class)));
+    actions.andExpect(status().isBadRequest())
+            .andExpect(handler().handlerType(ActionPlanJobEndpoint.class))
+            .andExpect(handler().methodName("executeActionPlan"))
+            .andExpect(jsonPath("$.error.code", is(CTPException.Fault.VALIDATION_FAILED.name())))
+            .andExpect(jsonPath("$.error.message", is(INVALID_JSON)))
+            .andExpect(jsonPath("$.error.timestamp", isA(String.class)));
   }
 
   /**
@@ -190,15 +190,15 @@ public class ActionPlanJobEndpointUnitTest {
 
     ResultActions actions = mockMvc.perform(postJson(String.format("/actionplans/%s/jobs", ACTIONPLANID), ACTIONPLANJOB_VALIDJSON));
 
-    actions.andExpect(status().isCreated());
-    actions.andExpect(handler().handlerType(ActionPlanJobEndpoint.class));
-    actions.andExpect(handler().methodName("executeActionPlan"));
-    actions.andExpect(jsonPath("$.actionPlanJobId", is(ACTIONPLANJOBID)));
-    actions.andExpect(jsonPath("$.actionPlanId", is(ACTIONPLANJOBID_ACTIONPLANID)));
-    actions.andExpect(jsonPath("$.createdBy", is(ACTIONPLANJOBID_CREATED_BY)));
-    actions.andExpect(jsonPath("$.state", is(ACTIONPLANJOBID_STATE.name())));
-    actions.andExpect(jsonPath("$.createdDateTime", is(CREATED_DATE_TIME)));
-    actions.andExpect(jsonPath("$.updatedDateTime", is(UPDATED_DATE_TIME)));
+    actions.andExpect(status().isCreated())
+            .andExpect(handler().handlerType(ActionPlanJobEndpoint.class))
+            .andExpect(handler().methodName("executeActionPlan"))
+            .andExpect(jsonPath("$.actionPlanJobId", is(ACTIONPLANJOBID)))
+            .andExpect(jsonPath("$.actionPlanId", is(ACTIONPLANJOBID_ACTIONPLANID)))
+            .andExpect(jsonPath("$.createdBy", is(ACTIONPLANJOBID_CREATED_BY)))
+            .andExpect(jsonPath("$.state", is(ACTIONPLANJOBID_STATE.name())))
+            .andExpect(jsonPath("$.createdDateTime", is(CREATED_DATE_TIME)))
+            .andExpect(jsonPath("$.updatedDateTime", is(UPDATED_DATE_TIME)));
   }
 
 }

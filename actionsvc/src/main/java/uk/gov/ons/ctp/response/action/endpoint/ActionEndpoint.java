@@ -126,7 +126,7 @@ public final class ActionEndpoint implements CTPEndpoint {
    */
   @RequestMapping(value = "/{actionid}", method = RequestMethod.PUT, consumes = "application/json")
   public ActionDTO updateAction(@PathVariable("actionid") final BigInteger actionId,
-                                @RequestBody @Valid final ActionDTO actionDTO, BindingResult bindingResult)
+                                @RequestBody final ActionDTO actionDTO, BindingResult bindingResult)
       throws CTPException {
     log.info("Updating Action with {} {}", actionId, actionDTO);
     if (bindingResult.hasErrors()) {

@@ -1,7 +1,6 @@
 package uk.gov.ons.ctp.response.action;
 
 import java.math.BigInteger;
-import java.text.SimpleDateFormat;
 
 import org.redisson.Redisson;
 import org.redisson.api.RedissonClient;
@@ -13,7 +12,6 @@ import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ImportResource;
 import org.springframework.context.annotation.Primary;
-import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 import org.springframework.integration.annotation.IntegrationComponentScan;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;

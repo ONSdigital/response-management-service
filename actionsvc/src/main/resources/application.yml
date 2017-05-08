@@ -123,12 +123,12 @@ action-distribution:
   # when we fail to send to rabbit how long should we pause for before retry
   retry-sleep-seconds: 30
   # how long to pause after each distribution exercise 
-  delay-milli-seconds: 60000
+  delay-milli-seconds: 1000
 
  # the thread that executes plans to create the  actions
 plan-execution:
   # pause after each execution exercise 
-  delay-milli-seconds: 60000
+  delay-milli-seconds: 1000
 
  # calling the case svc endpoints
 case-svc:
