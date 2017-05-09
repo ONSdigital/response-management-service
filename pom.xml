@@ -1,5 +1,5 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
     <modelVersion>4.0.0</modelVersion>
     <groupId>uk.gov.ons.ctp.product</groupId>
@@ -182,8 +182,8 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-failsafe-plugin</artifactId>
-                <!-- IMPORTANT: old version used below because https://github.com/spring-projects/spring-boot/issues/6254
-                Once a newer version than 2.19.1 is developed, try to move to it. -->
+                <!-- IMPORTANT: old version used below because https://github.com/spring-projects/spring-boot/issues/6254 
+                    Once a newer version than 2.19.1 is developed, try to move to it. -->
                 <version>2.18.1</version>
                 <configuration>
                     <skipTests>${skip.integration.tests}</skipTests>
@@ -278,21 +278,21 @@
     <profiles>
         <profile>
             <id>artifactory</id>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
             <distributionManagement>
                 <repository>
                     <id>central</id>
                     <name>libs-release</name>
-                    <url>http://192.168.11.11:8081/artifactory/libs-release-local</url>
+                    <url>http://artifactory.rmdev.onsdigital.uk/artifactory/libs-release-local</url>
                 </repository>
                 <snapshotRepository>
                     <id>snapshots</id>
                     <name>libs-snapshots</name>
-                    <url>http://192.168.11.11:8081/artifactory/libs-snapshot-local</url>
+                    <url>http://artifactory.rmdev.onsdigital.uk/artifactory/libs-snapshot-local</url>
                 </snapshotRepository>
             </distributionManagement>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
         </profile>
     </profiles>
 </project>
