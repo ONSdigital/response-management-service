@@ -94,11 +94,13 @@ BEGIN
                               
       GET DIAGNOSTICS v_number_of_rows = ROW_COUNT; -- number of actions inserted        
              
-      v_text := v_number_of_rows  || ' ACTIONS CREATED: ' || v_plan_description || ' (PLAN NAME: ' || v_plan_name || ') (PLAN ID: ' || v_actionplanid || ')';        
-      PERFORM action.logmessage(p_messagetext := v_text
-                               ,p_jobid := p_actionplanjobid    
-                               ,p_messagelevel := 'INFO'                                                  
-                               ,p_functionname := 'action.createactions');  
+     IF v_number_of_rows > 0 THEN 
+         v_text := v_number_of_rows  || ' ACTIONS CREATED: ' || v_plan_description || ' (PLAN NAME: ' || v_plan_name || ') (PLAN ID: ' || v_actionplanid || ')';        
+         PERFORM action.logmessage(p_messagetext := v_text
+                                  ,p_jobid := p_actionplanjobid    
+                                  ,p_messagelevel := 'INFO'                                                  
+                                  ,p_functionname := 'action.createactions');  
+      END IF;
    END IF;      
       
    -- Update the date the actionplan was run on the actionplan table 
