@@ -1,12 +1,10 @@
-Branch to remove jax-rs
+# THIS REPO HAS BEEN DEPRECATED!
+The services contained in this repo have been broken out into separate repos of their own:
 
-# THIS REPO HAS BEEN DEPRECATED!!!!
-The services contained in this repo have been broken out into separate repos of their own :
- [rm-action-service](https://github.com/ONSdigital/rm-action-service)
- [rm-case-service](https://github.com/ONSdigital/rm-case-service)
- [rm-actionexporter-service](https://github.com/ONSdigital/rm-actionexporter-service)
- [rm-reportmodule-service](https://github.com/ONSdigital/rm-reportmodule-service)
-
+* [rm-action-service](https://github.com/ONSdigital/rm-action-service)
+* [rm-case-service](https://github.com/ONSdigital/rm-case-service)
+* [rm-actionexporter-service](https://github.com/ONSdigital/rm-actionexporter-service)
+* [rm-reportmodule-service](https://github.com/ONSdigital/rm-reportmodule-service)
 
 # Response Management Service
 Response Management is part of ONS's Survey Data Collection platform. It covers overall management of the survey (across all survey modes). It manages the survey sample, tracks responses and initiates required follow-up actions during the collection period.
